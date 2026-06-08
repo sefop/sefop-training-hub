@@ -204,10 +204,11 @@ Start at the level that matches where you are, and work your way down.
 
 ---
 
-### 2. AI Coding Walkthroughs
+### 2. AI-Assisted Strategies
 *Concrete demonstrations of how experienced practitioners use AI coding assistants in their day-to-day workflow*
 
 - 📺 *Full Walkthrough: Workflow for AI Coding* — Matt Pocock | [YouTube](https://www.youtube.com/watch?v=-QFHIoCo-Ko)
+- 🎓 *CS106S: The Modern Software Developer* — Stanford University | [themodernsoftware.dev](https://themodernsoftware.dev/)
 
 > Watch this to see how SE habits (modularity, tests, clear interfaces) make AI assistance more effective in practice.
 
