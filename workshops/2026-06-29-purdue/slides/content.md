@@ -6,33 +6,6 @@
 
 ---
 
-## Slide Index
-
-| Slide | Content |
-|-------|---------|
-| 1 | Title — workshop title, presenter, QR code |
-| 2 | About me |
-| 3 | Schedule |
-| 4 | Block 1 divider |
-| 5 | Software Engineering rules and principles apply whether you know them or not |
-| 6 | Software Engineering takes time to learn |
-| 7 | Pre-workshop survey results |
-| 8 | A different type of engineering |
-| 9 | The two core challenges |
-| 10 | Why not just use AI coding assistants? |
-| 11 | Block 2 divider |
-| 12 | Working iteratively and incrementally |
-| 13 | Empiricism and experimentation |
-| 14 | Block 3 divider |
-| 15 | Cohesion and coupling |
-| 16 | Modularity |
-| 17 | Separation of concerns |
-| 18 | Information hiding and abstraction |
-| 19 | YAGNI |
-| 20 | Afternoon divider |
-| 21 | Thank you |
-
----
 
 ## `Slide 1` — Title
 
@@ -113,7 +86,7 @@ QR code → github.com/sefop
 
 ### `Slide 8` — Software Engineering: a different type of engineering
 
-- a) In civil engineering, design and construction are separate phases: you design a bridge, then you build it
+- a) In civil engineering, design and construction are separate phases: you design a bridge, then you build it. It's very expensive to change the design in the middle of the construction.
 - b) In software, construction is essentially free — the code *is* the blueprint and the product simultaneously
 - c) Key difference: SE lives in a world of imperfect information: the users don't know clearly what they need, don't know clearly how to specify it, building the software reveals unknown challenges, the users change their mind. In summary: SE is a **creative discovery process** — you rarely know the full solution before you start writing it
 - e) Therefore, the most important thing to optimize is **your ability to learn and adapt quickly**:
@@ -143,10 +116,12 @@ QR code → github.com/sefop
 
 ### `Slide 12` — Working iteratively and incrementally (Farley Ch. 4 + Ch. 6)
 
-- a) Agile vs. waterfall
-- b) Iteration drives learning — analogy to gradient descent: each step gives you information to take a better next step; the iteration strategy (Farley Fig. 4.3): Design → Develop → Test → Release — analogous to the scientific method: theory, prediction, experiment, observation
-- c) Benefits of small incremental iterations: easier to build, test, and review; each increment is a checkpoint you can always return to; limits the blast radius of mistakes — a small change that breaks something is easy to find and fix; example: implement a greedy heuristic first, verify it works, then layer in the MIP solver *(show image describing this incremental process)*
-- d) Git as an example of working iteratively and incrementally: commits as checkpoints, branches as experiments, history as a lab notebook
+- a) **The old way — Waterfall:** Plan everything → Build everything → Release once. Problem: you only discover what's wrong at the very end
+- b) **Agile = Iterative + Incremental**
+  - *Iterative:* "Don't try to get it all right from the beginning"
+  - *Incremental:* "Don't build it all at once"
+- c) Image: Jeff Patton's Mona Lisa — ![Iterative vs Incremental](https://cms.gladwellacademy.com/storage/media/JeffPatton_Incremental-Iterative_MonaLisa.jpg)
+- d) Each small unit of work follows this cycle: **Design → Develop → Test → Release → Learn**
 
 ### `Slide 13` — Empiricism and experimentation (Farley Ch. 5 + Ch. 7 + Ch. 8)
 
@@ -155,8 +130,7 @@ QR code → github.com/sefop
 - c) CI/CD: how continuous integration and delivery automate the Test → Release steps so feedback is instant
 - d) Reproducibility is empiricism applied to software: same inputs must always produce same outputs
 - e) Virtual environments + declared dependencies = reproducible science
-- f) Interactive question: *"If I gave you a fresh laptop right now, how long would it take to run your experiments?"*
-- g) Test types: unit, integration, end-to-end
+- g) Testing as a mechanism to replicate experiments results
 - h) Properties of a good test (analogous to a good scientific experiment): reproducible, fast, isolated, meaningful
 - i) Git branches as a laboratory: try a new approach without destroying what works
 
