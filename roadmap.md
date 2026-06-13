@@ -107,6 +107,7 @@ Start at the level that matches where you are, and work your way down.
 *How to write tests that give you genuine confidence in your code — not just tests that pass, but tests that are meaningful and maintainable*
 
 - 📖 *Unit Testing: Principles, Practices and Patterns* — Vladimir Khorikov
+- 📖 *Effective Software Testing: A developer's guide* — Mauricio Aniche
 
 > Read this when you start writing tests and want to understand what separates a useful
 > test from a fragile one.
