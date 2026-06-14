@@ -103,10 +103,11 @@ QR code → github.com/sefop
 
 ### `Slide 10` — Why not just use AI coding assistants?
 
-- a) AI assistants amplify the engineering practices already present in a team — they don't replace them
-- b) Good practices → AI makes you faster; bad practices → AI generates more mess, faster
-- c) Link to [DORA report](https://dora.dev/): teams with strong engineering foundations benefit most from AI tools; teams without them see neutral or negative outcomes
-- d) Interactive question: *"Are you using AI coding assistants? Do you feel more productive or more confused?"*
+- a) Interactive question: *"Are you using AI coding assistants? What are your thoughts?
+- b) AI assistants amplify the engineering practices already present in a team — they don't replace them
+- c) Good practices → AI makes you faster; bad practices → AI generates more mess, faster
+- d) Link to [DORA report](https://dora.dev/): teams with strong engineering foundations benefit most from AI tools; teams without them see neutral or negative outcomes
+
 
 ---
 
