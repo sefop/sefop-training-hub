@@ -22,7 +22,7 @@ Start at the level that matches where you are, and work your way down.
 **Advanced**
 1. [Test-Driven Development](#1-test-driven-development)
 2. [Software Architecture](#2-software-architecture)
-3. [Mutation Testing](#3-mutation-testing)
+3. [Advanced Testing Topics](#3-advanced-testing-topics)
 4. [Containerization with Docker](#4-containerization-with-docker)
 
 **AI-Assisted Coding**
@@ -169,14 +169,22 @@ Start at the level that matches where you are, and work your way down.
 
 ---
 
-### 3. Mutation Testing
-*A technique for measuring the quality of your test suite by deliberately introducing small bugs and checking whether your tests catch them*
+### 3. Advanced Testing Topics
+*Techniques for measuring and improving the quality of your test suite — beyond writing tests to understanding whether they actually work*
+
+#### Code Coverage
+*A metric that tracks which lines of code your tests execute — useful as a signal, dangerous as a goal*
+
+- 🌐 *Code Coverage Best Practices* — Google Testing Blog | [testing.googleblog.com](https://testing.googleblog.com/2020/08/code-coverage-best-practices.html): how Google thinks about coverage — what it tells you, what it doesn't, and how to avoid the common trap of optimizing for the number
+
+#### Mutation Testing
+*Deliberately introducing small bugs into your code to check whether your tests catch them — a stronger signal than coverage alone*
 
 - 🌐 *Mutation Testing* — GeeksForGeeks | [conceptual introduction](https://www.geeksforgeeks.org/software-engineering/software-testing-mutation-testing/) to the technique and its operators
 - 🌐 *PIT Mutation Testing* — [pitest.org](https://pitest.org/): the leading mutation testing tool for JVM languages, with concepts that apply across ecosystems
 
-> Read this after you are comfortable writing automated tests and want to know whether
-> your tests are actually catching the bugs that matter.
+> Read the coverage article first — it reframes what "enough testing" means. Then read
+> mutation testing to learn a concrete method for answering that question.
 
 ---
 
