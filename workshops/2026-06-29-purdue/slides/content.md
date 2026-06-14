@@ -95,7 +95,7 @@ QR code → github.com/sefop
 
 **Two-column layout:**
 
-| Optimize for Learning *(→ Block 2)* | Optimize for Managing Complexity *(→ Block 3)* |
+| Optimize for Learning *(→ Block 2)* | Optimize for Adapting *(→ Block 3)* |
 |-------------------------------------|------------------------------------------------|
 | Short feedback loops | Keep code complexity low |
 | Cheap experiments with the scientific method | Safety mechanisms to verify changes |
@@ -121,6 +121,7 @@ QR code → github.com/sefop
 - b) **Agile = Iterative + Incremental**
   - *Iterative:* "Don't try to get it all right from the beginning"
   - *Incremental:* "Don't build it all at once"
+  - Link to the Agile Manifesto so the students can read it later.
 - c) Image: Jeff Patton's Mona Lisa — ![Iterative vs Incremental](https://cms.gladwellacademy.com/storage/media/JeffPatton_Incremental-Iterative_MonaLisa.jpg)
 - d) Each small unit of work follows this cycle: **Design → Develop → Test → Release → Learn**
 
@@ -139,8 +140,7 @@ Set controlled experiment
     ↓
 Test
     ↓
-Conclusion
-    ↻ (feeds back to Observation)
+Conclusion    
 ```
 
 **Right half — Principles:**
@@ -148,7 +148,7 @@ Conclusion
 - **Skepticism** — don't trust; demand evidence. Assume it does not work until proven.
 - **Evidence over authority** — it doesn't matter who wrote the code; only what the tests say.
 - **Relevance** — the question must be worth asking; prove the experiment matters before running it.
-- **Testability** — the hypothesis must be objective and measurable;
+- **Testability** — the hypothesis must be objective and measurable.
 - **Reproducibility** — the experiment must produce the same results every time.
 - **Causality** — the experiment variables must be controlled to show causality.
 
