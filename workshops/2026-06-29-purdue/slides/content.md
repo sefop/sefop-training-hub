@@ -124,38 +124,85 @@ QR code → github.com/sefop
 - c) Image: Jeff Patton's Mona Lisa — ![Iterative vs Incremental](https://cms.gladwellacademy.com/storage/media/JeffPatton_Incremental-Iterative_MonaLisa.jpg)
 - d) Each small unit of work follows this cycle: **Design → Develop → Test → Release → Learn**
 
-### `Slide 13` — Empiricism and experimentation (Farley Ch. 5 + Ch. 7 + Ch. 8)
+### `Slide 13` — Working experimentally — applying the scientific method (Farley Ch. 5 + Ch. 7 + Ch. 8)
 
-- a) **In code:** static analysis tools catch errors before you even run the program (linters, type checkers)
-- b) **In automated tests:** run your assumptions against reality automatically
-- c) CI/CD: how continuous integration and delivery automate the Test → Release steps so feedback is instant
-- d) Reproducibility is empiricism applied to software: same inputs must always produce same outputs
-- e) Virtual environments + declared dependencies = reproducible science
-- g) Testing as a mechanism to replicate experiments results
-- h) Properties of a good test (analogous to a good scientific experiment): reproducible, fast, isolated, meaningful
-- i) Git branches as a laboratory: try a new approach without destroying what works
+**Left half — The scientific method:**
+
+```
+Observation
+    ↓
+Question
+    ↓
+Hypothesis
+    ↓
+Set controlled experiment
+    ↓
+Test
+    ↓
+Conclusion
+    ↻ (feeds back to Observation)
+```
+
+**Right half — Principles:**
+
+- **Skepticism** — don't trust; demand evidence. Assume it does not work until proven.
+- **Evidence over authority** — it doesn't matter who wrote the code; only what the tests say.
+- **Relevance** — the question must be worth asking; prove the experiment matters before running it.
+- **Testability** — the hypothesis must be objective and measurable;
+- **Reproducibility** — the experiment must produce the same results every time.
+- **Causality** — the experiment variables must be controlled to show causality.
+
+### `Slide 14` — Spot the principle (interactive exercise)
+
+*"Which principle of the scientific method does each practice embody?"*
+
+- a) **Branches + automated tests + PR** — You create a branch to isolate your change, run automated tests as your experiment checks, and open a PR as your conclusion. Only your change can affect the results.
+  → *Causality + Testability*
+
+- b) **`requirements.txt` + virtual environment** — You pin every dependency so the code runs identically on your machine, your colleague's machine, and CI.
+  → *Reproducibility*
+
+- c) **"My advisor wrote this function, it must be correct — no need to test it."**
+  → *Evidence over authority (violated)*
+
+- d) **`assert solution.is_feasible()` in a test** — You state your hypothesis in code: the solution must pass a concrete, measurable check.
+  → *Testability*
+
+- e) **"My heuristic seems faster than the MIP."** — No benchmark, no measurement, no comparison on the same instances.
+  → *Testability (violated) — "seems" is not measurable*
+
+- f) **You benchmark Gurobi vs. HiGHS but change the instance data at the same time.**
+  → *Causality (violated) — you can't attribute any difference to the solver*
+
+### `Slide 15` — Technologies that support experimentation
+
+- a) **Static analysis** (linters, type checkers) — catch errors before you even run the program; *Skepticism* in automated form
+- b) **Automated tests** (pytest) — run your assumptions against reality; a good test is reproducible, fast, isolated, and meaningful
+- c) **CI/CD** (GitHub Actions) — automates the Test → Conclusion cycle so feedback is instant
+- d) **Virtual environments + declared dependencies** — the engineering mechanism for *Reproducibility*; same inputs must always produce same outputs
+- e) **Git branches** — an isolated laboratory; the PR is your conclusion; *Causality* made structural
 
 ---
 
-## `Slide 14` — Block 3 divider: Optimize for Managing Complexity (11:00–11:45)
+## `Slide 16` — Block 3 divider: Optimize for Managing Complexity (11:00–11:45)
 
 > Farley Part III: Ch. 9 (Modularity), Ch. 10 (Cohesion), Ch. 11 (Separation of Concerns), Ch. 12 (Information Hiding), Ch. 13 (Coupling)
 
-### `Slide 15` — Cohesion and coupling (Farley Ch. 10 + Ch. 13)
+### `Slide 17` — Cohesion and coupling (Farley Ch. 10 + Ch. 13)
 
 - a) Cohesion: things that change together should live together — a module should have one reason to change
 - b) Coupling: things that don't change together should not depend on each other
 - c) High cohesion + low coupling = the goal; low cohesion + high coupling = the mess most research code is in
 - d) Interactive question: *"If you change how your data is loaded, how many other files do you have to touch?"*
 
-### `Slide 16` — Modularity (Farley Ch. 9)
+### `Slide 18` — Modularity (Farley Ch. 9)
 
 - a) A module is a unit of software that can be understood, built, and tested independently
 - b) Modularity is what makes a system changeable — you can swap a module without touching the rest
 - c) Test for modularity: can you change this piece without reading all the other pieces first?
 - d) Example: a solver module that can be replaced without touching data loading or reporting
 
-### `Slide 17` — Separation of concerns (Farley Ch. 11)
+### `Slide 19` — Separation of concerns (Farley Ch. 11)
 
 - a) Keep data loading, business logic, and output separate — they change for different reasons
 - b) A function that loads data, solves a model, and prints results has three concerns — and three reasons to break
@@ -184,13 +231,13 @@ engine = Engine(solver=MIPSolver())
 
 - f) The Engine doesn't know or care which solver it uses — concerns are fully separated
 
-### `Slide 18` — Information hiding and abstraction (Farley Ch. 12)
+### `Slide 20` — Information hiding and abstraction (Farley Ch. 12)
 
 - a) Hide implementation details behind a simple interface — callers shouldn't need to know how something works, only what it does
 - b) Abstraction lets you change the internals without breaking the callers
 - c) Example: a `solve(instance)` function that hides whether it uses Gurobi, HiGHS, or a heuristic
 
-### `Slide 19` — YAGNI — You Aren't Gonna Need It
+### `Slide 21` — YAGNI — You Aren't Gonna Need It
 
 - a) Don't build for hypothetical future requirements — build for what you need today
 - b) Every unnecessary abstraction adds complexity that someone has to understand and maintain
@@ -199,7 +246,7 @@ engine = Engine(solver=MIPSolver())
 
 ---
 
-## `Slide 20` — Afternoon divider: SEFOP in Practice (13:30–17:00)
+## `Slide 22` — Afternoon divider: SEFOP in Practice (13:30–17:00)
 
 > Students clone [`sefop/sefop-python-starter`](https://github.com/sefop/sefop-python-starter) and use TDD to extend the system.
 
@@ -207,7 +254,7 @@ engine = Engine(solver=MIPSolver())
 - Add a new solver component
 - Add a new data loading mechanism
 
-## `Slide 21` — Thank you
+## `Slide 23` — Thank you
 
 QR code → github.com/sefop
 
