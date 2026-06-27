@@ -204,7 +204,7 @@ Start at the level that matches where you are, and work your way down.
 > The skills in this roadmap become more valuable, not less, as AI coding assistants improve.
 > AI amplifies the engineering practices already present — understand the foundations first.
 
-### 1. Software Engineering at a Tipping Point
+### 1. Software Engineering in the AI era
 *A high-level perspective on how AI coding assistants are shifting the nature of software work and what that means for practitioners*
 
 - 📺 *Software Engineering at a Tipping Point* — Google Engineering | [YouTube](https://www.youtube.com/watch?v=2n41YjR5QfU)
@@ -218,6 +218,7 @@ Start at the level that matches where you are, and work your way down.
 
 - 📺 *Full Walkthrough: Workflow for AI Coding* — Matt Pocock | [YouTube](https://www.youtube.com/watch?v=-QFHIoCo-Ko)
 - 🎓 *CS106S: The Modern Software Developer* — Stanford University | [themodernsoftware.dev](https://themodernsoftware.dev/)
+- 🌐 *The New SDLC With Vibe Coding* - Google | [Kaggle](https://www.kaggle.com/whitepaper-the-new-SDLC-with-vibe-coding)
 
 > Watch this to see how SE habits (modularity, tests, clear interfaces) make AI assistance more effective in practice.
 
