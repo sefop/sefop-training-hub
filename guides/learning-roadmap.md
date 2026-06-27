@@ -118,6 +118,7 @@ Start at the level that matches where you are, and work your way down.
 *How to manage complexity through deep modules, simple interfaces, and deliberate information hiding — a rigorous framework for thinking about system design*
 
 - 📖 *A Philosophy of Software Design* — John Ousterhout
+- 🌐 *A Philosophy of Software Design* | John Ousterhout | Talks at Google [Video](https://www.youtube.com/watch?v=bmSAYlu0NcY)
 - 🌐 *Refactoring Guru: Design Patterns* — [refactoring.guru/design-patterns](https://refactoring.guru/design-patterns): a visual catalog of classic design patterns with examples and use cases
 
 > Read this after building several projects — it rewards readers who have already felt

@@ -31,18 +31,20 @@ QR code → github.com/sefop
 
 | Time | Session |
 |------|---------|
-| 09:00–09:45 | Block 1: Why learn Software Engineering? |
-| 09:45–10:00 | Break |
-| 10:00–10:45 | Block 2: Optimize for Learning |
-| 10:45–11:00 | Break |
-| 11:00–11:45 | Block 3: Optimize for Managing Complexity |
-| 11:45–12:30 | Break / transition |
-| 12:30–13:30 | Lunch |
-| 13:30–17:00 | Afternoon: SEFOP in practice — TDD exercise |
+| 09:00–09:50 | Block 1: Why learn Software Engineering? |
+| 09:50–10:00 | Break |
+| 10:00–10:50 | Block 2: Optimize for Learning |
+| 10:50–11:00 | Break |
+| 11:00–11:50 | Block 3: Unit Testing in Practice |
+| 11:50–12:00 | Break |
+| 12:00–13:00 | Lunch |
+| 13:00–13:50 | Block 4: Optimize for Managing Complexity |
+| 13:50–14:00 | Break |
+| 14:00–17:00 | Putting it all together: SEFOP |
 
 ---
 
-## `Slide 4` — Block 1 divider: Why learn Software Engineering? (09:00–09:45)
+## `Slide 4` — Block 1 divider: Why learn Software Engineering?
 
 ---
 
@@ -50,12 +52,12 @@ QR code → github.com/sefop
 
 **Some pain stories**
 
-- a) "It worked 6 months ago" — can't reproduce your own results before a deadline
-- b) "Works on my machine" — advisor or collaborator can't run your code
-- c) "I changed the solver and everything broke" — no separation between model and infrastructure
-- d) **Science case:** Geoffrey Chang (Scripps Institute, 2006) — retracted 5 high-impact papers on membrane protein structures because a sign error in a data-processing script had corrupted all results for years
-- e) **Industry case:** Ariane 5 rocket explosion (1996) — a reused software component caused an unhandled overflow exception; the rocket self-destructed 37 seconds after launch, destroying a $370M payload
-- f) Interactive question: *"Has any version of the first three happened to you?"*
+- a) **Academy case:** Geoffrey Chang (Scripps Institute, 2006) — retracted 5 high-impact papers on membrane protein structures because a sign error in a data-processing 
+  script had corrupted all results for years
+- b) **Industry case:** Ariane 5 rocket explosion (1996) — a reused software component caused an unhandled overflow exception; the rocket self-destructed 37 seconds 
+  after launch, destroying a $370M payload
+- On top of the economic impact, the psychological impact can result in stress, burnout, depression, leaving your job.
+- Interactive question: *"Has any version of these first three happened to you?"*
 
 ### `Slide 6` — Software Engineering takes time to learn
 
@@ -111,7 +113,7 @@ QR code → github.com/sefop
 
 ---
 
-## `Slide 11` — Block 2 divider: Optimize for Learning (10:00–10:45)
+## `Slide 11` — Block 2 divider: Optimize for Learning
 
 > Farley Part II: Ch. 4 (Iterative), Ch. 5 (Feedback), Ch. 6 (Incrementalism), Ch. 7 (Empiricism), Ch. 8 (Experimental)
 
@@ -184,25 +186,60 @@ Conclusion
 
 ---
 
-## `Slide 16` — Block 3 divider: Optimize for Managing Complexity (11:00–11:45)
+## `Slide 16` — Block 3 divider: Unit Testing in Practice
+
+### `Slide 17` — What is a unit test?
+
+- a) A unit test verifies one small, isolated piece of behavior — one function, one condition, one outcome
+- b) Analogy: a controlled experiment — you change one variable and observe the result
+- c) A test that touches the database, the filesystem, or another module is not a unit test — it's an integration test
+- d) The pytest framework: write a function starting with `test_`, assert a condition, run `pytest`
+
+### `Slide 18` — Anatomy of a good unit test
+
+- a) **Arrange** — set up the inputs
+- b) **Act** — call the function under test
+- c) **Assert** — check the result
+- d) One assertion per test — if it fails, you know exactly what broke
+- e) Example: testing that a greedy heuristic returns a feasible solution on a small instance
+
+### `Slide 19` — What makes a test valuable?
+
+- a) Fast — runs in milliseconds, not minutes; you run it after every change
+- b) Isolated — result doesn't depend on external state (files, databases, other tests)
+- c) Repeatable — same inputs always produce same outputs (links back to *Reproducibility*)
+- d) Meaningful — tests a real assumption your code must satisfy, not an obvious truism
+- e) Interactive question: *"What is one assumption in your current code that you've never verified with a test?"*
+
+### `Slide 20` — Live demo: writing a first test
+
+- a) Show a short optimization helper function (e.g., `compute_makespan`)
+- b) Write a pytest test for it step by step: Arrange → Act → Assert
+- c) Run `pytest`, see it pass
+- d) Deliberately break the function, see the test catch it
+- e) Key point: the test is your safety net — it tells you instantly when a change breaks something
+
+---
+
+## `Slide 21` — Block 4 divider: Optimize for Managing Complexity
 
 > Farley Part III: Ch. 9 (Modularity), Ch. 10 (Cohesion), Ch. 11 (Separation of Concerns), Ch. 12 (Information Hiding), Ch. 13 (Coupling)
 
-### `Slide 17` — Cohesion and coupling (Farley Ch. 10 + Ch. 13)
+### `Slide 22` — Cohesion and coupling (Farley Ch. 10 + Ch. 13)
 
 - a) Cohesion: things that change together should live together — a module should have one reason to change
 - b) Coupling: things that don't change together should not depend on each other
 - c) High cohesion + low coupling = the goal; low cohesion + high coupling = the mess most research code is in
 - d) Interactive question: *"If you change how your data is loaded, how many other files do you have to touch?"*
 
-### `Slide 18` — Modularity (Farley Ch. 9)
+### `Slide 23` — Modularity (Farley Ch. 9)
 
 - a) A module is a unit of software that can be understood, built, and tested independently
 - b) Modularity is what makes a system changeable — you can swap a module without touching the rest
 - c) Test for modularity: can you change this piece without reading all the other pieces first?
 - d) Example: a solver module that can be replaced without touching data loading or reporting
 
-### `Slide 19` — Separation of concerns (Farley Ch. 11)
+### `Slide 24` — Separation of concerns (Farley Ch. 11)
 
 - a) Keep data loading, business logic, and output separate — they change for different reasons
 - b) A function that loads data, solves a model, and prints results has three concerns — and three reasons to break
@@ -231,13 +268,13 @@ engine = Engine(solver=MIPSolver())
 
 - f) The Engine doesn't know or care which solver it uses — concerns are fully separated
 
-### `Slide 20` — Information hiding and abstraction (Farley Ch. 12)
+### `Slide 25` — Information hiding and abstraction (Farley Ch. 12)
 
 - a) Hide implementation details behind a simple interface — callers shouldn't need to know how something works, only what it does
 - b) Abstraction lets you change the internals without breaking the callers
 - c) Example: a `solve(instance)` function that hides whether it uses Gurobi, HiGHS, or a heuristic
 
-### `Slide 21` — YAGNI — You Aren't Gonna Need It
+### `Slide 26` — YAGNI — You Aren't Gonna Need It
 
 - a) Don't build for hypothetical future requirements — build for what you need today
 - b) Every unnecessary abstraction adds complexity that someone has to understand and maintain
@@ -246,7 +283,7 @@ engine = Engine(solver=MIPSolver())
 
 ---
 
-## `Slide 22` — Afternoon divider: SEFOP in Practice (13:30–17:00)
+## `Slide 27` — Putting it all together: SEFOP
 
 > Students clone [`sefop/sefop-python-starter`](https://github.com/sefop/sefop-python-starter) and use TDD to extend the system.
 
@@ -254,7 +291,7 @@ engine = Engine(solver=MIPSolver())
 - Add a new solver component
 - Add a new data loading mechanism
 
-## `Slide 23` — Thank you
+## `Slide 28` — Thank you
 
 QR code → github.com/sefop
 
