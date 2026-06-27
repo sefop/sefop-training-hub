@@ -188,58 +188,31 @@ Conclusion
 
 ## `Slide 16` — Block 3 divider: Unit Testing in Practice
 
-### `Slide 17` — What is a unit test?
+### `Slide 17` — Unit Testing in Practice
 
-- a) A unit test verifies one small, isolated piece of behavior — one function, one condition, one outcome
-- b) Analogy: a controlled experiment — you change one variable and observe the result
-- c) A test that touches the database, the filesystem, or another module is not a unit test — it's an integration test
-- d) The pytest framework: write a function starting with `test_`, assert a condition, run `pytest`
-
-### `Slide 18` — Anatomy of a good unit test
-
-- a) **Arrange** — set up the inputs
-- b) **Act** — call the function under test
-- c) **Assert** — check the result
-- d) One assertion per test — if it fails, you know exactly what broke
-- e) Example: testing that a greedy heuristic returns a feasible solution on a small instance
-
-### `Slide 19` — What makes a test valuable?
-
-- a) Fast — runs in milliseconds, not minutes; you run it after every change
-- b) Isolated — result doesn't depend on external state (files, databases, other tests)
-- c) Repeatable — same inputs always produce same outputs (links back to *Reproducibility*)
-- d) Meaningful — tests a real assumption your code must satisfy, not an obvious truism
-- e) Interactive question: *"What is one assumption in your current code that you've never verified with a test?"*
-
-### `Slide 20` — Live demo: writing a first test
-
-- a) Show a short optimization helper function (e.g., `compute_makespan`)
-- b) Write a pytest test for it step by step: Arrange → Act → Assert
-- c) Run `pytest`, see it pass
-- d) Deliberately break the function, see the test catch it
-- e) Key point: the test is your safety net — it tells you instantly when a change breaks something
+[github.com/sefop/training-testing-python](https://github.com/sefop/training-testing-python)
 
 ---
 
-## `Slide 21` — Block 4 divider: Optimize for Managing Complexity
+## `Slide 18` — Block 4 divider: Optimize for Managing Complexity
 
 > Farley Part III: Ch. 9 (Modularity), Ch. 10 (Cohesion), Ch. 11 (Separation of Concerns), Ch. 12 (Information Hiding), Ch. 13 (Coupling)
 
-### `Slide 22` — Cohesion and coupling (Farley Ch. 10 + Ch. 13)
+### `Slide 19` — Cohesion and coupling (Farley Ch. 10 + Ch. 13)
 
 - a) Cohesion: things that change together should live together — a module should have one reason to change
 - b) Coupling: things that don't change together should not depend on each other
 - c) High cohesion + low coupling = the goal; low cohesion + high coupling = the mess most research code is in
 - d) Interactive question: *"If you change how your data is loaded, how many other files do you have to touch?"*
 
-### `Slide 23` — Modularity (Farley Ch. 9)
+### `Slide 20` — Modularity (Farley Ch. 9)
 
 - a) A module is a unit of software that can be understood, built, and tested independently
 - b) Modularity is what makes a system changeable — you can swap a module without touching the rest
 - c) Test for modularity: can you change this piece without reading all the other pieces first?
 - d) Example: a solver module that can be replaced without touching data loading or reporting
 
-### `Slide 24` — Separation of concerns (Farley Ch. 11)
+### `Slide 21` — Separation of concerns (Farley Ch. 11)
 
 - a) Keep data loading, business logic, and output separate — they change for different reasons
 - b) A function that loads data, solves a model, and prints results has three concerns — and three reasons to break
@@ -268,13 +241,13 @@ engine = Engine(solver=MIPSolver())
 
 - f) The Engine doesn't know or care which solver it uses — concerns are fully separated
 
-### `Slide 25` — Information hiding and abstraction (Farley Ch. 12)
+### `Slide 22` — Information hiding and abstraction (Farley Ch. 12)
 
 - a) Hide implementation details behind a simple interface — callers shouldn't need to know how something works, only what it does
 - b) Abstraction lets you change the internals without breaking the callers
 - c) Example: a `solve(instance)` function that hides whether it uses Gurobi, HiGHS, or a heuristic
 
-### `Slide 26` — YAGNI — You Aren't Gonna Need It
+### `Slide 23` — YAGNI — You Aren't Gonna Need It
 
 - a) Don't build for hypothetical future requirements — build for what you need today
 - b) Every unnecessary abstraction adds complexity that someone has to understand and maintain
@@ -283,7 +256,7 @@ engine = Engine(solver=MIPSolver())
 
 ---
 
-## `Slide 27` — Putting it all together: SEFOP
+## `Slide 24` — Putting it all together: SEFOP
 
 > Students clone [`sefop/sefop-python-starter`](https://github.com/sefop/sefop-python-starter) and use TDD to extend the system.
 
@@ -291,7 +264,7 @@ engine = Engine(solver=MIPSolver())
 - Add a new solver component
 - Add a new data loading mechanism
 
-## `Slide 28` — Thank you
+## `Slide 25` — Thank you
 
 QR code → github.com/sefop
 

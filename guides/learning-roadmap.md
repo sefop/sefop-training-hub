@@ -18,6 +18,7 @@ Start at the level that matches where you are, and work your way down.
 4. [Software Design](#4-software-design)
 5. [Data Modelling](#5-data-modelling)
 6. [Continuous Integration & Delivery](#6-continuous-integration--delivery)
+7. [Working with Existing Codebases](#7-working-with-existing-codebases)
 
 **Advanced**
 1. [Test-Driven Development](#1-test-driven-development)
@@ -145,6 +146,16 @@ Start at the level that matches where you are, and work your way down.
 
 > Read this after you have a working test suite — CI is what runs those tests automatically
 > on every change, turning manual discipline into a system that enforces itself.
+
+---
+
+### 7. Working with Existing Codebases
+*How to safely understand, navigate, and improve code you did not write — without breaking what already works*
+
+- 📖 *Working Effectively with Legacy Code* (Robert C. Martin Series) — Michael Feathers
+
+> Read this when you inherit a codebase with no tests or unclear structure — Feathers gives
+> concrete techniques for adding tests and making changes safely, one seam at a time.
 
 ---
 
