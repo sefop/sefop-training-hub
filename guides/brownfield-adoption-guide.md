@@ -14,8 +14,8 @@ work for you as well. My advice will complement the timeless book on this topic 
 ## What is a legacy system?
 
 A legacy system is any piece of software that is difficult to change safely — not because it is old, but because it lacks the safety mechanisms that make change possible.
-The clearest signal: **no automated tests**. Without tests, you cannot know whether a change broke something until it breaks in production. This guide will help you build
-those mechanisms and use them to modernize a system incrementally.
+The clearest signal: **lack of automated tests**. Without tests, you cannot know whether a change broke something until it breaks in production. This guide will help you 
+build those mechanisms and use them to modernize a system incrementally.
 
 ---
 
@@ -52,12 +52,11 @@ and Dan Heath.
 ### Make change the easy path
 
 1. **Build the safety net before you ask for change.** A suite of characterization tests removes the single biggest reason people avoid refactoring: fear of silently breaking something.
-2. **Change the default, not the willpower.** A pull request teamplate and/or mandatory checklists in your CI pipeline makes a missing test visible.
+2. **Change the default, not the willpower.** A pull request template and/or mandatory checklists in your CI pipeline make a missing test visible.
 3. **Cut friction in a slow adjacent workflow.** Automating a painfully manual step buys you both time and credibility at once.
-4. **Remove the specific technical barrier behind "that can't be tested."** Often one real obstacle (e.g. testing one component in isolation) is showing how you would 
-   do it, and then do it.
-5. **Invest in software engineering training**. Usually the root cause of poor software are the current developers practices. Assess if they need software engineering 
-   training, and if they do, make sure that happens sooner than later.
+4. **Remove the specific technical barrier behind "that can't be tested."** Often the only real obstacle is that no one has shown it can be done — show how, then do it.
+5. **Invest in software engineering training**. Usually the root cause of poor software is the current developers' practices. Assess if they need software engineering 
+   training, and if they do, make sure that happens sooner rather than later.
 
 ### Make it theirs
 
@@ -69,9 +68,8 @@ and Dan Heath.
 
 ### Know your terrain
 
-1. **Check your structural position before you start.** A supportive manager will help a lot when making changes, make sure you have some support before you start 
-   refactoring.
+1. **Check your position before you start.** A supportive manager will help a lot when investing in refactoring. Make sure you have some support before you start.
 2. **Watch for shifts in who the team defers to.** A departure or new hire can change informal authority — recognize the opening rather than assuming only your effort moved things.
 3. **Report quality and throughput together.** Showing that speed didn't drop is what defuses the belief that good practice and delivery pace trade off against each 
-   other. Make sure the key milestones of the project are being delivered ideally.
+   other. Make sure the key milestones of the project are being delivered on schedule.
 4. **Expect old habits under pressure, not their disappearance.** The realistic goal is a changed default, not the permanent elimination of shortcuts.
