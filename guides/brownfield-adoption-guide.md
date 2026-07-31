@@ -2,13 +2,13 @@
 
 ## Introduction
 
-In the majority of the cases we start to work in a project that has already an existing repository. Either because the repository was inherited, or because the project 
+In the majority of the cases we start to work in a project that already has an existing repository. Either because the repository was inherited, or because the project 
 has already started. The implication is clear: you won't be able to design the application from scratch with all the good software principles you know.
 
 When you enter this new project, in my experience, most likely there are going to be gaps regarding the desired design of the system with respect to the current state 
 of the system. Are these gaps easily solvable? If the answer is no, then you are probably facing a **legacy system**: a system that is basically difficult to modify.
 
-Dealing with a legacy system is hard, but not impossible. On this guide I will explain how I successfully worked with a legacy system. Hopefully these lessons can 
+Dealing with a legacy system is hard, but not impossible. In this guide I will explain how I successfully worked with a legacy system. Hopefully these lessons can 
 work for you as well. My advice will complement the timeless book on this topic "Working Effectively with Legacy Code" by Michael Feathers.
 
 ## What is a legacy system?
@@ -32,13 +32,13 @@ those mechanisms and use them to modernize a system incrementally.
 
 --- 
 
-## Complementary actions to the book
+## Complementary suggestions to the book
 
 > Findings from Francisco Zenteno Smith (2026), "Why operations research practitioners
 > resist software engineering practices and what changes their behavior," presented at
 > the 2026 DSI Annual Conference, San Francisco, CA, USA.
 
-On my experience working with legacy code could be more of a **Change Management** problem, rather than a **Software Problem**. Here I summarize the finding of the 
+In my experience, working with legacy code is more of a **Change Management** problem, rather than a **Software Problem**. Here I summarize the findings of the 
 aforementioned paper. When I worked on this project, I based my actions on the change management book "Switch: How to Change Things When Change Is Hard" by Chip Heath 
 and Dan Heath.
 
