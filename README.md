@@ -1,17 +1,18 @@
 # SEFOP Training Hub
 
-This hub is part of [SEFOP](https://github.com/sefop) — a framework for operations research scientists and practitioners who want to write software with professional 
-standards.
+This hub is part of [SEFOP](https://github.com/sefop), and it aims at 2 personas:
+1. **Operations Research Scientists** who want to ship decision-support software with to professional standards.
+2. **Engineering Managers** who lead the teams building it.
 
-## Getting Started
+## Resources
 
-Start with the **[Learning Roadmap](guides/learning-roadmap.md)** — a structured path through software engineering foundations, organized by level (beginner through advanced) and topic.
+| Guide | Summary | Audience |
+|---|---|---|
+| [Learning Roadmap](guides/learning-roadmap.md) | **Start here.** A sequenced path through software engineering foundations, from version control through test-driven development. | Scientists & Engineering Managers |
+| [Brownfield Adoption Guide](guides/brownfield-adoption-guide.md) | How to safely modify and modernize an existing codebase, using automated tests as a safety net. | Scientists & Engineering Managers |
+| [Managing Decision-Support Teams](guides/managing-decision-support-teams.md) | *Coming soon.* How to organize, staff, and lead a team building decision-support software. | Engineering Managers |
 
-## What's Here
-
-**Guides** — Language-agnostic material on concepts like reproducibility, testing, design, and managing legacy code.
-
-**[Practice Repositories](guides/training-repos.md)** — Language-specific exercises where you apply what you learned. Currently available in Python, with more languages coming.
+**[Practice Repositories](guides/training-repos.md)** — Language-specific exercises where you apply what you learn in the guides. Currently available in Python, with more languages coming.
 
 ## For Questions
 
