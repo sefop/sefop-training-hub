@@ -1,8 +1,7 @@
 # SEFOP Training Hub
 
-Does your code work on your machine but not on others? Is it hard to maintain, extend, or test? You're not alone — and there's a systematic way to fix it.
-
-This hub is part of [SEFOP](https://github.com/sefop) — a framework for operations research scientists and practitioners who want to write better software.
+This hub is part of [SEFOP](https://github.com/sefop) — a framework for operations research scientists and practitioners who want to write software with professional 
+standards.
 
 ## Getting Started
 
