@@ -1,7 +1,7 @@
 # SEFOP Training Hub
 
 This hub is part of [SEFOP](https://github.com/sefop), and it aims at 2 personas:
-1. **Operations Research Scientists** who want to ship decision-support software with to professional standards.
+1. **Operations Research Scientists** who want to ship decision-support software with professional standards.
 2. **Engineering Managers** who lead the teams building it.
 
 ## Resources
