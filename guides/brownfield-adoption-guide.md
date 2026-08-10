@@ -35,8 +35,8 @@ build those mechanisms and use them to modernize a system incrementally.
 ## Complementary suggestions to the book
 
 > Findings from Francisco Zenteno Smith (2026), "Why operations research practitioners
-> resist software engineering practices and what changes their behavior," presented at
-> the 2026 DSI Annual Conference, San Francisco, CA, USA.
+> resist software engineering practices and what changes their behavior," accepted for
+> presentation at the 2026 DSI Annual Conference, San Francisco, CA, USA (November 21-23, 2026).
 
 In my experience, working with legacy code is more of a **Change Management** problem, rather than a **Software Problem**. Here I summarize the findings of the 
 aforementioned paper. When I worked on this project, I based my actions on the change management book "Switch: How to Change Things When Change Is Hard" by Chip Heath 
