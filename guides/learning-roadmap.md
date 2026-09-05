@@ -17,7 +17,7 @@ Start at the level that matches where you are, and work your way down.
 3. [Automated Testing](#3-automated-testing)
 4. [Software Design](#4-software-design)
 5. [Data Modelling](#5-data-modelling)
-6. [Continuous Integration & Delivery](#6-continuous-integration--delivery)
+6. [DevOps](#6-devops)
 7. [Working with Existing Codebases](#7-working-with-existing-codebases)
 
 **Advanced**
@@ -137,12 +137,13 @@ Start at the level that matches where you are, and work your way down.
 
 ---
 
-### 6. Continuous Integration & Delivery
+### 6. DevOps
 *The practice of automatically building, testing, and deploying your code on every change — so problems surface immediately and releases stay reliable*
 
 - 🌐 *GitHub Actions* — [official documentation](https://docs.github.com/en/actions): the most practical starting point if your code lives on GitHub
 - 🎓 *Continuous Integration and Continuous Delivery (CI/CD)* — [Coursera](https://www.coursera.org/learn/continuous-integration-and-continuous-delivery-ci-cd): structured course covering pipelines, automation, and delivery workflows
 - 📖 *Continuous Delivery* — Jez Humble & Dave Farley: the definitive text on building reliable, automated delivery pipelines
+- 📖 *The Phoenix Project* — Gene Kim, Kevin Behr & George Spafford: a novel that dramatizes DevOps principles through the story of an IT organization in crisis
 
 > Read this after you have a working test suite — CI is what runs those tests automatically
 > on every change, turning manual discipline into a system that enforces itself.
@@ -231,6 +232,7 @@ Start at the level that matches where you are, and work your way down.
 - 📺 *Full Walkthrough: Workflow for AI Coding* — Matt Pocock | [YouTube](https://www.youtube.com/watch?v=-QFHIoCo-Ko)
 - 🎓 *CS106S: The Modern Software Developer* — Stanford University | [themodernsoftware.dev](https://themodernsoftware.dev/)
 - 🌐 *The New SDLC With Vibe Coding* - Google | [Kaggle](https://www.kaggle.com/whitepaper-the-new-SDLC-with-vibe-coding)
+- 📺 *Don't Ship Skills Without Evals* — Philipp Schmid (Google DeepMind) | [YouTube](https://www.youtube.com/watch?v=0vphxNt4wyk)
 
 > Watch this to see how SE habits (modularity, tests, clear interfaces) make AI assistance more effective in practice.
 
