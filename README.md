@@ -8,14 +8,6 @@ The hub is written as a small practical book that moves from general to particul
 and when a company needs it, how its lifecycle differs from that of ordinary software, and then one section per phase
 of that lifecycle. Chapters explain the ideas in a language-agnostic way, and some end with exercises in code.
 
-## Start here
-
-| If you… | Start with |
-|---|---|
-| **write the optimization models** | [Section 05 — Testing decision-support software](book/05-testing/README.md) |
-| **inherited code that is hard to change** | [Section 07 — Evolving existing decision-support software](book/07-evolving-existing-code/README.md) |
-| **lead the team that builds them** | [Section 02](book/02-do-you-need-dss/README.md) and [Section 08](book/08-leading-the-team/README.md) are planned; meanwhile, read [Brownfield adoption](book/07-evolving-existing-code/01-brownfield-adoption.md) |
-| **are new to software engineering** | The [Learning Roadmap](book/appendix/learning-roadmap.md), a sequenced reading path from version control to agentic development |
 
 ---
 
@@ -37,7 +29,8 @@ of that lifecycle. Chapters explain the ideas in a language-agnostic way, and so
 
 ## Appendix
 
-- [Learning Roadmap](book/appendix/learning-roadmap.md) — books, courses, and videos in a suggested order.
+- [Learning Roadmap](book/appendix/learning-roadmap.md) — books, courses, and videos in a suggested order to learn software engineering for building decision-support 
+  software.
 - [Practice Repositories](book/appendix/practice-repositories.md) — language-specific exercises for the chapters.
 - [Glossary](book/appendix/glossary.md) — every software engineering term used in the book, defined once.
 
