@@ -2,14 +2,13 @@
 
 This hub is part of [SEFOP](https://github.com/sefop) and serves two audiences:
 1. **Operations research scientists** who want to ship decision-support software with professional standards.
-2. **Engineering managers** who lead the teams building it.
+2. **Engineering managers** who lead the teams building them.
 
-The hub is written as a small practical book. Chapters explain the ideas in a language-agnostic way; separate
-[practice repositories](book/appendix/practice-repositories.md) hold runnable exercises in each language. Every
-chapter ends with a **Practice it** box linking to them.
+The hub is written as a small practical book. Chapters explain the ideas in a language-agnostic way; and some 
+chapters will have some exercises in code at the end.
 
 **New to software engineering?** Start with the [Learning Roadmap](book/appendix/learning-roadmap.md), a sequenced
-reading path from version control through test-driven development.
+reading path from version control to agentic development.
 
 ---
 
@@ -60,4 +59,4 @@ Slides and material from past and upcoming talks live in [workshops](workshops/)
 
 ## For Questions
 
-See the full SEFOP framework at https://github.com/sefop.
+Go here https://github.com/orgs/sefop/discussions.
