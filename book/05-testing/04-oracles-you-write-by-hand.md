@@ -1,26 +1,26 @@
-# 03 — Oracles you write by hand
+# 04 — Oracles you write by hand
 
-> **Audience:** Scientists · **Prerequisites:** [01](01-why-optimization-models-are-hard-to-test.md), [02](02-test-the-contract-not-the-algorithm.md) · **~10 min read**
+> **Audience:** Scientists · **Prerequisites:** [02](02-why-optimization-models-are-hard-to-test.md), [03](03-test-the-contract-not-the-algorithm.md) · **~10 min read**
 
 After this chapter you can choose a small, systematic set of instances, work out their answers by hand, and turn each
 one into a contract test.
 
 ## The problem
 
-[Chapter 01](01-why-optimization-models-are-hard-to-test.md) showed that a person can solve a two-item instance by
+[Chapter 02](02-why-optimization-models-are-hard-to-test.md) showed that a person can solve a two-item instance by
 hand. The harder question is *which* instances to write. Small instances picked at random tend to cover whatever comes
 to mind first, which is usually the ordinary case. Bugs, however, cluster at the edges: an empty catalogue, a budget of
 exactly zero, two items that tie. Without a method, those edges are left to luck.
 
 ## The idea
 
-This chapter uses the first of three oracle families that the rest of the part builds on:
+This chapter uses the first of three oracle families that the rest of the section builds on:
 
 | Oracle | How it decides whether an output is correct | Chapter |
 |---|---|:---:|
-| [Specified oracle](../appendix/glossary.md#specified-oracle) | The expected answer is stated in advance, worked out by a person | 03 |
-| [Metamorphic relation](../appendix/glossary.md#metamorphic-relation) | A relation between two runs must hold, whatever their answers are | 04 |
-| [Pseudo-oracle](../appendix/glossary.md#pseudo-oracle) | A second, independent implementation must agree | 05 |
+| [Specified oracle](../appendix/glossary.md#specified-oracle) | The expected answer is stated in advance, worked out by a person | 04 |
+| [Metamorphic relation](../appendix/glossary.md#metamorphic-relation) | A relation between two runs must hold, whatever their answers are | 05 |
+| [Pseudo-oracle](../appendix/glossary.md#pseudo-oracle) | A second, independent implementation must agree | 06 |
 
 A fourth kind comes for free in every test: an [implicit oracle](../appendix/glossary.md#implicit-oracle) catches what
 is wrong in any program at all — a crash, a hang, a corrupted result. A solver that raises an error fails its test
@@ -73,7 +73,7 @@ expect result.feasible == false
 
 The expected answer was derived by hand, without a solver: costs are non-negative, so every selection — including
 taking nothing — costs at least 0, which is more than −1. No feasible selection exists. Notice what the test does
-*not* assert: quantities and calories. The [contract](02-test-the-contract-not-the-algorithm.md) says those fields
+*not* assert: quantities and calories. The [contract](03-test-the-contract-not-the-algorithm.md) says those fields
 carry no meaning when the instance is infeasible, so asserting them would test a promise that was never made.
 
 ## Check yourself
@@ -97,7 +97,7 @@ Thirteen situations pin down thirteen points in an input space that is effective
 required a person to work out the answer first. That is the ceiling of a specified oracle: it does not scale to a
 catalogue of thousands of items, and it is not meant to. Its job is to fix expected behavior across a representative
 slice of the input space. Two further assumptions are worth naming: the instances are small enough to solve by hand,
-and the solver promises exact optimality. [Chapter 06](06-when-optimality-is-not-guaranteed.md) drops the second one.
+and the solver promises exact optimality. [Chapter 07](07-when-optimality-is-not-guaranteed.md) drops the second one.
 
 > **Practice it**
 > - Python: [training-testing-python — exercise 5, Practice: situation tables](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#practice-situation-tables)
@@ -112,4 +112,4 @@ and the solver promises exact optimality. [Chapter 06](06-when-optimality-is-not
 
 ---
 
-[← 02 Test the contract, not the algorithm](02-test-the-contract-not-the-algorithm.md) · [Next: 04 Metamorphic relations →](04-metamorphic-relations.md)
+[← 03 Test the contract, not the algorithm](03-test-the-contract-not-the-algorithm.md) · [Next: 05 Metamorphic relations →](05-metamorphic-relations.md)

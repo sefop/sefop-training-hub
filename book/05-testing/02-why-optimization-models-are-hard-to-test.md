@@ -1,4 +1,4 @@
-# 01 — Why optimization models are hard to test
+# 02 — Why optimization models are hard to test
 
 > **Audience:** Scientists & Engineering Managers · **Prerequisites:** the [running example](README.md#the-running-example-a-knapsack) · **~7 min read**
 
@@ -29,7 +29,7 @@ branch-and-bound spends most of its time building. An oracle for feasibility is 
 optimality runs into the same wall your solver does.
 
 The oracle problem is a reason to choose a testing technique deliberately, not a reason to skip testing. A model is
-software: it gets refactored, its data changes, and eventually someone swaps its solver. Chapters 03–05 present three
+software: it gets refactored, its data changes, and eventually someone swaps its solver. Chapters 04–06 present three
 kinds of oracle that work around the problem, each at a different cost.
 
 ## Worked example
@@ -59,7 +59,7 @@ expect result.total_calories == 10
 
 The price of a human oracle grows fast. The number of candidate selections is $\prod_{i \in I} (u_i + 1)$: 4 for this
 instance, but $4^{30} \approx 1.2 \times 10^{18}$ for 30 items that can each be taken up to 3 times. A person can
-only be the oracle at teaching scale, which is exactly how [chapter 03](03-oracles-you-write-by-hand.md) uses one.
+only be the oracle at teaching scale, which is exactly how [chapter 04](04-oracles-you-write-by-hand.md) uses one.
 
 ## Check yourself
 
@@ -96,4 +96,4 @@ enough to reason about by hand, not because it is the hardest case.
 
 ---
 
-[← Part 01 overview](README.md) · [Next: 02 Test the contract, not the algorithm →](02-test-the-contract-not-the-algorithm.md)
+[← 01 What to test in decision-support software](01-what-to-test-in-decision-support-software.md) · [Next: 03 Test the contract, not the algorithm →](03-test-the-contract-not-the-algorithm.md)

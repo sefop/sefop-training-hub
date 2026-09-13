@@ -1,13 +1,13 @@
-# 05 — Differential testing
+# 06 — Differential testing
 
-> **Audience:** Scientists · **Prerequisites:** [02](02-test-the-contract-not-the-algorithm.md), [04](04-metamorphic-relations.md) · **~9 min read**
+> **Audience:** Scientists · **Prerequisites:** [03](03-test-the-contract-not-the-algorithm.md), [05](05-metamorphic-relations.md) · **~9 min read**
 
 After this chapter you can use a slow, obviously correct implementation to catch mistakes in the formulation you hand
 to a solver.
 
 ## The problem
 
-The relations of [chapter 04](04-metamorphic-relations.md) check that runs are consistent with each other, but a model
+The relations of [chapter 05](05-metamorphic-relations.md) check that runs are consistent with each other, but a model
 can be consistently wrong. The mistakes that matter most in practice live in the formulation: a coefficient attached to
 the wrong sum, a budget applied to the wrong constraint, an index set that silently drops an item. The solver then
 optimizes the wrong model faithfully.
@@ -31,7 +31,7 @@ against brute force on a toy case." Three details turn that habit into a reliabl
    controlled experiment: the same inputs must always produce the same outputs. A failure that vanishes on the retry
    cannot be investigated, so the test must also report the instance that failed.
 3. **Compare only what the contract promises.** Feasibility and the calorie total, never the selected quantities. When
-   several selections tie, the [contract](02-test-the-contract-not-the-algorithm.md) allows the two implementations to
+   several selections tie, the [contract](03-test-the-contract-not-the-algorithm.md) allows the two implementations to
    return different ones.
 
 ## Worked example
@@ -59,7 +59,7 @@ repeat 200 times:
 The largest generated instance has 4 items with up to 4 quantity values each, so enumeration checks at most
 $4^4 = 256$ selections. The reference stays cheap.
 
-What does this catch that chapter 03 does not? Suppose the formulation mistakenly uses each item's volume in the cost
+What does this catch that chapter 04 does not? Suppose the formulation mistakenly uses each item's volume in the cost
 constraint. Some of the thirteen hand-written situations will catch that mistake and some will not, because they were
 chosen to cover the contract, not this particular error. A sweep over 200 generated instances is far more likely to hit
 one that exposes it. Neither approach guarantees detection; the difference is how reliably each one finds a mistake
@@ -84,7 +84,7 @@ that nobody anticipated.
 ## Where this stops working
 
 - **The reference must stay tractable.** Differential testing against enumeration lives in the same small-instance
-  regime as chapter 03. It broadens coverage considerably within that regime; it does not reach the large instances
+  regime as chapter 04. It broadens coverage considerably within that regime; it does not reach the large instances
   where you would most want an answer.
 - **The two implementations must be independent.** If both share the same misunderstanding of the problem — say, both
   treat every item as a 0/1 choice — they agree with each other and are both wrong. A pseudo-oracle only protects
@@ -105,4 +105,4 @@ that nobody anticipated.
 
 ---
 
-[← 04 Metamorphic relations](04-metamorphic-relations.md) · [Next: 06 When optimality is not guaranteed →](06-when-optimality-is-not-guaranteed.md)
+[← 05 Metamorphic relations](05-metamorphic-relations.md) · [Next: 07 When optimality is not guaranteed →](07-when-optimality-is-not-guaranteed.md)

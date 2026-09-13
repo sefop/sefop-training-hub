@@ -1,6 +1,6 @@
-# 02 — Test the contract, not the algorithm
+# 03 — Test the contract, not the algorithm
 
-> **Audience:** Scientists & Engineering Managers · **Prerequisites:** [01](01-why-optimization-models-are-hard-to-test.md) · **~8 min read**
+> **Audience:** Scientists & Engineering Managers · **Prerequisites:** [02](02-why-optimization-models-are-hard-to-test.md) · **~8 min read**
 
 After this chapter you can write tests that keep passing when someone replaces the algorithm behind your model.
 
@@ -42,7 +42,7 @@ component whose internals do not leak into its interface.
 
 ## Worked example
 
-The same instance from [chapter 01](01-why-optimization-models-are-hard-to-test.md), tested two ways. First, a test
+The same instance from [chapter 02](02-why-optimization-models-are-hard-to-test.md), tested two ways. First, a test
 coupled to the algorithm:
 
 ```
@@ -111,4 +111,4 @@ test suites assume.
 
 ---
 
-[← 01 Why optimization models are hard to test](01-why-optimization-models-are-hard-to-test.md) · [Next: 03 Oracles you write by hand →](03-oracles-you-write-by-hand.md)
+[← 02 Why optimization models are hard to test](02-why-optimization-models-are-hard-to-test.md) · [Next: 04 Oracles you write by hand →](04-oracles-you-write-by-hand.md)

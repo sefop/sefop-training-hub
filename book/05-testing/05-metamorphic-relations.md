@@ -1,12 +1,12 @@
-# 04 — Metamorphic relations
+# 05 — Metamorphic relations
 
-> **Audience:** Scientists · **Prerequisites:** [03](03-oracles-you-write-by-hand.md) · **~8 min read**
+> **Audience:** Scientists · **Prerequisites:** [04](04-oracles-you-write-by-hand.md) · **~8 min read**
 
 After this chapter you can test a model on instances whose optimal value nobody knows.
 
 ## The problem
 
-Every expected answer in [chapter 03](03-oracles-you-write-by-hand.md) required a person to work it out first. That
+Every expected answer in [chapter 04](04-oracles-you-write-by-hand.md) required a person to work it out first. That
 caps testing at instances small enough to enumerate by hand. The instances you care about in practice — a real
 catalogue, a real network — are far beyond that, and no one can tell you their optimal value.
 
@@ -34,7 +34,7 @@ the knapsack, four of them hold on every instance:
 | Cap an item's maximum quantity at zero | Equals the value with that item removed | An item that may not be taken cannot take part in any selection. |
 
 None of the four compares the selected quantities. A transformation can turn a near-tie into an exact tie, and the
-[contract](02-test-the-contract-not-the-algorithm.md) never promised which selection wins among equals.
+[contract](03-test-the-contract-not-the-algorithm.md) never promised which selection wins among equals.
 
 ## Worked example
 
@@ -76,9 +76,9 @@ metamorphic relations the part of this toolkit that scales.
 
 - **Consistency is not correctness.** A solver that always answers 0 satisfies all four relations. Metamorphic
   relations check that runs agree with each other, not that any single run is right, so they complement the specified
-  oracles of chapter 03 rather than replace them.
+  oracles of chapter 04 rather than replace them.
 - **They are theorems about the optimal value.** They hold for a solver that promises exact optimality. A heuristic can
-  violate them without being broken, as [chapter 06](06-when-optimality-is-not-guaranteed.md) shows.
+  violate them without being broken, as [chapter 07](07-when-optimality-is-not-guaranteed.md) shows.
 - **Numerical tolerance.** "Scales by exactly $k$" means within a small tolerance once calorie counts are real numbers.
 
 > **Practice it**
@@ -92,4 +92,4 @@ metamorphic relations the part of this toolkit that scales.
 
 ---
 
-[← 03 Oracles you write by hand](03-oracles-you-write-by-hand.md) · [Next: 05 Differential testing →](05-differential-testing.md)
+[← 04 Oracles you write by hand](04-oracles-you-write-by-hand.md) · [Next: 06 Differential testing →](06-differential-testing.md)

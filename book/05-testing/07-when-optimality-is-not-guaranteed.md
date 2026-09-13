@@ -1,14 +1,14 @@
-# 06 — When optimality is not guaranteed
+# 07 — When optimality is not guaranteed
 
-> **Audience:** Scientists · **Prerequisites:** [03](03-oracles-you-write-by-hand.md), [04](04-metamorphic-relations.md), [05](05-differential-testing.md) · **~9 min read**
+> **Audience:** Scientists · **Prerequisites:** [04](04-oracles-you-write-by-hand.md), [05](05-metamorphic-relations.md), [06](06-differential-testing.md) · **~9 min read**
 
 After this chapter you can decide which of your tests still apply when the solver is a heuristic, or a MIP solver
 stopped by a time limit.
 
 ## The problem
 
-Every expected answer in [chapter 03](03-oracles-you-write-by-hand.md) and every relation in
-[chapter 04](04-metamorphic-relations.md) assumes that the solver returns a truly optimal answer. That assumption fails
+Every expected answer in [chapter 04](04-oracles-you-write-by-hand.md) and every relation in
+[chapter 05](05-metamorphic-relations.md) assumes that the solver returns a truly optimal answer. That assumption fails
 for a [heuristic](../appendix/glossary.md#heuristic): a method that gives up the guarantee of optimality on purpose, in
 exchange for finishing in reasonable time on instances too large to solve exactly.
 
@@ -18,7 +18,7 @@ against "did you find the exact optimum" fails it for doing precisely what it wa
 
 ## The idea
 
-Start again from the [contract](02-test-the-contract-not-the-algorithm.md). A heuristic's contract is weaker:
+Start again from the [contract](03-test-the-contract-not-the-algorithm.md). A heuristic's contract is weaker:
 
 - return a *feasible* selection, or report infeasibility when no selection exists;
 - its calorie total is at most the optimum;
@@ -26,11 +26,11 @@ Start again from the [contract](02-test-the-contract-not-the-algorithm.md). A he
   optimum.
 
 A test survives exactly as far as it checks something this weaker contract still promises. This is the asymmetry from
-[chapter 01](01-why-optimization-models-are-hard-to-test.md) coming back: tests that rely on *feasibility* survive
+[chapter 02](02-why-optimization-models-are-hard-to-test.md) coming back: tests that rely on *feasibility* survive
 untouched, because checking feasibility never needed the optimum. Tests that rely on *optimality* must be weakened into
 bounds, or dropped.
 
-**Specified oracles (chapter 03).** One reasonable sorting of the thirteen situations:
+**Specified oracles (chapter 04).** One reasonable sorting of the thirteen situations:
 
 | Verdict | Situations | Why |
 |---|:---:|---|
@@ -38,11 +38,11 @@ bounds, or dropped.
 | Weakened | 5, 8, 9, 10, 13 | The feasibility half survives — the capped item and the unaffordable item stay at zero, and budgets are respected. The claims about the optimal total or about which budget binds do not. |
 | Lose their purpose | 7, 11, 12 | They exist to check which value is optimal. Weakened to feasibility, they only repeat the rows above. |
 
-**Metamorphic relations (chapter 04).** These are theorems about the optimal value, not about algorithms, so they do
+**Metamorphic relations (chapter 05).** These are theorems about the optimal value, not about algorithms, so they do
 not transfer automatically. A perfectly correct heuristic can violate them — the worked example below shows one. What
 survives is applying a feasibility check to every transformed instance.
 
-**Differential testing (chapter 05).** It survives in weakened form. Keep the exact reference and compare
+**Differential testing (chapter 06).** It survives in weakened form. Keep the exact reference and compare
 `candidate.feasible == reference.feasible` and `candidate.total_calories <= reference.total_calories`, plus a floor
 if the heuristic has a guarantee.
 
@@ -96,10 +96,10 @@ expect after.total_calories <= exact.total_calories
   approximation guarantee there is no floor to assert. One practical option is to track solution quality as a
   benchmark over time — the average gap to the exact reference, say — rather than as a pass/fail test.
 - **An exact reference is still needed** for the weakened differential test, so it remains limited to small instances,
-  as in [chapter 05](05-differential-testing.md).
+  as in [chapter 06](06-differential-testing.md).
 
 > **Practice it**
-> - Python: [training-testing-python — exercise 5, Your turn: shortest path](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#your-turn-shortest-path) — apply chapters 03–05 to an untested solver
+> - Python: [training-testing-python — exercise 5, Your turn: shortest path](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#your-turn-shortest-path) — apply chapters 04–06 to an untested solver
 > - Java: coming soon
 
 ## Further reading
@@ -109,4 +109,4 @@ expect after.total_calories <= exact.total_calories
 
 ---
 
-[← 05 Differential testing](05-differential-testing.md) · [Next: 07 Duality as an oracle →](07-duality-as-an-oracle.md)
+[← 06 Differential testing](06-differential-testing.md) · [Next: 08 Duality as an oracle →](08-duality-as-an-oracle.md)
