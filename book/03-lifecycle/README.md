@@ -49,4 +49,4 @@ arrived for a specific practice.
 
 ---
 
-[← Book contents](../../README.md) · [Next section: 04 Designing decision-support software →](../04-designing/README.md)
+[← Book contents](../../README.md) · [Next section: 04 Designing decision-support software →](../04-design/README.md)

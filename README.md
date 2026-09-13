@@ -46,7 +46,7 @@ The phases every piece of software goes through, and how each one differs for de
 - How decision-support software differs
 - The map of this book
 
-## [Section 04 — Designing decision-support software](book/04-designing/README.md)
+## [Section 04 — Designing decision-support software](book/04-design/README.md)
 
 How to draw boundaries between data, business rules, the model, and the solver. *Planned.*
 
