@@ -1,6 +1,6 @@
 # Practice Repositories
 
-These repositories contain hands-on exercises to practice what you learn in the guides. Each is organized around a specific language and a specific skill area.
+These repositories contain hands-on exercises to practice what you learn in the book. Each is organized around a specific language and a specific skill area. Every chapter's **Practice it** box links to the matching exercise.
 
 ## Python
 
