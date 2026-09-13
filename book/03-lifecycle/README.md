@@ -19,7 +19,7 @@ arrived for a specific practice.
 | # | Working title | After it you can… |
 |:---:|---|---|
 | 01 | The software development lifecycle | Name the phases software goes through, from idea to retirement, and what each phase produces |
-| 02 | How decision-support software differs | Explain, phase by phase, what makes decision-support software harder than ordinary business software |
+| 02 | How decision-support software differs | Explain, phase by phase, what makes decision-support software different than ordinary business software |
 | 03 | The map of this book | Find the section that addresses each difference |
 
 ## Ideas to develop

@@ -19,96 +19,19 @@ of that lifecycle. Chapters explain the ideas in a language-agnostic way, and so
 
 ---
 
-## [Section 01 — Introduction](book/01-introduction/README.md)
+## Book contents
 
-What decision-support software is, why it often ends up hard to maintain, and how this book is organized.
-*Planned.*
-
-- What decision-support software is
-- What goes wrong, and why
-- AI coding assistants as amplifiers
-- How to read this book
-
-## [Section 02 — When a company needs decision-support software and an OR team](book/02-do-you-need-dss/README.md)
-
-Whether a decision deserves software, who should build it, and where the team sits. *Planned.*
-
-- When a decision deserves software
-- Do you need an in-house team?
-- Your team in the organization
-- From proof of concept to funded project
-
-## [Section 03 — The lifecycle of decision-support software](book/03-lifecycle/README.md)
-
-The phases every piece of software goes through, and how each one differs for decision-support software. *Planned.*
-
-- The software development lifecycle
-- How decision-support software differs
-- The map of this book
-
-## [Section 04 — Designing decision-support software](book/04-design/README.md)
-
-How to draw boundaries between data, business rules, the model, and the solver. *Planned.*
-
-- The parts of a decision-support system
-- Separate the model from the solver
-- Keep data out of the formulation
-- Keep business rules visible
-- Design for reproducibility
-
-## [Section 05 — Testing decision-support software](book/05-testing/README.md)
-
-How to test decision-support software, and above all its optimization model, whose correct answer is the very thing it
-computes.
-
-| # | Chapter | Audience | Status |
-|:---:|---|---|---|
-| 01 | [What to test in decision-support software](book/05-testing/01-what-to-test-in-decision-support-software.md) | Scientists & Engineering Managers | Coming soon |
-| 02 | [Why optimization models are hard to test](book/05-testing/02-why-optimization-models-are-hard-to-test.md) | Scientists & Engineering Managers | Ready |
-| 03 | [Test the contract, not the algorithm](book/05-testing/03-test-the-contract-not-the-algorithm.md) | Scientists & Engineering Managers | Ready |
-| 04 | [Oracles you write by hand](book/05-testing/04-oracles-you-write-by-hand.md) | Scientists | Ready |
-| 05 | [Metamorphic relations](book/05-testing/05-metamorphic-relations.md) | Scientists | Ready |
-| 06 | [Differential testing](book/05-testing/06-differential-testing.md) | Scientists | Ready |
-| 07 | [When optimality is not guaranteed](book/05-testing/07-when-optimality-is-not-guaranteed.md) | Scientists | Ready |
-| 08 | [Duality as an oracle](book/05-testing/08-duality-as-an-oracle.md) | Scientists | Coming soon |
-| 09 | [Testing a Pareto front](book/05-testing/09-testing-a-pareto-front.md) | Scientists | Coming soon |
-
-## [Section 06 — Delivering and operating decision-support software](book/06-delivering/README.md)
-
-How to get changes into production safely and notice when decisions degrade. *Planned.*
-
-- Version control for code, data, and models
-- Continuous integration
-- Environments and packaging
-- Releasing a new model safely
-- Monitoring decisions in production
-
-## [Section 07 — Evolving existing decision-support software](book/07-evolving-existing-code/README.md)
-
-How to change code you did not write without breaking what already works.
-
-| # | Chapter | Audience | Status |
-|:---:|---|---|---|
-| 01 | [Brownfield adoption](book/07-evolving-existing-code/01-brownfield-adoption.md) | Scientists & Engineering Managers | Draft (older format) |
-| 02 | [Protocol to fix a bug](book/07-evolving-existing-code/02-protocol-to-fix-a-bug.md) | Scientists & Engineering Managers | Draft (older format) |
-
-## [Section 08 — Leading the team](book/08-leading-the-team/README.md)
-
-How to staff and lead a team of scientists building production software. *Planned.*
-
-- How to staff your team
-- From science to software: the mindset change
-- Introducing engineering practices to a team that resists them
-- Training scientists in software engineering
-
-## [Section 09 — AI-assisted development of decision-support software](book/09-ai-assisted-development/README.md)
-
-How to use AI coding assistants on models without accepting unverified code. *Planned.*
-
-- Why fundamentals matter more with AI
-- Tests as the guardrail for AI-written models
-- Giving an assistant the context of your model
-- Evaluating AI workflows
+| # | Section | Questions it answers |
+|:---:|---|---|
+| 01 | [Introduction](book/01-introduction/README.md) | • What is decision-support software, and how does it differ from a one-off analysis?<br>• Why does decision-support software so often become hard to maintain?<br>• Why do AI coding assistants make engineering practices more important, not less? |
+| 02 | [When a company needs decision-support software and an OR team](book/02-do-you-need-dss/README.md) | • Does this decision deserve software, or is a one-off analysis or a spreadsheet enough?<br>• Should we build an in-house OR team, or rely on vendors and consultants?<br>• Where should the team sit in the organization, and whom should it report to? |
+| 03 | [The lifecycle of decision-support software](book/03-lifecycle/README.md) | • What phases does software go through, from idea to retirement?<br>• What makes each phase different for decision-support software than for ordinary software?<br>• Which section of this book addresses each difference? |
+| 04 | [Designing decision-support software](book/04-design/README.md) | • What are the parts of a decision-support system, and where do the boundaries between them go?<br>• How do I swap solvers without rewriting the model?<br>• How do I make the same inputs always produce the same decision? |
+| 05 | [Testing decision-support software](book/05-testing/README.md) | • What should I test in a decision-support system?<br>• How do I test a model when I don't know its optimal answer?<br>• Which tests still work when the solver is a heuristic? |
+| 06 | [Delivering and operating decision-support software](book/06-delivering/README.md) | • Which code, data, and solver version produced a past decision?<br>• How do I release a new model without putting current decisions at risk?<br>• How do I notice when decisions degrade in production? |
+| 07 | [Evolving existing decision-support software](book/07-evolving-existing-code/README.md) | • How do I improve code I did not write without breaking what already works?<br>• Is this bug worth fixing?<br>• How do I fix a bug so it stays fixed? |
+| 08 | [Leading the team](book/08-leading-the-team/README.md) | • Which roles does my team need, and what do they cost?<br>• What changes when scientists start shipping production software?<br>• How do I introduce engineering practices to a team that resists them? |
+| 09 | [AI-assisted development of decision-support software](book/09-ai-assisted-development/README.md) | • Why do engineering fundamentals matter more, not less, when an AI assistant writes the code?<br>• How do I check model code that an assistant wrote?<br>• How do I know whether an AI workflow actually improves my results? |
 
 ---
 
