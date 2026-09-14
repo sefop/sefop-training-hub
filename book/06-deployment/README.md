@@ -91,4 +91,4 @@ This section answers two questions:
 
 ---
 
-[← Book contents](../../README.md) · [Next section: 07 Evolving existing decision-support software →](../07-evolving-existing-code/README.md)
+[← Book contents](../../README.md) · [Next section: 07 Working with legacy decision-support software →](../07-working-with-legacy-dss/README.md)

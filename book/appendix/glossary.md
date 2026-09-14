@@ -68,6 +68,11 @@ changes.
 A [test oracle](#test-oracle) that catches failures wrong in any program at all — a crash, a hang, a corrupted result —
 without knowing anything about the expected answer. Every test gets one for free.
 
+### Legacy system
+
+Software that is difficult to change safely — not because it is old, but because it lacks the safety mechanisms, such as
+a [test suite](#test-suite), that make change possible.
+
 ### Metamorphic relation
 
 A relation that must hold between the outputs of two related runs, even when neither output is known. Example: raising

@@ -8,6 +8,8 @@ The hub is written as a small practical book that moves from general to particul
 and when a company needs it, how its lifecycle differs from that of ordinary software, and then one section per phase
 of that lifecycle. Chapters explain the ideas in a language-agnostic way, and some end with exercises in code.
 
+> [!NOTE]
+> This book is under construction. Nothing is definitive yet.
 
 ---
 
@@ -21,7 +23,7 @@ of that lifecycle. Chapters explain the ideas in a language-agnostic way, and so
 | 04 | [Designing decision-support software](book/04-design/README.md) | • What are the parts of a decision-support system, and where do the boundaries between them go?<br>• How do I swap solvers without rewriting the model?<br>• How do I make the same inputs always produce the same decision? |
 | 05 | [Testing decision-support software](book/05-testing/README.md) | • What should I test in a decision-support system?<br>• How do I test a model when I don't know its optimal answer?<br>• Which tests still work when the solver is a heuristic? |
 | 06 | [Deploying decision-support software](book/06-deployment/README.md) | • How do I deploy a model, with its solver and data, so it delivers a usable decision on every run?<br>• How do I release a new model without putting current decisions at risk?<br>• What should I measure in production to know whether the decisions are still good? |
-| 07 | [Evolving existing decision-support software](book/07-evolving-existing-code/README.md) | • How do I improve code I did not write without breaking what already works?<br>• Is this bug worth fixing?<br>• How do I fix a bug so it stays fixed? |
+| 07 | [Working with legacy decision-support software](book/07-working-with-legacy-dss/README.md) | • How do I improve code I did not write without breaking what already works?<br>• Is this bug worth fixing?<br>• How do I fix a bug so it stays fixed? |
 | 08 | [Leading the team](book/08-leading-the-team/README.md) | • Which roles does my team need, and what do they cost?<br>• What changes when scientists start shipping production software?<br>• How do I introduce engineering practices to a team that resists them? |
 | 09 | [AI-assisted development of decision-support software](book/09-ai-assisted-development/README.md) | • Why do engineering fundamentals matter more, not less, when an AI assistant writes the code?<br>• How do I check model code that an assistant wrote?<br>• How do I know whether an AI workflow actually improves my results? |
 

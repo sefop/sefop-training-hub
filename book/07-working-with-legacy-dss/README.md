@@ -1,4 +1,4 @@
-# Section 07 — Evolving existing decision-support software
+# Section 07 — Working with legacy decision-support software
 
 Most projects do not start from an empty repository. The code was inherited, or the project started before anyone
 thought about tests. This section covers how to change such code safely: modernizing a system that is hard to modify,
