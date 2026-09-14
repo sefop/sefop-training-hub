@@ -4,7 +4,7 @@
 > change before the first chapter is written.
 
 Every piece of software moves through the same broad phases: someone states what it must do, designs it, builds and
-tests it, delivers it, and then maintains it for as long as it is used. That sequence is the **software development
+tests it, deploys it, and then maintains it for as long as it is used. That sequence is the **software development
 lifecycle**. Decision-support software moves through the same phases, but each phase has a twist that ordinary business
 software does not. This section names those differences. It is the map of the book: each section after this one takes
 one phase and addresses its difference.
@@ -32,7 +32,7 @@ arrived for a specific practice.
   | Requirements | Stated as features the business can describe | Partly an objective and constraints the business cannot state precisely; the formulation is discovered by iterating | 04 |
   | Design | Logic is mostly business rules | Data, business rules, the model, and the solver change at different speeds and are owned by different people | 04 |
   | Testing | The expected output is known in advance | The expected output is the very thing the model computes (the oracle problem) | 05 |
-  | Delivery and operation | Same input, same output, in predictable time | Run time and solution quality vary with each instance; a failure can be a silently worse decision rather than a crash | 06 |
+  | Deployment and operation | Same input, same output, in predictable time | Run time and solution quality vary with each instance; a failure can be a silently worse decision rather than a crash | 06 |
   | Maintenance | Code written as a product from the start | Code often grows out of a research prototype or a notebook | 07 |
   | People | Built by software engineers | Built by scientists trained in modelling, not in software engineering | 08 |
 
