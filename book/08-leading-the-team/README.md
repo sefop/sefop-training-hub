@@ -28,7 +28,7 @@ Engineering managers, directors, and tech leads of teams that build decision-sup
   shared language.
 - **Why practitioners resist, and what changes their behavior.** Build on the DSI 2026 paper *Why Operations Research
   Practitioners Resist Software Engineering Practices and What Changes Their Behavior*, and on the change-management
-  half of [Brownfield adoption](../07-working-with-legacy-dss/01-brownfield-adoption.md), which is planned to move here.
+  half of [Brownfield adoption](../07-working-with-legacy-dss/README.md#01--brownfield-adoption), which is planned to move here.
   Its four themes: make the problem visible, make change the easy path, make it theirs, and know your terrain.
 - **Report quality and throughput together.** Showing that delivery speed did not drop is what defuses the belief that
   good practice and delivery pace trade off against each other.
