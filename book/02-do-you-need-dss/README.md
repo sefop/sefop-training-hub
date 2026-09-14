@@ -42,8 +42,8 @@ it exists.
 
 - **Roles, hiring, and team culture.** Those belong to [Section 08 — Leading the team](../08-leading-the-team/README.md).
 - **How to build the software** once the decision is made. That starts in
-  [Section 03 — The lifecycle of decision-support software](../03-lifecycle/README.md).
+  [Section 03 — The lifecycle of decision-support software](../03-software-development-lifecycle/README.md).
 
 ---
 
-[← Book contents](../../README.md) · [Next section: 03 The lifecycle of decision-support software →](../03-lifecycle/README.md)
+[← Book contents](../../README.md) · [Next section: 03 The lifecycle of decision-support software →](../03-software-development-lifecycle/README.md)
