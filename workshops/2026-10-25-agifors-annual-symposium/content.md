@@ -29,7 +29,7 @@
 3. **How (slides 9–12).** Operate as a specialized software development team: the roles and skills it needs, what it owns and borrows, how to train
    scientists, and SEFOP.
 4. **Proof (slide 13).** A case study, framed with Accelerate's throughput metrics.
-5. **Close (slide 14).** Recap and two asks.
+5. **Close (slide 14).** Three takeaways, the shift from project to product, and SEFOP.
 
 ## Timing
 
@@ -44,7 +44,7 @@
 
 ---
 
-## 01 — Rethinking the embedded OR Team as a specialized software development team
+# 01 — Rethinking the embedded Operations Research team: from project to product
 
 - **Content:**
   - Title, name, affiliation, github.com/sefop.
@@ -54,7 +54,7 @@
 
 ---
 
-## 02 — An airline's decision-support software delivers value only if it keeps working, cycle after cycle
+## 02 — We build decision-support products that run on a cadence, not one-off analyses
 
 - **Content:**
   1. Decision-support software (DSS) runs repeatedly to turn data, mathematical models, and business rules into recurring decisions.
@@ -72,10 +72,10 @@
 
 ---
 
-## 03 — Most decision-support systems are built with weak software practices, for cultural and technical reasons
+## 03 — Most decision-support systems have weak software practices, for cultural and technical reasons
 
 - **Content:**
-  1. The mathematics is the core of a DSS, and it gets the team's best effort and training.
+  1. The mathematics is the core of a DSS, and it gets the team's best effort and knowledge (PhD usually in Optimization).
   2. **Cultural root cause:** OR scientists are not trained in software engineering, and often do not see why they should be.
   3. **Technical root cause:** a DSS has challenges that ordinary business software does not.
   4. **Evidence:** a survey of 168 modellers found code and documentation debt widespread, and mostly introduced deliberately.
@@ -86,38 +86,46 @@
 
 ---
 
-## 04 — Weak software practices constrain the business value of a decision-support system
+## 04 — The value of the model is constrained by the software around it
 
 - **Content:**
+Some symptoms of poor engineering practices
   1. Code works on one machine but is difficult to reproduce elsewhere, so results are hard to trust or rerun.
   2. Systems are difficult for peers, and even for their original authors, to maintain or extend, so the DSS adapts slowly when the business changes.
   3. Developers are afraid of modifying the system because the consequences are unpredictable, so improvements do not ship.
   4. Applications eventually need to be rewritten rather than evolved, so the investment restarts instead of compounding.
-  5. However good the model, the business receives only the value its software can deliver.
-- **Visual:** A funnel: the model's potential value on the left, a narrow neck made of the four consequences, and the value the business receives on
-  the right.
+- **Visual:** A progress-over-time chart, after Ousterhout's tactical vs. strategic programming. Vertical axis: progress; horizontal axis: time
+  (years). Three illustrative curves, not data:
+  - **Curve 1, short-lived system (about 1 year):** starts steepest, then flattens quickly as each change costs more (a logarithmic shape). When
+    further progress is no longer economically viable, the system is rewritten or discarded (consequence 4).
+  - **Curve 2, legacy system (a few years):** survives the short term, but stalls once the original authors leave. Changes become very
+    expensive, and the curve flattens (consequences 2 and 3).
+  - **Curve 3, strategic system:** built with proper practices from the beginning. Slower at first, because it invests in its foundations, then
+    a steady line (y = x) that overtakes curves 1 and 2 and stays economically efficient for its whole life.
+  - Callout where curve 3 overtakes the others: "The early speed of curves 1 and 2 was temporary."
 - **Source:** [SEFOP README, "Why: what goes wrong and why"](https://github.com/sefop#why-what-goes-wrong-and-why);
-  [Section 01](../../book/01-introduction/README.md) (four symptoms).
+  [Section 01](../../book/01-introduction/README.md) (four symptoms); Ousterhout, *A Philosophy of Software Design* (tactical vs. strategic
+  programming).
 - **Time:** 1:10
 
 ---
 
-## 05 — To unlock full value the OR team has to operate as a specialized software development team
+## 05 — To unlock the full value the OR team has to operate as a specialized software development team
 
 - **Content:**
   1. A DSS is a product, and the team that owns it owns its software responsibilities.
   2. Those responsibilities go beyond the model: automatic tests, the pipeline, releases, and the conversation with the business.
-  3. The talk supports this in three blocks:
-     - **Why now:** AI coding assistants, what makes DSS different, and where the team should sit.
-     - **How:** roles and skills, what to own and what to borrow, training, and SEFOP.
-     - **Proof:** one team where it worked.
-- **Visual:** A pyramid with the governing thought on top and three boxes underneath.
+  3. Three next questions:
+     - **Why now?** AI coding assistants, what makes DSS different, and where the team should sit.
+     - **What do I need?** roles and skills, what to own and what to borrow, training, and SEFOP.
+     - **Has it been done?** one team where it worked.
+- **Visual:** TBD
 - **Source:** —
 - **Time:** 1:00
 
 ---
 
-## 06 — AI coding assistants make strong software practices more urgent
+## 06 — Why now? AI coding assistants make strong software practices more urgent
 
 - **Content:**
   1. More than 70% of scientific programmers already write code with LLM-based tools.
@@ -134,7 +142,7 @@
 
 ---
 
-## 07 — Decision-support software needs everything ordinary software needs, plus three things it does not
+## 07 — Decision-support software needs everything ordinary software needs, plus 3 things
 
 - **Content:**
   1. Like all software, a DSS is built by discovery: nobody gets it right on the first try.
@@ -216,7 +224,7 @@
 
 ---
 
-## 11 — Scientists learn software engineering fastest when it is tailored to the problems they already solve
+## 11 — Scientists learn software engineering fastest when it is tailored to the problems they already know
 
 - **Content:**
   1. Scientists are the primary role for this change.
@@ -250,7 +258,7 @@
 
 ---
 
-## 13 — It has been done: in 15 months, a 4-scientist team reached 2.3x, then 4.1x throughput while code quality held
+## 13 — It has been done: in 15 months, a 4-scientist team reached 2.3x, then 4.1x throughput while code quality increased
 
 - **Content:**
   1. One team: four scientists over 15 months.
@@ -271,15 +279,21 @@
 
 ---
 
-## 14 — Leaders: staff and measure your OR team as a software team. Scientists: own one practice this quarter
+## 14 — The OR team of the future is a product team
 
 - **Content:**
-  1. The business value of a DSS is capped by its software practices.
-  2. AI coding assistants make strong practices urgent, and a DSS needs specialized ones.
-  3. Operate as a specialized software team: four roles, own the core, borrow the rest, and train scientists in software engineering tailored for OR.
-  4. **Leaders:** staff your OR team with the roles it needs, and measure quality and throughput together.
-  5. **Scientists:** pick one practice, for example a CI pipeline that runs your tests on every change, and own it this quarter.
-- **Visual:** The three-line recap on top; two columns of asks below; github.com/sefop in the footer.
+  1. **OR value is delivered through software, not just models.** A decision-support system has to remain reliable, adaptable, and useful cycle
+     after cycle.
+  2. **Software engineering is part of the OR capability.** Embedded OR teams need the skills, ownership, and practices to engineer the product, not
+     just develop the formulation.
+  3. **AI makes this capability more important, not less.** AI can accelerate development, but strong engineering practices provide the foundation
+     that makes that acceleration safe and sustainable.
+  4. **The shift:**
+     - **From:** Project → Model → Handoff
+     - **To:** Product → Team → Continuous ownership
+  5. **SEFOP:** a framework to help OR teams make that shift.
+- **Visual:** "Three takeaways" as three numbered blocks on top; below them, "The shift" as two rows of arrows (From / To); github.com/sefop in the
+  footer.
 - **Source:** —
 - **Time:** 1:00
 
@@ -309,6 +323,7 @@ Slides removed in revision 3, kept here so they can be placed later.
 - Kersten, M. (2018). *Project to Product: How to Survive and Thrive in the Age of Digital Disruption with the Flow Framework.* IT Revolution.
 - O'Brien & Eisty (2026). *Computing in Science & Engineering.* https://www.computer.org/csdl/magazine/cs/2026/01/11482007/2fJHVugY5UY
   **[fill in: authors' initials and title]**
+- Ousterhout, J. (2018). *A Philosophy of Software Design.* Yaknyam Press.
 - Skelton, M., & Pais, M. (2019). *Team Topologies: Organizing Business and Technology Teams for Fast Flow.* IT Revolution.
 - Vidoni, M., & Cunico, M. L. (2022). On technical debt in mathematical programming: An exploratory study. *Mathematical Programming Computation.*
   https://doi.org/10.1007/s12532-022-00225-1
