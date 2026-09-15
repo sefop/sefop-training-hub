@@ -47,7 +47,7 @@
 
 ---
 
-## 01 — Rethinking the Embedded OR Team : from project to product
+## 01 — Rethinking the embedded OR Team as a specialized software development team
 
 - **Content:**
   - Title, name, affiliation, github.com/sefop.
@@ -80,13 +80,11 @@
 ## 03 — The business value of a decision-support system is constrained by the software practices used to deliver it
 
 - **Content:**
-  - The mathematics is the core of a DSS, and it gets the team's best effort.
+  - The mathematics is the core of a DSS, and it gets the team's best effort and training.
   - The software practices around it are usually weak, for two root causes:
     - **Cultural:** OR scientists are not trained in software engineering, and often do not see why they should be.
-    - **Technical:** a DSS has challenges that ordinary business software does not, such as testing a model without
-      knowing the right answer.
-  - Evidence: a survey of 168 modellers found code and documentation debt widespread, and mostly introduced
-    deliberately.
+    - **Technical:** a DSS has challenges that ordinary business software does not.
+  - Evidence: a survey of 168 modellers found code and documentation debt widespread, and mostly introduced deliberately.
   - Consequence: however good the model, the business receives only the value its software can deliver.
 - **Visual:** A funnel: the model's potential value on the left, a narrow neck labeled "software," and the value the
   business receives on the right.
