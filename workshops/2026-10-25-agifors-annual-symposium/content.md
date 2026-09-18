@@ -1,4 +1,4 @@
-# Rethinking the Embedded Operations Research Team: From Project to Product, and How to Get There
+# Rethinking the embedded Operations Research team: from project to product, and how to get there
 
 **Event:** AGIFORS Annual Symposium, 2026-10-25  
 **Speaker:** Francisco Zenteno  
