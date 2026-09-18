@@ -3,8 +3,7 @@
 **Event:** AGIFORS Annual Symposium, 2026-10-25  
 **Speaker:** Francisco Zenteno  
 **Length:** 20 minutes  
-**Target presentation time:** ~18 minutes  
-**Slides:** 12
+**Target presentation time:** ~18 minutes
 
 
 ---
@@ -28,28 +27,28 @@
 
 ---
 
-# 01 — <Repeats the title here>
+# 01 <Repeats the title here>
 
 - **Content:**
   - Title, name, affiliation, github.com/sefop.
 - **Visual:** Title slide.
 - **Source:** —
-- **Time:** 0:30
+
 
 ---
 
-## 02 — One-time analysis v/s decision-support system
+## 02 One-time analysis v/s decision-support system
 
 - **Content:**
   1. Operations Research (OR) turns data + business rules + mathematics into a decision.
   2. If this decision is needed at some cadence (like annual fleet composition, monthly crew sequences, or daily crew recovery) --> then
   the OR solution becomes a software product: a decision-support system (DSS).
   3. The business value comes from building a sustainable decision-making tool.
-- **Time:** 1:10
+
 
 ---
 
-## 03 — DSS tend to have weak software practices surrounding model
+## 03 DSS tend to have weak software practices surrounding model
 
 - **Content:**
   1. **Cultural root cause:** OR scientists are not trained in software engineering, and often do not see why they should be.
@@ -58,48 +57,49 @@
 - **Visual:** Two columns, "cultural" and "technical", above a callout: "168 modellers: debt widespread, mostly deliberate."
 - **Source:** [SEFOP README, "Why: what goes wrong and why"](https://github.com/sefop#why-what-goes-wrong-and-why);
   [Section 01](../../book/01-introduction/README.md) (two root causes); Vidoni & Cunico (2022).
-- **Time:** 1:00
+
 
 ---
 
-## 04 — The value of this product is constrained by the software used to deliver it
+## 04 The value of this product is constrained by the software used to deliver it
 
 - **Content:**
     1. What happens to software with weak foundations? 
+       - Difficulty to maintain, test and/or deploy.
        - Applications eventually need to be rewritten rather than evolved, so the investment restarts instead of compounding.
 - **Visual:** A progress-over-time chart, after Ousterhout's tactical vs. strategic programming. Vertical axis: progress; horizontal axis: time
   (years). Three illustrative curves, not data:
   - **Curve 1, short-lived system (about 1 year):** starts steepest, then flattens quickly as each change costs more (a logarithmic shape). When
     further progress is no longer economically viable, the system is rewritten or discarded (consequence 4).
   - **Curve 2, legacy system (a few years):** survives the short term, but stalls once the original authors leave. Changes become very
-    expensive, and the curve flattens (consequences 2 and 3).
+    expensive, and the curve flattens.
   - **Curve 3, strategic system:** built with proper practices from the beginning. Slower at first, because it invests in its foundations, then
     a steady line (y = x) that overtakes curves 1 and 2 and stays economically efficient for its whole life.
   - Callout where curve 3 overtakes the others: "The early speed of curves 1 and 2 was temporary."
 - **Source:** [SEFOP README, "Why: what goes wrong and why"](https://github.com/sefop#why-what-goes-wrong-and-why);
   [Section 01](../../book/01-introduction/README.md) (four symptoms); Ousterhout, *A Philosophy of Software Design* (tactical vs. strategic
   programming).
-- **Time:** 1:10
+
 
 ---
 
-## 05 — To unlock the full value the OR team has to operate as a specialized software development team
+## 05 To unlock the full value the OR team has to operate as a specialized software development team
 
 - **Content:**
-  1. What is it "special"?
+  1. Some of these special needs:
      - the SDLC of a DSS has some parts that require both SE (software engineering) and OR disciplines to interact:
-     - The SLDC has typically these phases: business need -> elicitation -> user stories -> design -> development -> testing -> integration
+     - The SDLC has typically these phases: business need -> elicitation -> user stories -> design -> development -> testing -> integration
      to dev environment -> deployment -> monitoring.
      - Some example phases that requires specialized knowledge: how to design a system like this? how to make it solver agnostic?
      how to automatically test if a MIP model is working correctly? how to prepare for potentially multiple algorithms? How should the
      CI pipeline look? how to set an experimentation infrastructure? what to monitor in production?
   2. These special needs are required from DSS because the DSS is software at the end of the day.
   3. This requires addressing both the cultural and technical challenges mentioned earlier.
-- **Time:** 1:00
+
 
 ---
 
-## 06 — Has it been done? yes
+## 06 Has it been done? yes
 
 - **Content:**
   1. Describe the case from the DSI paper: 15-month project turning a pilot into a better system
@@ -108,14 +108,14 @@
   4. This is consistent with a broader software-engineering principle: mature engineering organizations do 
   not treat throughput and quality as opposing objectives.
 - Visual: TDB
-- Source: cite the paper from DSI
-- **Time:** 1:20
+- Source: cite the paper from DSI, Accelerate, Modern SOfrtwre Engineering, Google Book?
+
 
 ---
 
-# 07 — AI-coding assistants make this transition more urgent
+# 07 AI-coding assistants make this transition more urgent
 
-1. AI-coding assistants act as an amplifier of current software engineering practices
+1. AI-coding assistants act as an amplifier of current software engineering practices (DORA, 2025)
    - Teams with strong foundations move faster at higher quality
    - Teams with weak foundations ship more software with higher technical debt
 2. AI-coding assistants are already in use: the switch is on.
@@ -124,7 +124,7 @@
 
 ---
 
-## 08 — An embedded OR team should deliberately sit at the strong-practices end of the spectrum
+## 08 An embedded OR team should deliberately sit at the strong-practices end of the spectrum
 
 - **Content:**
   1. Software practices form a spectrum:
@@ -133,17 +133,16 @@
      - **Right, strong software engineering practices:** the team works like a "software factory" running a product, measured by the business outcomes
        it keeps producing. Its practices unlock the full value of the model.
   2. Both ends aim, in good faith, for the full value of the model, but only software prepared for it can deliver it.
-  3. Most OR teams sit closer to the left, and not by choice (an observation, not a survey result).
-  4. The position should be deliberate, and it should point right: that is where the value cap from slide 4 is lifted.
-  5. Own what determines the product value; borrow the rest from supporting teams (ie, maybe you should not have cyberseccurity in your team, but rely on the company's)
-  6. Staffing needs: engineering managers, product owners, software developers, architects, scientists
+  3. The position should be deliberate, and it should point right.
+  4. Own what determines the product value; borrow the rest from supporting teams (ie, maybe you should not have cyberseccurity in your team, but rely on the company's)
+  5. Staffing needs: engineering managers, product owners, software developers, architects, scientists
 - **Visual:** A horizontal spectrum with "project / consultant" on the left and "product / software factory" on the right; a cluster of dots near the
   left; a bold arrow pointing right; "How do we get there?" underneath.
-- **Time:** 1:20
+
 
 ---
 
-## 09 — How to get there? SEFOP can help
+## 09 How to get there? SEFOP can help
 
 - **Content:**
   1. SEFOP (Software Engineering Framework for Optimization Programs) exists so OR teams do not have to work this out from scratch.
@@ -154,24 +153,18 @@
   6. Open and under construction; feedback welcome.
 - **Visual:** Four tiles with a QR code to github.com/sefop.
 - **Source:** show github.com/sefop.
-- **Time:** 0:50
 
 
 ---
 
-## 10 - Conclusion
+## 10 Conclusion
 
 - **Content:**
-  1. **OR value is delivered through software, not just models.** A decision-support system has to remain reliable, adaptable, and useful cycle
-     after cycle.
-  2. **Software engineering is part of the OR capability.** Embedded OR teams need the skills, ownership, and practices to engineer the product, not
-     just develop the formulation.
-  3. **AI makes this capability more important, not less.** AI can accelerate development, but strong engineering practices provide the foundation
+  1. **A recurring OR decision demands software practices**: It has to remain testable, maintainable and deployable during its lifetime.
+  2. **Software engineering is part of the OR capability**: Embedded OR teams need the skills, ownership, and practices to engineer the product.
+  3. **AI makes this capability more important, not less**: AI can accelerate development, but strong engineering practices provide the foundation
      that makes that acceleration safe and sustainable.
-  4. The OR team of the future is a product team with specialized software abilities
-  5. SEFOP is a framework to help OR teams make that shift.
-
-- **Time:** 1:00
+  4. Bonus: SEFOP is a framework that can help you make this transition.
 
 ---
 
