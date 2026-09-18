@@ -1,9 +1,11 @@
-# Rethinking the embedded Operations Research team: from project to product
+# Rethinking the Embedded Operations Research Team: From Project to Product, and How to Get There
 
-**Event:** AGIFORS Annual Symposium, 2026-10-25 · **Speaker:** Francisco Zenteno · **Length:** 20 minutes, 14 slides
+**Event:** AGIFORS Annual Symposium, 2026-10-25  
+**Speaker:** Francisco Zenteno  
+**Length:** 20 minutes  
+**Target presentation time:** ~18 minutes  
+**Slides:** 12
 
-> [!NOTE]
-> Storyline draft. Items marked **[fill in]** need data from the case study before the slides are built.
 
 ---
 
@@ -11,40 +13,22 @@
 
 **An OR team that owns a decision-support product has to operate as a specialized software development team.**
 
-## SCQA summary
+---
 
-- **Situation.** Embedded OR teams deliver value through software that runs on a cadence (decision-support systems, or DSS).
-- **Complication.** A DSS usually has weak software engineering practices, especially those that surround the mathematics. The business value of the
-  DSS is constrained by the software practices used to deliver it.
-- **Question.** What has to change for an embedded OR team to unlock the maximum value of its DSS from a software perspective?
-- **Answer.** The governing thought above: why it is urgent, how to get there, and evidence that it works.
+## Storyline
 
-## Argument structure
-
-0. **Context (slides 2–4).** Decision-support software delivers value only if it keeps working; most is built with weak software practices; and those
-   practices constrain its business value.
-1. **Thesis (slide 5).** The governing thought.
-2. **Why now (slides 6–8).** AI coding assistants amplify whatever practices a team has. Decision-support software needs everything ordinary software
-   needs, plus three things it does not. So the team should deliberately sit at the strong-practices end of the spectrum.
-3. **How (slides 9–12).** Operate as a specialized software development team: the roles and skills it needs, what it owns and borrows, how to train
-   scientists, and SEFOP.
-4. **Proof (slide 13).** A case study, framed with Accelerate's throughput metrics.
-5. **Close (slide 14).** Three takeaways, the shift from project to product, and SEFOP.
-
-## Timing
-
-| Block | Slides | Time |
-|---|:---:|:---:|
-| Open, context, and thesis | 1–5 | 5:10 |
-| Why now | 6–8 | 4:10 |
-| How | 9–12 | 4:50 |
-| Proof | 13 | 1:30 |
-| Close | 14 | 1:00 |
-| **Total** | | **16:40** (3:20 buffer) |
+1. **Context:** Embedded OR teams increasingly own software that makes recurring decisions.
+2. **Problem:** The value of the mathematics is constrained by the engineering around it.
+3. **Thesis:** The OR team therefore needs to operate as a specialized software development team.
+4. **Evidence:** Software-engineering literature shows that quality and throughput are not opposing goals, and one OR team experienced the same pattern.
+5. **Why specialized:** OR software inherits normal software-engineering needs and adds challenges unique to decision-support systems.
+6. **How:** Build the right team, keep end-to-end product ownership, and develop the right level of software-engineering capability across roles.
+7. **SEFOP:** Package these practices so OR teams do not have to work them out from scratch.
+8. **Conclusion:** The organizational shift is from project delivery to continuous ownership of decision products.
 
 ---
 
-# 01 — Rethinking the embedded Operations Research team: from project to product
+# 01 — <Repeats the title here>
 
 - **Content:**
   - Title, name, affiliation, github.com/sefop.
@@ -54,31 +38,23 @@
 
 ---
 
-## 02 — We build decision-support products that run on a cadence, not one-off analyses
+## 02 — One-time analysis v/s decision-support system
 
 - **Content:**
-  1. Decision-support software (DSS) runs repeatedly to turn data, mathematical models, and business rules into recurring decisions.
-  2. Airlines run DSS at every cadence:
-     - **Annual (strategic):** the fleet and network plan.
-     - **Monthly (tactical):** crew rosters.
-     - **Weekly (tactical):** aircraft maintenance routing.
-     - **Daily (operational):** recovering from irregular operations.
-  3. None of these ends at a report: the model runs again next cycle, and the cycle after that.
-  4. "The value is not in producing one analysis. It is in building a sustainable decision-making tool."
-- **Visual:** Four tiles on a strategic → operational axis, from annual to daily.
-- **Source:** [SEFOP README](https://github.com/sefop) (definition, quote, daily-recovery example);
-  [Section 01](../../book/01-introduction/README.md). The annual, monthly, and weekly examples are adapted for this audience.
+  1. Operations Research (OR) turns data + business rules + mathematics into a decision.
+  2. If this decision is needed at some cadence (like annual fleet composition, monthly crew sequences, or daily crew recovery) --> then
+  the OR solution becomes a software product: a decision-support system (DSS).
+  3. The business value comes from building a sustainable decision-making tool.
 - **Time:** 1:10
 
 ---
 
-## 03 — Most decision-support systems have weak software practices, for cultural and technical reasons
+## 03 — DSS tend to have weak software practices surrounding model
 
 - **Content:**
-  1. The mathematics is the core of a DSS, and it gets the team's best effort and knowledge (PhD usually in Optimization).
-  2. **Cultural root cause:** OR scientists are not trained in software engineering, and often do not see why they should be.
-  3. **Technical root cause:** a DSS has challenges that ordinary business software does not.
-  4. **Evidence:** a survey of 168 modellers found code and documentation debt widespread, and mostly introduced deliberately.
+  1. **Cultural root cause:** OR scientists are not trained in software engineering, and often do not see why they should be.
+  2. **Technical root cause:** a DSS has challenges that ordinary business software does not.
+  3. **Evidence:** a survey of 168 modelers found code and documentation debt widespread, and mostly introduced deliberately.
 - **Visual:** Two columns, "cultural" and "technical", above a callout: "168 modellers: debt widespread, mostly deliberate."
 - **Source:** [SEFOP README, "Why: what goes wrong and why"](https://github.com/sefop#why-what-goes-wrong-and-why);
   [Section 01](../../book/01-introduction/README.md) (two root causes); Vidoni & Cunico (2022).
@@ -86,14 +62,11 @@
 
 ---
 
-## 04 — The value of the model is constrained by the software around it
+## 04 — The value of this product is constrained by the software used to deliver it
 
 - **Content:**
-Some symptoms of poor engineering practices
-  1. Code works on one machine but is difficult to reproduce elsewhere, so results are hard to trust or rerun.
-  2. Systems are difficult for peers, and even for their original authors, to maintain or extend, so the DSS adapts slowly when the business changes.
-  3. Developers are afraid of modifying the system because the consequences are unpredictable, so improvements do not ship.
-  4. Applications eventually need to be rewritten rather than evolved, so the investment restarts instead of compounding.
+    1. What happens to software with weak foundations? 
+       - Applications eventually need to be rewritten rather than evolved, so the investment restarts instead of compounding.
 - **Visual:** A progress-over-time chart, after Ousterhout's tactical vs. strategic programming. Vertical axis: progress; horizontal axis: time
   (years). Three illustrative curves, not data:
   - **Curve 1, short-lived system (about 1 year):** starts steepest, then flattens quickly as each change costs more (a logarithmic shape). When
@@ -113,52 +86,41 @@ Some symptoms of poor engineering practices
 ## 05 — To unlock the full value the OR team has to operate as a specialized software development team
 
 - **Content:**
-  1. A DSS is a product, and the team that owns it owns its software responsibilities.
-  2. Those responsibilities go beyond the model: automatic tests, the pipeline, releases, and the conversation with the business.
-  3. Three next questions:
-     - **Why now?** AI coding assistants, what makes DSS different, and where the team should sit.
-     - **What do I need?** roles and skills, what to own and what to borrow, training, and SEFOP.
-     - **Has it been done?** one team where it worked.
-- **Visual:** TBD
-- **Source:** —
+  1. What is it "special"?
+     - the SDLC of a DSS has some parts that require both SE (software engineering) and OR disciplines to interact:
+     - The SLDC has typically these phases: business need -> elicitation -> user stories -> design -> development -> testing -> integration
+     to dev environment -> deployment -> monitoring.
+     - Some example phases that requires specialized knowledge: how to design a system like this? how to make it solver agnostic?
+     how to automatically test if a MIP model is working correctly? how to prepare for potentially multiple algorithms? How should the
+     CI pipeline look? how to set an experimentation infrastructure? what to monitor in production?
+  2. These special needs are required from DSS because the DSS is software at the end of the day.
+  3. This requires addressing both the cultural and technical challenges mentioned earlier.
 - **Time:** 1:00
 
 ---
 
-## 06 — Why now? AI coding assistants make strong software practices more urgent
+## 06 — Has it been done? yes
 
 - **Content:**
-  1. More than 70% of scientific programmers already write code with LLM-based tools.
-  2. An AI assistant amplifies the practices around it (2025 DORA report).
-  3. **Team with strong practices** (tests, CI/CD, code review): AI output is checked automatically, so the team moves faster at good quality.
-  4. **Team with weak practices:** AI output is not verified, so the team ships more code and more technical debt, faster.
-  5. In a DSS the risk is higher: a wrong formulation looks just as plausible as a right one.
-  6. *Accelerate*: in high-performing teams, throughput and stability rise together.
-- **Visual (visual A):** A split screen with the same AI multiplier arrow on both sides: on the left, a solid foundation and a rising line; on the
-  right, a weak foundation and a growing stack of debt. Caption: "Same multiplier, different foundation."
-- **Source:** [2025 DORA report](https://dora.dev/research/2025/dora-report/); O'Brien & Eisty (2026); Forsgren, Humble & Kim, *Accelerate*;
-  [Section 01](../../book/01-introduction/README.md); [Section 09](../../book/09-ai-assisted-development/README.md).
+  1. Describe the case from the DSI paper: 15-month project turning a pilot into a better system
+  2. In one four-scientist team over 15 months, throughput moved from **1.0× → 2.3×** after adopting engineering practices.
+  3. Software quality improved as well: unit testing coverage rose 42 pp, and code smells fell by ~2/3.
+  4. This is consistent with a broader software-engineering principle: mature engineering organizations do 
+  not treat throughput and quality as opposing objectives.
+- Visual: TDB
+- Source: cite the paper from DSI
 - **Time:** 1:20
 
 ---
 
-## 07 — Decision-support software needs everything ordinary software needs, plus 3 things
+# 07 — AI-coding assistants make this transition more urgent
 
-- **Content:**
-  1. Like all software, a DSS is built by discovery: nobody gets it right on the first try.
-     - **Learn fast:** short iterations with user feedback (agile).
-     - **Adapt fast:** every change built, tested, and ready to release automatically (CI/CD).
-     - In a DSS, even the formulation is discovered this way.
-  2. **Testing:** the expected output is the very thing the model computes (the oracle problem). How do you test an optimization model when you do not
-     know the optimum? You need other checks, such as feasibility, or how the optimum should move when the input changes.
-  3. **Operation:** run time and solution quality vary with each instance. The same code can take ten seconds on one instance and an hour on the next.
-  4. **Failure:** a failure can be a silently worse decision rather than a crash.
-  5. Handling these differences needs OR knowledge and software engineering in the same team.
-- **Visual:** A base bar labeled "all software: learn fast (agile) · adapt fast (CI/CD)", with three columns on top of it, each with an icon: an
-  unknown answer, a variable stopwatch, a silent downward arrow.
-- **Source:** Humble & Farley, *Continuous Delivery*; [Section 03](../../book/03-software-development-lifecycle/README.md) (requirements row;
-  difference table); [Section 05](../../book/05-testing/README.md); [Section 06](../../book/06-deployment/README.md).
-- **Time:** 1:30
+1. AI-coding assistants act as an amplifier of current software engineering practices
+   - Teams with strong foundations move faster at higher quality
+   - Teams with weak foundations ship more software with higher technical debt
+2. AI-coding assistants are already in use: the switch is on.
+3. Thus, solid engineering practices are the prerequisite to capture the value from agentic development
+**Visual**: TDB, maybe split screen with the same **AI multiplier** entering both sides.
 
 ---
 
@@ -166,120 +128,38 @@ Some symptoms of poor engineering practices
 
 - **Content:**
   1. Software practices form a spectrum:
-     - **Left, no practices:** the team works like a consultant delivering a project, measured by being on time and on budget. Its software caps the
-       value the model can deliver.
+     - **Left, no practices:** the team works like a consultant delivering a project, measured by being on time and on budget.
+     Its software caps the value the model can deliver.
      - **Right, strong software engineering practices:** the team works like a "software factory" running a product, measured by the business outcomes
        it keeps producing. Its practices unlock the full value of the model.
   2. Both ends aim, in good faith, for the full value of the model, but only software prepared for it can deliver it.
   3. Most OR teams sit closer to the left, and not by choice (an observation, not a survey result).
   4. The position should be deliberate, and it should point right: that is where the value cap from slide 4 is lifted.
-  5. How to get there: operate as a specialized software development team.
+  5. Own what determines the product value; borrow the rest from supporting teams (ie, maybe you should not have cyberseccurity in your team, but rely on the company's)
+  6. Staffing needs: engineering managers, product owners, software developers, architects, scientists
 - **Visual:** A horizontal spectrum with "project / consultant" on the left and "product / software factory" on the right; a cluster of dots near the
   left; a bold arrow pointing right; "How do we get there?" underneath.
-- **Source:** Kersten, *Project to Product*; abstract.
 - **Time:** 1:20
 
 ---
 
-## 09 — A specialized team combines four roles whose skills overlap by design
-
-- **Content:**
-  1. Four roles: ▲ OR scientist · ● software developer · ■ engineering manager · ◆ product manager.
-  2. Each role is the expert in something different: the scientist in formulation and model testing, the developer in code and delivery, the
-     engineering manager in quality and flow metrics, the product manager in the business.
-  3. Skills overlap on purpose:
-     - The scientist writes code, so knows CI, but the developer owns CD.
-     - The engineering manager knows CI/CD and cares about quality. If the manager does not track quality metrics, the team will not either.
-  4. Skill levels, from 1 to 5 (Beginner · Basic · Intermediate · Advanced · Expert), reflect judgment from practice, not survey data:
-
-     | Skill | ▲ OR scientist | ● Developer | ■ Eng. manager | ◆ Product manager |
-     |---|:---:|:---:|:---:|:---:|
-     | Formulation & solving | 5 | 2 | 3 | 2 |
-     | Model testing (no known optimum) | 5 | 3 | 2 | 1 |
-     | Clean code & code review | 3 | 5 | 3 | 1 |
-     | CI (tests on every change) | 3 | 5 | 4 | 1 |
-     | CD & operations | 2 | 5 | 4 | 1 |
-     | Monitoring decision quality in production | 4 | 4 | 3 | 3 |
-     | Quality & flow metrics | 2 | 3 | 5 | 2 |
-     | Business consulting & prioritization | 3 | 1 | 3 | 5 |
-
-- **Visual:** Eight horizontal axes, one per skill, with the role shapes placed on each; the overlaps are visible where shapes cluster.
-- **Source:** [Section 08](../../book/08-leading-the-team/README.md) (roles to weigh).
-- **Time:** 1:30
-
----
-
-## 10 — Own what determines the product's value; borrow the rest from platform and enabling teams
-
-- **Content:**
-  1. The OR team is a stream-aligned team: it owns one product from end to end.
-  2. **Own:** product management, business consulting and formulation, engineering practices and CI/CD.
-  3. **Borrow as a service (platform team):** infrastructure and cloud.
-  4. **Borrow as coaching (enabling team):** cybersecurity and reliability specialists, who help the team build a capability and then step back.
-  5. You can borrow expertise, but not responsibility.
-  6. The limit is cognitive load: a team can only hold so much.
-- **Visual:** Three concentric rings, with the OR team in the center.
-- **Source:** Skelton & Pais, *Team Topologies*.
-- **Time:** 1:20
-
----
-
-## 11 — Scientists learn software engineering fastest when it is tailored to the problems they already know
-
-- **Content:**
-  1. Scientists are the primary role for this change.
-  2. Order matters: version control → automated testing → CI → software design → deployment. Each step makes the next one make sense.
-  3. Generic courses teach you to test code whose answer you know. OR scientists also need to learn:
-     - Testing a model without a known optimum.
-     - Reproducible runs with a solver and data.
-     - Keeping data, rules, model, and solver separate, so each can change.
-  4. Reading is not enough: habits change by writing tests against real models, with fast feedback (exercises in unit testing, test-driven
-     development, and mutation testing).
-- **Visual:** A staircase from Beginner to Advanced, with OR-specific steps highlighted.
-- **Source:** [Learning Roadmap](../../book/appendix/learning-roadmap.md); [Practice Repositories](../../book/appendix/practice-repositories.md);
-  [Section 04](../../book/04-design/README.md); [Section 05](../../book/05-testing/README.md); [Section 08](../../book/08-leading-the-team/README.md)
-  (training as a lever).
-- **Time:** 1:10
-
----
-
-## 12 — SEFOP packages software engineering tailored for OR teams
+## 09 — How to get there? SEFOP can help
 
 - **Content:**
   1. SEFOP (Software Engineering Framework for Optimization Programs) exists so OR teams do not have to work this out from scratch.
   2. **Train:** an open book for OR scientists, with no software engineering background assumed, plus language-specific practice repositories.
   3. **Lead:** guidance for the managers who lead these teams.
   4. **Deliver:** reference implementations.
-  5. **Go Agentic:** AI-assisted development (`sefop-agentic`).
+  5. **Go Agentic:** AI-assisted development.
   6. Open and under construction; feedback welcome.
 - **Visual:** Four tiles with a QR code to github.com/sefop.
-- **Source:** [Section 01](../../book/01-introduction/README.md) (where the book sits in SEFOP).
+- **Source:** show github.com/sefop.
 - **Time:** 0:50
 
----
-
-## 13 — It has been done: in 15 months, a 4-scientist team reached 2.3x, then 4.1x throughput while code quality increased
-
-- **Content:**
-  1. One team: four scientists over 15 months.
-  2. Throughput measured as *Accelerate* recommends, by changes delivered: deployments / PRs merged per period
-     **[fill in: exact unit and baseline period]**.
-     - Baseline 1.0x → 2.3x after adopting engineering practices → 4.1x after adding agentic development.
-  3. Code quality held: unit-test coverage **[fill in]**, number of integration tests **[fill in]**, SonarQube code smells **[fill in]**.
-  4. Same AI multiplier as slide 6, on a strong foundation.
-  5. Limits:
-     - One team, no control group.
-     - Some of the gain likely comes from the team maturing and the product stabilizing.
-     - The team adopted some of the practices SEFOP now describes, but SEFOP did not exist yet, so the case supports the practices, not the framework
-       itself.
-- **Visual (visual A, mirrored):** The strong-practices side of slide 6, now with real data: a throughput index over 15 months with two phase markers,
-  and a small quality panel beside it.
-- **Source:** Case study; Forsgren, Humble & Kim, *Accelerate* (throughput metrics).
-- **Time:** 1:30
 
 ---
 
-## 14 — The OR team of the future is a product team
+## 10 - Conclusion
 
 - **Content:**
   1. **OR value is delivered through software, not just models.** A decision-support system has to remain reliable, adaptable, and useful cycle
@@ -288,33 +168,13 @@ Some symptoms of poor engineering practices
      just develop the formulation.
   3. **AI makes this capability more important, not less.** AI can accelerate development, but strong engineering practices provide the foundation
      that makes that acceleration safe and sustainable.
-  4. **The shift:**
-     - **From:** Project → Model → Handoff
-     - **To:** Product → Team → Continuous ownership
-  5. **SEFOP:** a framework to help OR teams make that shift.
-- **Visual:** "Three takeaways" as three numbered blocks on top; below them, "The shift" as two rows of arrows (From / To); github.com/sefop in the
-  footer.
-- **Source:** —
+  4. The OR team of the future is a product team with specialized software abilities
+  5. SEFOP is a framework to help OR teams make that shift.
+
 - **Time:** 1:00
 
 ---
 
-## Parking lot
-
-Slides removed in revision 3, kept here so they can be placed later.
-
-- **Google, value over time** (old slide 06). Title: "Owning a product means owning its software for as long as it runs, so its practices must keep
-  change cheap over time." *Software Engineering at Google* defines software engineering as "programming integrated over time." A DSS that runs weekly
-  for five years spends most of its life in operation and maintenance. Visual: a short development bar next to a long operation bar, plus two
-  cumulative value curves that diverge over time (illustrative). Source: Winters, Manshreck & Wright; `book/03`.
-- **Handoff loop** (old slide 05). Title: "The team that discovers the formulation has to own the product, because every handoff breaks the loop that
-  improves it." Answers the objection "why not hand the software to IT?" Visual: an iteration loop cut by a handoff wall. Source: `book/03`; *Team
-  Topologies*.
-- **Deployment pipeline** (old slide 11). Title: "The deployment pipeline is the capability that turns ownership into repeatable delivery." Pipeline
-  with OR-specific stages: contract tests → model checks without a known optimum → safe release → monitoring of decision quality. Source: *Continuous
-  Delivery*; `book/05`, `book/06`.
-
----
 
 ## References
 
