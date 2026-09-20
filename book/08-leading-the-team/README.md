@@ -26,8 +26,8 @@ Engineering managers, directors, and tech leads of teams that build decision-sup
 - **Roles to weigh:** operations research scientist, software engineer, data engineer, and a product owner who speaks
   for the business. The trade-off is between a team of scientists who learn engineering and a mixed team that needs a
   shared language.
-- **Why practitioners resist, and what changes their behavior.** Build on the DSI 2026 paper *Why Operations Research
-  Practitioners Resist Software Engineering Practices and What Changes Their Behavior*, and on the change-management
+- **Why practitioners resist, and what changes their behavior.** Build on the DSI 2026 paper *Why software engineering
+  practices are slow to spread among operations research practitioners and what changes that behavior*, and on the change-management
   half of [Brownfield adoption](../07-working-with-legacy-dss/README.md#01--brownfield-adoption), which is planned to move here.
   Its four themes: make the problem visible, make change the easy path, make it theirs, and know your terrain.
 - **Report quality and throughput together.** Showing that delivery speed did not drop is what defuses the belief that
