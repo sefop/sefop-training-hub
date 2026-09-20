@@ -174,7 +174,7 @@
   and what changes that behavior*.
 
 
-## 09 AI-coding assistants amplify whatever practices you already have
+## 09 Can't AI-coding assistants take care of this?
 
 - **Bridge:** 08 spent 15 months on engineering. The obvious objection is why bother, when AI writes the code.
 - **Content:**
