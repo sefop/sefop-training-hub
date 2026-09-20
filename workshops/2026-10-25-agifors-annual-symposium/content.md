@@ -1,4 +1,4 @@
-# Rethinking the embedded Operations Research team: the specialists a decision product needs
+# Rethinking the embedded OR team as a specialized software team
 
 **Event:** AGIFORS Annual Symposium, 2026-10-25  
 **Speaker:** Francisco Zenteno Smith  
@@ -10,7 +10,7 @@
 **An OR team that owns a decision-support product has to operate as a specialized software development team.**
 
 
-## 01 Rethinking the embedded Operations Research team: the specialists a decision product needs
+## 01 Rethinking the embedded OR team as a specialized software team
 
 - **Bridge:** — (opening slide)
 - **Content:**
@@ -24,7 +24,7 @@
 
 ## 02 Working in a project v/s building a product
 
-- **Bridge:** The title claims a decision *product* needs specialists. This slide defines the product; specialists come later.
+- **Bridge:** The title calls the OR team a software team. This slide gives the reason: a recurring decision is a product.
 - **Content:**
   1. Operations Research (OR) turns data + business needs + mathematics into a decision.
   2. A **project** delivers a one-time decision: analyze, hand off, move on.
