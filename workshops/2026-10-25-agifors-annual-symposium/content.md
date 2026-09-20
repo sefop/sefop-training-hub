@@ -31,10 +31,11 @@
 
 - **Content:**
   1. **Cultural root cause:** OR scientists are typically trained deeply in applied mathematics, but not in software engineering.
-  2. **Technical root cause:** a DSS has unique challenges deriving from the usage of applied mathematics.
+  2. **Technical root cause:** a DSS has unique challenges deriving from the usage of applied mathematics. (examples: how to automatically test an optimization model? 
+     how to design the system to be solver-agnostic?)
   3. **Evidence:** a survey of 168 modelers found code and documentation debt widespread, and mostly introduced deliberately.
 - **Visual:** Two columns, "cultural" and "technical", above a callout: "168 modelers: debt widespread, mostly deliberate."
-- Use the 3x3 grid with the circle in the center with cracks, pointing at the root causes.
+
 - **Source:** [SEFOP README, "Why: what goes wrong and why"](https://github.com/sefop#why-what-goes-wrong-and-why);
   [Section 01](../../book/01-introduction/README.md) (two root causes); Vidoni & Cunico (2022).
 
@@ -49,7 +50,7 @@
 - **Visual:** A progress-over-time chart, after Ousterhout's tactical vs. strategic programming. Vertical axis: progress; horizontal axis: time
   (years). Three illustrative curves, not data:
   - **Curve 1, short-lived system (about 1 year):** starts steepest, then flattens quickly as each change costs more (a logarithmic shape). When
-    further progress is no longer economically viable, the system is rewritten or discarded (consequence 4).
+    further progress is no longer economically viable, the system is rewritten or discarded.
   - **Curve 2, legacy system (a few years):** survives the short term, but stalls once the original authors leave. Changes become very
     expensive, and the curve flattens.
   - **Curve 3, strategic system:** built with proper practices from the beginning. Slower at first, because it invests in its foundations, then
@@ -82,7 +83,7 @@
   4. This is consistent with a broader software-engineering principle: mature engineering organizations do 
   not treat throughput and quality as opposing objectives.
 - Source: cite the paper from DSI, Accelerate, Modern SOfrtwre Engineering, Google Book?
-
+**Visual**: TBD.
 
 # 07 AI-coding assistants make this transition more urgent
 
