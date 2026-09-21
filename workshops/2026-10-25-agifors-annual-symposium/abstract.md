@@ -7,16 +7,13 @@
 
 ## Abstract
 
-When an operations research (OR) decision is required recurrently, it is needed as a product: a decision-support
-system (DSS) owned for the life of the business need, whose value is delivered through software that stays testable
-and maintainable. That software is often the weaker half: scientists are trained deeply in mathematics and rarely in
-software engineering, and a DSS raises questions ordinary software does not.
-
-We argue that owning a DSS takes a specialized software development team of three contributors: developers,
-scientists trained in the engineering closest to their work, and OR engineers who build what a DSS needs and a
-developer cannot supply.
-
-In a 15-month case study of a 4-scientist team, throughput reached 2.3x after adopting engineering practices,
-without sacrificing quality. AI-coding assistants amplify the practices a team already has, raising the return on
-that investment rather than removing it. We close with SEFOP (github.com/sefop), a framework for OR teams making
-this transition.
+When an operations research (OR) decision is required recurrently, it becomes a product: a decision-support system
+(DSS) that must be owned, maintained, and evolved for the life of the business need. Yet many OR teams struggle to
+realize the full value of these products, as software engineering practices are often the weaker half, and DSS
+introduce unique technical and organizational challenges. In this talk, I share lessons from industry on what it
+takes for an embedded OR team to operate as a specialized software development team, the roles and skills that
+matter, and the common pitfalls that limit long-term impact. Drawing on a 15-month transformation of a
+four-scientist team, I will show how adopting engineering practices can substantially increase delivery throughput
+while improving software quality. I will also discuss how AI-coding assistants change the equation, amplifying the
+value of strong engineering foundations rather than replacing the need for them. The session concludes with SEFOP,
+an open framework to help OR teams make this transition, and practical takeaways you can apply in your own context.
