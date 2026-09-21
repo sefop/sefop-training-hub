@@ -12,7 +12,6 @@
 
 ## 01 Rethinking the embedded OR team as a specialized software team
 
-- **Bridge:** — (opening slide)
 - **Content:**
   - AGIFORS Annual Symposium 2026
   - Title (as above)
@@ -20,11 +19,11 @@
   - AGIFORS Annual Symposium · October 25, 2026
   - Disclaimer: "Every comment here represents my own opinion, and does not necessarily represent an American Airlines statement"
 - **Visual:** Title slide.
+- **Hook:** Before that claim can mean anything: what is an OR team actually building?
 
 
 ## 02 Working in a project v/s building a product
 
-- **Bridge:** The title calls the OR team a software team. This slide gives the reason: a recurring decision is a product.
 - **Content:**
   1. Operations Research (OR) turns data + business needs + mathematics into a decision.
   2. A **project** delivers a one-time decision: analyze, hand off, move on.
@@ -47,11 +46,11 @@
 - **Speaker notes:**
   - This is the premise, not the argument. State it once, here, and spend the rest of the talk on the team
     the product needs.
+- **Hook:** Sustainability is a property of the software, not of the mathematics. So how good is ours?
 
 
 ## 03 DSS often has weak software practices surrounding the mathematics
 
-- **Bridge:** 02 made sustainability the source of value. Sustainability is a software property — and that is where DSS is weak.
 - **Content:**
   1. **Cultural reasons:** Scientists are trained deeply in mathematics, but not in software engineering (SE). They don't know the
      benefits of SE, or they don't think it is for them.
@@ -67,11 +66,11 @@
     - The result nobody can reproduce, because the input file was overwritten.
   - Those are the symptoms. The two columns are the causes.
 - **Source:** Vidoni, Cunico & Vecchietti (2018, 2020); Vidoni (2021); Vidoni & Cunico (2022); Kanewala & Bieman (2014).
+- **Hook:** Weak practices are common. The question nobody asks is what they cost.
 
 
 ## 04 Weak software practices constrain the potential business value a DSS can deliver
 
-- **Bridge:** 03 established that the practices are weak. This slide puts a price on it: what weak software costs over the years.
 - **Content:**
   1. What happens to weak software?
   2. Harder to test, deploy and maintain.
@@ -89,11 +88,11 @@
   - Legacy system: started fine; after a couple of years the initial developers left. Now it is unclear how it works, or making a
     change is very difficult. At some point it has to be re-written to continue supporting the business.
 - **Source:** *A Philosophy of Software Design* (tactical vs. strategic programming). These curves are illustrative.
+- **Hook:** So what kind of team keeps a DSS strong over its whole lifetime?
 
 
 ## 05 How to unlock the full value of the DSS? operate as a specialized software development team
 
-- **Bridge:** 04 showed what weak software costs. The obvious fix is to hire developers, so this slide tests that answer first.
 - **Content:**
   1. The obvious answer is to hire developers. It is not enough.
   2. Developers alone can't solve problems that need the mathematics: how to automatically test an optimization model? how to
@@ -108,11 +107,11 @@
     automated testing, TDD, CI.
   - **Intersection (specialists):** build the OR-tailored engineering the scientists work inside: testing for optimization models,
     design that keeps the system solver-agnostic, architecture for a DSS.
+- **Hook:** Specialists on both sides sounds like a team nobody will fund. Does it need every skill itself?
 
 
 ## 06 The OR team owns the product, but it does not need to hold every skill itself
 
-- **Bridge:** 05 said the team needs both specialties. The next worry is scope — does it need every skill?
 - **Content:**
   1. **Own:** business interaction, formulation, testing strategy, software quality, delivery responsibility, and production
      behavior of the DSS. Nobody else can: the knowledge of the decision lives naturally in the OR scientists.
@@ -128,11 +127,11 @@
   Footnote: *This slide draws the boundary around the team. The next one sets the depth each scientist needs inside it.*
 
 - **Source:** Skelton & Pais, *Team Topologies*; SEFOP leadership material.
+- **Hook:** The boundary is drawn. Inside it, how much software engineering does a scientist actually need?
 
 
 ## 07 OR scientists need enough software engineering to build inside a software team
 
-- **Bridge:** 06 drew the boundary around the team. This slide goes inside it and sets how deep each scientist has to go.
 - **Content:**
   1. Scientists need the engineering skills closest to their daily work: automated testing, reproducibility, clean design, and
      code review.
@@ -150,11 +149,11 @@
   Bottom message: **Shared understanding ≠ equal expertise**
 
 - **Source:** SEFOP learning roadmap and team-role material.
+- **Hook:** That is the target. What happens to a real team that trains its scientists this way?
 
 
 ## 08 Case study: strengthening the engineering of a DSS improved throughput and quality
 
-- **Bridge:** 07 said which skills the scientists need. This slide shows what happened when one team actually trained them.
 - **Content:**
   - 15-month case study · 4 OR scientists · from pilot → DSS
   - **Before:** throughput 1x; software quality: low test coverage, code smells unattended.
@@ -172,11 +171,11 @@
   - Every team walks this leg first, whatever it decides to staff afterwards.
 - **Source:** Zenteno Smith (2026), *Why software engineering practices are slow to spread among operations research practitioners
   and what changes that behavior*.
+- **Hook:** Fifteen months of engineering. The obvious 2026 objection: why bother, when AI writes the code?
 
 
 ## 09 Can't AI-coding assistants take care of this?
 
-- **Bridge:** 08 spent 15 months on engineering. The obvious objection is why bother, when AI writes the code.
 - **Content:**
   1. The 2026 objection: why spend 15 months on engineering when AI writes the code? Because AI multiplies what you already have —
      and the team in slide 8 just changed what it had.
@@ -189,11 +188,11 @@
 - **Visual:** Split screen with the same **AI multiplier** entering both sides. Label the strong side with slide 8's "after"
   numbers and the weak side with its "before".
 - **Source:** DORA Research 2025, *State of AI-assisted Software Development* (Google Cloud, 2025).
+- **Hook:** AI multiplies what you already have. So what does your team already have?
 
 
 ## 10 Which of the three is your team missing?
 
-- **Bridge:** 09 ended on who is in the team. This slide turns that from a general claim into a question about their own team.
 - **Content:**
   1. Slide 5 named three kinds of contributor. Ask the question about your own team:
   2. **Developers:** who builds the parts of the system that are not mathematics?
@@ -210,11 +209,11 @@
   - Pause here. This is the only moment in the talk that is about their team rather than about OR teams in general.
   - Most OR teams start with scientists only. That is a default, not a decision (an observation from experience, not a survey
     result).
+- **Hook:** You have just named a gap. Where do you get the material to close it?
 
 
 ## 11 How do you build that team? SEFOP packages the practices
 
-- **Bridge:** 10 left every listener with one named gap. This slide offers the material for closing it.
 - **Content:**
   1. SEFOP exists so OR teams do not have to rediscover these practices independently.
   2. **Train:** software-engineering education tailored to OR scientists. Status: [confirm before 2026-10-25]
@@ -234,11 +233,11 @@
   Include QR code / `github.com/sefop`.
 
 - **Source:** `github.com/sefop`.
+- **Hook:** That is the offer. Here is what to remember even if you never open it.
 
 
 ## 12 Conclusion
 
-- **Bridge:** 11 was the offer. This slide is what to remember even for a team that never opens the repository.
 - **Content:**
   1. **A recurring OR decision is a product.**
   2. **Products need engineering practices:** the system has to remain testable, maintainable, adaptable, and deployable
@@ -259,6 +258,7 @@
 
   Footer:
   **SEFOP — a framework that can help teams make the shift.**
+- **Hook:** — (final slide; the audience answers this one, not another slide)
 
 
 ## References
