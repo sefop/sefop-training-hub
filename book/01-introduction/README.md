@@ -114,12 +114,12 @@ practices of a given team:
 Most OR teams are already working with coding agents, which means the **amplifier is already switched on**. That is
 the reason the practices this book discusses matter now, not a reason to postpone them.
 
-> [!TIP]
+> [!IMPORTANT]
 > Solid engineering practices are the prerequisite for capturing value from agentic development.
 
 ---
 
-## 04 — How to read this book
+## How this book is organized
 
 This book is one part of SEFOP, the Software Engineering Framework for Optimization Programs, which develops four
 capabilities: **Train** (the skills a team needs), **Lead** (how such a team is staffed and led), **Deliver**
