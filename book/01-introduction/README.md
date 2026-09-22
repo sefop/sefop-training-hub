@@ -71,7 +71,8 @@ mixture raises new questions that are not obvious to answer. For example:
 ### What is the cost
 
 What does weak engineering cost, in practice? Think of a system's total progress — features delivered, decisions
-supported, questions the business can now ask — against time.
+supported, questions the business can now ask — against time. The following figure is an interpretation of what
+John Ousterhout calls 'Strategic Programming' v/s 'Tactical Programming' on his book "A Philosophy of Software Design".
 
 <p align="center">
   <img src="assets/02-progress-over-time.png" width="640"
