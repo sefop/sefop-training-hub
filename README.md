@@ -25,7 +25,7 @@ of that lifecycle. Chapters explain the ideas in a language-agnostic way, and so
 | 06 | [Deployment](book/06-deployment/README.md) | • How do I deploy a model, with its solver and data, so it delivers a usable decision on every run?<br>• How do I release a new model without putting current decisions at risk?<br>• What should I measure in production to know whether the decisions are still good? |
 | 07 | [Working with legacy DSS](book/07-working-with-legacy-dss/README.md) | • How do I improve code I did not write without breaking what already works?<br>• Is this bug worth fixing?<br>• How do I fix a bug so it stays fixed? |
 | 08 | [Leading the team](book/08-leading-the-team/README.md) | • Which roles does my team need, and which expertise should it borrow instead of hiring?<br>• What changes when scientists start shipping production software?<br>• How do I introduce engineering practices to a team that resists them? |
-| 09 | [AI-assisted development](book/09-ai-assisted-development/README.md) | • Why do engineering fundamentals matter more, not less, when an AI assistant writes the code?<br>• How do I check model code that an assistant wrote?<br>• How do I know whether an AI workflow actually improves my results? |
+| 09 | [AI-assisted development](book/09-ai-assisted-development/README.md) | • What changes in my workflow when an assistant writes model code?<br>• How do I check model code that an assistant wrote?<br>• How do I know whether an AI workflow actually improves my results? |
 
 ---
 

@@ -7,15 +7,6 @@ business through **decision-support software**: software that runs repeatedly to
 business rules into recurring decisions. This section explains what that software is, why it often ends up hard to
 maintain, and how an organization can solve the problems that arise in decision-support software.
 
-### Ideas to develop
-
-- **AI as an amplifier.** More than 70% of scientific programmers already write code with LLM-based tools
-  ([O'Brien & Eisty, 2026](https://www.computer.org/csdl/magazine/cs/2026/01/11482007/2fJHVugY5UY)). The
-  [2025 DORA report](https://dora.dev/research/2025/dora-report/) describes an AI assistant as an amplifier of the
-  practices around it: strong teams move faster at good quality, weak teams ship more technical debt.
-- **Where the book sits in SEFOP.** SEFOP has four dimensions: Train, Lead, Deliver, and Go Agentic. This book covers
-  Train and Lead. Deliver lives in the reference-implementation repositories, and Go Agentic in `sefop-agentic`.
-
 ### Out of scope
 
 - **How to apply any practice.** This section argues why the practices matter; Sections 03–09 explain how.
@@ -26,11 +17,11 @@ maintain, and how an organization can solve the problems that arise in decision-
 |:---:|---|---|---|
 | 01 | [What decision-support software is](#01--what-decision-support-software-is) | Tell decision-support software apart from a one-off analysis, and place a system on the strategic, tactical, or operational level | Ready |
 | 02 | [What goes wrong, and why](#02--what-goes-wrong-and-why) | Recognize the symptoms of weak engineering in decision-support software, and name its two root causes | Ready |
-| 03 | [AI coding assistants as amplifiers](#03--ai-coding-assistants-as-amplifiers) | Explain why AI assistants raise the value of engineering practices instead of replacing them | Coming soon |
-| 04 | [How to read this book](#04--how-to-read-this-book) | Pick a reading path for your role and find the sections that apply to your situation | Coming soon |
+| 03 | [AI coding assistants as amplifiers](#03--ai-coding-assistants-as-amplifiers) | Explain why AI assistants raise the value of engineering practices instead of replacing them | Ready |
+| 04 | [How to read this book](#04--how-to-read-this-book) | Say what each section covers, and where the material that is not in this book lives | Ready |
 
 Read them in order. Chapter 01 defines what the book is about, chapter 02 states the problem the rest of the book
-addresses, and chapters 03–04 place that problem in today's context and hand you a reading path.
+addresses, chapter 03 places that problem in today's context, and chapter 04 maps the nine sections.
 
 ---
 
@@ -184,7 +175,7 @@ argument [Section 08](../08-leading-the-team/README.md) picks up.
 What does weak engineering cost, in practice? Think of a system's total progress — features delivered, decisions
 supported, questions the business can now ask — against time.
 
-![Total progress against time for three systems: solid foundations, legacy system, and short-lived system](assets/02-progress-over-time.svg)
+![Total progress against time for three systems: solid foundations, legacy system, and short-lived system](assets/02-progress-over-time.png)
 
 *Illustrative, after Ousterhout (2018).*
 
@@ -243,28 +234,130 @@ Not every system deserves foundations, and this chapter is not an argument that 
 After this chapter you can explain why AI coding assistants raise the value of engineering practices instead of
 replacing them.
 
-### Planned content
+### The problem
 
-More than 70% of scientific programmers already write code with LLM-based tools, so the question is no longer whether
-an assistant belongs in the workflow. The chapter will argue that an assistant multiplies whatever practice surrounds
-it: with automated tests and clear boundaries it delivers faster at the same quality, and without them it produces
-more code than the team can verify — which is more risk, not more value. That argument needs the symptoms and the two
-root causes of chapter 02 already in place, and it sets up
-[Section 09](../09-ai-assisted-development/README.md), which covers the practice in detail.
+More than 70% of scientific programmers already write code with LLM-based tools
+([O'Brien & Eisty, 2026](https://www.computer.org/csdl/magazine/cs/2026/01/11482007/2fJHVugY5UY)). Whether an
+assistant belongs in the workflow is no longer the decision in front of a team; what to do about it is.
+
+The difficulty is sharper here than in ordinary business software. When an assistant writes a web page badly, the
+page breaks, or the number on it is visibly absurd. When an assistant writes a constraint badly, the model returns a
+plan: feasible, optimal for the formulation as written, and wrong. A mistaken constraint reads exactly like a correct
+one, and the cheap check that would expose it — comparing against the right answer — is the thing
+[chapter 02](#02--what-goes-wrong-and-why) named as the technical half of the problem.
+
+### The idea
+
+An assistant does not raise or lower the quality of a team's engineering. It multiplies what is already there. The
+[2025 DORA report](https://dora.dev/research/2025/dora-report/), which surveys software teams at large, describes the
+same pattern outside operations research: teams with strong practices deliver faster at the same quality, while teams
+with weak ones ship more, and more fragile, output.
+
+| Practice around the assistant | What the assistant changes | Result |
+|---|---|---|
+| [Automated tests](../appendix/glossary.md#automated-test), [continuous integration](../appendix/glossary.md#continuous-integration), clear boundaries | More code written per week, each change checked automatically | Sustainable acceleration: faster delivery at the quality the team already had |
+| Manual checking, or none; unclear design | More code written per week, checked at the same manual rate as before | Accelerated [technical debt](../appendix/glossary.md#technical-debt): more output, and more of it unverified |
+
+The mechanism behind both rows is the same, and it is worth stating plainly: an assistant reduces the cost of
+*writing* code. It does not reduce the cost of *deciding whether the code is right*. Where that decision is
+automated, the team can absorb the extra volume. Where it is a person reading a diff, or a planner noticing a strange
+plan, the volume arrives anyway and the checking does not keep up.
+
+This is an argument about where the bottleneck sits, not a measurement of any particular team. The DORA pattern is
+consistent with it; it does not prove it for operations research specifically.
+
+### Worked example
+
+Two teams get the same request — *no truck may be loaded above 90% of its volume* — and both ask an assistant to
+write the constraint. Both have working code in minutes. What differs is when they find out whether it is right.
+
+| | Team A: tests and CI | Team B: manual checking |
+|---|---|---|
+| Constraint written | In minutes | In minutes |
+| First signal | The test suite runs on the commit; two tests fail because the objective dropped on instances where it should not have | The run produces a plan, and the plan looks plausible |
+| Cost of the signal | Minutes, and the change is still in the author's head | Weeks, if a planner questions a route; otherwise never |
+| What gets learned | The constraint was applied to every truck, including the ones exempt by contract | That the plan "feels tighter than it used to" |
+
+Team B is not slower at writing code than Team A. It is slower at finding out, and the assistant widened that gap by
+making the writing part faster on both sides.
+
+### Check yourself
+
+1. An assistant is asked to make a failing test pass, and edits the test's expected value instead of the code. Which
+   practice catches that, and which one does not?
+2. A team with no automated tests adopts an assistant and triples the amount of code it produces per sprint. What has
+   actually improved?
+3. Why is an assistant riskier on the formulation than on the script that loads the input data?
+
+<details>
+<summary>Answers</summary>
+
+1. Code review of the test change catches it; a green test suite does not, because the suite is now checking the
+   wrong thing. Tests written by a person, and reviewed changes to them, are the defense —
+   [Section 09](../09-ai-assisted-development/README.md) treats this in detail.
+2. The rate of writing. Nothing about the rate of verifying, which is what decides whether the extra code is an asset
+   or a liability.
+3. Because the loader has a cheap oracle and the formulation does not. You know what a correctly parsed row looks
+   like; you do not know the optimal objective value without solving the problem
+   ([Section 05](../05-testing/README.md)).
+
+</details>
+
+### Where this stops working
+
+- **The evidence is not from operations research.** DORA surveys software teams broadly. The mechanism transfers
+  because the oracle problem makes verification *more* expensive here, not less — but that is an inference, not a
+  measurement of OR teams.
+- **The size of the effect is not stable.** Assistants change quickly. The ordering in the table is the durable
+  claim; any specific multiplier is not.
+- **A throwaway prototype genuinely benefits from raw speed.** If the code will be discarded next month, unverified
+  output is a smaller liability than the time spent verifying it.
+
+How to capture the acceleration without accepting the risk is the subject of
+[Section 09](../09-ai-assisted-development/README.md).
 
 ---
 
 ## 04 — How to read this book
 
-After this chapter you can pick a reading path for your role, and find the sections that apply to your situation.
+After this chapter you can say what each section of the book covers, and where the material that is deliberately not
+in this book lives.
 
-### Planned content
+This book is one part of SEFOP, the Software Engineering Framework for Optimization Programs, which develops four
+capabilities: **Train** (the skills a team needs), **Lead** (how such a team is staffed and led), **Deliver**
+(working reference implementations), and **Go Agentic** (getting business value out of AI coding assistants). The
+book covers Train and Lead. Deliver and Go Agentic live in sibling repositories at
+[github.com/sefop](https://github.com/sefop). That division is why the chapters here use pseudocode rather than a
+language: runnable code belongs to the repositories built for it, and the exercises that go with these chapters are
+listed in the [practice repositories appendix](../appendix/practice-repositories.md).
 
-The book has two audiences and several entry points, and reading it front to back is only one of them. The chapter
-will give a path per role — the scientist who writes models, the manager who leads the team — and a path per
-situation: a system that does not exist yet, one that runs and hurts, and one inherited from somebody else. It will
-also place the book inside SEFOP, so a reader knows which questions this repository answers and which ones live in
-the reference implementations.
+### The book in nine sections
+
+1. **01 — Introduction** (this section) — what decision-support software is, why its engineering is usually the weak
+   half, and what that weakness costs.
+2. **[02 — When a company needs decision-support software and an OR team](../02-do-you-need-dss/README.md)** —
+   whether a recurring decision justifies software at all, whether to build the team in-house or buy from a vendor,
+   and where the team belongs in the organization.
+3. **[03 — The lifecycle of decision-support software](../03-software-development-lifecycle/README.md)** — the phases
+   every piece of software passes through, and the twist each phase takes when the software produces decisions. It
+   is the map for the sections that follow.
+4. **[04 — Designing decision-support software](../04-design/README.md)** — drawing boundaries between data,
+   business rules, the formulation, and the solver, so that each can change without breaking the others.
+5. **[05 — Testing decision-support software](../05-testing/README.md)** — how to test a model whose correct answer
+   is the very thing it computes: oracles worked out by hand, metamorphic relations, and differential testing.
+6. **[06 — Deploying decision-support software](../06-deployment/README.md)** — getting a model, its solver, and its
+   data into production, planning for runs that end badly, and measuring whether the decisions stay good.
+7. **[07 — Working with legacy decision-support software](../07-working-with-legacy-dss/README.md)** — changing a
+   system you inherited without breaking what already works, and fixing a bug so that it stays fixed.
+8. **[08 — Leading the team](../08-leading-the-team/README.md)** — which expertise the team owns and which it
+   borrows, and how to change what a team of scientists treats as part of the job.
+9. **[09 — AI-assisted development of decision-support software](../09-ai-assisted-development/README.md)** — working
+   with coding assistants on model code without accepting output nobody has verified.
+
+Three references sit outside the sections and are meant to be used rather than read: the
+[glossary](../appendix/glossary.md), which defines every software engineering term the book uses; the
+[learning roadmap](../appendix/learning-roadmap.md), a suggested order for learning the practices; and the
+[practice repositories](../appendix/practice-repositories.md), where the runnable exercises live.
 
 ---
 

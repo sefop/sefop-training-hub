@@ -5,11 +5,11 @@
 
 ## Introduction
 
-More than 70% of scientific programmers already write code with LLM-based tools
-([O'Brien & Eisty, 2026](https://www.computer.org/csdl/magazine/cs/2026/01/11482007/2fJHVugY5UY)), and the
-[2025 DORA report](https://dora.dev/research/2025/dora-report/) describes an AI coding assistant as an amplifier of the
-practices already around it. **The difference this section addresses:** an assistant writes plausible model code, and
-a wrong formulation looks just as plausible as a right one. Because the correct output of a model is expensive to know
+[Section 01, chapter 03](../01-introduction/README.md#03--ai-coding-assistants-as-amplifiers) argues that a coding
+assistant amplifies whatever engineering practice surrounds it, because it lowers the cost of writing code without
+lowering the cost of deciding whether the code is right. This section is about the practice that follows from that
+argument. **The difference this section addresses:** an assistant writes plausible model code, and a wrong
+formulation looks just as plausible as a right one. Because the correct output of a model is expensive to know
 (Section 05, chapter 02), AI-written decision-support code is harder to verify than AI-written business code. This
 section covers how to capture the speed of AI assistants without accepting that risk blindly.
 
@@ -37,7 +37,7 @@ section covers how to capture the speed of AI assistants without accepting that 
 
 | # | Working title | After it you can… |
 |:---:|---|---|
-| 01 | Why fundamentals matter more with AI | Explain why tests, modularity, and clear contracts make an AI assistant more useful, not less |
+| 01 | What changes when an assistant writes model code | Say which parts of your workflow an assistant changes, and which checks have to move earlier as a result |
 | 02 | Tests as the guardrail for AI-written models | Use the oracles of Section 05 to check code an assistant wrote |
 | 03 | Giving an assistant the context of your model | Write the project context an assistant needs: the contract, the formulation, and the vocabulary |
 | 04 | Evaluating AI workflows | Measure whether an AI workflow actually improves your results before relying on it |
