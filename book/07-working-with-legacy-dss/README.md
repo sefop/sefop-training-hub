@@ -18,13 +18,15 @@ and fixing a bug so it stays fixed.
 
 | # | Chapter | After it you can… | Status |
 |:---:|---|---|---|
-| 01 | [Brownfield adoption](#01--brownfield-adoption) | Add safety nets to a legacy system and improve it incrementally | Draft (older format) |
-| 02 | [Protocol to fix a bug](#02--protocol-to-fix-a-bug) | Decide whether a bug is worth fixing, fix it at its root cause, and keep it from coming back with an automated test | Draft (older format) |
+| 01 | [Brownfield adoption](#ch-brownfield) | Add safety nets to a legacy system and improve it incrementally | Draft (older format) |
+| 02 | [Protocol to fix a bug](#ch-bug-protocol) | Decide whether a bug is worth fixing, fix it at its root cause, and keep it from coming back with an automated test | Draft (older format) |
 
 Both chapters assume you can write an automated test. If not, start with
 [Section 05 — Testing decision-support software](../05-testing/README.md).
 
 ---
+
+<a id="ch-brownfield"></a>
 
 ## 01 — Brownfield adoption
 
@@ -99,6 +101,8 @@ and Dan Heath.
 4. **Expect old habits under pressure, not their disappearance.** The realistic goal is a changed default, not the permanent elimination of shortcuts.
 
 ---
+
+<a id="ch-bug-protocol"></a>
 
 ## 02 — Protocol to fix a bug
 

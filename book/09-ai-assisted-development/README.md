@@ -5,7 +5,7 @@
 
 ## Introduction
 
-[Section 01, chapter 03](../01-introduction/README.md#03--ai-coding-assistants-as-amplifiers) argues that a coding
+[Section 01, chapter 03](../01-introduction/README.md#ch-ai-assistants) argues that a coding
 assistant amplifies whatever engineering practice surrounds it, because it lowers the cost of writing code without
 lowering the cost of deciding whether the code is right. This section is about the practice that follows from that
 argument. **The difference this section addresses:** an assistant writes plausible model code, and a wrong

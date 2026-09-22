@@ -19,6 +19,9 @@ SKIP_DIRS = {".git", ".claude", "workshops", "node_modules"}
 # centered figures — an <img> pointing at a missing file must fail like a ![] does.
 LINK = re.compile(r"\]\(([^)\s]+)\)|(?:src|href)\s*=\s*\"([^\"]+)\"")
 HEADING = re.compile(r"^#{1,6} (.+)$", re.M)
+# Explicit anchors: <a id="ch-contract"></a> above a heading, so that retitling the
+# chapter does not break the links pointing at it.
+ANCHOR = re.compile(r"<a\s[^>]*?(?:id|name)\s*=\s*\"([^\"]+)\"")
 FENCE = re.compile(r"^```.*?^```", re.M | re.S)
 COMMENT = re.compile(r"<!--.*?-->", re.S)
 
@@ -55,7 +58,7 @@ def main() -> int:
     files = markdown_files(root)
     sources = {f: readable(f) for f in files}
     anchors = {
-        f.resolve(): {slug(h) for h in HEADING.findall(text)}
+        f.resolve(): {slug(h) for h in HEADING.findall(text)} | set(ANCHOR.findall(text))
         for f, text in sources.items()
     }
 

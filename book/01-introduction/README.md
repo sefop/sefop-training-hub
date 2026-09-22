@@ -8,6 +8,8 @@ the intersection between operations research and software development.
 
 ---
 
+<a id="ch-dss"></a>
+
 ## Decision-support software
 
 Operations research turns data, business needs, and mathematics into a decision. Training and literature in the field
@@ -26,6 +28,8 @@ on a cadence rather than ending at a deliverable, it must be maintained, tested,
 important software.
 
 ---
+
+<a id="ch-what-goes-wrong"></a>
 
 ## What goes wrong, and why
 
@@ -100,6 +104,8 @@ The following figure uses that definition to show what I have seen in the indust
 
 ---
 
+<a id="ch-ai-assistants"></a>
+
 ## Delegate the engineering to AI-coding assistants?
 
 AI-coding assistants are pervasive nowadays. Yet adoption does not guarantee success.
@@ -118,6 +124,8 @@ the reason the practices this book discusses matter now, not a reason to postpon
 > Solid engineering practices are the prerequisite for capturing value from agentic development.
 
 ---
+
+<a id="ch-how-to-read"></a>
 
 ## How this book is organized
 

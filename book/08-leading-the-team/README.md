@@ -11,7 +11,7 @@ changing what the team treats as part of the job, without losing the scientific 
 
 - **Why practitioners resist, and what changes their behavior.** Build on the DSI 2026 paper *Why software engineering
   practices are slow to spread among operations research practitioners and what changes that behavior*, and on the change-management
-  half of [Brownfield adoption](../07-working-with-legacy-dss/README.md#01--brownfield-adoption), which is planned to move here.
+  half of [Brownfield adoption](../07-working-with-legacy-dss/README.md#ch-brownfield), which is planned to move here.
   Its four themes: make the problem visible, make change the easy path, make it theirs, and know your terrain.
 - **Report quality and throughput together.** Showing that delivery speed did not drop is what defuses the belief that
   good practice and delivery pace trade off against each other.
@@ -28,19 +28,21 @@ changing what the team treats as part of the job, without losing the scientific 
 
 | # | Chapter | After it you can… | Status |
 |:---:|---|---|---|
-| 01 | [How to staff your team](#01--how-to-staff-your-team) | Name the kinds of contributor your team needs, and decide which expertise to own and which to borrow | Ready |
-| 02 | [From science to software: the mindset change](#02--from-science-to-software-the-mindset-change) | Explain what changes when scientists start shipping production software | Coming soon |
-| 03 | [Introducing engineering practices to a team that resists them](#03--introducing-engineering-practices-to-a-team-that-resists-them) | Plan a change in practice that lasts beyond your own involvement | Coming soon |
-| 04 | [Training scientists in software engineering](#04--training-scientists-in-software-engineering) | Plan training for your team, and choose what to learn first | Coming soon |
+| 01 | [How to staff your team](#ch-staffing) | Name the kinds of contributor your team needs, and decide which expertise to own and which to borrow | Ready |
+| 02 | [From science to software: the mindset change](#ch-mindset) | Explain what changes when scientists start shipping production software | Coming soon |
+| 03 | [Introducing engineering practices to a team that resists them](#ch-introducing-practices) | Plan a change in practice that lasts beyond your own involvement | Coming soon |
+| 04 | [Training scientists in software engineering](#ch-training) | Plan training for your team, and choose what to learn first | Coming soon |
 
 Chapter 01 decides who is on the team. Chapters 02–04 are about what happens next: what the work feels like from the
 inside, how to change practice in a team that did not ask for it, and what to train first.
 
 ---
 
+<a id="ch-staffing"></a>
+
 ## 01 — How to staff your team
 
-Suppose you accept the diagnosis of [Section 01](../01-introduction/README.md#what-goes-wrong-and-why): your
+Suppose you accept the diagnosis of [Section 01](../01-introduction/README.md#ch-what-goes-wrong): your
 team's mathematics is strong and the software around it is weak. The obvious fix is to hire software developers.
 
 On its own, that fix disappoints. The developer does not know the mathematics, so the formulation — the part where
@@ -130,6 +132,8 @@ organization, and keep product ownership.
 
 ---
 
+<a id="ch-mindset"></a>
+
 ## 02 — From science to software: the mindset change
 
 A model written for a study is judged by what it shows. The same model inside a decision-support system is judged by
@@ -140,15 +144,19 @@ added, and will be honest about what the change costs the individual scientist i
 
 ---
 
+<a id="ch-introducing-practices"></a>
+
 ## 03 — Introducing engineering practices to a team that resists them
 
 Resistance to engineering practice is usually rational from where the team stands: the practices cost time now and
 pay later, and nobody is measured on later. The chapter will treat adoption as a change-management problem rather
 than a technical one, around four themes — make the problem visible, make change the easy path, make it theirs, and
 know your terrain — drawing on the change-management material currently in
-[Section 07](../07-working-with-legacy-dss/README.md#01--brownfield-adoption), which is planned to move here.
+[Section 07](../07-working-with-legacy-dss/README.md#ch-brownfield), which is planned to move here.
 
 ---
+
+<a id="ch-training"></a>
 
 ## 04 — Training scientists in software engineering
 

@@ -22,15 +22,15 @@ built around one idea.
 
 | # | Chapter | After it you can… | Status |
 |:---:|---|---|---|
-| 01 | [What to test in decision-support software](#01--what-to-test-in-decision-support-software) | Name the parts of a decision-support system that need tests, and choose the kind of test for each | Coming soon |
-| 02 | [Why optimization models are hard to test](#02--why-optimization-models-are-hard-to-test) | Name the oracle problem and explain why the usual way of testing fails for a MIP | Ready |
-| 03 | [Test the contract, not the algorithm](#03--test-the-contract-not-the-algorithm) | Write tests that keep passing when someone swaps the solver | Ready |
-| 04 | [Oracles you write by hand](#04--oracles-you-write-by-hand) | Choose a small, systematic set of instances whose answers you work out yourself | Ready |
-| 05 | [Metamorphic relations](#05--metamorphic-relations) | Test a model without knowing its optimal value | Ready |
-| 06 | [Differential testing](#06--differential-testing) | Use a second implementation to find mistakes in the formulation | Ready |
-| 07 | [When optimality is not guaranteed](#07--when-optimality-is-not-guaranteed) | Decide which tests survive when the solver is a heuristic | Ready |
-| 08 | [Duality as an oracle](#08--duality-as-an-oracle) | Check an LP's optimum with a certificate instead of re-solving | Coming soon |
-| 09 | [Testing a Pareto front](#09--testing-a-pareto-front) | Test a multi-objective model that has no single optimum | Coming soon |
+| 01 | [What to test in decision-support software](#ch-what-to-test) | Name the parts of a decision-support system that need tests, and choose the kind of test for each | Coming soon |
+| 02 | [Why optimization models are hard to test](#ch-oracle-problem) | Name the oracle problem and explain why the usual way of testing fails for a MIP | Ready |
+| 03 | [Test the contract, not the algorithm](#ch-contract) | Write tests that keep passing when someone swaps the solver | Ready |
+| 04 | [Oracles you write by hand](#ch-hand-oracles) | Choose a small, systematic set of instances whose answers you work out yourself | Ready |
+| 05 | [Metamorphic relations](#ch-metamorphic) | Test a model without knowing its optimal value | Ready |
+| 06 | [Differential testing](#ch-differential) | Use a second implementation to find mistakes in the formulation | Ready |
+| 07 | [When optimality is not guaranteed](#ch-no-optimality) | Decide which tests survive when the solver is a heuristic | Ready |
+| 08 | [Duality as an oracle](#ch-duality) | Check an LP's optimum with a certificate instead of re-solving | Coming soon |
+| 09 | [Testing a Pareto front](#ch-pareto) | Test a multi-objective model that has no single optimum | Coming soon |
 
 The chapters build on each other. Chapter 01 maps the whole system. Chapters 02–03 set up the vocabulary. Chapters
 04–06 present three kinds of oracle, each covering a gap the previous one leaves open. Chapter 07 revisits all three
@@ -61,6 +61,8 @@ The feasible region can be empty. If $C < 0$, no $x$ satisfies the cost constrai
 the non-negativity of $c_i$ matters, since it puts every attainable total cost at zero or above. The instance then has
 no solution at all, and a correct solver must report that rather than return some $x$ anyway.
 
+<a id="ex-two-item"></a>
+
 ### A two-item instance
 
 | Item | Cost $c_i$ | Volume $v_i$ | Calories $k_i$ | Max quantity $u_i$ |
@@ -79,7 +81,7 @@ $$
 \end{aligned}
 $$
 
-[Chapter 02](#02--why-optimization-models-are-hard-to-test) solves it by hand.
+[Chapter 02](#ch-oracle-problem) solves it by hand.
 
 ## How to read the pseudocode
 
@@ -113,6 +115,8 @@ All practice repositories are listed in the [appendix](../appendix/practice-repo
 
 ---
 
+<a id="ch-what-to-test"></a>
+
 ## 01 — What to test in decision-support software
 
 A decision-support system is more than its optimization model. Data arrives from other systems, business rules turn it
@@ -128,6 +132,8 @@ fits it, and explain why the rest of this section, chapters 02–09, concentrate
 > - Java: coming soon
 
 ---
+
+<a id="ch-oracle-problem"></a>
 
 ## 02 — Why optimization models are hard to test
 
@@ -154,7 +160,7 @@ The oracle problem is a reason to choose a testing technique deliberately, not a
 software: it gets refactored, its data changes, and eventually someone swaps its solver. Chapters 04–06 present three
 kinds of oracle that work around the problem, each at a different cost.
 
-The simplest oracle is a person. Take the [two-item instance](#a-two-item-instance): each $x_i \in \{0, 1\}$,
+The simplest oracle is a person. Take the [two-item instance](#ex-two-item): each $x_i \in \{0, 1\}$,
 so there are $2 \times 2 = 4$ candidate selections, few enough to list.
 
 | $x_A$ | $x_B$ | Cost (≤ 2) | Volume (≤ 2) | Calories | Feasible? |
@@ -179,7 +185,7 @@ expect result.total_calories == 10
 
 The price of a human oracle grows fast. The number of candidate selections is $\prod_{i \in I} (u_i + 1)$: 4 for this
 instance, but $4^{30} \approx 1.2 \times 10^{18}$ for 30 items that can each be taken up to 3 times. A person can
-only be the oracle at teaching scale, which is exactly how [chapter 04](#04--oracles-you-write-by-hand) uses one.
+only be the oracle at teaching scale, which is exactly how [chapter 04](#ch-hand-oracles) uses one.
 
 ### Check yourself
 
@@ -220,6 +226,8 @@ enough to reason about by hand, not because it is the hardest case.
 
 ---
 
+<a id="ch-contract"></a>
+
 ## 03 — Test the contract, not the algorithm
 
 The function that "solves" a knapsack could be a brute-force enumeration, a greedy heuristic, a dynamic program, or a
@@ -254,7 +262,7 @@ promise when nothing is affordable?" — so the contract must be made explicit b
 the design toward modularity: a component that can be tested without looking at its internals is, by construction, a
 component whose internals do not leak into its interface.
 
-The same instance from [chapter 02](#02--why-optimization-models-are-hard-to-test), tested two ways. First, a test
+The same instance from [chapter 02](#ch-oracle-problem), tested two ways. First, a test
 coupled to the algorithm:
 
 ```
@@ -327,9 +335,11 @@ test suites assume.
 
 ---
 
+<a id="ch-hand-oracles"></a>
+
 ## 04 — Oracles you write by hand
 
-[Chapter 02](#02--why-optimization-models-are-hard-to-test) showed that a person can solve a two-item instance by
+[Chapter 02](#ch-oracle-problem) showed that a person can solve a two-item instance by
 hand. The harder question is *which* instances to write. Small instances picked at random tend to cover whatever comes
 to mind first, which is usually the ordinary case. Bugs, however, cluster at the edges: an empty catalogue, a budget of
 exactly zero, two items that tie. Without a method, those edges are left to luck.
@@ -391,7 +401,7 @@ expect result.feasible == false
 
 The expected answer was derived by hand, without a solver: costs are non-negative, so every selection — including
 taking nothing — costs at least 0, which is more than −1. No feasible selection exists. Notice what the test does
-*not* assert: quantities and calories. The [contract](#03--test-the-contract-not-the-algorithm) says those fields
+*not* assert: quantities and calories. The [contract](#ch-contract) says those fields
 carry no meaning when the instance is infeasible, so asserting them would test a promise that was never made.
 
 ### Check yourself
@@ -418,7 +428,7 @@ carry no meaning when the instance is infeasible, so asserting them would test a
 That is the ceiling of a specified oracle: it does not scale to a
 catalogue of thousands of items, and it is not meant to. Its job is to fix expected behavior across a representative
 slice of the input space. Two further assumptions are worth naming: the instances are small enough to solve by hand,
-and the solver promises exact optimality. [Chapter 07](#07--when-optimality-is-not-guaranteed) drops the second one.
+and the solver promises exact optimality. [Chapter 07](#ch-no-optimality) drops the second one.
 
 > **Practice it**
 >
@@ -434,9 +444,11 @@ and the solver promises exact optimality. [Chapter 07](#07--when-optimality-is-n
 
 ---
 
+<a id="ch-metamorphic"></a>
+
 ## 05 — Metamorphic relations
 
-Every expected answer in [chapter 04](#04--oracles-you-write-by-hand) required a person to work it out first. That
+Every expected answer in [chapter 04](#ch-hand-oracles) required a person to work it out first. That
 caps testing at instances small enough to enumerate by hand. The instances you care about in practice — a real
 catalogue, a real network — are far beyond that, and no one can tell you their optimal value.
 
@@ -462,7 +474,7 @@ the knapsack, four of them hold on every instance:
 | Cap an item's maximum quantity at zero | Equals the value with that item removed | An item that may not be taken cannot take part in any selection. |
 
 None of the four compares the selected quantities. A transformation can turn a near-tie into an exact tie, and the
-[contract](#03--test-the-contract-not-the-algorithm) never promised which selection wins among equals.
+[contract](#ch-contract) never promised which selection wins among equals.
 
 Written as a test, the first relation — raising a budget never decreases the optimum — looks like this:
 
@@ -504,7 +516,7 @@ metamorphic relations the part of this toolkit that scales.
   relations check that runs agree with each other, not that any single run is right, so they complement the specified
   oracles of chapter 04 rather than replace them.
 - **They are theorems about the optimal value.** They hold for a solver that promises exact optimality. A heuristic can
-  violate them without being broken, as [chapter 07](#07--when-optimality-is-not-guaranteed) shows.
+  violate them without being broken, as [chapter 07](#ch-no-optimality) shows.
 - **Numerical tolerance.** "Scales by exactly $k$" means within a small tolerance once calorie counts are real numbers.
 
 > **Practice it**
@@ -519,9 +531,11 @@ metamorphic relations the part of this toolkit that scales.
 
 ---
 
+<a id="ch-differential"></a>
+
 ## 06 — Differential testing
 
-The relations of [chapter 05](#05--metamorphic-relations) check that runs are consistent with each other, but a model
+The relations of [chapter 05](#ch-metamorphic) check that runs are consistent with each other, but a model
 can be consistently wrong. The mistakes that matter most in practice live in the formulation: a coefficient attached to
 the wrong sum, a budget applied to the wrong constraint, an index set that silently drops an item. The solver then
 optimizes the wrong model faithfully.
@@ -543,7 +557,7 @@ against brute force on a toy case." Three details turn that habit into a reliabl
    controlled experiment: the same inputs must always produce the same outputs. A failure that vanishes on the retry
    cannot be investigated, so the test must also report the instance that failed.
 3. **Compare only what the contract promises.** Feasibility and the calorie total, never the selected quantities. When
-   several selections tie, the [contract](#03--test-the-contract-not-the-algorithm) allows the two implementations to
+   several selections tie, the [contract](#ch-contract) allows the two implementations to
    return different ones.
 
 In code, the comparison over generated instances looks like this:
@@ -616,10 +630,12 @@ that nobody anticipated.
 
 ---
 
+<a id="ch-no-optimality"></a>
+
 ## 07 — When optimality is not guaranteed
 
-Every expected answer in [chapter 04](#04--oracles-you-write-by-hand) and every relation in
-[chapter 05](#05--metamorphic-relations) assumes that the solver returns a truly optimal answer. That assumption fails
+Every expected answer in [chapter 04](#ch-hand-oracles) and every relation in
+[chapter 05](#ch-metamorphic) assumes that the solver returns a truly optimal answer. That assumption fails
 for a [heuristic](../appendix/glossary.md#heuristic): a method that gives up the guarantee of optimality on purpose, in
 exchange for finishing in reasonable time on instances too large to solve exactly.
 
@@ -627,7 +643,7 @@ It also fails, less visibly, for an exact MIP solver with a time limit. When the
 best incumbent and an optimality gap. From the contract's point of view, that solver is a heuristic. Testing either one
 against "did you find the exact optimum" fails it for doing precisely what it was designed to do.
 
-Start again from the [contract](#03--test-the-contract-not-the-algorithm). A heuristic's contract is weaker:
+Start again from the [contract](#ch-contract). A heuristic's contract is weaker:
 
 - return a *feasible* selection, or report infeasibility when no selection exists;
 - its calorie total is at most the optimum;
@@ -635,7 +651,7 @@ Start again from the [contract](#03--test-the-contract-not-the-algorithm). A heu
   optimum.
 
 A test survives exactly as far as it checks something this weaker contract still promises. This is the asymmetry from
-[chapter 02](#02--why-optimization-models-are-hard-to-test) coming back: tests that rely on *feasibility* survive
+[chapter 02](#ch-oracle-problem) coming back: tests that rely on *feasibility* survive
 untouched, because checking feasibility never needed the optimum. Tests that rely on *optimality* must be weakened into
 bounds, or dropped.
 
@@ -703,7 +719,7 @@ expect after.total_calories <= exact.total_calories
   approximation guarantee there is no floor to assert. One practical option is to track solution quality as a
   benchmark over time — the average gap to the exact reference, say — rather than as a pass/fail test.
 - **An exact reference is still needed** for the weakened differential test, so it remains limited to small instances,
-  as in [chapter 06](#06--differential-testing).
+  as in [chapter 06](#ch-differential).
 
 > **Practice it**
 >
@@ -717,9 +733,11 @@ expect after.total_calories <= exact.total_calories
 
 ---
 
+<a id="ch-duality"></a>
+
 ## 08 — Duality as an oracle
 
-[Chapter 02](#02--why-optimization-models-are-hard-to-test) argued that checking feasibility is cheap while proving
+[Chapter 02](#ch-oracle-problem) argued that checking feasibility is cheap while proving
 optimality is expensive. Linear programming is the exception worth a chapter of its own. By strong duality, a primal
 feasible solution and a dual feasible solution with equal objective values prove each other optimal. A test can
 therefore ask the solver for both, and verify optimality with a few matrix-vector products — an oracle that checks
@@ -731,6 +749,8 @@ rather than computes.
 > - Java: coming soon
 
 ---
+
+<a id="ch-pareto"></a>
 
 ## 09 — Testing a Pareto front
 
