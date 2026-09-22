@@ -41,11 +41,6 @@ maintain, and how the rest of the book is organized to address it.
 
 - **How to apply any practice.** This section argues why the practices matter; Sections 03–09 explain how.
 
-## Who this section is for
-
-Everyone: scientists who write the models and managers who lead the teams that build them. No chapter here assumes a
-software engineering background.
-
 ## Planned chapters
 
 | # | Working title | After it you can… |

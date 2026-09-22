@@ -76,12 +76,6 @@ This section answers two questions:
 - **Monitoring the forecasts that feed a model.** When demand or travel times come from a predictive model, tracking
   its accuracy is a machine-learning topic; this section monitors the optimization side.
 
-## Who this section is for
-
-- **Scientists** who put their own models into production, often without a dedicated platform team.
-- **Engineering managers** responsible for systems the business depends on. Chapter 06 explains which production
-  measures to ask your team for.
-
 ## Planned chapters
 
 | # | Working title | After it you can… |

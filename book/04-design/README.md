@@ -33,11 +33,6 @@ change to one of them risks breaking the others. Design is the practice of drawi
 
 - **User-interface design** and **enterprise architecture** beyond a single decision-support system.
 
-## Who this section is for
-
-Scientists who write the models and want a system that stays easy to change. Engineering managers can read chapter 01
-to understand what a well-structured system looks like.
-
 ## Planned chapters
 
 | # | Working title | After it you can… |

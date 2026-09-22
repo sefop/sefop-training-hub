@@ -35,10 +35,6 @@ section covers how to capture the speed of AI assistants without accepting that 
 - **A comparison of specific AI tools.** They change faster than a book can; the section focuses on practices that
   outlast any one tool.
 
-## Who this section is for
-
-Scientists who use AI coding assistants on models, and managers deciding how their team should adopt them.
-
 ## Planned chapters
 
 | # | Working title | After it you can… |

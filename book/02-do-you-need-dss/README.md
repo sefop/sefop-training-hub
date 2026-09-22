@@ -34,11 +34,6 @@ it exists.
 - **How to build the software** once the decision is made. That starts in
   [Section 03 — The lifecycle of decision-support software](../03-software-development-lifecycle/README.md).
 
-## Who this section is for
-
-- **Engineering managers and directors** deciding whether to invest in an operations research (OR) team.
-- **Scientists** proposing a decision-support project and making the case for it.
-
 ## Planned chapters
 
 | # | Working title | After it you can… |

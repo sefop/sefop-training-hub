@@ -38,11 +38,6 @@ one phase and addresses its difference.
 - **A comparison of process frameworks** such as Scrum or Kanban. The section describes phases, not a particular way
   of running them.
 
-## Who this section is for
-
-Scientists and managers alike. Read it before Sections 04–09 if you want to see how they fit together; skip it if you
-arrived for a specific practice.
-
 ## Planned chapters
 
 | # | Working title | After it you can… |

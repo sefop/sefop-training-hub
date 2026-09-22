@@ -20,14 +20,6 @@ built around one idea.
 - **Testing the predictive models that feed a formulation.** When demand or travel times come from a forecast,
   measuring its accuracy is a machine-learning topic; this section tests the optimization side.
 
-## Who this section is for
-
-- **Scientists who write optimization models** — PhD students and operations research practitioners. No software
-  engineering background is assumed: every term is defined on first use and collected in the
-  [glossary](../appendix/glossary.md).
-- **Engineering managers** — chapters 01–03 explain what to test in decision-support software, why testing a model
-  differs from testing other code, and what to ask your team for.
-
 ## Chapters
 
 | # | Chapter | After it you can… | Status |

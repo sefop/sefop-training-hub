@@ -16,10 +16,6 @@ and fixing a bug so it stays fixed.
   [Section 05 — Testing decision-support software](../05-testing/README.md); this section assumes you can already
   write them.
 
-## Who this section is for
-
-Scientists and engineering managers who maintain decision-support software they did not write from scratch.
-
 ## Chapters
 
 | # | Chapter | After it you can… | Status |

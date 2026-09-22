@@ -32,10 +32,6 @@ changing what the team treats as part of the job, without losing the scientific 
   software changes the answer.
 - **Whether the team should exist, and where it sits.** That is [Section 02](../02-do-you-need-dss/README.md).
 
-## Who this section is for
-
-Engineering managers, directors, and tech leads of teams that build decision-support software.
-
 ## Planned chapters
 
 | # | Working title | After it you can… |
