@@ -5,8 +5,6 @@
 
 ## Introduction
 
-### Motivation
-
 Every piece of software moves through the same broad phases: someone states what it must do, designs it, builds and
 tests it, deploys it, and then maintains it for as long as it is used. That sequence is the **software development
 lifecycle**. Decision-support software moves through the same phases, but each phase has a twist that ordinary business

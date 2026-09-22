@@ -5,8 +5,6 @@
 
 ## Introduction
 
-### Motivation
-
 More than 70% of scientific programmers already write code with LLM-based tools
 ([O'Brien & Eisty, 2026](https://www.computer.org/csdl/magazine/cs/2026/01/11482007/2fJHVugY5UY)), and the
 [2025 DORA report](https://dora.dev/research/2025/dora-report/) describes an AI coding assistant as an amplifier of the

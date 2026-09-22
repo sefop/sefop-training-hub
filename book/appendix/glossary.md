@@ -31,6 +31,23 @@ misleading as a goal, because executing a line is not the same as checking that 
 The promise a piece of code makes to its callers: what it needs as input and what it guarantees as output, and nothing
 about how it gets there. Contrast with [implementation detail](#implementation-detail).
 
+### Continuous delivery
+
+Keeping the software in a state where any change that passed [continuous integration](#continuous-integration) can be
+released on demand, through an automated path rather than a manual procedure. Often written together with continuous
+integration as CI/CD.
+
+### Continuous integration
+
+Running the build and the [test suite](#test-suite) automatically on every change, so a change that breaks something
+is found in minutes instead of at the next release. Abbreviated CI.
+
+### Decision-support system
+
+Software that runs repeatedly to turn data, mathematical models, and business rules into decisions the business acts
+on. Abbreviated DSS. A one-off study that answers a question once is not one: what makes a system decision-support
+software is that the decision recurs and somebody owns the software that produces it.
+
 ### Derived oracle
 
 A [test oracle](#test-oracle) that decides correctness from something other than a known expected answer — for example,
@@ -83,6 +100,11 @@ a budget never decreases the optimal value.
 Deliberately introducing small bugs ("mutants") into the code and checking whether the test suite notices. Mutants that
 survive point at behavior the tests do not really check.
 
+### Object-oriented programming
+
+Organizing a program around objects that hold data together with the operations allowed on it, instead of around
+procedures that pass data between them. Abbreviated OOP.
+
 ### Oracle problem
 
 The difficulty of building a [test oracle](#test-oracle) when the correct output is expensive, or impossible, to compute
@@ -103,6 +125,11 @@ A second, independent implementation of the same [contract](#contract), used as 
 The starting value of a pseudo-random number generator. The same seed always produces the same sequence of numbers,
 which makes a test that uses random instances reproducible — the software equivalent of a controlled experiment.
 
+### Refactoring
+
+Changing the internal structure of code without changing what it does, to make the next change cheaper. The
+[test suite](#test-suite) is what tells you the behavior did not move.
+
 ### Regression
 
 A behavior that used to work and no longer does, usually introduced by a later change. Catching regressions early is
@@ -117,6 +144,17 @@ the failure. A feature of [property-based testing](#property-based-testing) libr
 
 A [test oracle](#test-oracle) in which the expected answer is stated in advance — in this book, worked out by hand for a
 small instance.
+
+### Technical debt
+
+The future cost of a shortcut taken today: code, tests, or documentation left in a state that makes the next change
+more expensive. Like financial debt, it can be a deliberate and reasonable choice — as long as somebody knows it was
+taken and what the interest is.
+
+### Test-driven development
+
+Writing the [automated test](#automated-test) before the code that makes it pass, in short cycles. Abbreviated TDD.
+The test comes first so that it describes the behavior wanted, rather than the behavior that happened to be built.
 
 ### Test oracle
 

@@ -5,8 +5,6 @@
 
 ## Introduction
 
-### Motivation
-
 A decision-support system creates value only once it is **deployed**: installed and running where the business uses it,
 a place called **production**, often every day or every week, against data it has never seen. **The difference this
 section addresses:** deploying ordinary software means shipping code, and a failed deployment is usually loud, with an

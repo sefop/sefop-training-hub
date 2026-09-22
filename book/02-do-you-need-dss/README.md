@@ -5,8 +5,6 @@
 
 ## Introduction
 
-### Motivation
-
 Before asking how to build decision-support software, a company has to ask whether it should. Not every decision
 deserves software, and not every company that needs the software needs its own team to build it. This section covers
 that decision in three steps: whether a decision justifies software, who should build it, and where the team sits once
@@ -22,8 +20,9 @@ it exists.
   less control over the formulation, and dependence on that vendor for every change.
 - **Three places a team can sit**, each with a different trade-off between closeness to the business and engineering
   standards: embedded in a business unit, in a central analytics group, or inside IT.
-- **The embedded team as a software factory**, building on the AGIFORS 2026 talk *Rethinking the Embedded OR Team as a
-  Software Factory*.
+- **The embedded team as a specialized software team**, owning a decision-support product rather than running a
+  sequence of studies. Which expertise such a team holds and which it borrows is
+  [Section 08, chapter 01](../08-leading-the-team/README.md#01--how-to-staff-your-team).
 - **Proof of concept (POC):** a small, time-boxed build that tests whether an approach creates value before a company
   commits to it. Define the baseline and the target improvement before starting, so the outcome is a measured delta,
   not an impression.

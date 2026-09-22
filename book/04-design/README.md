@@ -5,8 +5,6 @@
 
 ## Introduction
 
-### Motivation
-
 A decision-support system is built from parts that change at different speeds. The data changes every run, business
 rules change every few months, the formulation changes as the team learns the problem, and the solver may change once
 in the system's life. **The difference this section addresses:** when those parts are tangled in one script, every

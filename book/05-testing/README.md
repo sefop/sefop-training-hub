@@ -2,8 +2,6 @@
 
 ## Introduction
 
-### Motivation
-
 Software engineers test code by comparing its output with an answer they already know. Most of a decision-support
 system fits that habit: the expected output of a data check or a business rule is easy to write down. The optimization
 model breaks it: the answer you would compare against is the very thing the model exists to compute. This section
@@ -36,8 +34,7 @@ built around one idea.
 
 The chapters build on each other. Chapter 01 maps the whole system. Chapters 02–03 set up the vocabulary. Chapters
 04–06 present three kinds of oracle, each covering a gap the previous one leaves open. Chapter 07 revisits all three
-under a weaker promise. Read
-them in order the first time; after that, each chapter lists its prerequisites at the top.
+under a weaker promise. Read them in order the first time.
 
 ## The running example: a knapsack
 
@@ -118,8 +115,6 @@ All practice repositories are listed in the [appendix](../appendix/practice-repo
 
 ## 01 — What to test in decision-support software
 
-> **Audience:** Scientists & Engineering Managers · **Prerequisites:** none · **Status: coming soon**
-
 After this chapter you will be able to name the parts of a decision-support system that need tests, and say which kind
 of test fits each one.
 
@@ -139,8 +134,6 @@ fits it, and explain why the rest of this section, chapters 02–09, concentrate
 ---
 
 ## 02 — Why optimization models are hard to test
-
-> **Audience:** Scientists & Engineering Managers · **Prerequisites:** the [running example](#the-running-example-a-knapsack) · **~7 min read**
 
 After this chapter you can explain why the usual way of testing code does not transfer to an optimization model, and
 name the problem that makes it hard.
@@ -237,8 +230,6 @@ enough to reason about by hand, not because it is the hardest case.
 ---
 
 ## 03 — Test the contract, not the algorithm
-
-> **Audience:** Scientists & Engineering Managers · **Prerequisites:** [02](#02--why-optimization-models-are-hard-to-test) · **~8 min read**
 
 After this chapter you can write tests that keep passing when someone replaces the algorithm behind your model.
 
@@ -350,8 +341,6 @@ test suites assume.
 ---
 
 ## 04 — Oracles you write by hand
-
-> **Audience:** Scientists · **Prerequisites:** [02](#02--why-optimization-models-are-hard-to-test), [03](#03--test-the-contract-not-the-algorithm) · **~10 min read**
 
 After this chapter you can choose a small, systematic set of instances, work out their answers by hand, and turn each
 one into a contract test.
@@ -465,8 +454,6 @@ and the solver promises exact optimality. [Chapter 07](#07--when-optimality-is-n
 
 ## 05 — Metamorphic relations
 
-> **Audience:** Scientists · **Prerequisites:** [04](#04--oracles-you-write-by-hand) · **~8 min read**
-
 After this chapter you can test a model on instances whose optimal value nobody knows.
 
 ### The problem
@@ -558,8 +545,6 @@ metamorphic relations the part of this toolkit that scales.
 ---
 
 ## 06 — Differential testing
-
-> **Audience:** Scientists · **Prerequisites:** [03](#03--test-the-contract-not-the-algorithm), [05](#05--metamorphic-relations) · **~9 min read**
 
 After this chapter you can use a slow, obviously correct implementation to catch mistakes in the formulation you hand
 to a solver.
@@ -665,8 +650,6 @@ that nobody anticipated.
 ---
 
 ## 07 — When optimality is not guaranteed
-
-> **Audience:** Scientists · **Prerequisites:** [04](#04--oracles-you-write-by-hand), [05](#05--metamorphic-relations), [06](#06--differential-testing) · **~9 min read**
 
 After this chapter you can decide which of your tests still apply when the solver is a heuristic, or a MIP solver
 stopped by a time limit.
@@ -777,8 +760,6 @@ expect after.total_calories <= exact.total_calories
 
 ## 08 — Duality as an oracle
 
-> **Audience:** Scientists · **Prerequisites:** [02](#02--why-optimization-models-are-hard-to-test), [03](#03--test-the-contract-not-the-algorithm) · **Status: coming soon**
-
 After this chapter you will be able to check a linear program's claimed optimum with a certificate, instead of solving
 it a second time.
 
@@ -797,8 +778,6 @@ rather than computes.
 ---
 
 ## 09 — Testing a Pareto front
-
-> **Audience:** Scientists · **Prerequisites:** [04](#04--oracles-you-write-by-hand), [05](#05--metamorphic-relations) · **Status: coming soon**
 
 After this chapter you will be able to test a multi-objective model, where there is no single optimal value to compare
 against.

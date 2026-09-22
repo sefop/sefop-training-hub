@@ -2,8 +2,6 @@
 
 ## Introduction
 
-### Motivation
-
 Most projects do not start from an empty repository. The code was inherited, or the project started before anyone
 thought about tests. This section covers how to change such code safely: modernizing a system that is hard to modify,
 and fixing a bug so it stays fixed.
