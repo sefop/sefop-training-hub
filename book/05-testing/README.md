@@ -1,10 +1,24 @@
 # Section 05 — Testing decision-support software
 
+## Introduction
+
+### Motivation
+
 Software engineers test code by comparing its output with an answer they already know. Most of a decision-support
 system fits that habit: the expected output of a data check or a business rule is easy to write down. The optimization
 model breaks it: the answer you would compare against is the very thing the model exists to compute. This section
 starts with what to test across the whole system, then explains how to test the model anyway, in short chapters, each
 built around one idea.
+
+### Out of scope
+
+- **How to write tests in a particular language or test framework.** The chapters use pseudocode; the runnable
+  exercises in the [practice repositories](../appendix/practice-repositories.md) cover the tooling.
+- **How fast the model solves.** These chapters ask whether a model computes the right decision, not how quickly.
+  Run time and solution quality in production belong to
+  [Section 06 — Deploying decision-support software](../06-deployment/README.md).
+- **Testing the predictive models that feed a formulation.** When demand or travel times come from a forecast,
+  measuring its accuracy is a machine-learning topic; this section tests the optimization side.
 
 ## Who this section is for
 

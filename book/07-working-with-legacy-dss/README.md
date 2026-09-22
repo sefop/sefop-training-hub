@@ -1,8 +1,20 @@
 # Section 07 — Working with legacy decision-support software
 
+## Introduction
+
+### Motivation
+
 Most projects do not start from an empty repository. The code was inherited, or the project started before anyone
 thought about tests. This section covers how to change such code safely: modernizing a system that is hard to modify,
 and fixing a bug so it stays fixed.
+
+### Out of scope
+
+- **Rewriting a system from scratch.** The chapters assume you keep the system and improve it in place; designing a new
+  one is [Section 04 — Designing decision-support software](../04-design/README.md).
+- **How to write the tests that make a change safe.** That is
+  [Section 05 — Testing decision-support software](../05-testing/README.md); this section assumes you can already
+  write them.
 
 ## Who this section is for
 

@@ -3,6 +3,10 @@
 > **Status:** planned. No chapters yet; this page collects the ideas the section will develop. Working titles may
 > change before the first chapter is written.
 
+## Introduction
+
+### Motivation
+
 A decision-support system creates value only once it is **deployed**: installed and running where the business uses it,
 a place called **production**, often every day or every week, against data it has never seen. **The difference this
 section addresses:** deploying ordinary software means shipping code, and a failed deployment is usually loud, with an
@@ -16,26 +20,9 @@ This section answers two questions:
 1. **How do you deploy decision-support software?** Chapters 01–04.
 2. **What do you measure once it runs in production?** Chapters 05–06.
 
-## Who this section is for
+### Ideas to develop
 
-- **Scientists** who put their own models into production, often without a dedicated platform team.
-- **Engineering managers** responsible for systems the business depends on. Chapter 06 explains which production
-  measures to ask your team for.
-
-## Planned chapters
-
-| # | Working title | After it you can… |
-|:---:|---|---|
-| 01 | How a decision reaches its users | Choose the deployment shape (a scheduled batch run, an on-demand service, or an interactive planning tool) that fits the cadence of the decision |
-| 02 | Package the model with its solver | Run the same model, solver version, and license setup on a laptop, a CI server, and production |
-| 03 | Plan for runs that end badly | Set a time limit and a fallback, so a run that hits the limit or finds no feasible solution still leaves the business with a usable plan |
-| 04 | Release a new model safely | Compare a new model against the current one on real data before switching, and roll back when it is worse |
-| 05 | Measure the health of every run | Record for each run whether it finished, how the solver behaved, whether the input looked like what the model expects, and enough to reproduce it |
-| 06 | Measure the quality of the decisions | Track whether the decisions stay good and stay used: objective value against a baseline, how often planners override the plan, and the business result |
-
-## Ideas to develop
-
-### How to deploy
+#### How to deploy
 
 - **Cadence drives the deployment shape.** Section 01's four examples run on four cadences. Working hypothesis: an
   annual mine plan can be a tool an analyst runs by hand, a weekly delivery plan fits a scheduled batch run, and the
@@ -55,7 +42,7 @@ This section answers two questions:
 - **Shadow runs.** Before switching models, run the new one alongside the current one on the same data for a few
   cycles, and compare their decisions and objective values. The switch then rests on a measured delta, not on hope.
 
-### What to measure in production
+#### What to measure in production
 
 - **The baseline from ordinary software.** The [DORA](https://dora.dev/) delivery metrics measure how often a team
   deploys, how long a change takes to reach production, how often a deployment fails, and how fast the team recovers.
@@ -83,11 +70,28 @@ This section answers two questions:
 - **Track quality over time as a benchmark,** not only as pass/fail tests. Section 05, chapter 07 suggests tracking the
   average gap to an exact reference for heuristics; production monitoring extends that idea.
 
-## What this section will not cover
+### Out of scope
 
 - **Specific cloud providers or deployment platforms.** The practices are meant to transfer across them.
 - **Monitoring the forecasts that feed a model.** When demand or travel times come from a predictive model, tracking
   its accuracy is a machine-learning topic; this section monitors the optimization side.
+
+## Who this section is for
+
+- **Scientists** who put their own models into production, often without a dedicated platform team.
+- **Engineering managers** responsible for systems the business depends on. Chapter 06 explains which production
+  measures to ask your team for.
+
+## Planned chapters
+
+| # | Working title | After it you can… |
+|:---:|---|---|
+| 01 | How a decision reaches its users | Choose the deployment shape (a scheduled batch run, an on-demand service, or an interactive planning tool) that fits the cadence of the decision |
+| 02 | Package the model with its solver | Run the same model, solver version, and license setup on a laptop, a CI server, and production |
+| 03 | Plan for runs that end badly | Set a time limit and a fallback, so a run that hits the limit or finds no feasible solution still leaves the business with a usable plan |
+| 04 | Release a new model safely | Compare a new model against the current one on real data before switching, and roll back when it is worse |
+| 05 | Measure the health of every run | Record for each run whether it finished, how the solver behaved, whether the input looked like what the model expects, and enough to reproduce it |
+| 06 | Measure the quality of the decisions | Track whether the decisions stay good and stay used: objective value against a baseline, how often planners override the plan, and the business result |
 
 ---
 

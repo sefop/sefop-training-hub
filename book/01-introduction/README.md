@@ -3,26 +3,16 @@
 > **Status:** planned. No chapters yet; this page collects the ideas the section will develop. Working titles may
 > change before the first chapter is written.
 
+## Introduction
+
+### Motivation
+
 Operations research creates business value by helping organizations make better decisions. That value reaches the
 business through **decision-support software**: software that runs repeatedly to turn data, mathematical models, and
 business rules into recurring decisions. This section explains what that software is, why it often ends up hard to
 maintain, and how the rest of the book is organized to address it.
 
-## Who this section is for
-
-Everyone: scientists who write the models and managers who lead the teams that build them. No chapter here assumes a
-software engineering background.
-
-## Planned chapters
-
-| # | Working title | After it you can… |
-|:---:|---|---|
-| 01 | What decision-support software is | Tell decision-support software apart from a one-off analysis, and place a system on the strategic, tactical, or operational level |
-| 02 | What goes wrong, and why | Recognize the symptoms of weak engineering in decision-support software, and name its two root causes |
-| 03 | AI coding assistants as amplifiers | Explain why AI assistants raise the value of engineering practices instead of replacing them |
-| 04 | How to read this book | Pick a reading path for your role and find the sections that apply to your situation |
-
-## Ideas to develop
+### Ideas to develop
 
 - **Four examples on four cadences**, one per level of decision: the **annual** extraction plan of a mine, the
   **monthly** shift schedules of a retail store, the **weekly** delivery plan of a transportation network, and the
@@ -47,9 +37,23 @@ software engineering background.
 - **Where the book sits in SEFOP.** SEFOP has four dimensions: Train, Lead, Deliver, and Go Agentic. This book covers
   Train and Lead. Deliver lives in the reference-implementation repositories, and Go Agentic in `sefop-agentic`.
 
-## What this section will not cover
+### Out of scope
 
 - **How to apply any practice.** This section argues why the practices matter; Sections 03–09 explain how.
+
+## Who this section is for
+
+Everyone: scientists who write the models and managers who lead the teams that build them. No chapter here assumes a
+software engineering background.
+
+## Planned chapters
+
+| # | Working title | After it you can… |
+|:---:|---|---|
+| 01 | What decision-support software is | Tell decision-support software apart from a one-off analysis, and place a system on the strategic, tactical, or operational level |
+| 02 | What goes wrong, and why | Recognize the symptoms of weak engineering in decision-support software, and name its two root causes |
+| 03 | AI coding assistants as amplifiers | Explain why AI assistants raise the value of engineering practices instead of replacing them |
+| 04 | How to read this book | Pick a reading path for your role and find the sections that apply to your situation |
 
 ---
 

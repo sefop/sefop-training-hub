@@ -3,27 +3,16 @@
 > **Status:** planned. No chapters yet; this page collects the ideas the section will develop. Working titles may
 > change before the first chapter is written.
 
+## Introduction
+
+### Motivation
+
 A decision-support system is built from parts that change at different speeds. The data changes every run, business
 rules change every few months, the formulation changes as the team learns the problem, and the solver may change once
 in the system's life. **The difference this section addresses:** when those parts are tangled in one script, every
 change to one of them risks breaking the others. Design is the practice of drawing boundaries between them.
 
-## Who this section is for
-
-Scientists who write the models and want a system that stays easy to change. Engineering managers can read chapter 01
-to understand what a well-structured system looks like.
-
-## Planned chapters
-
-| # | Working title | After it you can… |
-|:---:|---|---|
-| 01 | The parts of a decision-support system | Name the components of a system — data input, validation, business rules, model building, solving, and output — and draw the boundaries between them |
-| 02 | Separate the model from the solver | Swap solvers without rewriting the model |
-| 03 | Keep data out of the formulation | Load and validate data before it reaches the model, so the formulation only sees clean parameters |
-| 04 | Keep business rules visible | Place business rules where the business can review them, apart from the mathematics |
-| 05 | Design for reproducibility | Make the same inputs always produce the same decision, like a controlled experiment |
-
-## Ideas to develop
+### Ideas to develop
 
 - **Modularity through solver swapping.** Modularity means building a system from parts that can be replaced one at a
   time. Operations research scientists already practise it when they swap a solver without touching the formulation;
@@ -40,9 +29,24 @@ to understand what a well-structured system looks like.
 - **A trade-off to state honestly:** more boundaries mean more files and more indirection. For a two-week prototype, one
   script may be the right design.
 
-## What this section will not cover
+### Out of scope
 
 - **User-interface design** and **enterprise architecture** beyond a single decision-support system.
+
+## Who this section is for
+
+Scientists who write the models and want a system that stays easy to change. Engineering managers can read chapter 01
+to understand what a well-structured system looks like.
+
+## Planned chapters
+
+| # | Working title | After it you can… |
+|:---:|---|---|
+| 01 | The parts of a decision-support system | Name the components of a system — data input, validation, business rules, model building, solving, and output — and draw the boundaries between them |
+| 02 | Separate the model from the solver | Swap solvers without rewriting the model |
+| 03 | Keep data out of the formulation | Load and validate data before it reaches the model, so the formulation only sees clean parameters |
+| 04 | Keep business rules visible | Place business rules where the business can review them, apart from the mathematics |
+| 05 | Design for reproducibility | Make the same inputs always produce the same decision, like a controlled experiment |
 
 ---
 
