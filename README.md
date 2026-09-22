@@ -4,7 +4,7 @@ This hub is part of [SEFOP](https://github.com/sefop) and serves two audiences:
 1. **Operations research scientists** who want to ship decision-support software (DSS) with professional standards.
 2. **Engineering managers** who lead the teams building them.
 
-The hub is written as a small practical book that moves from general to particular: what decision-support software is
+The hub is written as a practical e-book that moves from general to particular: what decision-support software is
 and when a company needs it, how its lifecycle differs from that of ordinary software, and then one section per phase
 of that lifecycle. Chapters explain the ideas in a language-agnostic way, and some end with exercises in code.
 
@@ -31,8 +31,7 @@ of that lifecycle. Chapters explain the ideas in a language-agnostic way, and so
 
 ## Appendix
 
-- [Learning Roadmap](book/appendix/learning-roadmap.md) — books, courses, and videos in a suggested order to learn software engineering for building decision-support 
-  software.
+- [Learning Roadmap](book/appendix/learning-roadmap.md) — a suggested order to learn software engineering for building decision-support software.
 - [Practice Repositories](book/appendix/practice-repositories.md) — language-specific exercises for the chapters.
 - [Glossary](book/appendix/glossary.md) — every software engineering term used in the book, defined once.
 
