@@ -19,7 +19,7 @@
     // The "Check yourself" answers use <details>; the root table separates questions with <br>;
     // figures may need <img> for sizing.
     "MD033": {
-      "allowed_elements": ["details", "summary", "img", "a", "br", "picture", "source"]
+      "allowed_elements": ["details", "summary", "img", "a", "br", "p", "picture", "source"]
     },
 
     // Pseudocode blocks are deliberately language-agnostic, so they carry no language tag.

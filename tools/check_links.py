@@ -15,7 +15,9 @@ import sys
 from pathlib import Path
 
 SKIP_DIRS = {".git", ".claude", "workshops", "node_modules"}
-LINK = re.compile(r"\]\(([^)\s]+)\)")
+# Markdown links and images, plus the src/href of the raw HTML the book uses for
+# centered figures — an <img> pointing at a missing file must fail like a ![] does.
+LINK = re.compile(r"\]\(([^)\s]+)\)|(?:src|href)\s*=\s*\"([^\"]+)\"")
 HEADING = re.compile(r"^#{1,6} (.+)$", re.M)
 FENCE = re.compile(r"^```.*?^```", re.M | re.S)
 COMMENT = re.compile(r"<!--.*?-->", re.S)
@@ -61,7 +63,7 @@ def main() -> int:
     for f in files:
         here = f.relative_to(root)
         for match in LINK.finditer(sources[f]):
-            target = match.group(1)
+            target = match.group(1) or match.group(2)
             if target.startswith(("http://", "https://", "mailto:", "#!")):
                 continue
             path, _, anchor = target.partition("#")

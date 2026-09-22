@@ -31,11 +31,13 @@ important software.
 
 Decision-support software often has weak software engineering practices, especially in the components surrounding
 the mathematical model. Some examples are:
+
 - Usage of jupyter notebooks.
 - Absence or lack of automated tests.
 - Manual steps to deploy the application.
 
 What are the consequences? the same consequences that happens in other software when unproper practices are used:
+
 - Code works on one machine but is difficult to reproduce elsewhere.
 - Systems are difficult for peers -and even for their original authors- to maintain or extend.
 - Developers are afraid of modifying the system because the consequences are unpredictable.
@@ -61,6 +63,7 @@ debt is not an accident of ignorance, it is a choice made under delivery pressur
 
 A decision-support system is a mixture of two disciplines (operations research and software engineering), and the
 mixture raises new questions that are not obvious to answer. For example:
+
 - How to automatically test an optimization model?
 - How to design a decision-support system to be solver-agnostic?
 - How should we design an experimentation platform to assess model changes?
@@ -70,7 +73,10 @@ mixture raises new questions that are not obvious to answer. For example:
 What does weak engineering cost, in practice? Think of a system's total progress — features delivered, decisions
 supported, questions the business can now ask — against time.
 
-![Total progress against time for three systems: solid foundations, legacy system, and short-lived system](assets/02-progress-over-time.png)
+<p align="center">
+  <img src="assets/02-progress-over-time.png" width="640"
+       alt="Total progress against time for three systems: solid foundations, legacy system, and short-lived system">
+</p>
 
 > [!NOTE]
 > The curves are illustrative, after Ousterhout (2018) — an ordering, not measured data.

@@ -55,7 +55,11 @@ A more useful way to staff the team is to position the contributors against the 
 operations research and software engineering.
 
 <!-- TODO figure: the two overlapping circles, software engineering and operations research.
-![Two overlapping circles, software engineering and operations research, with developers on the software engineering side, OR engineers in the overlap, and scientists on the operations research side](assets/01-contributors-se-or.svg)
+<p align="center">
+  <img src="assets/01-contributors-se-or.svg" width="560"
+       alt="Software engineering and operations research as overlapping circles: developers on the software
+       engineering side, OR engineers in the overlap, scientists on the operations research side">
+</p>
 -->
 
 1. **Developers** work on what is unrelated to the mathematics: the database, the data pipelines, the deployment, the
