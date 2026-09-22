@@ -61,7 +61,9 @@ belong in the same person, or even in the same team.
 Position the contributors against the two disciplines the product needs, operations research and software
 engineering.
 
+<!-- TODO figure: the two overlapping circles, software engineering and operations research.
 ![Two overlapping circles, software engineering and operations research, with developers on the software engineering side, OR engineers in the overlap, and scientists on the operations research side](assets/01-contributors-se-or.svg)
+-->
 
 1. **Developers** work on what is unrelated to the mathematics: the database, the data pipelines, the deployment, the
    interfaces people use. They need no operations research to do it well.

@@ -3,9 +3,8 @@
 Operations research creates business value by helping organizations make better decisions. That value reaches the
 business through **decision-support software**: software that runs repeatedly to turn data, mathematical models, and
 business rules into recurring decisions. This book is about the engineering of decision-support systems, in particular,
-what are the differences from traditional software, how can we tackle the software engineering problems that arise in 
+what are the differences from traditional software, how can we tackle the software engineering problems that arise in
 the intersection between operations research and software development.
-
 
 ---
 
@@ -15,17 +14,15 @@ Operations research turns data, business needs, and mathematics into a decision.
 concentrate on the first half of that sentence: how to formulate a problem, and how to solve it. What happens to the
 decision afterwards — who runs the model next month, on which machine, with whose data — gets far less attention.
 
-That omission would be harmless if every decision were made once. Many are not, for example:
+Some example problems that require a decision recurrently are:
 
 - Planning the annual extraction of resources from a mine.
 - Building the monthly shift schedules of a retail store.
 - Recovering the daily operation from a weather disruption in an airline.
 
-These recurring decisions require software to be executed, and they can be classified a special type of software, a
-**decision-support software**. Because decision-support software runs on a cadence rather than ending at a deliverable,
+These recurring decisions require software to be executed, and they can be classified as special type of software, a
+[decision-support system](../appendix/glossary.md#decision-support-system). Because decision-support software runs on a cadence rather than ending at a deliverable,
 it must be maintained, tested, deployed and evolved just as any other important software.
-
-
 
 ### The idea
 
@@ -94,7 +91,8 @@ engineering than a daily run used by one planner.
 
 ### Where this stops working
 
-The line between project and product is not always sharp, and drawing it too early costs money in both directions.
+> [!WARNING]
+> The line between project and product is not always sharp, and drawing it too early costs money in both directions.
 
 - **A genuine one-off analysis is not decision-support software.** Engineering it as a product — tests, deployment,
   monitoring — spends money that the single decision will never return.
@@ -143,7 +141,9 @@ debt is not an accident of ignorance, it is a choice made under delivery pressur
 **Technical.** A decision-support system is a mixture of two disciplines, and the mixture raises questions ordinary
 business software never has to answer.
 
+<!-- TODO figure: the decision-support system box, software components beside applied mathematics.
 ![A decision-support system as one system holding software components and applied mathematics side by side](assets/02-dss-software-and-mathematics.svg)
+-->
 
 - **How do you test an optimization model automatically,** when the expected answer is the very thing the model
   computes? → [Section 05](../05-testing/README.md)
@@ -163,7 +163,8 @@ supported, questions the business can now ask — against time.
 
 ![Total progress against time for three systems: solid foundations, legacy system, and short-lived system](assets/02-progress-over-time.png)
 
-*Illustrative, after Ousterhout (2018).*
+> [!NOTE]
+> The curves are illustrative, after Ousterhout (2018) — an ordering, not measured data.
 
 Three trajectories, all of them common:
 
@@ -203,7 +204,8 @@ foundations path overtakes the others if the system lives long enough — not a 
 
 ### Where this stops working
 
-Not every system deserves foundations, and this chapter is not an argument that it does.
+> [!WARNING]
+> Not every system deserves foundations, and this chapter is not an argument that it does.
 
 - **Short-lived systems are sometimes the correct choice.** A prototype built to answer one question, and discarded
   afterwards, should be built fast and cheap.
@@ -211,7 +213,7 @@ Not every system deserves foundations, and this chapter is not an argument that 
   changes its mind, and on how long the system lives. Anyone who quotes you a date for it is guessing.
 - **The symptoms are signals, not proof.** Code that runs on one machine may simply be new. What makes the four
   symptoms serious is the combination, and the cadence behind it:
-  [chapter 01](#01--what-decision-support-software-is) explains why a recurring decision cannot live with them.
+  [chapter 01](#01--decision-support-software) explains why a recurring decision cannot live with them.
 
 ---
 

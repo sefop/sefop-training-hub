@@ -128,6 +128,7 @@ output is the very thing it exists to compute. The chapter will map each part of
 fits it, and explain why the rest of this section, chapters 02–09, concentrates on the model.
 
 > **Practice it**
+>
 > - Python: coming soon
 > - Java: coming soon
 
@@ -212,12 +213,16 @@ only be the oracle at teaching scale, which is exactly how [chapter 04](#04--ora
 
 ### Where this stops working
 
-The knapsack does not fully honour the claim of this chapter. It is only *weakly* NP-hard: a pseudo-polynomial dynamic
+> [!WARNING]
+> The knapsack does not fully honour the claim of this chapter.
+
+It is only *weakly* NP-hard: a pseudo-polynomial dynamic
 program solves it exactly, so a cheap independent oracle does exist for this particular problem. The oracle problem
 bites hardest on general MIPs, where no such shortcut is available. The knapsack is used here because it is small
 enough to reason about by hand, not because it is the hardest case.
 
 > **Practice it**
+>
 > - Python: [training-testing-python — exercise 5, Setup](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#setup)
 > - Java: coming soon
 
@@ -319,7 +324,10 @@ fail.
 
 ### Where this stops working
 
-Contract tests are a trade-off, not a free win. They tell you *that* a solver is wrong, not *why*: a failing situation
+> [!WARNING]
+> Contract tests are a trade-off, not a free win.
+
+They tell you *that* a solver is wrong, not *why*: a failing situation
 does not point at the line that caused it. Tests written against an algorithm's internals — say, the table a dynamic
 program fills — catch bugs earlier and closer to their cause. They are legitimate, as long as everyone agrees that they
 may be deleted together with the algorithm they test. Keep them separate from the contract tests. What contract tests
@@ -327,6 +335,7 @@ buy in exchange is a suite that survives a solver swap, which in a production pi
 test suites assume.
 
 > **Practice it**
+>
 > - Python: [training-testing-python — exercise 5, Practice: the contract](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#practice-the-contract)
 > - Java: coming soon
 
@@ -433,13 +442,17 @@ carry no meaning when the instance is infeasible, so asserting them would test a
 
 ### Where this stops working
 
-Thirteen situations pin down thirteen points in an input space that is effectively unbounded, and every one of them
-required a person to work out the answer first. That is the ceiling of a specified oracle: it does not scale to a
+> [!WARNING]
+> Thirteen situations pin down thirteen points in an input space that is effectively unbounded, and every one of them
+> required a person to work out the answer first.
+
+That is the ceiling of a specified oracle: it does not scale to a
 catalogue of thousands of items, and it is not meant to. Its job is to fix expected behavior across a representative
 slice of the input space. Two further assumptions are worth naming: the instances are small enough to solve by hand,
 and the solver promises exact optimality. [Chapter 07](#07--when-optimality-is-not-guaranteed) drops the second one.
 
 > **Practice it**
+>
 > - Python: [training-testing-python — exercise 5, Practice: situation tables](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#practice-situation-tables)
 > - Java: coming soon
 
@@ -534,6 +547,7 @@ metamorphic relations the part of this toolkit that scales.
 - **Numerical tolerance.** "Scales by exactly $k$" means within a small tolerance once calorie counts are real numbers.
 
 > **Practice it**
+>
 > - Python: [training-testing-python — exercise 5, Practice: metamorphic relations](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#practice-metamorphic-relations)
 > - Java: coming soon
 
@@ -635,6 +649,7 @@ that nobody anticipated.
   against mistakes the two implementations do not have in common.
 
 > **Practice it**
+>
 > - Python: [training-testing-python — exercise 5, Practice: differential testing](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#practice-differential-testing)
 > - Java: coming soon
 
@@ -748,6 +763,7 @@ expect after.total_calories <= exact.total_calories
   as in [chapter 06](#06--differential-testing).
 
 > **Practice it**
+>
 > - Python: [training-testing-python — exercise 5, Your turn: shortest path](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#your-turn-shortest-path) — apply chapters 04–06 to an untested solver
 > - Java: coming soon
 
@@ -772,6 +788,7 @@ therefore ask the solver for both, and verify optimality with a few matrix-vecto
 rather than computes.
 
 > **Practice it**
+>
 > - Python: [training-testing-python — exercise 4](https://github.com/sefop/training-testing-python/tree/main/exercises/4-testing-lp-single-objective) (in preparation)
 > - Java: coming soon
 
@@ -790,6 +807,7 @@ regardless of the instance — for example, that no returned solution dominates 
 agree with the corresponding lexicographic single-objective optima.
 
 > **Practice it**
+>
 > - Python: [training-testing-python — exercise 6](https://github.com/sefop/training-testing-python/tree/main/exercises/6-testing-mip-multi-objective) (in preparation)
 > - Java: coming soon
 

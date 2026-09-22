@@ -1,0 +1,32 @@
+// Markdown style rules for the book.
+{
+  "config": {
+    "default": true,
+
+    // Every chapter repeats "### The problem", "### The idea", "### Worked example".
+    // Only complain when two headings collide under the same parent.
+    "MD024": { "siblings_only": true },
+
+    // Line length is a writing convention (the book wraps prose at 120), not a rendering
+    // concern, and the appendix files predate it. Enforcing it would reflow pages of correct
+    // content for no reader benefit.
+    "MD013": false,
+
+    // A bold lead-in line before a definition is a deliberate style in the appendix, not a
+    // heading someone forgot to mark up.
+    "MD036": false,
+
+    // The "Check yourself" answers use <details>; the root table separates questions with <br>;
+    // figures may need <img> for sizing.
+    "MD033": {
+      "allowed_elements": ["details", "summary", "img", "a", "br", "picture", "source"]
+    },
+
+    // Pseudocode blocks are deliberately language-agnostic, so they carry no language tag.
+    "MD040": false,
+
+    // Chapter headings are "## 01 — Title"; the em dash is not trailing punctuation.
+    "MD026": { "punctuation": ".,;:!。，；：！" }
+  },
+  "globs": ["**/*.md", "!workshops/**", "!node_modules/**"]
+}

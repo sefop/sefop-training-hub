@@ -1,6 +1,7 @@
 # SEFOP Training Hub
 
 This hub is part of [SEFOP](https://github.com/sefop) and serves two audiences:
+
 1. **Operations research scientists** who want to ship decision-support software (DSS) with professional standards.
 2. **Engineering managers** who lead the teams building them.
 
@@ -41,4 +42,4 @@ Slides and material from past and upcoming talks live in [workshops](workshops/)
 
 ## For Questions
 
-Go here https://github.com/orgs/sefop/discussions.
+Go here <https://github.com/orgs/sefop/discussions>.

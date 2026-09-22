@@ -1,0 +1,32 @@
+name: Book checks
+
+# The book is held together by cross-references: glossary links, chapter anchors,
+# section links, figure paths. A broken one renders as a link that goes nowhere,
+# so nobody notices it by reading. These two checks notice.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check internal links and anchors
+        run: python tools/check_links.py
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Check only — never --fix here. CI that rewrites your branch turns a green
+      # build into commits nobody wrote. Run `npx markdownlint-cli2 --fix` locally.
+      - name: Lint markdown
+        run: npx --yes markdownlint-cli2@0.13.0
