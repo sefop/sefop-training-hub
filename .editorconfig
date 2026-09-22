@@ -1,0 +1,28 @@
+# Editor settings for the book. The 120-column width is a writing convention: GitHub reflows
+# markdown anyway, so this exists to keep diffs readable, not to change what a reader sees.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+[*.md]
+# JetBrains uses this as the right margin; enable "Wrap text if long" in
+# Settings -> Editor -> Code Style -> Markdown so typing respects it.
+max_line_length = 120
+ij_wrap_on_typing = true
+ij_markdown_wrap_text_if_long = true
+ij_markdown_wrap_text_inside_blockquotes = true
+# The book uses no two-space hard line breaks, and markdownlint's MD009 already forbids them.
+trim_trailing_whitespace = true
+
+[*.py]
+max_line_length = 120
+indent_style = space
+indent_size = 4
+
+[*.{yml,yaml,jsonc,json}]
+indent_style = space
+indent_size = 2

@@ -8,7 +8,7 @@ the intersection between operations research and software development.
 
 ---
 
-## 01 — Decision-support software
+## Decision-support software
 
 Operations research turns data, business needs, and mathematics into a decision. Training and literature in the field
 concentrate on the first half of that sentence: how to formulate a problem, and how to solve it. What happens to the
@@ -21,28 +21,33 @@ Some example problems that require a decision recurrently are:
 - Recovering the daily operation from a weather disruption in an airline.
 
 These recurring decisions require software to be executed, and they can be classified as special type of software, a
-[decision-support system](../appendix/glossary.md#decision-support-system). Because decision-support software runs on a cadence rather than ending at a deliverable,
-it must be maintained, tested, deployed and evolved just as any other important software.
+[decision-support system](../appendix/glossary.md#decision-support-system). Because decision-support software runs
+on a cadence rather than ending at a deliverable, it must be maintained, tested, deployed and evolved just as any other
+important software.
 
 ---
 
-## 02 — What goes wrong, and why
+## What goes wrong, and why
 
-Decision-support software that was built without engineering practices announces itself the same way across
-companies and industries:
+Decision-support software often has weak software engineering practices, especially in the components surrounding
+the mathematical model. Some examples are:
+- Usage of jupyter notebooks.
+- Absence or lack of automated tests.
+- Manual steps to deploy the application.
 
-1. **The code runs on one machine only** — the author's — and nobody is quite sure what else it needs.
-2. **Peers cannot extend it**, and after a few months neither can the person who wrote it.
-3. **Developers are afraid to modify it**, because nothing tells them whether a change broke a result.
-4. **The system is eventually rewritten rather than evolved**, and the knowledge inside it is rebuilt from scratch.
+What are the consequences? the same consequences that happens in other software when unproper practices are used:
+- Code works on one machine but is difficult to reproduce elsewhere.
+- Systems are difficult for peers -and even for their original authors- to maintain or extend.
+- Developers are afraid of modifying the system because the consequences are unpredictable.
+- Applications eventually need to be rewritten rather than evolved.
 
-These symptoms rarely reach the business as software problems. They arrive as "that change takes three weeks", "only
-one person can run the model", or "the numbers moved and we do not know why".
+Why do we introduce unproper practices in decision-support software? Following the framing by
+[Kanewala & Bieman (2014)](https://doi.org/10.1016/j.infsof.2014.05.006) for scientific software: cultural and
+technical reasons.
 
-Behind those symptoms are two groups of causes, following the framing of
-[Kanewala & Bieman (2014)](https://doi.org/10.1016/j.infsof.2014.05.006) for scientific software.
+### Cultural reasons
 
-**Cultural.** Operations research scientists are trained deeply in mathematics and rarely in software engineering, and
+Operations research scientists are trained deeply in mathematics, but rarely in software engineering, and
 often do not see why the practices should apply to them. The consequence is visible in the literature.
 [Ackoff (1979)](https://doi.org/10.1057/jors.1979.22) already observed operations research becoming identified with
 its models rather than with implementing and maintaining them.
@@ -52,23 +57,15 @@ modellers and found [technical debt](../appendix/glossary.md#technical-debt) in 
 widespread — and, in most cases, introduced deliberately. The last finding is the one that matters for a manager: the
 debt is not an accident of ignorance, it is a choice made under delivery pressure.
 
-**Technical.** A decision-support system is a mixture of two disciplines, and the mixture raises questions ordinary
-business software never has to answer.
+### Technical reasons
 
-<!-- TODO figure: the decision-support system box, software components beside applied mathematics.
-![A decision-support system as one system holding software components and applied mathematics side by side](assets/02-dss-software-and-mathematics.svg)
--->
+A decision-support system is a mixture of two disciplines (operations research and software engineering), and the
+mixture raises new questions that are not obvious to answer. For example:
+- How to automatically test an optimization model?
+- How to design a decision-support system to be solver-agnostic?
+- How should we design an experimentation platform to assess model changes?
 
-- **How do you test an optimization model automatically,** when the expected answer is the very thing the model
-  computes? → [Section 05](../05-testing/README.md)
-- **How do you design the system so the solver can be replaced** without rewriting the formulation? →
-  [Section 04](../04-design/README.md)
-- **How do you compare one formulation against another** on real data, before the change reaches the business? →
-  [Section 06](../06-deployment/README.md)
-
-Neither cause is sufficient on its own. A scientist who wants to engineer well still hits the technical questions,
-and a software engineer who knows the answers to none of the mathematics cannot supply them either. That is the
-argument [Section 08](../08-leading-the-team/README.md) picks up.
+### What is the cost
 
 What does weak engineering cost, in practice? Think of a system's total progress — features delivered, decisions
 supported, questions the business can now ask — against time.
@@ -125,7 +122,7 @@ foundations path overtakes the others if the system lives long enough — not a 
   changes its mind, and on how long the system lives. Anyone who quotes you a date for it is guessing.
 - **The symptoms are signals, not proof.** Code that runs on one machine may simply be new. What makes the four
   symptoms serious is the combination, and the cadence behind it:
-  [chapter 01](#01--decision-support-software) explains why a recurring decision cannot live with them.
+  [chapter 01](#decision-support-software) explains why a recurring decision cannot live with them.
 
 ---
 
@@ -139,7 +136,7 @@ The difficulty is sharper here than in ordinary business software. When an assis
 page breaks, or the number on it is visibly absurd. When an assistant writes a constraint badly, the model returns a
 plan: feasible, optimal for the formulation as written, and wrong. A mistaken constraint reads exactly like a correct
 one, and the cheap check that would expose it — comparing against the right answer — is the thing
-[chapter 02](#02--what-goes-wrong-and-why) named as the technical half of the problem.
+[chapter 02](#what-goes-wrong-and-why) named as the technical half of the problem.
 
 An assistant does not raise or lower the quality of a team's engineering. It multiplies what is already there. The
 [2025 DORA report](https://dora.dev/research/2025/dora-report/), which surveys software teams at large, describes the

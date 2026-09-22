@@ -40,7 +40,7 @@ inside, how to change practice in a team that did not ask for it, and what to tr
 
 ## 01 — How to staff your team
 
-Suppose you accept the diagnosis of [Section 01](../01-introduction/README.md#02--what-goes-wrong-and-why): your
+Suppose you accept the diagnosis of [Section 01](../01-introduction/README.md#what-goes-wrong-and-why): your
 team's mathematics is strong and the software around it is weak. The obvious fix is to hire software developers.
 
 On its own, that fix disappoints. The developer does not know the mathematics, so the formulation — the part where
