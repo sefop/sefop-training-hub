@@ -1,45 +1,31 @@
 # Section 01 — Introduction
 
-## Introduction
-
 Operations research creates business value by helping organizations make better decisions. That value reaches the
 business through **decision-support software**: software that runs repeatedly to turn data, mathematical models, and
-business rules into recurring decisions. This section explains what that software is, why it often ends up hard to
-maintain, and how an organization can solve the problems that arise in decision-support software.
+business rules into recurring decisions. This book is about the engineering of decision-support systems, in particular,
+what are the differences from traditional software, how can we tackle the software engineering problems that arise in 
+the intersection between operations research and software development.
 
-### Out of scope
-
-- **How to apply any practice.** This section argues why the practices matter; Sections 03–09 explain how.
-
-## Chapters
-
-| # | Chapter | After it you can… | Status |
-|:---:|---|---|---|
-| 01 | [What decision-support software is](#01--what-decision-support-software-is) | Tell decision-support software apart from a one-off analysis, and place a system on the strategic, tactical, or operational level | Ready |
-| 02 | [What goes wrong, and why](#02--what-goes-wrong-and-why) | Recognize the symptoms of weak engineering in decision-support software, and name its two root causes | Ready |
-| 03 | [AI coding assistants as amplifiers](#03--ai-coding-assistants-as-amplifiers) | Explain why AI assistants raise the value of engineering practices instead of replacing them | Ready |
-| 04 | [How to read this book](#04--how-to-read-this-book) | Say what each section covers, and where the material that is not in this book lives | Ready |
-
-Read them in order. Chapter 01 defines what the book is about, chapter 02 states the problem the rest of the book
-addresses, chapter 03 places that problem in today's context, and chapter 04 maps the nine sections.
 
 ---
 
-## 01 — What decision-support software is
-
-After this chapter you can tell decision-support software apart from a one-off analysis, and place a system on the
-strategic, tactical, or operational level.
-
-### The problem
+## 01 — Decision-support software
 
 Operations research turns data, business needs, and mathematics into a decision. Training and literature in the field
 concentrate on the first half of that sentence: how to formulate a problem, and how to solve it. What happens to the
 decision afterwards — who runs the model next month, on which machine, with whose data — gets far less attention.
 
-That omission would be harmless if every decision were made once. Many are not. A study that recommends where to open
-two distribution centers ends when the company opens them. A model that schedules next week's deliveries is asked the
-same question every week, with new data, for as long as the network exists. The second kind of work cannot be
-delivered as a report and closed.
+That omission would be harmless if every decision were made once. Many are not, for example:
+
+- Planning the annual extraction of resources from a mine.
+- Building the monthly shift schedules of a retail store.
+- Recovering the daily operation from a weather disruption in an airline.
+
+These recurring decisions require software to be executed, and they can be classified a special type of software, a
+**decision-support software**. Because decision-support software runs on a cadence rather than ending at a deliverable,
+it must be maintained, tested, deployed and evolved just as any other important software.
+
+
 
 ### The idea
 
