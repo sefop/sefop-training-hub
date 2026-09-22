@@ -70,9 +70,25 @@ mixture raises new questions that are not obvious to answer. For example:
 
 ### What is the cost
 
-What does weak engineering cost, in practice? Think of a system's total progress — features delivered, decisions
-supported, questions the business can now ask — against time. The following figure is an interpretation of what
-John Ousterhout calls 'Strategic Programming' v/s 'Tactical Programming' on his book "A Philosophy of Software Design".
+What does weak engineering cost, in practice? Short answer: business value.
+
+Think of a system's total progress — features delivered, decisions
+supported, questions the business can now ask — against time. John Ousterhout in the book "A Philosohpy of Software
+Design" defines two approaches to develop software: strategic and tactical. Tactical programming has the mindset of
+getting something working, without the required investment to sustain that delivery pace. Strategic programming
+realizes that working code is not enough, and it cares for the long-term structure of the system.
+
+The following figure uses that definition to show what I have seen in the industry regarding decision-support software:
+
+1. **Short-lived system.** The system has working code and delivers business value, but on very weak foundations.
+   Within about a year the system cannot absorb the changes the business asks for, and the organization rewrites it
+   or decommissions it.
+2. **Legacy system.** The system provides business value over some years, but at some point the foundations weaken.
+   Either the original developers left, or maybe the engineering practices stopped. In the medium term the system
+   becomes a "legacy system": it becomes difficult to maintain and extend. Progress stalls.
+3. **Solid foundations.** Following a strategic programming approach the system may take slight more time to
+   progress than other others, but soon the investments start to pay off to sustain speed in the long run. The system
+   is easy to maintain and extend.
 
 <p align="center">
   <img src="assets/02-progress-over-time.png" width="640"
@@ -82,134 +98,24 @@ John Ousterhout calls 'Strategic Programming' v/s 'Tactical Programming' on his 
 > [!NOTE]
 > The curves are illustrative, after Ousterhout (2018) — an ordering, not measured data.
 
-Three trajectories, all of them common:
-
-1. **Solid foundations.** The first months are slower: boundaries between data, rules, and model; automated tests;
-   a repeatable way to run it. The slope after that stays roughly constant, because each change costs about what the
-   last one did.
-2. **Legacy system.** The start is fast, and for a year or two nothing looks wrong. Then the original developers move
-   on. Nobody can say what the code does or why, each change takes longer than the one before, and the curve flattens
-   without ever quite stopping.
-3. **Short-lived system.** The fastest start of the three, and the shortest life. Within about a year the system
-   cannot absorb the changes the business asks for, and the organization rewrites it or decommissions it — losing the
-   modelling knowledge inside it.
-
-The three curves are drawn to make a qualitative point, not from measured data. What they claim is an ordering — the
-foundations path overtakes the others if the system lives long enough — not a crossover date.
-
-### Check yourself
-
-1. A planner says "only Ana can run the model". Which of the four symptoms is that, and what does it predict about
-   what happens when Ana changes jobs?
-2. The survey finding is that most technical debt is introduced *deliberately*. Why does that change how a manager
-   should respond to it?
-3. Your system is a six-week proof of concept that will be thrown away. Which trajectory should you aim for?
-
-<details>
-<summary>Answers</summary>
-
-1. Symptom 1, and partly 2: the system runs on one machine and in one head. When Ana leaves, the system does not stop
-   working, but changing it becomes a rewrite — which is symptom 4 arriving on schedule.
-2. Training alone does not fix a deliberate choice. If debt is taken on under delivery pressure, the answer is to
-   change what the team is rewarded for and to make the cost visible, which is the subject of
-   [Section 08](../08-leading-the-team/README.md).
-3. The short-lived one. It is the right trajectory when the system's life is shorter than the time the foundations
-   would take to pay back.
-
-</details>
-
-### Where this stops working
-
-> [!WARNING]
-> Not every system deserves foundations, and this chapter is not an argument that it does.
-
-- **Short-lived systems are sometimes the correct choice.** A prototype built to answer one question, and discarded
-  afterwards, should be built fast and cheap.
-- **The curves say nothing about when the crossover happens.** It depends on the team, on how often the business
-  changes its mind, and on how long the system lives. Anyone who quotes you a date for it is guessing.
-- **The symptoms are signals, not proof.** Code that runs on one machine may simply be new. What makes the four
-  symptoms serious is the combination, and the cadence behind it:
-  [chapter 01](#decision-support-software) explains why a recurring decision cannot live with them.
-
 ---
 
-## 03 — AI coding assistants as amplifiers
+## Delegate the engineering to AI-coding assistants?
 
-More than 70% of scientific programmers already write code with LLM-based tools
-([O'Brien & Eisty, 2026](https://www.computer.org/csdl/magazine/cs/2026/01/11482007/2fJHVugY5UY)). Whether an
-assistant belongs in the workflow is no longer the decision in front of a team; what to do about it is.
+AI-coding assistants are pervasive nowadays. Yet adoption does not guarantee success.
 
-The difficulty is sharper here than in ordinary business software. When an assistant writes a web page badly, the
-page breaks, or the number on it is visibly absurd. When an assistant writes a constraint badly, the model returns a
-plan: feasible, optimal for the formulation as written, and wrong. A mistaken constraint reads exactly like a correct
-one, and the cheap check that would expose it — comparing against the right answer — is the thing
-[chapter 02](#what-goes-wrong-and-why) named as the technical half of the problem.
+The [2025 DORA report](https://dora.dev/research/2025/dora-report/) found that these tools *"primary role in software
+development is that of an **amplifier**"*: they amplify both the strengths and weaknesses of the engineering
+practices of a given team:
 
-An assistant does not raise or lower the quality of a team's engineering. It multiplies what is already there. The
-[2025 DORA report](https://dora.dev/research/2025/dora-report/), which surveys software teams at large, describes the
-same pattern outside operations research: teams with strong practices deliver faster at the same quality, while teams
-with weak ones ship more, and more fragile, output.
+- A team with strong engineering foundations will move faster at good quality.
+- A team with weak engineering foundations will move faster with higher technical debt.
 
-| Practice around the assistant | What the assistant changes | Result |
-|---|---|---|
-| [Automated tests](../appendix/glossary.md#automated-test), [continuous integration](../appendix/glossary.md#continuous-integration), clear boundaries | More code written per week, each change checked automatically | Sustainable acceleration: faster delivery at the quality the team already had |
-| Manual checking, or none; unclear design | More code written per week, checked at the same manual rate as before | Accelerated [technical debt](../appendix/glossary.md#technical-debt): more output, and more of it unverified |
+Most OR teams are already working with coding agents, which means the **amplifier is already switched on**. That is
+the reason the practices this book discusses matter now, not a reason to postpone them.
 
-The mechanism behind both rows is the same, and it is worth stating plainly: an assistant reduces the cost of
-*writing* code. It does not reduce the cost of *deciding whether the code is right*. Where that decision is
-automated, the team can absorb the extra volume. Where it is a person reading a diff, or a planner noticing a strange
-plan, the volume arrives anyway and the checking does not keep up.
-
-This is an argument about where the bottleneck sits, not a measurement of any particular team. The DORA pattern is
-consistent with it; it does not prove it for operations research specifically.
-
-The difference shows up in practice. Two teams get the same request — *no truck may be loaded above 90% of its
-volume* — and both ask an assistant to write the constraint. Both have working code in minutes. What differs is when they find out whether it is right.
-
-| | Team A: tests and CI | Team B: manual checking |
-|---|---|---|
-| Constraint written | In minutes | In minutes |
-| First signal | The test suite runs on the commit; two tests fail because the objective dropped on instances where it should not have | The run produces a plan, and the plan looks plausible |
-| Cost of the signal | Minutes, and the change is still in the author's head | Weeks, if a planner questions a route; otherwise never |
-| What gets learned | The constraint was applied to every truck, including the ones exempt by contract | That the plan "feels tighter than it used to" |
-
-Team B is not slower at writing code than Team A. It is slower at finding out, and the assistant widened that gap by
-making the writing part faster on both sides.
-
-### Check yourself
-
-1. An assistant is asked to make a failing test pass, and edits the test's expected value instead of the code. Which
-   practice catches that, and which one does not?
-2. A team with no automated tests adopts an assistant and triples the amount of code it produces per sprint. What has
-   actually improved?
-3. Why is an assistant riskier on the formulation than on the script that loads the input data?
-
-<details>
-<summary>Answers</summary>
-
-1. Code review of the test change catches it; a green test suite does not, because the suite is now checking the
-   wrong thing. Tests written by a person, and reviewed changes to them, are the defense —
-   [Section 09](../09-ai-assisted-development/README.md) treats this in detail.
-2. The rate of writing. Nothing about the rate of verifying, which is what decides whether the extra code is an asset
-   or a liability.
-3. Because the loader has a cheap oracle and the formulation does not. You know what a correctly parsed row looks
-   like; you do not know the optimal objective value without solving the problem
-   ([Section 05](../05-testing/README.md)).
-
-</details>
-
-### Where this stops working
-
-- **The evidence is not from operations research.** DORA surveys software teams broadly. The mechanism transfers
-  because the oracle problem makes verification *more* expensive here, not less — but that is an inference, not a
-  measurement of OR teams.
-- **The size of the effect is not stable.** Assistants change quickly. The ordering in the table is the durable
-  claim; any specific multiplier is not.
-- **A throwaway prototype genuinely benefits from raw speed.** If the code will be discarded next month, unverified
-  output is a smaller liability than the time spent verifying it.
-
-How to capture the acceleration without accepting the risk is the subject of
-[Section 09](../09-ai-assisted-development/README.md).
+> [!TIP]
+> Solid engineering practices are the prerequisite for capturing value from agentic development.
 
 ---
 
