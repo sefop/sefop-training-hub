@@ -115,11 +115,6 @@ All practice repositories are listed in the [appendix](../appendix/practice-repo
 
 ## 01 — What to test in decision-support software
 
-After this chapter you will be able to name the parts of a decision-support system that need tests, and say which kind
-of test fits each one.
-
-### Planned content
-
 A decision-support system is more than its optimization model. Data arrives from other systems, business rules turn it
 into model parameters, the model computes a decision, and the decision flows back to the people and systems that act
 on it. Each of these parts can break. For most of them, the expected output is cheap to write down: you know what a
@@ -136,11 +131,6 @@ fits it, and explain why the rest of this section, chapters 02–09, concentrate
 
 ## 02 — Why optimization models are hard to test
 
-After this chapter you can explain why the usual way of testing code does not transfer to an optimization model, and
-name the problem that makes it hard.
-
-### The problem
-
 An [automated test](../appendix/glossary.md#automated-test) is a small program that runs your code on a known input
 and checks the output against an expected answer. The textbook example is a calculator: `add(2, 3)` should return 5,
 and you know that without reading a single line of `add`. The test is cheap to write because the expected answer is
@@ -149,8 +139,6 @@ cheap to compute.
 Now try the same with a MIP. To write `expect result.total_calories == ???`, you need the optimal value. For any
 instance large enough to be interesting, computing that value independently means solving the very problem the model
 exists to solve. The test needs the answer before the code can provide it.
-
-### The idea
 
 Whatever decides whether an output is correct is called a [test oracle](../appendix/glossary.md#test-oracle). For the
 calculator, the oracle is arithmetic you already know. The difficulty of building an oracle when the correct output is
@@ -165,8 +153,6 @@ optimality runs into the same wall your solver does.
 The oracle problem is a reason to choose a testing technique deliberately, not a reason to skip testing. A model is
 software: it gets refactored, its data changes, and eventually someone swaps its solver. Chapters 04–06 present three
 kinds of oracle that work around the problem, each at a different cost.
-
-### Worked example
 
 The simplest oracle is a person. Take the [two-item instance](#a-two-item-instance): each $x_i \in \{0, 1\}$,
 so there are $2 \times 2 = 4$ candidate selections, few enough to list.
@@ -236,10 +222,6 @@ enough to reason about by hand, not because it is the hardest case.
 
 ## 03 — Test the contract, not the algorithm
 
-After this chapter you can write tests that keep passing when someone replaces the algorithm behind your model.
-
-### The problem
-
 The function that "solves" a knapsack could be a brute-force enumeration, a greedy heuristic, a dynamic program, or a
 call to a commercial or open-source MIP solver. That choice changes over time: today enumeration is fast enough;
 next year the catalogue has thousands of items and someone swaps in a MIP solver.
@@ -248,8 +230,6 @@ When tests check *how* the answer was computed, a legitimate swap turns them red
 got worse. A [regression](../appendix/glossary.md#regression) — a behavior that used to work and no longer does —
 never happened, yet the tests report one. Teams in that situation learn to rewrite tests with every change, or to
 ignore red tests altogether. Both defeat the purpose of having tests.
-
-### The idea
 
 A [contract](../appendix/glossary.md#contract) is the promise a piece of code makes to its callers: what it needs as
 input and what it guarantees as output, and nothing about how. Everything else — the algorithm, its running time, its
@@ -273,8 +253,6 @@ Writing contract tests first has a useful side effect. Each test is a question a
 promise when nothing is affordable?" — so the contract must be made explicit before any solver exists. It also pushes
 the design toward modularity: a component that can be tested without looking at its internals is, by construction, a
 component whose internals do not leak into its interface.
-
-### Worked example
 
 The same instance from [chapter 02](#02--why-optimization-models-are-hard-to-test), tested two ways. First, a test
 coupled to the algorithm:
@@ -351,17 +329,10 @@ test suites assume.
 
 ## 04 — Oracles you write by hand
 
-After this chapter you can choose a small, systematic set of instances, work out their answers by hand, and turn each
-one into a contract test.
-
-### The problem
-
 [Chapter 02](#02--why-optimization-models-are-hard-to-test) showed that a person can solve a two-item instance by
 hand. The harder question is *which* instances to write. Small instances picked at random tend to cover whatever comes
 to mind first, which is usually the ordinary case. Bugs, however, cluster at the edges: an empty catalogue, a budget of
 exactly zero, two items that tie. Without a method, those edges are left to luck.
-
-### The idea
 
 This chapter uses the first of three oracle families that the rest of the section builds on:
 
@@ -408,9 +379,7 @@ involved:
 Read situations 2 and 3 against 4 and 6. All four produce a zero-calorie answer of some kind, and only two of them are
 infeasible. That distinction is exactly what a boundary is for.
 
-### Worked example
-
-One row of the table, situation 2, as a specified-oracle test:
+Take one row of the table, situation 2, written as a specified-oracle test:
 
 ```
 r = item(name="R", cost=1, volume=1, calories=10, max_quantity=5)
@@ -467,15 +436,9 @@ and the solver promises exact optimality. [Chapter 07](#07--when-optimality-is-n
 
 ## 05 — Metamorphic relations
 
-After this chapter you can test a model on instances whose optimal value nobody knows.
-
-### The problem
-
 Every expected answer in [chapter 04](#04--oracles-you-write-by-hand) required a person to work it out first. That
 caps testing at instances small enough to enumerate by hand. The instances you care about in practice — a real
 catalogue, a real network — are far beyond that, and no one can tell you their optimal value.
-
-### The idea
 
 A [metamorphic relation](../appendix/glossary.md#metamorphic-relation) is a relation that must hold between the
 outputs of two related runs, even when you know neither output. The recipe has three steps:
@@ -501,9 +464,7 @@ the knapsack, four of them hold on every instance:
 None of the four compares the selected quantities. A transformation can turn a near-tie into an exact tie, and the
 [contract](#03--test-the-contract-not-the-algorithm) never promised which selection wins among equals.
 
-### Worked example
-
-One relation — raising a budget never decreases the optimum:
+Written as a test, the first relation — raising a budget never decreases the optimum — looks like this:
 
 ```
 a = item(name="A", cost=2, volume=1, calories=10, max_quantity=2)
@@ -560,11 +521,6 @@ metamorphic relations the part of this toolkit that scales.
 
 ## 06 — Differential testing
 
-After this chapter you can use a slow, obviously correct implementation to catch mistakes in the formulation you hand
-to a solver.
-
-### The problem
-
 The relations of [chapter 05](#05--metamorphic-relations) check that runs are consistent with each other, but a model
 can be consistently wrong. The mistakes that matter most in practice live in the formulation: a coefficient attached to
 the wrong sum, a budget applied to the wrong constraint, an index set that silently drops an item. The solver then
@@ -572,8 +528,6 @@ optimizes the wrong model faithfully.
 
 It is worth being precise here. A mature MIP solver such as HiGHS is very unlikely to compute a wrong optimum for the
 model it was given. The realistic risk is that the model does not say what you meant.
-
-### The idea
 
 A [pseudo-oracle](../appendix/glossary.md#pseudo-oracle) is a second, independent implementation of the same contract.
 [Differential testing](../appendix/glossary.md#differential-testing) runs both implementations on the same inputs and
@@ -592,9 +546,7 @@ against brute force on a toy case." Three details turn that habit into a reliabl
    several selections tie, the [contract](#03--test-the-contract-not-the-algorithm) allows the two implementations to
    return different ones.
 
-### Worked example
-
-Comparing two implementations over generated instances:
+In code, the comparison over generated instances looks like this:
 
 ```
 rng = random_generator(seed=20260908)
@@ -666,11 +618,6 @@ that nobody anticipated.
 
 ## 07 — When optimality is not guaranteed
 
-After this chapter you can decide which of your tests still apply when the solver is a heuristic, or a MIP solver
-stopped by a time limit.
-
-### The problem
-
 Every expected answer in [chapter 04](#04--oracles-you-write-by-hand) and every relation in
 [chapter 05](#05--metamorphic-relations) assumes that the solver returns a truly optimal answer. That assumption fails
 for a [heuristic](../appendix/glossary.md#heuristic): a method that gives up the guarantee of optimality on purpose, in
@@ -679,8 +626,6 @@ exchange for finishing in reasonable time on instances too large to solve exactl
 It also fails, less visibly, for an exact MIP solver with a time limit. When the clock runs out, the solver returns its
 best incumbent and an optimality gap. From the contract's point of view, that solver is a heuristic. Testing either one
 against "did you find the exact optimum" fails it for doing precisely what it was designed to do.
-
-### The idea
 
 Start again from the [contract](#03--test-the-contract-not-the-algorithm). A heuristic's contract is weaker:
 
@@ -710,9 +655,7 @@ survives is applying a feasibility check to every transformed instance.
 `candidate.feasible == reference.feasible` and `candidate.total_calories <= reference.total_calories`, plus a floor
 if the heuristic has a guarantee.
 
-### Worked example
-
-A greedy heuristic that sorts items by calories per unit of cost and takes each one while it still fits. One item, a
+Take a greedy heuristic that sorts items by calories per unit of cost and takes each one while it still fits. One item, a
 cost budget of 2, and a volume budget of 10 that never binds:
 
 ```
@@ -776,11 +719,6 @@ expect after.total_calories <= exact.total_calories
 
 ## 08 — Duality as an oracle
 
-After this chapter you will be able to check a linear program's claimed optimum with a certificate, instead of solving
-it a second time.
-
-### Planned content
-
 [Chapter 02](#02--why-optimization-models-are-hard-to-test) argued that checking feasibility is cheap while proving
 optimality is expensive. Linear programming is the exception worth a chapter of its own. By strong duality, a primal
 feasible solution and a dual feasible solution with equal objective values prove each other optimal. A test can
@@ -795,11 +733,6 @@ rather than computes.
 ---
 
 ## 09 — Testing a Pareto front
-
-After this chapter you will be able to test a multi-objective model, where there is no single optimal value to compare
-against.
-
-### Planned content
 
 With two or more objectives, a solver returns a set of trade-offs rather than one answer, and most of the assertions in
 this section have nothing to compare against. The chapter will cover properties that a correct Pareto front must satisfy

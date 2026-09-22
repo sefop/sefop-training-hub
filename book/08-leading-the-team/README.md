@@ -40,11 +40,6 @@ inside, how to change practice in a team that did not ask for it, and what to tr
 
 ## 01 — How to staff your team
 
-After this chapter you can name the kinds of contributor your team needs, and decide which expertise to own inside the
-team and which to borrow from the rest of the organization.
-
-### The problem
-
 Suppose you accept the diagnosis of [Section 01](../01-introduction/README.md#02--what-goes-wrong-and-why): your
 team's mathematics is strong and the software around it is weak. The obvious fix is to hire software developers.
 
@@ -56,10 +51,8 @@ handoff between them, and the weakest part of the system is on the far side of t
 The mistake is treating "software engineering" as one skill that one hire supplies. It is several, and they do not all
 belong in the same person, or even in the same team.
 
-### The idea
-
-Position the contributors against the two disciplines the product needs, operations research and software
-engineering.
+A more useful way to staff the team is to position the contributors against the two disciplines the product needs,
+operations research and software engineering.
 
 <!-- TODO figure: the two overlapping circles, software engineering and operations research.
 ![Two overlapping circles, software engineering and operations research, with developers on the software engineering side, OR engineers in the overlap, and scientists on the operations research side](assets/01-contributors-se-or.svg)
@@ -80,10 +73,8 @@ The third point is the one most teams get wrong in both directions. Scientists d
 engineer knows, and sending them to a generic curriculum wastes their time. They do need a bounded subset, and
 without it no amount of hiring will make the model maintainable, because the model stays theirs.
 
-### Worked example
-
-Take a team of four scientists that owns one decision-support system. What must the team hold, and what can it get
-from elsewhere in the company?
+That still leaves the question of size. Take a team of four scientists that owns one decision-support system: what
+must the team hold, and what can it get from elsewhere in the company?
 
 | Own | Borrow |
 |---|---|
@@ -137,11 +128,6 @@ organization, and keep product ownership.
 
 ## 02 — From science to software: the mindset change
 
-After this chapter you can explain what changes for a scientist when the model stops being an experiment and starts
-being a product the business runs.
-
-### Planned content
-
 A model written for a study is judged by what it shows. The same model inside a decision-support system is judged by
 what it keeps doing: whether it runs on somebody else's machine, whether a change can be made safely next year,
 whether the result can be reproduced when a planner disputes it. The chapter will name the habits that transfer from
@@ -152,10 +138,6 @@ added, and will be honest about what the change costs the individual scientist i
 
 ## 03 — Introducing engineering practices to a team that resists them
 
-After this chapter you can plan a change in practice that outlasts your own involvement in the team.
-
-### Planned content
-
 Resistance to engineering practice is usually rational from where the team stands: the practices cost time now and
 pay later, and nobody is measured on later. The chapter will treat adoption as a change-management problem rather
 than a technical one, around four themes — make the problem visible, make change the easy path, make it theirs, and
@@ -165,10 +147,6 @@ know your terrain — drawing on the change-management material currently in
 ---
 
 ## 04 — Training scientists in software engineering
-
-After this chapter you can plan training for your team, and choose what it should learn first.
-
-### Planned content
 
 Chapter 01 claims scientists need a bounded subset of software engineering. This chapter will say which subset, in
 what order, and how to tell whether the training took. It will build the sequence on the

@@ -24,16 +24,9 @@ These recurring decisions require software to be executed, and they can be class
 [decision-support system](../appendix/glossary.md#decision-support-system). Because decision-support software runs on a cadence rather than ending at a deliverable,
 it must be maintained, tested, deployed and evolved just as any other important software.
 
-
-
 ---
 
 ## 02 — What goes wrong, and why
-
-After this chapter you can recognize the symptoms of weak engineering in decision-support software, and name the two
-root causes behind them.
-
-### The problem
 
 Decision-support software that was built without engineering practices announces itself the same way across
 companies and industries:
@@ -46,9 +39,7 @@ companies and industries:
 These symptoms rarely reach the business as software problems. They arrive as "that change takes three weeks", "only
 one person can run the model", or "the numbers moved and we do not know why".
 
-### The idea
-
-The causes divide into two groups, following the framing of
+Behind those symptoms are two groups of causes, following the framing of
 [Kanewala & Bieman (2014)](https://doi.org/10.1016/j.infsof.2014.05.006) for scientific software.
 
 **Cultural.** Operations research scientists are trained deeply in mathematics and rarely in software engineering, and
@@ -78,8 +69,6 @@ business software never has to answer.
 Neither cause is sufficient on its own. A scientist who wants to engineer well still hits the technical questions,
 and a software engineer who knows the answers to none of the mathematics cannot supply them either. That is the
 argument [Section 08](../08-leading-the-team/README.md) picks up.
-
-### Worked example
 
 What does weak engineering cost, in practice? Think of a system's total progress — features delivered, decisions
 supported, questions the business can now ask — against time.
@@ -142,11 +131,6 @@ foundations path overtakes the others if the system lives long enough — not a 
 
 ## 03 — AI coding assistants as amplifiers
 
-After this chapter you can explain why AI coding assistants raise the value of engineering practices instead of
-replacing them.
-
-### The problem
-
 More than 70% of scientific programmers already write code with LLM-based tools
 ([O'Brien & Eisty, 2026](https://www.computer.org/csdl/magazine/cs/2026/01/11482007/2fJHVugY5UY)). Whether an
 assistant belongs in the workflow is no longer the decision in front of a team; what to do about it is.
@@ -156,8 +140,6 @@ page breaks, or the number on it is visibly absurd. When an assistant writes a c
 plan: feasible, optimal for the formulation as written, and wrong. A mistaken constraint reads exactly like a correct
 one, and the cheap check that would expose it — comparing against the right answer — is the thing
 [chapter 02](#02--what-goes-wrong-and-why) named as the technical half of the problem.
-
-### The idea
 
 An assistant does not raise or lower the quality of a team's engineering. It multiplies what is already there. The
 [2025 DORA report](https://dora.dev/research/2025/dora-report/), which surveys software teams at large, describes the
@@ -177,10 +159,8 @@ plan, the volume arrives anyway and the checking does not keep up.
 This is an argument about where the bottleneck sits, not a measurement of any particular team. The DORA pattern is
 consistent with it; it does not prove it for operations research specifically.
 
-### Worked example
-
-Two teams get the same request — *no truck may be loaded above 90% of its volume* — and both ask an assistant to
-write the constraint. Both have working code in minutes. What differs is when they find out whether it is right.
+The difference shows up in practice. Two teams get the same request — *no truck may be loaded above 90% of its
+volume* — and both ask an assistant to write the constraint. Both have working code in minutes. What differs is when they find out whether it is right.
 
 | | Team A: tests and CI | Team B: manual checking |
 |---|---|---|
@@ -230,9 +210,6 @@ How to capture the acceleration without accepting the risk is the subject of
 ---
 
 ## 04 — How to read this book
-
-After this chapter you can say what each section of the book covers, and where the material that is deliberately not
-in this book lives.
 
 This book is one part of SEFOP, the Software Engineering Framework for Optimization Programs, which develops four
 capabilities: **Train** (the skills a team needs), **Lead** (how such a team is staffed and led), **Deliver**
