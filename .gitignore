@@ -219,3 +219,6 @@ __marimo__/
 
 # Claude stuff
 .claude/
+
+# Local-only checking tools (see .claude/tools/)
+/tools/

@@ -28,5 +28,7 @@
     // Chapter headings are "## 01 — Title"; the em dash is not trailing punctuation.
     "MD026": { "punctuation": ".,;:!。，；：！" }
   },
-  "globs": ["**/*.md", "!workshops/**", "!node_modules/**"]
+  // .claude/ is local-only and not part of the book, so linting it locally would
+  // report problems CI can never see.
+  "globs": ["**/*.md", "!workshops/**", "!node_modules/**", "!.claude/**"]
 }

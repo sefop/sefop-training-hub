@@ -1,8 +1,7 @@
 name: Book checks
 
-# The book is held together by cross-references: glossary links, chapter anchors,
-# section links, figure paths. A broken one renders as a link that goes nowhere,
-# so nobody notices it by reading. These two checks notice.
+# Markdown structure and style, checked on every push and pull request so that
+# formatting mistakes are caught by a machine instead of by a reader.
 
 on:
   push:
@@ -15,12 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Check internal links and anchors
-        run: python tools/check_links.py
+      # The internal link and anchor check is deliberately not here: it runs locally,
+      # from a pre-commit hook, because the script lives outside this repository.
 
       - uses: actions/setup-node@v4
         with:
