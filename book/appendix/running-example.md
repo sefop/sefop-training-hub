@@ -5,58 +5,56 @@ bottled water, cartons of laptops — and a departure can rarely carry everythin
 decides how many pallets of each product go on the aircraft.
 
 > [!NOTE]
-> This is a simplified example on purpose. A real freighter operation also constrains how the load is balanced,
+> This is a simplified example on purpose. A real freighter operation might also consider how the load is balanced,
 > which pallets may be stacked on which, and how dangerous goods are kept apart. The subject of this book is the
-> engineering around a model rather than the model itself, and a model small enough to solve by hand is what keeps
-> that engineering visible.
+> engineering around a model rather than the model itself.
 
 ---
 
-## The decision
+## The business problem
+
+### The decision
 
 Given a cargo flight, how many pallets of each tendered product to load, so that the revenue the aircraft carries is
 as large as possible, without exceeding what it can lift or what fits in the hold.
 
 What is *not* decided here: which aircraft flies, where it flies, what a shipper is charged, and the order in which
-pallets are physically placed. All those are out of the scope.
-
-## Who uses it
-
-A load planner, once the booking list for a departure closes. They receive a load list and are accountable for the
-departure, not for the system — so they can and do change the answer before it is acted on.
-
-## Inputs
-
-| Input             | Description                                                                    |
-|-------------------|--------------------------------------------------------------------------------|
-| Booking list      | How many pallets of each product were tendered, and how many of those must fly  |
-| Product catalogue | Weight, volume and revenue for one pallet of each product                       |
-| Aircraft capacity | The maximum weight this aircraft may carry, and the volume of its hold          |
-
-The following picture may help to visualize this business problem:
+pallets are physically placed.
 
 <p align="center">
   <img src="assets/optimization_engine_cargo_flight_selection.png" width="640"
-       alt="Cargo flight optimization">
+       alt="A load planner facing pallets of chocolate, water, laptops and apparel beside a freighter, under the goal
+            of maximizing revenue within the aircraft's weight and volume capacity">
 </p>
 
-## Business rules
+### Who is our client
 
-The following:
+The load planner works once the booking list for a departure closes. They receive a load list, and they are
+accountable for the operational decision of how to load the flight. They use this system as a guideline.
+
+### The inputs
+
+| Input             | Description                                                                    |
+|-------------------|--------------------------------------------------------------------------------|
+| Booking list      | How many pallets of each product were tendered, and how many of those must fly |
+| Product catalogue | Weight, volume and revenue for one pallet of each product                      |
+| Aircraft capacity | The maximum weight this aircraft may carry, and the volume of its hold         |
+
+### The rules a proposal must respect
 
 - A pallet is loaded whole. There is no such thing as loading part of one.
-- An aircraft capacity can't be exceeded, in both volume or weight.
+- A load may exceed neither the weight the aircraft may carry nor the volume of its hold.
 - The system never loads more pallets of a product than were tendered.
 - Revenue counts only for pallets actually loaded. A pallet left behind earns nothing.
-- Some shipments are committed beforehand and must fly on this departure, whatever revenue they carry: priority
-  freight, mail, and parts for an aircraft grounded elsewhere.
+- Some shipments are committed beforehand and must fly on this departure.
+
+---
 
 ## An optimization model for this problem
 
 This problem can be formulated as a classical knapsack problem. Given a booking list, a catalogue and the two
 capacities, the system returns either a loadable selection of pallets that maximizes revenue, or the statement that
-no selection is loadable. A selection is loadable when it respects both capacities, loads no more of a product than
-was tendered, and loads at least the pallets that must fly.
+no selection is loadable. A selection is loadable when it respects all business constraints.
 
 ### Sets
 
@@ -85,7 +83,7 @@ For the aircraft:
 
 ### Objective function
 
-Maximize the revenue carried by the pallets that are loaded:
+Maximize revenue:
 
 $$
 \max_{x} \quad \sum_{i \in I} r_i x_i
@@ -155,7 +153,7 @@ Note the feasible region could be empty if the commited freight exceeds either t
 
 <a id="ex-two-pallet"></a>
 
-### A two-pallet instance
+### An example instance
 
 | Product | Weight $w_i$ | Volume $v_i$ | Revenue $r_i$ | Must fly $l_i$ | Tendered $u_i$ |
 |---|:---:|:---:|:---:|:---:|:---:|
@@ -173,8 +171,6 @@ $$
 \end{aligned}
 $$
 
-Small enough that a person can work out the answer without a solver, which is the whole reason it exists.
-
 Loading both pallets weighs 3 tonnes, over the 2 the aircraft may carry, so at most one pallet flies, and chocolate
 earns more than water. The optimal solution is $x_A = 1$, $x_B = 0$:
 
@@ -184,21 +180,3 @@ earns more than water. The optimal solution is $x_A = 1$, $x_B = 0$:
 | Payload used | $2 \cdot 1 + 1 \cdot 0$ | 2 of 2 tonnes |
 | Hold used | $1 \cdot 1 + 2 \cdot 0$ | 1 of 2 m³ |
 
-## The solver
-
-The system reaches a solver through a single operation: hand it an instance, get back a result. Which solver stands
-behind that operation is not part of the contract — brute-force enumeration, a MIP solver, and a heuristic all
-satisfy it, and this book swaps between them deliberately. No solver product is named anywhere in the book: a system
-welded to one vendor has made a decision it did not need to make.
-
-## The output
-
-A load list: for each product, how many pallets to load, together with the revenue that load carries and the payload
-and hold it consumes. When no selection is loadable, the output says so and carries nothing else — the other numbers
-have no meaning in that case.
-
-## Cadence and delivery
-
-Once per departure, after the booking list closes and before loading begins: several times a day at a busy station.
-The planner has minutes rather than hours, because the aircraft has a slot. How the answer reaches them is a
-deployment choice, and this book does not fix one.
