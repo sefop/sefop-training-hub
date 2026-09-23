@@ -6,7 +6,7 @@ Software engineering terms used in this book, each defined once. Chapters link h
 
 ## Abstraction
 
-A named interface that hides how something is done behind what it does. A knapsack solver abstraction exposes one
+A named interface that hides how something is done behind what it does. A cargo loading solver abstraction exposes one
 method, `solve`, and several implementations — enumeration, a MIP solver — can stand behind it. It is what lets you
 swap solvers without rewriting the code that calls them.
 
@@ -93,7 +93,7 @@ a [test suite](#test-suite), that make change possible.
 ## Metamorphic relation
 
 A relation that must hold between the outputs of two related runs, even when neither output is known. Example: raising
-a budget never decreases the optimal value.
+a capacity never decreases the optimal value.
 
 ## Mutation testing
 

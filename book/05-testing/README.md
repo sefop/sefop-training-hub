@@ -37,70 +37,51 @@ The chapters build on each other. Chapter 01 maps the whole system. Chapters 02�
 04–06 present three kinds of oracle, each covering a gap the previous one leaves open. Chapter 07 revisits all three
 under a weaker promise. Read them in order the first time.
 
-## The running example: a knapsack
+## The running example
 
-Chapters 02–09 use the same problem, so that the testing ideas change while the model stays still.
+Chapters 02–09 test the cargo loading system defined in
+[the appendix](../appendix/running-example.md): for one departure, how many pallets of each tendered product to load,
+so that the revenue carried is as large as possible without exceeding the aircraft's maximum weight or the capacity
+of its hold. This section holds that model fixed, so the testing ideas change while the model stays still.
 
-A catalogue of items, each with a cost, a volume, and a calorie count. Each item can be taken more than once, up to a
-maximum quantity. The task: choose how many units of each item to take so that total calories is maximized, subject
-to a cost budget and a volume budget.
+The symbols the chapters use, all fixed, **non-negative** parameters except the decision variable:
 
-Let $I$ be the set of items. For each item $i \in I$, let $c_i$ be its cost, $v_i$ its volume, and $k_i$ its calorie
-count, all fixed, **non-negative** parameters. Let $u_i$ be its maximum quantity, $C$ the cost budget, and $V$ the
-volume budget. The decision variable $x_i$ is the quantity of item $i$ selected.
+| Symbol | Meaning | Unit |
+|:---:|---|---|
+| $r_i$ | revenue of one pallet of product $i$ | thousands of USD |
+| $w_i$ | weight of one pallet | tonnes |
+| $v_i$ | volume of one pallet | m³ |
+| $u_i$ | pallets of product $i$ tendered | count |
+| $l_i$ | pallets of product $i$ that must fly | count |
+| $W$, $V$ | max weight and hold capacity | tonnes, m³ |
+| $x_i$ | pallets of product $i$ loaded | integer |
 
-$$
-\begin{aligned}
-\max_{x} \quad & \sum_{i \in I} k_i x_i \\
-\text{s.t.} \quad & \sum_{i \in I} c_i x_i \le C \\
-& \sum_{i \in I} v_i x_i \le V \\
-& 0 \le x_i \le u_i, \quad x_i \in \mathbb{Z}, \quad \forall i \in I
-\end{aligned}
-$$
-
-The feasible region can be empty. If $C < 0$, no $x$ satisfies the cost constraint, not even $x = 0$ — this is where
-the non-negativity of $c_i$ matters, since it puts every attainable total cost at zero or above. The instance then has
-no solution at all, and a correct solver must report that rather than return some $x$ anyway.
-
-<a id="ex-two-item"></a>
-
-### A two-item instance
-
-| Item | Cost $c_i$ | Volume $v_i$ | Calories $k_i$ | Max quantity $u_i$ |
-|:---:|:---:|:---:|:---:|:---:|
-| A | 2 | 1 | 10 | 1 |
-| B | 1 | 2 | 6 | 1 |
-
-with cost budget $C = 2$ and volume budget $V = 2$:
-
-$$
-\begin{aligned}
-\max_{x} \quad & 10 x_A + 6 x_B \\
-\text{s.t.} \quad & 2 x_A + x_B \le 2 \\
-& x_A + 2 x_B \le 2 \\
-& x_A, x_B \in \{0, 1\}
-\end{aligned}
-$$
-
-[Chapter 02](#ch-oracle-problem) solves it by hand.
+Two facts from the contract matter throughout this section. A selection is *loadable* when it respects both
+capacities, loads no more of a product than was tendered, and loads at least the pallets that must fly. And the
+feasible region can be empty: when nothing must fly, loading nothing is always loadable, but committed freight
+removes that guarantee, and an instance whose must-go pallets exceed a capacity has no solution at all. The
+[formulation](../appendix/running-example.md#the-model-formulation) and the
+[two-pallet instance](../appendix/running-example.md#ex-two-pallet) the chapters work with are in the appendix.
 
 ## How to read the pseudocode
 
 Chapters show tests as short, language-agnostic pseudocode, so the ideas transfer to any language. The conventions:
 
 ```
-a = item(name="A", cost=2, volume=1, calories=10, max_quantity=1)
+a = item(name="A", weight=2, volume=1, revenue=10, max_quantity=1)
 
-result = solve([a], cost_budget=2, volume_budget=2)
+result = solve([a], weight_capacity=2, volume_capacity=2)
 
 expect result.feasible == true
-expect result.total_calories == 10
+expect result.total_revenue == 10
 ```
 
-- `solve(items, cost_budget, volume_budget)` runs whichever solver is under test. When a chapter needs a specific
+- `solve(items, weight_capacity, volume_capacity)` runs whichever solver is under test. When a chapter needs a specific
   one, it writes `enumeration_solver().solve(...)` or `mip_solver().solve(...)`.
-- `result` has five fields: `feasible`, `quantities` (item name → units chosen), `total_calories`, `total_cost`, and
+- `result` has five fields: `feasible`, `quantities` (item name → units chosen), `total_revenue`, `total_weight`, and
   `total_volume`. When `feasible` is false, the other fields carry no meaning.
+- `item(...)` also takes `min_quantity`, the pallets of that product which must fly. It defaults to 0, so it appears
+  only where a chapter needs committed freight.
 - `expect` marks an assertion: the test fails if the condition is false. `==` on numbers means equal within a small
   numerical tolerance.
 
@@ -109,7 +90,7 @@ expect result.total_calories == 10
 Every chapter ends with a **Practice it** box linking to runnable exercises.
 
 - **Python:** [training-testing-python — exercise 5](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md),
-  which implements this knapsack with two solvers and ends with an untested shortest-path solver for you to test.
+  which implements the same model with two solvers and ends with an untested shortest-path solver for you to test.
 - **Java:** coming soon.
 
 All practice repositories are listed in the [appendix](../appendix/practice-repositories.md).
@@ -143,7 +124,7 @@ and checks the output against an expected answer. The textbook example is a calc
 and you know that without reading a single line of `add`. The test is cheap to write because the expected answer is
 cheap to compute.
 
-Now try the same with a MIP. To write `expect result.total_calories == ???`, you need the optimal value. For any
+Now try the same with a MIP. To write `expect result.total_revenue == ???`, you need the optimal value. For any
 instance large enough to be interesting, computing that value independently means solving the very problem the model
 exists to solve. The test needs the answer before the code can provide it.
 
@@ -159,47 +140,49 @@ optimality runs into the same wall your solver does.
 
 The oracle problem is a reason to choose a testing technique deliberately, not a reason to skip testing. A model is
 software: it gets refactored, its data changes, and eventually someone swaps its solver. Chapters 04–06 present three
-kinds of oracle that work around the problem, each at a different cost.
+kinds of oracle that work around the problem, each at a different price.
 
-The simplest oracle is a person. Take the [two-item instance](#ex-two-item): each $x_i \in \{0, 1\}$,
-so there are $2 \times 2 = 4$ candidate selections, few enough to list.
+The simplest oracle is a person. Take the
+[two-pallet instance](../appendix/running-example.md#ex-two-pallet): each $x_i \in \{0, 1\}$, so there are
+$2 	imes 2 = 4$ candidate selections, few enough to list.
 
-| $x_A$ | $x_B$ | Cost (≤ 2) | Volume (≤ 2) | Calories | Feasible? |
+| $x_A$ | $x_B$ | Weight (≤ 2) | Volume (≤ 2) | Revenue | Feasible? |
 |:---:|:---:|:---:|:---:|:---:|---|
 | 0 | 0 | 0 | 0 | 0 | yes |
 | 1 | 0 | 2 | 1 | 10 | yes |
 | 0 | 1 | 1 | 2 | 6 | yes |
-| 1 | 1 | 3 | 3 | 16 | no — both budgets exceeded |
+| 1 | 1 | 3 | 3 | 16 | no — both capacities exceeded |
 
-The best feasible selection is $x_A = 1$, $x_B = 0$, worth 10 calories. Nobody needed a solver to produce that answer,
-so it can serve as the expected value of a test:
+The best feasible selection is $x_A = 1$, $x_B = 0$, worth a revenue of 10. Nobody needed a solver to produce that
+answer, so it can serve as the expected value of a test:
 
 ```
-a = item(name="A", cost=2, volume=1, calories=10, max_quantity=1)
-b = item(name="B", cost=1, volume=2, calories=6,  max_quantity=1)
+a = item(name="A", weight=2, volume=1, revenue=10, max_quantity=1)
+b = item(name="B", weight=1, volume=2, revenue=6,  max_quantity=1)
 
-result = solve([a, b], cost_budget=2, volume_budget=2)
+result = solve([a, b], weight_capacity=2, volume_capacity=2)
 
 expect result.feasible == true
-expect result.total_calories == 10
+expect result.total_revenue == 10
 ```
 
-The price of a human oracle grows fast. The number of candidate selections is $\prod_{i \in I} (u_i + 1)$: 4 for this
-instance, but $4^{30} \approx 1.2 \times 10^{18}$ for 30 items that can each be taken up to 3 times. A person can
-only be the oracle at teaching scale, which is exactly how [chapter 04](#ch-hand-oracles) uses one.
+The price of a human oracle grows fast. The number of candidate selections is $\prod_{i \in I} (u_i - l_i + 1)$: 4
+for this instance, but $4^{30} \approx 1.2 \times 10^{18}$ for 30 items that can each be loaded up to 3 times. A
+person can only be the oracle at teaching scale, which is exactly how [chapter 04](#ch-hand-oracles) uses one.
 
 ### Check yourself
 
 1. For the calculator, what plays the role of the test oracle?
-2. In the two-item instance, the cost budget rises from 2 to 3 and the volume budget stays at 2. What is the optimal
-   calorie total?
+2. In the two-pallet instance, the payload capacity rises from 2 to 3 and the hold capacity stays at 2. What is
+   the optimal revenue total?
 3. How many candidate selections does an instance with three items and maximum quantities 1, 2, and 4 have?
 
 <details>
 <summary>Answers</summary>
 
 1. Arithmetic you already know: you compute 2 + 3 in your head, independently of the code.
-2. Still 10. Taking both items now fits the cost budget (3 ≤ 3) but uses volume 3 > 2, so item A alone remains best.
+2. Still 10. Loading both now fits the payload capacity (3 ≤ 3) but uses volume 3 > 2, so item A alone remains
+   best.
 3. $2 \times 3 \times 5 = 30$.
 
 </details>
@@ -231,7 +214,7 @@ enough to reason about by hand, not because it is the hardest case.
 
 ## 03 — Test the contract, not the algorithm
 
-The function that "solves" a knapsack could be a brute-force enumeration, a greedy heuristic, a dynamic program, or a
+The function that decides a load could be a brute-force enumeration, a greedy heuristic, a dynamic program, or a
 call to a commercial or open-source MIP solver. That choice changes over time: today enumeration is fast enough;
 next year the catalogue has thousands of items and someone swaps in a MIP solver.
 
@@ -244,11 +227,13 @@ A [contract](../appendix/glossary.md#contract) is the promise a piece of code ma
 input and what it guarantees as output, and nothing about how. Everything else — the algorithm, its running time, its
 internal data structures — is an [implementation detail](../appendix/glossary.md#implementation-detail).
 
-For the knapsack, the contract fits in one sentence: *given a catalogue of items and two budgets, return the
-calorie-maximizing selection if one exists, or report that the instance is infeasible.* Two clauses make it precise:
+For the load planner, the contract fits in one sentence: *given a catalogue of items and two capacities, return the
+revenue-maximizing loadable selection if one exists, or report that the instance is infeasible.* A selection is
+loadable when it respects both capacities, loads no more of a product than was tendered, and loads at least the
+pallets that must fly. Two clauses make it precise:
 
 1. When `feasible` is false, the other result fields carry no meaning.
-2. When several selections tie for the best calorie total, any one of them may be returned.
+2. When several selections tie for the best revenue total, any one of them may be returned.
 
 You already make this separation in optimization. The formulation says *what* the optimal solution is; branch-and-bound,
 cutting planes, or enumeration say *how* to find it. That is why you can swap solvers without rewriting the model. A
@@ -268,10 +253,10 @@ coupled to the algorithm:
 
 ```
 solver = enumeration_solver()
-result = solver.solve([a, b], cost_budget=2, volume_budget=2)
+result = solver.solve([a, b], weight_capacity=2, volume_capacity=2)
 
 expect solver.combinations_checked == 4      # how the answer was found
-expect result.total_calories == 10
+expect result.total_revenue == 10
 ```
 
 Replace `enumeration_solver()` with `mip_solver()` and this test breaks: a MIP solver never enumerates combinations,
@@ -281,10 +266,10 @@ Second, a test against the contract:
 
 ```
 for solver in [enumeration_solver(), mip_solver()]:
-    result = solver.solve([a, b], cost_budget=2, volume_budget=2)
+    result = solver.solve([a, b], weight_capacity=2, volume_capacity=2)
 
     expect result.feasible == true
-    expect result.total_calories == 10
+    expect result.total_revenue == 10
 ```
 
 This test only calls `solve` and reads the promised fields. Running it against two very different solvers is itself
@@ -293,10 +278,10 @@ fail.
 
 ### Check yourself
 
-1. Is "the solver finishes in under one second" part of the knapsack contract as stated above?
-2. Two selections tie at 5 calories. Solver A returns one of them and solver B returns the other. Which contract test
+1. Is "the solver finishes in under one second" part of the contract as stated above?
+2. Two selections tie at 5 revenue. Solver A returns one of them and solver B returns the other. Which contract test
    should fail?
-3. Which assertion is about the contract: (a) `result.total_cost <= cost_budget`, or (b) "the MIP model has two
+3. Which assertion is about the contract: (a) `result.total_weight <= weight_capacity`, or (b) "the MIP model has two
    constraints"?
 
 <details>
@@ -304,7 +289,7 @@ fail.
 
 1. No. Running time is an implementation detail here. If users need a time guarantee, it has to be written into the
    contract explicitly.
-2. None. Clause 2 of the contract allows any optimal selection, so the test should assert only the calorie total.
+2. None. Clause 2 of the contract allows any optimal selection, so the test should assert only the revenue total.
 3. (a). The number of constraints describes how one solver models the problem, not what `solve` promises.
 
 </details>
@@ -342,8 +327,8 @@ test suites assume.
 
 [Chapter 02](#ch-oracle-problem) showed that a person can solve a two-item instance by
 hand. The harder question is *which* instances to write. Small instances picked at random tend to cover whatever comes
-to mind first, which is usually the ordinary case. Bugs, however, cluster at the edges: an empty catalogue, a budget of
-exactly zero, two items that tie. Without a method, those edges are left to luck.
+to mind first, which is usually the ordinary case. Bugs, however, cluster at the edges: an empty catalogue, a capacity
+of exactly zero, two items that tie. Without a method, those edges are left to luck.
 
 This chapter uses the first of three oracle families that the rest of the section builds on:
 
@@ -368,53 +353,55 @@ If you have done sensitivity analysis, you have seen this structure. As you vary
 stays the same over a range, then changes at a breakpoint. The ranges are equivalence classes; the breakpoints are
 boundary values. You would never probe sensitivity only in the middle of each range, and the same holds for tests.
 
-Applied to the knapsack, the two techniques produce the table below, ordered from the simplest instance to the most
+Applied to the load planner, the two techniques produce the table below, ordered from the simplest instance to the most
 involved:
 
 | # | Situation | Expected behavior |
 |:---:|---|---|
-| 1 | No items at all | Nothing to pick: a feasible, zero-calorie empty selection. |
-| 2 | Negative cost budget | Even the empty selection violates the budget: infeasible. |
-| 3 | Negative volume budget | The mirror of situation 2, for volume. |
-| 4 | Budgets of exactly zero | The boundary between 2–3 and the rest: the empty selection still fits, but nothing can be added. |
-| 5 | An item that may not be taken | An item with maximum quantity zero is ignored, however attractive its calories. |
-| 6 | Nothing individually affordable | Every item exceeds a budget on its own; the empty selection is still feasible, worth zero. |
+| 1 | No items at all | Nothing to pick: a feasible, zero-revenue empty selection. |
+| 2 | Must-go cargo exceeds the payload | The committed pallets alone weigh more than the aircraft may carry: infeasible. |
+| 3 | Must-go cargo exceeds the hold | The mirror of situation 2, for volume. |
+| 4 | Must-go cargo fits exactly | The boundary between 2–3 and the rest: the committed load is the only one that fits, and nothing can be added. |
+| 5 | An item that cannot be loaded | An item with maximum quantity zero is ignored, however attractive its revenue. |
+| 6 | Nothing fits on its own | Every item exceeds a capacity on its own; the empty selection is still feasible, worth zero. |
 | 7 | Unique optimum | One item dominates the other; the basic case. |
-| 8 | Only the cost budget binds | The optimum exhausts the cost budget and leaves volume unused. |
-| 9 | Only the volume budget binds | The mirror of situation 8. |
-| 10 | Both budgets bind at once | The optimum exhausts both budgets simultaneously. |
-| 11 | Several optimal selections | Two interchangeable items tie; only the shared calorie total is asserted, never which item was picked. |
+| 8 | Only the payload capacity binds | The optimum exhausts the payload capacity and leaves volume unused. |
+| 9 | Only the hold capacity binds | The mirror of situation 8. |
+| 10 | Both capacities bind at once | The optimum exhausts both capacities simultaneously. |
+| 11 | Several optimal selections | Two interchangeable items tie; only the shared revenue total is asserted, never which item was picked. |
 | 12 | More than one unit of an item | Quantities are genuine integers, not 0/1 choices in disguise. |
-| 13 | One item individually unaffordable | An expensive item is excluded without disturbing the rest of the selection. |
+| 13 | One item too heavy to load | A single item that exceeds the payload on its own is excluded without disturbing the rest of the selection. |
 
-Read situations 2 and 3 against 4 and 6. All four produce a zero-calorie answer of some kind, and only two of them are
+Read situations 2 and 3 against 4 and 6. All four produce a zero-revenue answer of some kind, and only two of them are
 infeasible. That distinction is exactly what a boundary is for.
 
 Take one row of the table, situation 2, written as a specified-oracle test:
 
 ```
-r = item(name="R", cost=1, volume=1, calories=10, max_quantity=5)
+r = item(name="R", weight=1, volume=1, revenue=10, max_quantity=5)
 
-result = solve([r], cost_budget=-1, volume_budget=5)
+result = solve([r], weight_capacity=-1, volume_capacity=5)
 
 expect result.feasible == false
 ```
 
-The expected answer was derived by hand, without a solver: costs are non-negative, so every selection — including
-taking nothing — costs at least 0, which is more than −1. No feasible selection exists. Notice what the test does
-*not* assert: quantities and calories. The [contract](#ch-contract) says those fields
-carry no meaning when the instance is infeasible, so asserting them would test a promise that was never made.
+The expected answer was derived by hand, without a solver: weights are non-negative, so every selection — including
+loading nothing — weighs at least 0, which is more than −1. No feasible selection exists. A negative capacity is not
+a nonsense input here: the model is handed the payload *still available*, so a pallet re-weighed heavier than it was
+declared can push it below zero. Notice what the test does *not* assert: quantities and revenue. The
+[contract](#ch-contract) says those fields carry no meaning when the instance is infeasible, so asserting them would
+test a promise that was never made.
 
 ### Check yourself
 
-1. One item with cost 1, a cost budget of 0, and a volume budget of 0. Feasible or infeasible?
+1. One item with weight 1, a payload capacity of 0, and a hold capacity of 0. Feasible or infeasible?
 2. Which situation would fail for a solver that treats every item as a take-it-or-leave-it (0/1) choice?
-3. Why does situation 11 assert only the calorie total and not the quantities?
+3. Why does situation 11 assert only the revenue total and not the quantities?
 
 <details>
 <summary>Answers</summary>
 
-1. Feasible. The empty selection costs 0, which fits a budget of 0 (situation 4).
+1. Feasible. The empty selection weighs 0, which fits a capacity of 0 (situation 4).
 2. Situation 12.
 3. The contract allows any optimal selection when several tie, so the chosen quantities may legitimately differ.
 
@@ -465,46 +452,46 @@ rather than from a known answer.
 
 You already prove relations like these as theorems. Relaxing a constraint cannot make the optimal value worse — the
 same reasoning that makes an LP relaxation a valid bound. A metamorphic relation turns such a theorem into a test. For
-the knapsack, four of them hold on every instance:
+the load planner, four of them hold on every instance:
 
-| Transformation | Relation on the optimal calorie total | Why it holds |
+| Transformation | Relation on the optimal revenue total | Why it holds |
 |---|---|---|
 | Add an item to the catalogue | Never decreases | Every previous selection is still available, with the new item at quantity zero. |
-| Raise the cost or volume budget | Never decreases | Relaxing a constraint only enlarges the feasible region. |
-| Multiply every calorie count by $k > 0$ | Scales by exactly $k$ | The feasible region is unchanged; only the objective is rescaled. |
-| Cap an item's maximum quantity at zero | Equals the value with that item removed | An item that may not be taken cannot take part in any selection. |
+| Raise the payload or hold capacity | Never decreases | Relaxing a constraint only enlarges the feasible region. |
+| Multiply every revenue by $k > 0$ | Scales by exactly $k$ | The feasible region is unchanged; only the objective is rescaled. |
+| Cap an item's maximum quantity at zero | Equals the value with that item removed | An item that cannot be loaded cannot take part in any selection. |
 
 None of the four compares the selected quantities. A transformation can turn a near-tie into an exact tie, and the
 [contract](#ch-contract) never promised which selection wins among equals.
 
-Written as a test, the first relation — raising a budget never decreases the optimum — looks like this:
+Written as a test, the first relation — raising a capacity never decreases the optimum — looks like this:
 
 ```
-a = item(name="A", cost=2, volume=1, calories=10, max_quantity=2)
-b = item(name="B", cost=1, volume=2, calories=6,  max_quantity=1)
-c = item(name="C", cost=3, volume=1, calories=14, max_quantity=1)
+a = item(name="A", weight=2, volume=1, revenue=10, max_quantity=2)
+b = item(name="B", weight=1, volume=2, revenue=6,  max_quantity=1)
+c = item(name="C", weight=3, volume=1, revenue=14, max_quantity=1)
 
-before = solve([a, b, c], cost_budget=5, volume_budget=4)
-after  = solve([a, b, c], cost_budget=8, volume_budget=4)
+before = solve([a, b, c], weight_capacity=5, volume_capacity=4)
+after  = solve([a, b, c], weight_capacity=8, volume_capacity=4)
 
-expect after.total_calories >= before.total_calories
+expect after.total_revenue >= before.total_revenue
 ```
 
-The optimum of the first instance happens to be 26 calories (two units of A plus one of B), but the test never needs
+The optimum of the first instance happens to be 26 revenue (two units of A plus one of B), but the test never needs
 to know that. The same three lines work unchanged on a catalogue of four thousand items, which is what makes
 metamorphic relations the part of this toolkit that scales.
 
 ### Check yourself
 
-1. You double every item's cost. Does the optimal calorie total never decrease, never increase, or neither?
-2. A broken solver always returns a feasible, empty selection worth 0 calories. Which of the four relations does it
+1. You double every item's weight. Does the optimal revenue total never decrease, never increase, or neither?
+2. A broken solver always returns a feasible, empty selection worth 0 revenue. Which of the four relations does it
    violate?
-3. You remove an item from the catalogue. What happens to the optimal calorie total?
+3. You remove an item from the catalogue. What happens to the optimal revenue total?
 
 <details>
 <summary>Answers</summary>
 
-1. Never increases. With non-negative costs, every selection that fits the doubled costs also fit the original ones,
+1. Never increases. With non-negative weights, every selection that fits the doubled weights also fit the original ones,
    so the feasible region can only shrink.
 2. None of them: 0 ≥ 0, 0 = k × 0, and 0 = 0. See the next section.
 3. It never increases — the reverse of adding an item.
@@ -518,7 +505,7 @@ metamorphic relations the part of this toolkit that scales.
   oracles of chapter 04 rather than replace them.
 - **They are theorems about the optimal value.** They hold for a solver that promises exact optimality. A heuristic can
   violate them without being broken, as [chapter 07](#ch-no-optimality) shows.
-- **Numerical tolerance.** "Scales by exactly $k$" means within a small tolerance once calorie counts are real numbers.
+- **Numerical tolerance.** "Scales by exactly $k$" means within a small tolerance once revenues are real numbers.
 
 > **Practice it**
 >
@@ -538,7 +525,7 @@ metamorphic relations the part of this toolkit that scales.
 
 The relations of [chapter 05](#ch-metamorphic) check that runs are consistent with each other, but a model
 can be consistently wrong. The mistakes that matter most in practice live in the formulation: a coefficient attached to
-the wrong sum, a budget applied to the wrong constraint, an index set that silently drops an item. The solver then
+the wrong sum, a capacity applied to the wrong constraint, an index set that silently drops an item. The solver then
 optimizes the wrong model faithfully.
 
 It is worth being precise here. A mature MIP solver such as HiGHS is very unlikely to compute a wrong optimum for the
@@ -546,18 +533,18 @@ model it was given. The realistic risk is that the model does not say what you m
 
 A [pseudo-oracle](../appendix/glossary.md#pseudo-oracle) is a second, independent implementation of the same contract.
 [Differential testing](../appendix/glossary.md#differential-testing) runs both implementations on the same inputs and
-compares their outputs. For small knapsack instances, brute-force enumeration makes a good pseudo-oracle: it is slow,
+compares their outputs. For small instances, brute-force enumeration makes a good pseudo-oracle: it is slow,
 but correct by inspection. When it disagrees with the MIP solver, the disagreement points at the formulation.
 
 This is the disciplined version of a sanity check most modelers already run informally — "let me compare my new model
 against brute force on a toy case." Three details turn that habit into a reliable test:
 
 1. **Generate many instances instead of picking a few.** Hundreds of small random instances explore corners that
-   nobody would think to write by hand, including infeasible ones if the generator draws negative budgets.
+   nobody would think to write by hand, including infeasible ones if the generator draws negative capacities.
 2. **Fix the [random seed](../appendix/glossary.md#random-seed).** Reproducibility works here the way it does in a
    controlled experiment: the same inputs must always produce the same outputs. A failure that vanishes on the retry
    cannot be investigated, so the test must also report the instance that failed.
-3. **Compare only what the contract promises.** Feasibility and the calorie total, never the selected quantities. When
+3. **Compare only what the contract promises.** Feasibility and the revenue total, never the selected quantities. When
    several selections tie, the [contract](#ch-contract) allows the two implementations to
    return different ones.
 
@@ -568,23 +555,23 @@ rng = random_generator(seed=20260908)
 
 repeat 200 times:
     items = a list of rng.integer(1, 4) items, each with
-                cost = rng.integer(0, 5),  volume = rng.integer(0, 5),
-                calories = rng.integer(0, 20),  max_quantity = rng.integer(1, 3)
-    cost_budget   = rng.integer(-1, 8)
-    volume_budget = rng.integer(-1, 8)
+                weight  = rng.integer(0, 5),  volume       = rng.integer(0, 5),
+                revenue = rng.integer(0, 20), max_quantity = rng.integer(1, 3)
+    weight_capacity = rng.integer(-1, 8)
+    volume_capacity = rng.integer(-1, 8)
 
-    reference = enumeration_solver().solve(items, cost_budget, volume_budget)
-    candidate = mip_solver().solve(items, cost_budget, volume_budget)
+    reference = enumeration_solver().solve(items, weight_capacity, volume_capacity)
+    candidate = mip_solver().solve(items, weight_capacity, volume_capacity)
 
     expect candidate.feasible == reference.feasible
     if reference.feasible:
-        expect candidate.total_calories == reference.total_calories
+        expect candidate.total_revenue == reference.total_revenue
 ```
 
 The largest generated instance has 4 items with up to 4 quantity values each, so enumeration checks at most
 $4^4 = 256$ selections. The reference stays cheap.
 
-What does this catch that chapter 04 does not? Suppose the formulation mistakenly uses each item's volume in the cost
+What does this catch that chapter 04 does not? Suppose the formulation mistakenly uses each item's volume in the weight
 constraint. Some of the thirteen hand-written situations will catch that mistake and some will not, because they were
 chosen to cover the contract, not this particular error. A sweep over 200 generated instances is far more likely to hit
 one that exposes it. Neither approach guarantees detection; the difference is how reliably each one finds a mistake
@@ -592,17 +579,17 @@ that nobody anticipated.
 
 ### Check yourself
 
-1. The candidate selects item E and the reference selects item F. Both are worth 5 calories. Should the test fail?
+1. The candidate selects item E and the reference selects item F. Both are worth 5 revenue. Should the test fail?
 2. Why is the random seed fixed rather than drawn fresh on every run?
 3. Why is enumeration a good reference for 4 items but not for 50?
 
 <details>
 <summary>Answers</summary>
 
-1. No. The contract allows any optimal selection when several tie; only feasibility and the calorie total are compared.
+1. No. The contract allows any optimal selection when several tie; only feasibility and the revenue total are compared.
 2. So that a failure reproduces on the next run and can be investigated.
-3. The number of selections grows as $\prod_i (u_i + 1)$ — already about $1.3 \times 10^{30}$ for 50 items with up to
-   3 units each.
+3. The number of selections grows as $\prod_i (u_i - l_i + 1)$ — already about $1.3 \times 10^{30}$ for 50 items with
+   up to 3 units each and nothing committed to fly.
 
 </details>
 
@@ -647,8 +634,8 @@ against "did you find the exact optimum" fails it for doing precisely what it wa
 Start again from the [contract](#ch-contract). A heuristic's contract is weaker:
 
 - return a *feasible* selection, or report infeasibility when no selection exists;
-- its calorie total is at most the optimum;
-- if, and only if, the method carries an approximation guarantee, its calorie total is at least a known fraction of the
+- its revenue total is at most the optimum;
+- if, and only if, the method carries an approximation guarantee, its revenue total is at least a known fraction of the
   optimum.
 
 A test survives exactly as far as it checks something this weaker contract still promises. This is the asymmetry from
@@ -661,7 +648,7 @@ bounds, or dropped.
 | Verdict | Situations | Why |
 |---|:---:|---|
 | Unchanged | 1, 2, 3, 4, 6 | The feasible region is empty or holds a single selection (the empty one), so any correct solver is forced to the same answer. |
-| Weakened | 5, 8, 9, 10, 13 | The feasibility half survives — the capped item and the unaffordable item stay at zero, and budgets are respected. The claims about the optimal total or about which budget binds do not. |
+| Weakened | 5, 8, 9, 10, 13 | The feasibility half survives — the capped item and the too-heavy item stay at zero, and capacities are respected. The claims about the optimal total or about which capacity binds do not. |
 | Lose their purpose | 7, 11, 12 | They exist to check which value is optimal. Weakened to feasibility, they only repeat the rows above. |
 
 **Metamorphic relations (chapter 05).** These are theorems about the optimal value, not about algorithms, so they do
@@ -669,20 +656,21 @@ not transfer automatically. A perfectly correct heuristic can violate them — t
 survives is applying a feasibility check to every transformed instance.
 
 **Differential testing (chapter 06).** It survives in weakened form. Keep the exact reference and compare
-`candidate.feasible == reference.feasible` and `candidate.total_calories <= reference.total_calories`, plus a floor
+`candidate.feasible == reference.feasible` and `candidate.total_revenue <= reference.total_revenue`, plus a floor
 if the heuristic has a guarantee.
 
-Take a greedy heuristic that sorts items by calories per unit of cost and takes each one while it still fits. One item, a
-cost budget of 2, and a volume budget of 10 that never binds:
+Take a greedy heuristic that sorts items by revenue per tonne and takes each one while it still fits. One item, a
+payload capacity of 2, and a hold capacity of 10 that never binds:
 
 ```
-a = item(name="A", cost=2, volume=1, calories=10, max_quantity=1)
-d = item(name="D", cost=1, volume=1, calories=6,  max_quantity=1)
+a = item(name="A", weight=2, volume=1, revenue=10, max_quantity=1)
+d = item(name="D", weight=1, volume=1, revenue=6,  max_quantity=1)
 
-before = greedy_solver().solve([a],    cost_budget=2, volume_budget=10)   # takes A: 10 calories
-after  = greedy_solver().solve([a, d], cost_budget=2, volume_budget=10)   # takes D first (6 per unit of cost
-                                                                          # beats 5), then A no longer fits: 6
-expect after.total_calories >= before.total_calories                      # fails: 6 < 10
+before = greedy_solver().solve([a],    weight_capacity=2, volume_capacity=10)   # takes A: 10 revenue
+after  = greedy_solver().solve([a, d], weight_capacity=2, volume_capacity=10)   # takes D first (6 per tonne
+                                                                                # beats 5), then A no longer
+                                                                                # fits: 6
+expect after.total_revenue >= before.total_revenue                              # fails: 6 < 10
 ```
 
 The relation "adding an item never decreases the optimum" still holds for the optimum itself, which stays at 10. It is
@@ -690,18 +678,18 @@ the heuristic that dropped to 6, and it did so while behaving exactly as designe
 contract is a bound against an exact reference:
 
 ```
-exact = enumeration_solver().solve([a, d], cost_budget=2, volume_budget=10)
+exact = enumeration_solver().solve([a, d], weight_capacity=2, volume_capacity=10)
 
 expect after.feasible == exact.feasible
-expect after.total_calories <= exact.total_calories
+expect after.total_revenue <= exact.total_revenue
 ```
 
 ### Check yourself
 
 1. A MIP solver reaches its 60-second time limit and returns an incumbent with a 3% gap. Should the exact-value
    assertion of situation 7 apply to it?
-2. Does situation 2 (negative cost budget → infeasible) still hold for a heuristic?
-3. On the same instance, a heuristic reports 12 calories and enumeration reports 10. Is that a bug?
+2. Does situation 2 (negative payload capacity → infeasible) still hold for a heuristic?
+3. On the same instance, a heuristic reports 12 revenue and enumeration reports 10. Is that a bug?
 
 <details>
 <summary>Answers</summary>
@@ -770,8 +758,8 @@ agree with the corresponding lexicographic single-objective optima.
 ## What this section does not cover
 
 - **Performance and scale.** No chapter tests how fast a solver is or how large an instance it handles.
-- **Input validation.** Items are never checked for nonsense values such as a negative cost. Every infeasible
-  instance in this section comes from the budgets, never from a malformed item.
+- **Input validation.** Items are never checked for nonsense values such as a negative weight. Every infeasible
+  instance in this section comes from the capacities, never from a malformed item.
 - **Continuous and multi-objective models**, until chapters 08 and 09.
 
 ---

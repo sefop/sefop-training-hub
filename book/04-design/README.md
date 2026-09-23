@@ -17,9 +17,11 @@ change to one of them risks breaking the others. Design is the practice of drawi
   the chapters extend the same habit to data, rules, and output.
 - **A tangled script as the starting point.** The Purdue 2026 workshop's
   [`code_smell.py`](../../workshops/2026-06-29-purdue/code_smell.py) mixes every concern in one place, so nothing can be
-  tested without running everything else. Refactoring it step by step could serve as the section's running example.
-- **Grow the knapsack.** Another candidate running example: the knapsack from Section 05, grown into a full system with
-  data loading, business rules, and reporting.
+  tested without running everything else. Useful as a local illustration of what tangling looks like, not as the
+  section's running example.
+- **The shared running example.** The cargo loading system in
+  [the appendix](../appendix/running-example.md) is what this section designs: the same decision Section 05 tests,
+  surrounded by data loading, business rules, and reporting.
 - **Design and testing reinforce each other.** A component that can be tested without looking at its internals is, by
   construction, a component whose internals do not leak into its interface (Section 05, chapter 03).
 - **Reference implementations** in `sefop-python-starter`, `sefop-python-advanced`, and `sefop-java-advanced` can show

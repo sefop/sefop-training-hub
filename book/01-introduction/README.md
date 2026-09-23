@@ -158,10 +158,14 @@ listed in the [practice repositories appendix](../appendix/practice-repositories
 9. **[09 — AI-assisted development of decision-support software](../09-ai-assisted-development/README.md)** — working
    with coding assistants on model code without accepting output nobody has verified.
 
-Three references sit outside the sections and are meant to be used rather than read: the
-[glossary](../appendix/glossary.md), which defines every software engineering term the book uses; the
-[learning roadmap](../appendix/learning-roadmap.md), a suggested order for learning the practices; and the
-[practice repositories](../appendix/practice-repositories.md), where the runnable exercises live.
+Four references sit outside the sections and are meant to be used rather than read:
+
+- [Glossary](../appendix/glossary.md): defines every software engineering term the book uses.
+- [Learning roadmap](../appendix/learning-roadmap.md): a suggested order for learning software engineering for a
+  scientist
+- [Practice repositories](../appendix/practice-repositories.md):where the runnable exercises live
+- [The running example](../appendix/running-example.md): an example optimization model that will be used an example
+  throughout the book.
 
 ---
 

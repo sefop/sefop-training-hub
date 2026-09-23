@@ -34,6 +34,7 @@ of that lifecycle. Chapters explain the ideas in a language-agnostic way, and so
 
 - [Learning Roadmap](book/appendix/learning-roadmap.md) — a suggested order to learn software engineering for building decision-support software.
 - [Practice Repositories](book/appendix/practice-repositories.md) — language-specific exercises for the chapters.
+- [The Running Example](book/appendix/running-example.md) — the cargo loading system the later sections share.
 - [Glossary](book/appendix/glossary.md) — every software engineering term used in the book, defined once.
 
 ## Workshops
