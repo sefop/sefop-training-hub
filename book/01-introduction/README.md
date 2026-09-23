@@ -147,14 +147,12 @@ listed in the [practice repositories appendix](../appendix/practice-repositories
 3. **[03 — The lifecycle of decision-support software](../03-software-development-lifecycle/README.md)** — the phases
    every piece of software passes through, and the twist each phase takes when the software produces decisions. It
    is the map for the sections that follow.
-4. **[04 — Designing decision-support software](../04-design/README.md)** — drawing boundaries between data,
-   business rules, the formulation, and the solver, so that each can change without breaking the others.
-5. **[05 — Testing decision-support software](../05-testing/README.md)** — how to test a model whose correct answer
-   is the very thing it computes: oracles worked out by hand, metamorphic relations, and differential testing.
-6. **[06 — Deploying decision-support software](../06-deployment/README.md)** — getting a model, its solver, and its
-   data into production, planning for runs that end badly, and measuring whether the decisions stay good.
+4. **[04 — Designing decision-support software](../04-design/README.md)** — tips for designing a decision-support
+   system.
+5. **[05 — Testing decision-support software](../05-testing/README.md)** — how to test a decision-support system.
+6. **[06 — Deploying decision-support software](../06-deployment/README.md)** — challenges of deployment.
 7. **[07 — Working with legacy decision-support software](../07-working-with-legacy-dss/README.md)** — changing a
-   system you inherited without breaking what already works, and fixing a bug so that it stays fixed.
+   system you inherited without breaking what already works.
 8. **[08 — Leading the team](../08-leading-the-team/README.md)** — which expertise the team owns and which it
    borrows, and how to change what a team of scientists treats as part of the job.
 9. **[09 — AI-assisted development of decision-support software](../09-ai-assisted-development/README.md)** — working
