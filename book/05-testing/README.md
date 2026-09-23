@@ -60,7 +60,7 @@ Two facts from the contract matter throughout this section. A selection is *load
 capacities, loads no more of a product than was tendered, and loads at least the pallets that must fly. And the
 feasible region can be empty: when nothing must fly, loading nothing is always loadable, but committed freight
 removes that guarantee, and an instance whose must-go pallets exceed a capacity has no solution at all. The
-[formulation](../appendix/running-example.md#the-model-formulation) and the
+[formulation](../appendix/running-example.md#an-optimization-model-for-this-problem) and the
 [two-pallet instance](../appendix/running-example.md#ex-two-pallet) the chapters work with are in the appendix.
 
 ## How to read the pseudocode
@@ -372,25 +372,24 @@ involved:
 | 12 | More than one unit of an item | Quantities are genuine integers, not 0/1 choices in disguise. |
 | 13 | One item too heavy to load | A single item that exceeds the payload on its own is excluded without disturbing the rest of the selection. |
 
-Read situations 2 and 3 against 4 and 6. All four produce a zero-revenue answer of some kind, and only two of them are
-infeasible. That distinction is exactly what a boundary is for.
+Read situations 2 and 3 against 4 and 6. All four leave the aircraft carrying the committed load and nothing more,
+and only two of them are infeasible. That distinction is exactly what a boundary is for.
 
-Take one row of the table, situation 2, written as a specified-oracle test:
+Take one row of the table, situation 2, written as a specified-oracle test. Two pallets of mail are committed to this
+departure, one tonne each, and the aircraft may carry one tonne:
 
 ```
-r = item(name="R", weight=1, volume=1, revenue=10, max_quantity=5)
+m = item(name="M", weight=1, volume=1, revenue=4, min_quantity=2, max_quantity=2)
 
-result = solve([r], weight_capacity=-1, volume_capacity=5)
+result = solve([m], weight_capacity=1, volume_capacity=5)
 
 expect result.feasible == false
 ```
 
-The expected answer was derived by hand, without a solver: weights are non-negative, so every selection — including
-loading nothing — weighs at least 0, which is more than −1. No feasible selection exists. A negative capacity is not
-a nonsense input here: the model is handed the payload *still available*, so a pallet re-weighed heavier than it was
-declared can push it below zero. Notice what the test does *not* assert: quantities and revenue. The
-[contract](#ch-contract) says those fields carry no meaning when the instance is infeasible, so asserting them would
-test a promise that was never made.
+The expected answer was derived by hand, without a solver: both pallets of mail must fly, they weigh 2 tonnes
+together, and the aircraft may carry 1. Every permitted selection violates the payload constraint, so none exists.
+Notice what the test does *not* assert: quantities and revenue. The [contract](#ch-contract) says those fields carry
+no meaning when the instance is infeasible, so asserting them would test a promise that was never made.
 
 ### Check yourself
 
@@ -401,7 +400,8 @@ test a promise that was never made.
 <details>
 <summary>Answers</summary>
 
-1. Feasible. The empty selection weighs 0, which fits a capacity of 0 (situation 4).
+1. Feasible. Nothing must fly, so the committed load is the empty one; it weighs 0, which fits a capacity of 0, and
+   the item cannot be added (situation 4).
 2. Situation 12.
 3. The contract allows any optimal selection when several tie, so the chosen quantities may legitimately differ.
 
@@ -456,10 +456,14 @@ the load planner, four of them hold on every instance:
 
 | Transformation | Relation on the optimal revenue total | Why it holds |
 |---|---|---|
-| Add an item to the catalogue | Never decreases | Every previous selection is still available, with the new item at quantity zero. |
+| Add an item that need not fly | Never decreases | Every previous selection is still available, with the new item at quantity zero. |
 | Raise the payload or hold capacity | Never decreases | Relaxing a constraint only enlarges the feasible region. |
 | Multiply every revenue by $k > 0$ | Scales by exactly $k$ | The feasible region is unchanged; only the objective is rescaled. |
 | Cap an item's maximum quantity at zero | Equals the value with that item removed | An item that cannot be loaded cannot take part in any selection. |
+
+The first and last both require the item in question to be uncommitted. Adding an item that *must* fly can lower the
+optimum or empty the feasible region outright, and an item with pallets committed cannot have its maximum capped at
+zero at all — the two bounds would cross.
 
 None of the four compares the selected quantities. A transformation can turn a near-tie into an exact tie, and the
 [contract](#ch-contract) never promised which selection wins among equals.
@@ -540,7 +544,8 @@ This is the disciplined version of a sanity check most modelers already run info
 against brute force on a toy case." Three details turn that habit into a reliable test:
 
 1. **Generate many instances instead of picking a few.** Hundreds of small random instances explore corners that
-   nobody would think to write by hand, including infeasible ones if the generator draws negative capacities.
+   nobody would think to write by hand, including infeasible ones whenever the generator commits more cargo than the
+   aircraft can carry.
 2. **Fix the [random seed](../appendix/glossary.md#random-seed).** Reproducibility works here the way it does in a
    controlled experiment: the same inputs must always produce the same outputs. A failure that vanishes on the retry
    cannot be investigated, so the test must also report the instance that failed.
@@ -555,10 +560,11 @@ rng = random_generator(seed=20260908)
 
 repeat 200 times:
     items = a list of rng.integer(1, 4) items, each with
-                weight  = rng.integer(0, 5),  volume       = rng.integer(0, 5),
-                revenue = rng.integer(0, 20), max_quantity = rng.integer(1, 3)
-    weight_capacity = rng.integer(-1, 8)
-    volume_capacity = rng.integer(-1, 8)
+                weight       = rng.integer(0, 5),  volume       = rng.integer(0, 5),
+                revenue      = rng.integer(0, 20), max_quantity = rng.integer(1, 3),
+                min_quantity = rng.integer(0, max_quantity)
+    weight_capacity = rng.integer(0, 8)
+    volume_capacity = rng.integer(0, 8)
 
     reference = enumeration_solver().solve(items, weight_capacity, volume_capacity)
     candidate = mip_solver().solve(items, weight_capacity, volume_capacity)
@@ -647,7 +653,7 @@ bounds, or dropped.
 
 | Verdict | Situations | Why |
 |---|:---:|---|
-| Unchanged | 1, 2, 3, 4, 6 | The feasible region is empty or holds a single selection (the empty one), so any correct solver is forced to the same answer. |
+| Unchanged | 1, 2, 3, 4, 6 | The feasible region is empty, or holds a single selection — the committed load and nothing more — so any correct solver is forced to the same answer. |
 | Weakened | 5, 8, 9, 10, 13 | The feasibility half survives — the capped item and the too-heavy item stay at zero, and capacities are respected. The claims about the optimal total or about which capacity binds do not. |
 | Lose their purpose | 7, 11, 12 | They exist to check which value is optimal. Weakened to feasibility, they only repeat the rows above. |
 

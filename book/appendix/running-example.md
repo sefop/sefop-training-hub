@@ -45,47 +45,113 @@ The following picture may help to visualize this business problem:
 The following:
 
 - A pallet is loaded whole. There is no such thing as loading part of one.
+- An aircraft capacity can't be exceeded, in both volume or weight.
 - The system never loads more pallets of a product than were tendered.
-- Revenue counts only for pallets actually loaded. A pallet left behind earns nothing on this departure.
-- Some shipments are committed and must fly on this departure, whatever revenue they carry: priority freight, mail,
-  and parts for an aircraft grounded elsewhere.
+- Revenue counts only for pallets actually loaded. A pallet left behind earns nothing.
+- Some shipments are committed beforehand and must fly on this departure, whatever revenue they carry: priority
+  freight, mail, and parts for an aircraft grounded elsewhere.
 
-## The model formulation
+## An optimization model for this problem
 
-Given a booking list, a catalogue and the two capacities, the system returns either a loadable selection of pallets
-that maximizes revenue, or the statement that no selection is loadable. A selection is loadable when it respects both
-capacities, loads no more of a product than was tendered, and loads at least the pallets that must fly.
+This problem can be formulated as a classical knapsack problem. Given a booking list, a catalogue and the two
+capacities, the system returns either a loadable selection of pallets that maximizes revenue, or the statement that
+no selection is loadable. A selection is loadable when it respects both capacities, loads no more of a product than
+was tendered, and loads at least the pallets that must fly.
 
-Let $I$ be the set of products. For each product $i \in I$, let $r_i$ be the revenue of one pallet, $w_i$ its weight
-and $v_i$ its volume, all fixed, **non-negative** parameters. Let $u_i$ be the number of pallets tendered and $l_i$
-the number of those that must fly, with $0 \le l_i \le u_i$. Let $W$ be the maximum weight the aircraft may carry and
-$V$ the capacity of its hold. The decision variable $x_i$ is the number of pallets of product $i$ loaded.
+### Sets
 
-| Symbol | Name | Unit |
-|:---:|---|---|
-| $r_i$ | revenue of one pallet | thousands of USD |
-| $w_i$ | weight of one pallet | tonnes |
-| $v_i$ | volume of one pallet | m³ |
-| $u_i$ | pallets tendered | count |
-| $l_i$ | pallets that must fly | count |
-| $W$ | max weight | tonnes |
-| $V$ | hold capacity | m³ |
-| $x_i$ | pallets loaded | integer |
+- $I$ — the products on the booking list for this departure. The index $i$ runs over it.
+
+### Parameters
+
+Assume all these are deterministic.
+
+For each product $i \in I$:
+
+- $r_i \ge 0$ — the revenue of one pallet, in thousands of USD.
+- $w_i \ge 0$ — the weight of one pallet, in tonnes.
+- $v_i \ge 0$ — the volume of one pallet, in m³.
+- $u_i$ — the number of pallets tendered, a non-negative integer.
+- $l_i$ — the number of those pallets that are preloaded, an integer with $0 \le l_i \le u_i$.
+
+For the aircraft:
+
+- $W \ge 0$ — the maximum weight the aircraft may carry, in tonnes.
+- $V \ge 0$ — the volume of its hold, in m³.
+
+### Variables
+
+- $x_i \in \mathbb{Z \ge }0$ — the number of pallets of product $i$ loaded, for each $i \in I$.
+
+### Objective function
+
+Maximize the revenue carried by the pallets that are loaded:
+
+$$
+\max_{x} \quad \sum_{i \in I} r_i x_i
+$$
+
+### Constraints
+
+**(C1) Weight capacity.** The loaded pallets weigh no more than the aircraft may carry.
+
+$$
+\sum_{i \in I} w_i x_i \le W
+$$
+
+**(C2) Hold capacity.** The loaded pallets fit in the hold.
+
+$$
+\sum_{i \in I} v_i x_i \le V
+$$
+
+**(C3) Tender limit.** No product loads more pallets than were tendered.
+
+$$
+x_i \le u_i \qquad \forall i \in I
+$$
+
+**(C4) Committed freight.** Every pallet that must fly is loaded.
+
+$$
+x_i \ge l_i \qquad \forall i \in I
+$$
+
+**(C5) Whole pallets.**
+
+$$
+x_i \in \mathbb{Z} \qquad \forall i \in I
+$$
+
+Put together, the complete model reads:
 
 $$
 \begin{aligned}
 \max_{x} \quad & \sum_{i \in I} r_i x_i \\
-\text{s.t.} \quad & \sum_{i \in I} w_i x_i \le W \\
-& \sum_{i \in I} v_i x_i \le V \\
-& l_i \le x_i \le u_i, \quad x_i \in \mathbb{Z}, \quad \forall i \in I
+\text{s.t.} \quad & \sum_{i \in I} w_i x_i \le W & \text{(C1) weight capacity} \\
+& \sum_{i \in I} v_i x_i \le V & \text{(C2) hold capacity} \\
+& x_i \le u_i \quad \forall i \in I & \text{(C3) tender limit} \\
+& x_i \ge l_i \quad \forall i \in I & \text{(C4) committed freight} \\
+& x_i \in \mathbb{Z} \quad \forall i \in I & \text{(C5) whole pallets}
 \end{aligned}
 $$
 
-The feasible region can be empty. When nothing must fly, loading nothing is always loadable, so some selection always
-exists. The pallets that must fly are what removes that guarantee: if $\sum_{i \in I} w_i l_i > W$, or the same for
-volume, then even the smallest permitted load exceeds a capacity and no $x$ satisfies the constraints. The instance
-then has no solution at all, and a correct solver must report that rather than return some $x$ anyway. For a load
-planner this is a real morning: the committed freight does not fit, and somebody has to decide what gives.
+Note the feasible region could be empty if the commited freight exceeds either the weight or volume capacity.
+
+### Notation
+
+| Symbol | Kind | Meaning | Unit | Domain |
+|:---:|---|---|---|---|
+| $I$ | set | products on the booking list | — | finite set |
+| $i$ | index | one product | — | $i \in I$ |
+| $r_i$ | parameter | revenue of one pallet of product $i$ | thousands of USD | $r_i \ge 0$ |
+| $w_i$ | parameter | weight of one pallet of product $i$ | tonnes | $w_i \ge 0$ |
+| $v_i$ | parameter | volume of one pallet of product $i$ | m³ | $v_i \ge 0$ |
+| $u_i$ | parameter | pallets of product $i$ tendered | pallets | $u_i \in \mathbb{Z}_{\ge 0}$ |
+| $l_i$ | parameter | pallets of product $i$ that must fly | pallets | $l_i \in \mathbb{Z}$, $0 \le l_i \le u_i$ |
+| $W$ | parameter | maximum weight the aircraft may carry | tonnes | $W \ge 0$ |
+| $V$ | parameter | volume of the hold | m³ | $V \ge 0$ |
+| $x_i$ | variable | pallets of product $i$ loaded | pallets | $x_i \in \mathbb{Z}_{\ge 0}$, $l_i \le x_i \le u_i$ |
 
 <a id="ex-two-pallet"></a>
 

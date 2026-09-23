@@ -18,8 +18,8 @@ looking at the result. A collection of them is a [test suite](#test-suite).
 ## Boundary value analysis
 
 Choosing test inputs exactly on the border between two [equivalence classes](#equivalence-partitioning), where behavior
-changes character — for example, a budget of exactly zero, between negative budgets (infeasible) and positive ones.
-Think of the breakpoints in sensitivity analysis.
+changes character — for example, committed cargo that exactly fills an aircraft, between a commitment that does not
+fit (infeasible) and one that leaves room to spare. Think of the breakpoints in sensitivity analysis.
 
 ## Code coverage
 

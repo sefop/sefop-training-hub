@@ -24,7 +24,7 @@ Start at the level that matches where you are, and work your way down.
 
 **Advanced**
 
-1. [Test-Driven Development](#1-test-driven-development)
+1. [Engineering Over Time](#1-engineering-over-time)
 2. [Software Architecture](#2-software-architecture)
 3. [Advanced Testing Topics](#3-advanced-testing-topics)
 4. [Containerization with Docker](#4-containerization-with-docker)
@@ -177,14 +177,15 @@ Start at the level that matches where you are, and work your way down.
 
 ## Advanced
 
-### 1. Test-Driven Development
+### 1. Engineering Over Time
 
-*A discipline where you write the test before the code — using failing tests to drive design decisions and keep the codebase honest*
+*What separates writing code from sustaining it — how software survives years of change, growing teams, and dependencies nobody controls*
 
-- 📖 *Test-Driven Development by Example* — Kent Beck
+- 📖 *Software Engineering at Google* — Titus Winters, Tom Manshreck & Hyrum Wright | [free online](https://abseil.io/resources/swe-book)
 
-> Read this after you are comfortable with automated testing — TDD is not just a testing
-> technique but a design practice that changes how you think about building software.
+> Read this once you have shipped something that outlived its first deadline. Its thesis — that software
+> engineering is programming integrated over time — is the argument this book makes about decision-support
+> systems, told at the scale of thousands of engineers.
 
 ---
 
@@ -201,7 +202,13 @@ Start at the level that matches where you are, and work your way down.
 
 ### 3. Advanced Testing Topics
 
-*Techniques for measuring and improving the quality of your test suite — beyond writing tests to understanding whether they actually work*
+*Disciplines and measurements that raise the quality of a test suite — from letting tests drive the design to finding out whether they actually work*
+
+#### Test-Driven Development
+
+*Writing the test before the code, in short cycles — using failing tests to drive design decisions and keep the codebase honest*
+
+- 📖 *Test-Driven Development by Example* — Kent Beck
 
 #### Code Coverage
 
@@ -216,8 +223,9 @@ Start at the level that matches where you are, and work your way down.
 - 🌐 *Mutation Testing* — GeeksForGeeks | [conceptual introduction](https://www.geeksforgeeks.org/software-engineering/software-testing-mutation-testing/) to the technique and its operators
 - 🌐 *PIT Mutation Testing* — [pitest.org](https://pitest.org/): the leading mutation testing tool for JVM languages, with concepts that apply across ecosystems
 
-> Read the coverage article first — it reframes what "enough testing" means. Then read
-> mutation testing to learn a concrete method for answering that question.
+> Start with TDD once you are comfortable writing automated tests — it is a design practice as much as a testing one,
+> and it changes how you think about building software. Then read the coverage article, which reframes what "enough
+> testing" means, and finish with mutation testing for a concrete method of answering that question.
 
 ---
 
