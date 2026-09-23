@@ -26,6 +26,9 @@ change to one of them risks breaking the others. Design is the practice of drawi
   each boundary in working code.
 - **A trade-off to state honestly:** more boundaries mean more files and more indirection. For a two-week prototype, one
   script may be the right design.
+- **Dependency injection**: develop this.
+- SOLID principles
+- Coupling and Cohesion
 
 ### Out of scope
 

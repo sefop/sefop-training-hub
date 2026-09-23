@@ -39,6 +39,7 @@ This section answers two questions:
   solvers.
 - **Shadow runs.** Before switching models, run the new one alongside the current one on the same data for a few
   cycles, and compare their decisions and objective values. The switch then rests on a measured delta, not on hope.
+- **Artifacts**: we need a place to store the artifacts to have proper ways to revert a wrong deployment.
 
 #### What to measure in production
 
