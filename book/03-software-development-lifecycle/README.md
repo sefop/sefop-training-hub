@@ -1,48 +1,89 @@
 # Section 03 — The lifecycle of decision-support software
 
-> **Status:** planned. No chapters yet; this page collects the ideas the section will develop. Working titles may
-> change before the first chapter is written.
+> **Status:** in construction
 
 ## Introduction
 
-Every piece of software moves through the same broad phases: someone states what it must do, designs it, builds and
-tests it, deploys it, and then maintains it for as long as it is used. That sequence is the **software development
-lifecycle**. Decision-support software moves through the same phases, but each phase has a twist that ordinary business
-software does not. This section names those differences. It is the map of the book: each section after this one takes
-one phase and addresses its difference.
+The software development life cycle (SDLC) is a process that breaks down the process of creating software in phases.
+There are 2 main models of applying SDCL: Waterfall and Agile.
 
-### Ideas to develop
+## Waterfall v/s Agile
 
-- **A difference table**, one row per phase. These are working hypotheses, to be checked against the literature and
-  against practice before the chapter is written:
+To develop this.
 
-  | Phase | Ordinary business software | Decision-support software | Section |
-  |---|---|---|:---:|
-  | Requirements | Stated as features the business can describe | Partly an objective and constraints the business cannot state precisely; the formulation is discovered by iterating | 04 |
-  | Design | Logic is mostly business rules | Data, business rules, the model, and the solver change at different speeds and are owned by different people | 04 |
-  | Testing | The expected output is known in advance | The expected output is the very thing the model computes (the oracle problem) | 05 |
-  | Deployment and operation | Same input, same output, in predictable time | Run time and solution quality vary with each instance; a failure can be a silently worse decision rather than a crash | 06 |
-  | Maintenance | Code written as a product from the start | Code often grows out of a research prototype or a notebook | 07 |
-  | People | Built by software engineers | Built by scientists trained in modelling, not in software engineering | 08 |
+## Context
 
-- **Iteration as gradient descent.** Each pass through the lifecycle gives information for the next, the way each step
-  of gradient descent uses the gradient at the current point. A formulation is rarely right on the first pass, which is
-  why the lifecycle of decision-support software is a loop rather than a line.
-- **The lifecycle does not end at deployment.** A model that runs weekly for five years spends most of its life in
-  operation and maintenance, not in development.
+Assume you are working in an ongoing project. The project is a decision-support software that runs an optimization
+model to recommend a decision to your client. The project has a code repository hosted in GitHub and it has 3
+environments: develop environment, stage environment and production environment.
 
-### Out of scope
+## SDLC in decision-support software
 
-- **A comparison of process frameworks** such as Scrum or Kanban. The section describes phases, not a particular way
-  of running them.
+On this section we will look at the main phases of the Agile SDLC and identify which phases require specialized
+knowledge for a decision-support software. Each phase requiring specialized knowledge will be revisited later on its
+own section of the book.
 
-## Planned chapters
+A typical development process starts from an idea that our client wants. Let's enumerate all the phases that this
+idea has to go through to be usable by the client:
+1. Elicitation
+2. Planning
+3. Design
+4. Testing
+5. Deployment
+6. Monitoring
 
-| # | Working title | After it you can… |
-|:---:|---|---|
-| 01 | The software development lifecycle | Name the phases software goes through, from idea to retirement, and what each phase produces |
-| 02 | How decision-support software differs | Explain, phase by phase, what makes decision-support software different than ordinary business software |
-| 03 | The map of this book | Find the section that addresses each difference |
+### Elicitation
+This phase is related to gathering requirements, discovering and interpreting what the client actually wants. As an
+OR scientist there are some nuances you should take in consideration when talking with your client, for example,
+avoid talking in math terms:
+- Avoid asking 'what is your objective function'
+- Avoid asking 'what is your variable'
+
+Because of these nuances, this will be assessed on a single section.
+
+### Planning
+This phase is related to estimation, backlog management and agile iterations. Working in decision-support software
+does not have significant differences in planning than in traditional software, thus this will not be a specific
+section.
+
+### Design
+Design is related to the structure of the code. There is structure at all levels of an application:
+- Function-level
+- Class-level
+- Component-level
+- Program-level
+- Application-level
+- Enterprise-level
+
+For the purposes of DSS, we will focus from function-level to application-level. Usually at the program-level and
+upward we tend to use the word 'architecture' instead, but that is just a detail. DSS have unique questions from the
+class-level to the application-level, so we will dive into those in the design section. Some example questions to
+answer:
+- How should we design a DSS to be solver-agnostic?
+- How should we design a DSS to support multiple solution algorithms?
+
+Other design questions also come on this phase, which are related to situations where most of the big foundations
+are already in place, and now I need to -for example- add a new constraint to the model. How should I design this
+feature? Here we will dive into some principles for you to have in mind (ex: SOLID principles), with specific
+examples for DSS.
+
+### Testing
+The testing phase is in charge of applying automated tests to the DSS features. This phase is deep in new questions
+that arise from the mixture of DSS and software engineering, for example:
+- How to automatically test the formulation of an optimization model?
+- How to automatically test the output of an optimization model?
+- How does integration test look like in DSS?
+- How does end-to-end tests look like in DSS?
+
+We will dive deep on this phase on the related section.
+
+### Deployment
+When deploying DSS there are no much differences from deploying traditional software. As of now this will not be a
+new section.
+
+### Monitoring
+Monitoring a DSS may have some unique questions: what to monitor? how do I know if the model is behaving correctly
+in production? We will explore these and other questions on this section.
 
 ---
 
