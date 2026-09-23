@@ -84,6 +84,7 @@ This section answers two questions:
 | 04 | Release a new model safely | Compare a new model against the current one on real data before switching, and roll back when it is worse |
 | 05 | Measure the health of every run | Record for each run whether it finished, how the solver behaved, whether the input looked like what the model expects, and enough to reproduce it |
 | 06 | Measure the quality of the decisions | Track whether the decisions stay good and stay used: objective value against a baseline, how often planners override the plan, and the business result |
+| 07 | Conclusion | Recall in one page how a decision reaches production, and what tells you it is still a good one |
 
 ---
 

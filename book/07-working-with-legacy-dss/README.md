@@ -20,6 +20,7 @@ and fixing a bug so it stays fixed.
 |:---:|---|---|---|
 | 01 | [Brownfield adoption](#ch-brownfield) | Add safety nets to a legacy system and improve it incrementally | Draft (older format) |
 | 02 | [Protocol to fix a bug](#ch-bug-protocol) | Decide whether a bug is worth fixing, fix it at its root cause, and keep it from coming back with an automated test | Draft (older format) |
+| 03 | [Conclusion](#ch-conclusion) | Recall in one page how to change inherited code safely, and what makes a fix hold | Ready |
 
 Both chapters assume you can write an automated test. If not, start with
 [Section 05 — Testing decision-support software](../05-testing/README.md).
@@ -161,6 +162,26 @@ Now you implement the code fix. Then the test should pass. Push a PR with this f
 By creating an automatic test, you have effectively documented your knowledge of this bug into the codebase
 permanently. If in the future any developer attempts to make a code change that makes this test fail, it will be a reminder
 that they can't do that because this bug could reappear.
+
+---
+
+<a id="ch-conclusion"></a>
+
+## 03 — Conclusion
+
+A legacy system is one you cannot change safely. Both chapters work in the same order, and it is the opposite of the
+tempting one: build the safety net first, then change the code.
+
+- **The diagnosis is testability, not age** ([chapter 01](#ch-brownfield)). Characterization tests capture what the
+  code does today, and a seam lets you isolate the part that has to change.
+- **Adoption is a change-management problem, not a software one** ([chapter 01](#ch-brownfield)). Make the cost
+  visible through a tool rather than through a person, make the good path the easy path, let the team own the credit,
+  and check you have support before you start.
+- **A bug is fixed only when it cannot return** ([chapter 02](#ch-bug-protocol)). Triage it, reproduce it, fix the
+  root cause rather than the symptom, and leave behind a test that fails without the fix.
+
+Both chapters assume you can already write those tests. Where that assumption does not hold yet, the safety net is
+[Section 05 — Testing decision-support software](../05-testing/README.md), not this section.
 
 ---
 

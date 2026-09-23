@@ -41,6 +41,7 @@ section covers how to capture the speed of AI assistants without accepting that 
 | 02 | Tests as the guardrail for AI-written models | Use the oracles of Section 05 to check code an assistant wrote |
 | 03 | Giving an assistant the context of your model | Write the project context an assistant needs: the contract, the formulation, and the vocabulary |
 | 04 | Evaluating AI workflows | Measure whether an AI workflow actually improves your results before relying on it |
+| 05 | Conclusion | Recall in one page what an assistant changes, and which checks keep its output honest |
 
 ---
 

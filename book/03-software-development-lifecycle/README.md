@@ -87,4 +87,25 @@ in production? We will explore these and other questions on this section.
 
 ---
 
+<a id="ch-conclusion"></a>
+
+## Conclusion
+
+Decision-support software goes through the same lifecycle as any other software. The phases do not change; what
+changes is how much specialized knowledge each one demands.
+
+| Phase | Does it demand specialized knowledge? |
+|---|---|
+| Elicitation | Yes — the client does not think in objective functions and variables, so the requirements have to be drawn out in their own language |
+| Planning | No — estimation, backlog management and iterations work here as they do anywhere |
+| Design | Yes — staying solver-agnostic, supporting several solution algorithms, and deciding where a new constraint belongs |
+| Testing | Yes — the expected answer is the very thing the model computes |
+| Deployment | Yes — what ships is code together with a model, a solver and its license |
+| Monitoring | Yes — a run that finishes is not the same as a run that produced a good decision |
+
+That verdict is the map for the rest of the book: every phase in the Yes rows gets a section of its own, and each of
+those sections opens by naming the difference it addresses.
+
+---
+
 [← Book contents](../../README.md) · [Next section: 04 Designing decision-support software →](../04-design/README.md)

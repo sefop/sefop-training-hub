@@ -31,6 +31,7 @@ built around one idea.
 | 07 | [When optimality is not guaranteed](#ch-no-optimality) | Decide which tests survive when the solver is a heuristic | Ready |
 | 08 | [Duality as an oracle](#ch-duality) | Check an LP's optimum with a certificate instead of re-solving | Coming soon |
 | 09 | [Testing a Pareto front](#ch-pareto) | Test a multi-objective model that has no single optimum | Coming soon |
+| 10 | [Conclusion](#ch-conclusion) | Recall in one page why the model resists testing, and which oracle answers which gap | Ready |
 
 The chapters build on each other. Chapter 01 maps the whole system. Chapters 02–03 set up the vocabulary. Chapters
 04–06 present three kinds of oracle, each covering a gap the previous one leaves open. Chapter 07 revisits all three
@@ -772,6 +773,33 @@ agree with the corresponding lexicographic single-objective optima.
 - **Input validation.** Items are never checked for nonsense values such as a negative cost. Every infeasible
   instance in this section comes from the budgets, never from a malformed item.
 - **Continuous and multi-objective models**, until chapters 08 and 09.
+
+---
+
+<a id="ch-conclusion"></a>
+
+## 10 — Conclusion
+
+One asymmetry carries this whole section: checking that a solution is feasible is cheap, and proving that it is
+optimal is expensive. Every technique here is a way of buying a verdict on a model's answer without paying the full
+price of recomputing it.
+
+- **Most of the system is ordinary software** ([chapter 01](#ch-what-to-test)). Data checks, business rules and the
+  wiring between them have expected outputs you can write down. Spend the hard techniques on the model alone.
+- **The model has no oracle** ([chapter 02](#ch-oracle-problem)). The answer you would compare against is the answer
+  you are trying to compute.
+- **Assert the contract, not the algorithm** ([chapter 03](#ch-contract)). What the model promises survives a change
+  of solver; one particular optimal selection does not.
+- **Three oracles, three gaps** (chapters [04](#ch-hand-oracles), [05](#ch-metamorphic) and
+  [06](#ch-differential)). Hand-computed answers are exact but tiny; metamorphic relations scale to any instance but
+  only ever compare two runs; differential testing is precise but needs a second implementation and stays small. No
+  single one of them covers the model.
+- **A weaker solver means weaker tests** ([chapter 07](#ch-no-optimality)). Under a heuristic or a time limit, every
+  assertion about feasibility survives untouched, and every assertion about optimality becomes a bound.
+
+Use them together: the contract everywhere, hand-written oracles on the instances you can reason about, metamorphic
+relations on the ones you cannot, and a reference implementation for as long as the model is small enough to have
+one.
 
 ---
 

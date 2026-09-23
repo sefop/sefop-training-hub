@@ -41,6 +41,7 @@ it exists.
 | 02 | Do you need an in-house team? | Compare an in-house OR team with vendors and consultants, and choose between building and buying |
 | 03 | Your team in the organization | Choose where the team sits and whom it reports to |
 | 04 | From proof of concept to funded project | Run a proof of concept with exit criteria set in advance, and turn a successful one into a funded project |
+| 05 | Conclusion | Recall in one page whether the decision deserves software, who should build it, and where the team belongs |
 
 ---
 

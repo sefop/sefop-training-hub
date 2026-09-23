@@ -32,6 +32,7 @@ changing what the team treats as part of the job, without losing the scientific 
 | 02 | [From science to software: the mindset change](#ch-mindset) | Explain what changes when scientists start shipping production software | Coming soon |
 | 03 | [Introducing engineering practices to a team that resists them](#ch-introducing-practices) | Plan a change in practice that lasts beyond your own involvement | Coming soon |
 | 04 | [Training scientists in software engineering](#ch-training) | Plan training for your team, and choose what to learn first | Coming soon |
+| 05 | [Conclusion](#ch-conclusion) | Recall in one page which expertise the team owns, and what it takes to change how it works | Ready |
 
 Chapter 01 decides who is on the team. Chapters 02–04 are about what happens next: what the work feels like from the
 inside, how to change practice in a team that did not ask for it, and what to train first.
@@ -166,6 +167,31 @@ what order, and how to tell whether the training took. It will build the sequenc
 [practice repositories](../appendix/practice-repositories.md), and will cover the part managers usually skip: giving
 the team work where the new practice is the only way through, so the training does not evaporate on contact with the
 next deadline.
+
+---
+
+<a id="ch-conclusion"></a>
+
+## 05 — Conclusion
+
+A team of scientists does not become a software team by hiring a software engineer. The formulation is where
+correctness is hardest to establish, and it stays with the scientists — so the engineering has to reach them rather
+than sit beside them.
+
+- **Software engineering is several skills, not one** ([chapter 01](#ch-staffing)). Developers take what is
+  unrelated to the mathematics, OR engineers live in the overlap, and scientists learn a bounded subset of the rest.
+- **Own the product, borrow the platform** ([chapter 01](#ch-staffing)). Business interaction, product behavior,
+  software quality and the path to production stay with the team; infrastructure, security, reliability and design
+  come from elsewhere in the company.
+- **The job changes, not only the toolkit** ([chapter 02](#ch-mindset)). A model written for a study is judged by
+  what it shows; the same model inside a system is judged by what it keeps doing.
+- **Resistance is rational from where the team stands** ([chapter 03](#ch-introducing-practices)). The practices cost
+  time now and pay later, and nobody is measured on later.
+- **Training is the lever a manager actually controls** ([chapter 04](#ch-training)). Choose a bounded curriculum,
+  then give the team work where the new practice is the only way through.
+
+The thread is the same one the section opened with: keep the scientific strength that made the team valuable, and
+change what it treats as part of the job.
 
 ---
 

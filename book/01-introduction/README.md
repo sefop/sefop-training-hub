@@ -165,4 +165,26 @@ Three references sit outside the sections and are meant to be used rather than r
 
 ---
 
+<a id="ch-conclusion"></a>
+
+## Conclusion
+
+Operations research reaches the business through software that runs again and again. That software is the product,
+not the residue of a study, and it decays like any other product left unengineered.
+
+- **A recurring decision needs a system, not a script.** Because it runs on a cadence, it has to be maintained,
+  tested, deployed and evolved like any other important software.
+- **The engineering half is usually the weak half,** for two reasons: scientists are trained deeply in mathematics
+  and rarely in software engineering, and the questions raised where the two disciplines meet have no obvious
+  answers.
+- **The cost is business value, not tidiness.** Weak foundations show up as systems that stall within a year, or
+  that turn legacy once the original authors leave.
+- **AI assistants amplify whatever practice surrounds them.** The amplifier is already switched on, which makes the
+  foundations urgent rather than optional.
+
+The rest of the book answers the technical half of that gap one lifecycle phase at a time, and the cultural half in
+[Section 08 — Leading the team](../08-leading-the-team/README.md).
+
+---
+
 [← Book contents](../../README.md) · [Next section: 02 When a company needs decision-support software and an OR team →](../02-do-you-need-dss/README.md)

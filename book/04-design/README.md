@@ -40,6 +40,7 @@ change to one of them risks breaking the others. Design is the practice of drawi
 | 03 | Keep data out of the formulation | Load and validate data before it reaches the model, so the formulation only sees clean parameters |
 | 04 | Keep business rules visible | Place business rules where the business can review them, apart from the mathematics |
 | 05 | Design for reproducibility | Make the same inputs always produce the same decision, like a controlled experiment |
+| 06 | Conclusion | Recall in one page where the boundaries of a decision-support system go, and what each one buys |
 
 ---
 
