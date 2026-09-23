@@ -144,7 +144,7 @@ kinds of oracle that work around the problem, each at a different price.
 
 The simplest oracle is a person. Take the
 [two-pallet instance](../appendix/running-example.md#ex-two-pallet): each $x_i \in \{0, 1\}$, so there are
-$2 	imes 2 = 4$ candidate selections, few enough to list.
+$2  imes 2 = 4$ candidate selections, few enough to list.
 
 | $x_A$ | $x_B$ | Weight (≤ 2) | Volume (≤ 2) | Revenue | Feasible? |
 |:---:|:---:|:---:|:---:|:---:|---|

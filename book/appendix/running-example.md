@@ -179,4 +179,3 @@ earns more than water. The optimal solution is $x_A = 1$, $x_B = 0$:
 | Revenue | $10 \cdot 1 + 6 \cdot 0$ | 10 thousand USD |
 | Payload used | $2 \cdot 1 + 1 \cdot 0$ | 2 of 2 tonnes |
 | Hold used | $1 \cdot 1 + 2 \cdot 0$ | 1 of 2 m³ |
-
