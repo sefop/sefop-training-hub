@@ -11,9 +11,195 @@ other: it keeps each change small and confined to one part, as [the design secti
 [automated test suite](../appendix/glossary.md#test-suite) then shows, on every change, that everything that worked
 before still works. With both pillars in place, a team can change working code as often as the business asks.
 
+### Types of tests
 
+Tests fall into two families, told apart by the question each one answers.
 
+| Type | The question it answers | Examples |
+|---|---|---|
+| [Functional](../appendix/glossary.md#functional-test) | Does the program provide its services correctly? | A sum is right; bad input is rejected |
+| [Non-functional](../appendix/glossary.md#non-functional-test) | How well does the program provide them? | Security, speed, usability, availability, scalability |
 
+This section is about functional tests.
+
+### Hierarchy of functional tests
+
+Functional tests come in three levels, told apart by how much of the program each one runs. A
+[unit test](../appendix/glossary.md#unit-test) checks one small piece of code in isolation. An
+[integration test](../appendix/glossary.md#integration-test) combines several units and checks that they work
+together. An [acceptance test](../appendix/glossary.md#acceptance-test) runs the whole application in a real-world
+scenario, the way its users would.
+
+<a id="fig-test-pyramid"></a>
+
+**Figure: test pyramid**
+
+<p align="center">
+  <img src="assets/unit-test-pyramid.svg" width="640"
+       alt="A pyramid of three levels of functional tests: unit tests at the wide base, integration tests in the middle, acceptance tests at the narrow top. Cost per test rises toward the top, speed rises toward the base, and the base holds the most tests">
+</p>
+
+Take a small program that reads a user's records, computes their income and tax, and reports the result. It has three
+modules: reading data (`read_user`, `read_db`), business logic (`calculate_income`, `calculate_tax`) and processing
+results (`create_report`, `display_report`). A unit test calls `calculate_tax` alone, with an income the test chooses.
+An integration test feeds what `read_db` returns into `calculate_income` and checks that the two agree on the shape of
+the data. An acceptance test starts at `read_user`, ends at `display_report`, and checks the report a user sees.
+
+As [Figure: test pyramid](#fig-test-pyramid) shows, each step up runs more of the program, so each test costs more to
+write and runs slower. A healthy suite holds many unit tests, fewer integration tests and a handful of acceptance
+tests.
+
+## Unit testing
+
+A unit test sits at the base of the pyramid: it checks one unit of code, such as a function, on its own, and runs in
+milliseconds. This part builds unit tests for a `Calculator` with two operations: `add` comes with its tests already
+written, and `divide` is yours to test in the exercise at the end.
+
+### What to test
+
+Every unit has an [interface](../appendix/glossary.md#interface): what it promises its callers, meaning its name, its
+inputs, its outputs and the errors it may raise. The comments that state those promises are part of the interface.
+How the unit keeps them is an [implementation detail](../appendix/glossary.md#implementation-detail), and a unit may
+have many implementations behind one interface.
+
+A wall socket is a good picture. Whoever plugs in a lamp relies on the voltage at the socket, never on how the power
+station produces it, so the tests are aimed at the socket. Unit tests do the same: they check the interface.
+
+<a id="pseudo-add-interface"></a>
+
+**Pseudocode: add interface**
+
+```
+// pseudocode: add-interface
+public add(a, b) returns number
+    // Returns the sum a + b.
+    // Commutativity: add(a, b) = add(b, a)
+    // Identity: add(a, 0) = a
+    // Fails with an invalid-input error if a or b is not a finite number
+    // Fails with an overflow error if the sum is too large to represent
+```
+
+An interface has one or more *behaviors*, and each one is something to test.
+[Pseudocode: add interface](#pseudo-add-interface) promises five:
+
+1. **The base case**, also called the [happy path](../appendix/glossary.md#happy-path): `add(3, 4) = 7`.
+2. **Commutativity**: `add(3, 4) = add(4, 3)`.
+3. **Identity**: `add(3, 0) = 3`.
+4. **Invalid input**: `add("3", 4)` fails with an invalid-input error.
+5. **Overflow**: adding the largest representable number to itself fails with an overflow error.
+
+A behavior may need more than one case: identity holds for 3, and also for a negative number and a very large one.
+The Python practice repository splits invalid input into cases specific to the language, such as a value of the wrong
+type or an infinite value, and also checks that the result is always a floating-point number.
+
+### How to write a unit test
+
+A unit test's name says what it checks, in three parts: the unit, the behavior and case, and the expected result.
+`test__add__given_two_numbers__returns_their_sum` tests `add`, given two ordinary numbers, and expects their sum. When
+it fails, its name alone reports which behavior broke.
+
+The body follows the [arrange, act, assert (AAA)](../appendix/glossary.md#arrange-act-assert) pattern: *arrange* the
+objects and inputs the test needs, *act* by calling the unit once, and *assert* that the result meets the expectation.
+In the pseudocode, `expect` makes the assertion: the test fails if its condition is false.
+
+<a id="pseudo-add-test"></a>
+
+**Pseudocode: add test**
+
+```
+// pseudocode: add-test
+public test__add__given_two_numbers__returns_their_sum()
+    // arrange
+    calculator = Calculator()
+
+    // act
+    result = calculator.add(1, 2)
+
+    // assert
+    expect result == 3
+```
+
+### Where to test
+
+Test code lives apart from production code, in a folder tree that mirrors it, so each module's tests sit at the same
+place in the tests tree as the module does in the source tree.
+
+<a id="pseudo-test-layout"></a>
+
+**Pseudocode: test layout**
+
+```
+// pseudocode: test-layout
+project/
+    src/
+        calculator
+    tests/
+        test_calculator_add
+        test_calculator_divide
+```
+
+### Code coverage
+
+How do you know you tested every behavior? The starting point is
+[code coverage](../appendix/glossary.md#code-coverage): a tool records which lines of the production code the tests
+run, and reports the rest. [Pseudocode: add coverage](#pseudo-add-coverage) marks each line of `add` for a suite that holds
+only the happy-path test.
+
+<a id="pseudo-add-coverage"></a>
+
+**Pseudocode: add coverage**
+
+```
+// pseudocode: add-coverage
+public add(a, b) returns number
+    if a is not a finite number             // ✓ run
+        fail with invalid-input error       // ✗ not run
+    if b is not a finite number             // ✓ run
+        fail with invalid-input error       // ✗ not run
+    result = a + b                          // ✓ run
+    if result is too large to represent     // ✓ run
+        fail with overflow error            // ✗ not run
+    return result                           // ✓ run
+```
+
+> [!NOTE]
+> The pseudocode is illustrative: a real coverage tool reports the same pattern for the Python `add`, over more lines.
+
+The three lines that never run belong to the invalid-input and overflow behaviors. Add a test for each, and every line
+runs: coverage reaches 100%. Now delete the commutativity test. Coverage stays at 100%, because the happy-path test
+already runs every line the commutativity test runs. Coverage points at lines no test runs; it cannot point at a
+behavior no test checks. Use it to find what is missing, and use the list of behaviors to decide when you are done.
+
+### Exercise 1: a calculator
+
+The calculator's `divide` is implemented but untested. Write a unit test for each behavior in
+[Pseudocode: divide interface](#pseudo-divide-interface), named and structured as in [Pseudocode: add test](#pseudo-add-test),
+until coverage of `divide` reaches 100%.
+
+<a id="pseudo-divide-interface"></a>
+
+**Pseudocode: divide interface**
+
+```
+// pseudocode: divide-interface
+public divide(a, b) returns number
+    // Returns the quotient a / b.
+    // Identity: divide(a, 1) = a
+    // Inverse: divide(a, a) = 1 for any non-zero a
+    // Fails with an invalid-input error if a or b is not a finite number
+    // Fails with a zero-division error if b is zero
+    // Fails with an overflow error if the quotient is too large to represent
+```
+
+> **Practice it**
+>
+> - Python: [training-testing-python, exercise 1](https://github.com/sefop/training-testing-python/tree/main/exercises/1_unit-tests-and-coverage).
+>   Read [`calculator.py`](https://github.com/sefop/training-testing-python/blob/main/src/calculator.py) and
+>   [`test_calculator_add.py`](https://github.com/sefop/training-testing-python/blob/main/tests/test_calculator_add.py),
+>   fill in [`test_calculator_divide.py`](https://github.com/sefop/training-testing-python/blob/main/tests/test_calculator_divide.py),
+>   and measure with the [coverage guide](https://github.com/sefop/training-testing-python/blob/main/exercises/1_unit-tests-and-coverage/how-to-code-coverage.md).
+>   The solutions are on the `solutions` branch.
+> - Java: coming soon
 
 ## The running example
 

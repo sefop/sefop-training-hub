@@ -6,8 +6,8 @@
     <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
   </defs>
   <rect width="900" height="382" fill="#ffffff"/>
-  <text x="20" y="30" text-anchor="start" font-size="13" fill="#52606d" font-weight="bold" xml:space="preserve">Listing: tangled script</text>
-  <text x="34" y="60" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">// listing: tangled-script</text>
+  <text x="20" y="30" text-anchor="start" font-size="13" fill="#52606d" font-weight="bold" xml:space="preserve">Pseudocode: tangled script</text>
+  <text x="34" y="60" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">// pseudocode: tangled-script</text>
   <text x="34" y="84" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">public function plan_flight_load(booking_file, aircraft_file, plan_file):</text>
   <rect x="20" y="93" width="590" height="24" fill="#dbe7f1"/>
   <rect x="20" y="93" width="5" height="24" fill="#2f6f9f"/>

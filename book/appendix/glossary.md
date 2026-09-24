@@ -10,6 +10,11 @@ A named interface that hides how something is done behind what it does. A cargo 
 method, `solve`, and several implementations — enumeration, a MIP solver — can stand behind it. It is what lets you
 swap solvers without rewriting the code that calls them.
 
+## Acceptance test
+
+A [functional test](#functional-test) that runs the whole application in a real-world scenario, the way its users
+would. The slowest and costliest kind of test, so a suite holds only a few.
+
 ## Adapter pattern
 
 A [design pattern](#design-pattern) in which a small class translates between the interface a system expects and
@@ -21,6 +26,11 @@ its own adapter, and the rest of the system never sees the source's format.
 A way of organizing software development around short feedback loops: release a small change, learn from the
 people who use it, and feed the lesson into the next change. Its value is the loop, not its meetings or vocabulary.
 Contrast with [waterfall](#waterfall).
+
+## Arrange, act, assert
+
+The three-part body of a unit test, abbreviated AAA: arrange the objects and inputs the test needs, act by calling
+the unit once, and assert that the result meets the expectation.
 
 ## Automated test
 
@@ -137,6 +147,16 @@ per class instead of many redundant ones.
 A test that passes on some runs and fails on others without any change to the code, often because it depends on
 randomness, timing, or external state. Fixing the [random seed](#random-seed) removes one common cause.
 
+## Functional test
+
+A test that checks whether a program provides its services correctly: given these inputs, it returns this output or
+raises this error. Contrast with [non-functional test](#non-functional-test).
+
+## Happy path
+
+The base case of a unit's behavior: ordinary, valid inputs and the result they should produce, with nothing going
+wrong.
+
 ## Heuristic
 
 A method that gives up the guarantee of an optimal answer on purpose, in exchange for speed. An exact MIP solver stopped
@@ -162,6 +182,11 @@ live before all regions. Contrast with [iterative development](#iterative-develo
 
 Keeping each part's [implementation details](#implementation-detail) behind an [interface](#interface), so that
 the rest of the system knows what the part does but never how. Introduced by David Parnas in 1972.
+
+## Integration test
+
+A [functional test](#functional-test) that combines several units and checks that they work together, for example
+that one unit reads data in the shape the next one expects.
 
 ## Interface
 
@@ -199,6 +224,11 @@ of the decisions, not only whether the program ran.
 
 Deliberately introducing small bugs ("mutants") into the code and checking whether the test suite notices. Mutants that
 survive point at behavior the tests do not really check.
+
+## Non-functional test
+
+A test that checks how well a program provides its services rather than whether it provides them correctly:
+security, speed, usability, availability, scalability. Contrast with [functional test](#functional-test).
 
 ## Object-oriented programming
 
@@ -324,6 +354,11 @@ logic is not.
 A standard notation for drawing software, abbreviated UML. This book uses a simplified form: a box per class or
 interface, members marked `+` for public and `-` for private, and a hollow arrowhead from a class to the interface
 it implements.
+
+## Unit test
+
+A [functional test](#functional-test) that checks one small piece of code, such as a function, in isolation. The
+fastest and cheapest kind of test, so a suite holds many.
 
 ## Waterfall
 

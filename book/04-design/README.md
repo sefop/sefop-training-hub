@@ -23,8 +23,8 @@ work, and ends with an architecture for the cargo loading system that uses all o
 - **A catalogue of patterns.** The patterns here are a small subset chosen for decision-support software; the
   further reading of [Patterns](#ch-patterns) points to complete catalogues.
 
-[What design is for](#ch-design-purpose) introduces **Listing: tangled script**, a single function that plans a
-flight's load, and every chapter after it fixes one thing in that listing. [Forces: coupling and cohesion](#ch-forces)
+[What design is for](#ch-design-purpose) introduces **Pseudocode: tangled script**, a single function that plans a
+flight's load, and every chapter after it fixes one thing in that pseudocode. [Forces: coupling and cohesion](#ch-forces)
 diagnoses what is wrong with it. [Principles](#ch-principles) states the rules that follow from the diagnosis, and
 [Patterns](#ch-patterns) shows the reusable solutions that apply them.
 [From design to architecture](#ch-architecture) lifts the same ideas to the scale of a whole system, and
@@ -40,10 +40,10 @@ tendered and pallets that must fly, per product), a product catalogue (weight, v
 aircraft's two capacities. This section holds the model fixed: the formulation never changes, only the code around
 it.
 
-### How to read the listings and figures
+### How to read the pseudocode and figures
 
-Every listing and figure has a name, shown in bold above it, and the text refers to it by that name. Listings also
-carry the name as their first line, for example `// listing: tangled-script`.
+Every pseudocode block and figure has a name, shown in bold above it, and the text refers to it by that name.
+Pseudocode also carries the name as its first line, for example `// pseudocode: tangled-script`.
 
 The pseudocode is written as structured English, one action per line, with only the detail the point needs. Every
 function is marked [`public` or `private`](../appendix/glossary.md#public-and-private): any part of the program may call
@@ -101,12 +101,12 @@ Here is the cargo loading system as it is often first written: one function that
 bookings, checks the committed freight, builds the model, hands it to a solver library (the software that solves
 optimization models), and writes the plan as a comma-separated values (CSV) file.
 
-<a id="lst-tangled-script"></a>
+<a id="pseudo-tangled-script"></a>
 
-**Listing: tangled script**
+**Pseudocode: tangled script**
 
 ```
-// listing: tangled-script
+// pseudocode: tangled-script
 public function plan_flight_load(booking_file, aircraft_file, plan_file):
     products = read each row of booking_file as a product
     capacity = read weight and volume limits from aircraft_file
@@ -121,7 +121,7 @@ public function plan_flight_load(booking_file, aircraft_file, plan_file):
     write pallets and revenue as CSV to plan_file
 ```
 
-**Listing: tangled script** works, and for a first experiment it is a reasonable thing to write. Now ask it to
+**Pseudocode: tangled script** works, and for a first experiment it is a reasonable thing to write. Now ask it to
 change:
 
 1. The booking list starts arriving as a JSON (JavaScript Object Notation) document from a web service instead of a
@@ -153,7 +153,7 @@ purpose, so that a single kind of change touches it and nothing else does.
 A good design has **high cohesion and low coupling**: each part does one job completely, and the parts know as
 little about each other as possible. Low coupling lets a change stay inside one part; high cohesion makes sure the
 change has only one part to go to. **Figure: tangled and grouped** shows the difference on the pieces of
-[Listing: tangled script](#lst-tangled-script), each dot coloured by the job it does.
+[Pseudocode: tangled script](#pseudo-tangled-script), each dot coloured by the job it does.
 
 <a id="fig-tangled-and-grouped"></a>
 
@@ -166,14 +166,14 @@ change has only one part to go to. **Figure: tangled and grouped** shows the dif
 
 ### Diagnosing the tangled script
 
-[Listing: tangled script](#lst-tangled-script) has both problems. It has **low cohesion**: one function holds input
+[Pseudocode: tangled script](#pseudo-tangled-script) has both problems. It has **low cohesion**: one function holds input
 parsing, business rules, preprocessing, the formulation, the solver calls and the output format. And its pieces are
 **tightly coupled**: the line that collects the pallets asks the solver's model object for each value, so writing
 the plan depends on which solver produced it.
 
 The cost shows up the moment something changes. Suppose the plan must now be written as a JSON (JavaScript Object
 Notation) document instead of comma-separated values (CSV). **Figure: change ripple** marks the lines of
-[Listing: tangled script](#lst-tangled-script) that must change.
+[Pseudocode: tangled script](#pseudo-tangled-script) that must change.
 
 <a id="fig-change-ripple"></a>
 
@@ -190,7 +190,7 @@ one that writes the plan. The next chapter states the principles that get there.
 
 ### Check yourself
 
-1. In [Listing: tangled script](#lst-tangled-script), the line that collects `pallets` asks `model` for each value.
+1. In [Pseudocode: tangled script](#pseudo-tangled-script), the line that collects `pallets` asks `model` for each value.
    Is that a problem of coupling or of cohesion?
 2. A module called `utils` holds a CSV parser, a date formatter and a greedy knapsack heuristic. Which force does it
    violate?
@@ -218,7 +218,7 @@ one that writes the plan. The next chapter states the principles that get there.
 
 The forces say what a good design looks like; the principles say how to get there. Each principle below is a rule
 of thumb that raises cohesion, lowers coupling, or both, and each one fixes one thing in
-[Listing: tangled script](#lst-tangled-script). The table at the end of the chapter summarizes which force each
+[Pseudocode: tangled script](#pseudo-tangled-script). The table at the end of the chapter summarizes which force each
 principle moves.
 
 ### Information hiding
@@ -229,16 +229,16 @@ principle moves.
 use. Clients know *what* a part does, never *how*. David Parnas stated the principle in 1972, and most of what
 follows builds on it.
 
-[Listing: tangled script](#lst-tangled-script) leaks its how: the plan is assembled by asking the solver's model
+[Pseudocode: tangled script](#pseudo-tangled-script) leaks its how: the plan is assembled by asking the solver's model
 object for values. Hiding it means that optimizing returns a plain result, a `LoadPlan`, and nothing about the model
 or the solver escapes.
 
-<a id="lst-load-plan"></a>
+<a id="pseudo-load-plan"></a>
 
-**Listing: load plan**
+**Pseudocode: load plan**
 
 ```
-// listing: load-plan
+// pseudocode: load-plan
 record LoadPlan:
     feasible: true or false
     reason: why no plan exists, when feasible is false
@@ -258,7 +258,7 @@ Writing the plan now depends on `LoadPlan` alone. The solver can change and the 
 The [single responsibility principle](../appendix/glossary.md#single-responsibility-principle) (SRP) says that a part
 should have only one reason to change. A responsibility is not "a thing the code does" but an axis of change: a
 source of requests that could force an edit. **Figure: reasons to change** shades each line of
-[Listing: tangled script](#lst-tangled-script) by the reason it would change, and six responsibilities become
+[Pseudocode: tangled script](#pseudo-tangled-script) by the reason it would change, and six responsibilities become
 visible in one function.
 
 <a id="fig-reasons-to-change"></a>
@@ -278,12 +278,12 @@ script breaks this rule too: the knowledge of how a plan is written lives in two
 
 Split along its reasons to change, the function becomes a sequence of private functions, each with one job.
 
-<a id="lst-split-by-responsibility"></a>
+<a id="pseudo-split-by-responsibility"></a>
 
-**Listing: split by responsibility**
+**Pseudocode: split by responsibility**
 
 ```
-// listing: split-by-responsibility
+// pseudocode: split-by-responsibility
 public function plan_flight_load(booking_file, aircraft_file, plan_file):
     products, capacity = read_bookings(booking_file, aircraft_file)
     plan = check_committed_freight(products, capacity)
@@ -319,12 +319,12 @@ is which algorithm or library finds it.
 The optimize step therefore defines the interface it needs, and each algorithm implements it. The first
 implementation solves the mixed-integer programming (MIP) formulation of the appendix with Gurobi.
 
-<a id="lst-solution-provider"></a>
+<a id="pseudo-solution-provider"></a>
 
-**Listing: solution provider**
+**Pseudocode: solution provider**
 
 ```
-// listing: solution-provider
+// pseudocode: solution-provider
 interface SolutionProvider:
     public function solve(products, capacity) -> LoadPlan
 
@@ -382,7 +382,7 @@ Single responsibility and dependency inversion are two of five principles known 
 
 ### Check yourself
 
-1. In [Listing: split by responsibility](#lst-split-by-responsibility), how many reasons to change does
+1. In [Pseudocode: split by responsibility](#pseudo-split-by-responsibility), how many reasons to change does
    `read_bookings` have?
 2. Which principle does this line break, inside `optimize`: `model = create a model with the Gurobi library`?
 3. A new `SolutionProvider` returns plans that ignore committed freight whenever the instance is large. Which
@@ -431,12 +431,12 @@ on from outside, instead of creating them itself. It is the pattern that puts de
 optimize step depends on `SolutionProvider`, something has to decide which providers it gets, and dependency
 injection says that decision is made outside the optimize step.
 
-<a id="lst-inject-providers"></a>
+<a id="pseudo-inject-providers"></a>
 
-**Listing: inject providers**
+**Pseudocode: inject providers**
 
 ```
-// listing: inject-providers
+// pseudocode: inject-providers
 class Optimize:
     private providers
     public function constructor(providers):      // runs when an Optimize is created
@@ -447,12 +447,12 @@ If every part receives what it needs, some part of the program has to build the 
 Where that happens is a detail; what matters is that it happens outside the parts that use them. This book calls that
 place the [composition root](../appendix/glossary.md#composition-root).
 
-<a id="lst-composition-root"></a>
+<a id="pseudo-composition-root"></a>
 
-**Listing: composition root**
+**Pseudocode: composition root**
 
 ```
-// listing: composition-root
+// pseudocode: composition-root
 public function start_program(settings):
     providers = create an enumeration provider, a MipProviderGurobi with settings.time_limit, a greedy heuristic
     optimize = create Optimize with providers
@@ -473,7 +473,7 @@ public function start_program(settings):
 </p>
 
 The payoff is twofold. Changing a solver's time limit, or swapping the comma-separated values (CSV) reader for a JSON
-(JavaScript Object Notation) one, is a one-line edit in [Listing: composition root](#lst-composition-root); nothing else
+(JavaScript Object Notation) one, is a one-line edit in [Pseudocode: composition root](#pseudo-composition-root); nothing else
 knows which concrete parts were chosen. And a test can hand `Optimize` a fake provider that returns a fixed plan, so the
 optimize step can be tested without a solver.
 
@@ -485,12 +485,12 @@ operations research scientists want most often, because a decision-support syste
 instance: enumeration is exact and fast for tiny instances, a mixed-integer programming (MIP) solver is exact for
 medium ones, and a heuristic is the only option when the instance is too large to solve in time.
 
-<a id="lst-strategy"></a>
+<a id="pseudo-strategy"></a>
 
-**Listing: strategy**
+**Pseudocode: strategy**
 
 ```
-// listing: strategy
+// pseudocode: strategy
 class Optimize:
     private providers
     public function run(products, capacity) -> LoadPlan:
@@ -522,12 +522,12 @@ and one it is given. The cargo system expects products and a capacity; the outsi
 document from a web service, or a request from a web page.
 Each source gets an adapter that turns it into the same entities.
 
-<a id="lst-booking-readers"></a>
+<a id="pseudo-booking-readers"></a>
 
-**Listing: booking readers**
+**Pseudocode: booking readers**
 
 ```
-// listing: booking-readers
+// pseudocode: booking-readers
 interface BookingReader:
     public function read() -> products, capacity
 
@@ -554,7 +554,7 @@ class JsonBookingReader implements BookingReader:
 </p>
 
 The first change request from [What design is for](#ch-design-purpose), bookings arriving as JSON, is now one new
-class and one line in [Listing: composition root](#lst-composition-root).
+class and one line in [Pseudocode: composition root](#pseudo-composition-root).
 
 ### Further reading
 
@@ -626,7 +626,7 @@ without touching the essential, and the essential can be tested without the inci
 The problem, from [the appendix](../appendix/running-example.md): a load planner receives a booking list for one
 departure, and the system proposes how many pallets of each product to load, maximizing revenue within the aircraft's
 weight and hold capacities, loading no more than was tendered and at least what must fly. This chapter places every
-line of [Listing: tangled script](#lst-tangled-script) in the four rings of **Figure: clean architecture**.
+line of [Pseudocode: tangled script](#pseudo-tangled-script) in the four rings of **Figure: clean architecture**.
 
 <a id="fig-cargo-architecture"></a>
 
@@ -645,12 +645,12 @@ whole number, a plan never loads more than was tendered. They depend on nothing.
 
 **Use case.** `PlanFlightLoad` receives the data as entities and returns a `LoadPlan`, in three steps.
 
-<a id="lst-plan-flight-load"></a>
+<a id="pseudo-plan-flight-load"></a>
 
-**Listing: plan flight load**
+**Pseudocode: plan flight load**
 
 ```
-// listing: plan-flight-load
+// pseudocode: plan-flight-load
 class PlanFlightLoad:
     private preprocess, optimize, postprocess
     public function run(products, capacity) -> LoadPlan:
@@ -662,7 +662,7 @@ class PlanFlightLoad:
 
 - **Preprocess** applies the business rules that can be checked before solving and drops products that can never
   fit.
-- **Optimize** chooses a `SolutionProvider` by instance size, as in [Listing: strategy](#lst-strategy), and returns
+- **Optimize** chooses a `SolutionProvider` by instance size, as in [Pseudocode: strategy](#pseudo-strategy), and returns
   its plan. It is the only step that knows the providers exist.
 - **Postprocess** turns the provider's answer into the plan the planner reads, for example sorted by revenue with
   totals.
@@ -699,11 +699,11 @@ details.
 
 What keeps the design clean is the boundary that does exist: `MipProviderGurobi` is one encapsulated package, the
 only code that uses the Gurobi library, reachable only through `SolutionProvider`. Replacing the solver means writing
-one new provider and changing one line in [Listing: composition root](#lst-composition-root).
+one new provider and changing one line in [Pseudocode: composition root](#pseudo-composition-root).
 
 ### Where the tangled script went
 
-| In [Listing: tangled script](#lst-tangled-script) | In the clean architecture |
+| In [Pseudocode: tangled script](#pseudo-tangled-script) | In the clean architecture |
 |---|---|
 | Read the bookings and the aircraft's capacity | `CsvBookingReader`, an interface adapter |
 | Check the committed freight | Preprocess, in the use case, returning an infeasible `LoadPlan` |
@@ -711,7 +711,7 @@ one new provider and changing one line in [Listing: composition root](#lst-compo
 | Create, build and solve the model | `MipProviderGurobi`, one `SolutionProvider` chosen by optimize |
 | Ask the model for each value | Inside `MipProviderGurobi`, which returns a `LoadPlan` |
 | Write the plan | `CsvPlanWriter`, an interface adapter, reading only the `LoadPlan` |
-| The 60-second time limit and the file names | [Listing: composition root](#lst-composition-root) |
+| The 60-second time limit and the file names | [Pseudocode: composition root](#pseudo-composition-root) |
 
 Each of the five change requests from [What design is for](#ch-design-purpose) now lands in one place: a JSON source
 is a new adapter, a dangerous-goods rule is a change to preprocess, a heuristic is a new provider, a new solver is a

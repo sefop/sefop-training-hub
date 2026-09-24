@@ -7,10 +7,10 @@
   </defs>
   <rect width="900" height="426" fill="#ffffff"/>
   <text x="20" y="34" text-anchor="start" font-size="16" fill="#1f2933" font-weight="bold" xml:space="preserve">Change: write the plan as JSON instead of CSV</text>
-  <text x="20" y="66" text-anchor="start" font-size="13" fill="#52606d" font-weight="bold" xml:space="preserve">Listing: tangled script</text>
+  <text x="20" y="66" text-anchor="start" font-size="13" fill="#52606d" font-weight="bold" xml:space="preserve">Pseudocode: tangled script</text>
   <line x1="630" y1="20" x2="630" y2="406" stroke="#e4e7eb" stroke-width="2"/>
   <text x="765" y="66" text-anchor="middle" font-size="13" fill="#52606d" font-weight="bold" xml:space="preserve">The same steps as separate parts</text>
-  <text x="34" y="100" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">// listing: tangled-script</text>
+  <text x="34" y="100" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">// pseudocode: tangled-script</text>
   <text x="34" y="122" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">public function plan_flight_load(booking_file, aircraft_file, plan_file):</text>
   <text x="34" y="144" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">    products = read each row of booking_file as a product</text>
   <text x="34" y="166" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">    capacity = read weight and volume limits from aircraft_file</text>
