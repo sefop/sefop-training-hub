@@ -58,8 +58,7 @@ tests.
 ## Unit testing
 
 A unit test sits at the base of the pyramid: it checks one unit of code, such as a function, on its own, and runs in
-milliseconds. This part builds unit tests for a `Calculator` with two operations: `add` comes with its tests already
-written, and `divide` is yours to test in the exercise at the end.
+milliseconds.
 
 ### Interface vs implementation
 
@@ -67,12 +66,12 @@ Every unit of code has two parts. Its [interface](../appendix/glossary.md#interf
 name, the inputs it accepts, and the outputs and errors it returns. Programmers also call it the signature, the
 application programming interface (API), or the [contract](../appendix/glossary.md#contract). Its implementation is
 how the unit does it, and everything in it is an [implementation detail](../appendix/glossary.md#implementation-detail).
-[Figure: add interface and implementation](#fig-add-interface-implementation) marks the two parts on the calculator's
+[Figure: add interface and implementation](#fig-interface-implementation) marks the two parts on the calculator's
 `add`.
 
-<a id="fig-add-interface-implementation"></a>
+<a id="fig-interface-implementation"></a>
 
-**Figure: add interface and implementation**
+**Figure: interface and implementation**
 
 <p align="center">
   <img src="assets/unit-test-interface-implementation.svg" width="780"
@@ -102,7 +101,7 @@ same: they check the interface.
 ### What to test
 
 An interface has one or more *behaviors*, and each one is something to test. The interface in
-[Figure: add interface and implementation](#fig-add-interface-implementation) promises five:
+[Figure: interface and implementation](#fig-interface-implementation) promises five:
 
 1. **The base case**, also called the [happy path](../appendix/glossary.md#happy-path): `add(3, 4) = 7`.
 2. **Commutativity**: `add(3, 4) = add(4, 3)`.
