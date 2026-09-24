@@ -13,24 +13,7 @@ before still works. With both pillars in place, a team can change working code a
 
 
 
-## Chapters
 
-| # | Chapter | After it you can… | Status |
-|:---:|---|---|---|
-| 01 | [What to test in decision-support software](#ch-what-to-test) | Name the parts of a decision-support system that need tests, and choose the kind of test for each | Coming soon |
-| 02 | [Why optimization models are hard to test](#ch-oracle-problem) | Name the oracle problem and explain why the usual way of testing fails for a MIP | Ready |
-| 03 | [Test the contract, not the algorithm](#ch-contract) | Write tests that keep passing when someone swaps the solver | Ready |
-| 04 | [Oracles you write by hand](#ch-hand-oracles) | Choose a small, systematic set of instances whose answers you work out yourself | Ready |
-| 05 | [Metamorphic relations](#ch-metamorphic) | Test a model without knowing its optimal value | Ready |
-| 06 | [Differential testing](#ch-differential) | Use a second implementation to find mistakes in the formulation | Ready |
-| 07 | [When optimality is not guaranteed](#ch-no-optimality) | Decide which tests survive when the solver is a heuristic | Ready |
-| 08 | [Duality as an oracle](#ch-duality) | Check an LP's optimum with a certificate instead of re-solving | Coming soon |
-| 09 | [Testing a Pareto front](#ch-pareto) | Test a multi-objective model that has no single optimum | Coming soon |
-| 10 | [Conclusion](#ch-conclusion) | Recall in one page why the model resists testing, and which oracle answers which gap | Ready |
-
-The chapters build on each other. Chapter 01 maps the whole system. Chapters 02–03 set up the vocabulary. Chapters
-04–06 present three kinds of oracle, each covering a gap the previous one leaves open. Chapter 07 revisits all three
-under a weaker promise. Read them in order the first time.
 
 ## The running example
 
