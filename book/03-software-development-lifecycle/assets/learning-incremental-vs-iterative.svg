@@ -9,7 +9,7 @@
   <rect width="800" height="380" fill="#ffffff"/>
 
   <!-- Row 1: incremental -->
-  <text x="45" y="38" font-size="17" font-weight="bold" fill="#1f2933">Incremental <tspan font-weight="normal" fill="#52606d">— don't build it all at once</tspan></text>
+  <text x="45" y="38" font-size="17" font-weight="bold" fill="#1f2933">Incremental<tspan font-weight="normal" fill="#52606d">: don't build it all at once</tspan></text>
   <g stroke-width="1.5">
     <!-- frame 1 -->
     <rect x="45" y="55" width="150" height="95" rx="6" fill="#f5f7fa" stroke="#9aa5b1"/>
@@ -49,7 +49,7 @@
   </g>
 
   <!-- Row 2: iterative -->
-  <text x="45" y="225" font-size="17" font-weight="bold" fill="#1f2933">Iterative <tspan font-weight="normal" fill="#52606d">— don't try to get it right the first time</tspan></text>
+  <text x="45" y="225" font-size="17" font-weight="bold" fill="#1f2933">Iterative<tspan font-weight="normal" fill="#52606d">: don't try to get it right the first time</tspan></text>
   <g stroke-width="1.5">
     <!-- frame 1: sketch -->
     <rect x="45" y="242" width="150" height="95" rx="6" fill="#f5f7fa" stroke="#9aa5b1"/>

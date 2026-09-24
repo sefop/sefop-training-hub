@@ -145,9 +145,9 @@ listed in the [practice repositories appendix](../appendix/practice-repositories
    whether a recurring decision justifies software at all, whether to build the team in-house or buy from a vendor,
    and where the team belongs in the organization.
 3. **[03 — The lifecycle of decision-support software](../03-software-development-lifecycle/README.md)** — why
-   software is built in short feedback loops, the two abilities those loops demand (learning quickly and adapting
-   quickly), and the twist each lifecycle phase takes when the software produces decisions. It is the map for the
-   sections that follow.
+   software, built on imperfect information and sensitive to tiny errors, demands a team that learns quickly and
+   adapts quickly, and what changes in each lifecycle phase when the software produces decisions. It is the map for
+   the sections that follow.
 4. **[04 — Designing decision-support software](../04-design/README.md)** — tips for designing a decision-support
    system.
 5. **[05 — Testing decision-support software](../05-testing/README.md)** — how to test a decision-support system.

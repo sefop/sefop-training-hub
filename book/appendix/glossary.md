@@ -32,6 +32,12 @@ fit (infeasible) and one that leaves room to spare. Think of the breakpoints in 
 A separate line of work in version control where a change is made without touching the shared code. When the
 change is ready, it is merged back, usually through a [pull request](#pull-request).
 
+## Code complexity
+
+How much a person has to hold in mind to understand what a piece of code does: how many branches, how many
+interacting parts, how much hidden state. Every change starts with understanding the code it touches, so complexity
+makes every change slower and riskier.
+
 ## Code coverage
 
 The share of your code's lines (or branches) that the test suite executes. Useful as a signal of what is untested;
@@ -98,13 +104,13 @@ without knowing anything about the expected answer. Every test gets one for free
 
 ## Incremental development
 
-Building a system one part at a time, each part finished and released before the next begins — one region
+Building a system one part at a time, each part finished and released before the next begins: one region
 live before all regions. Contrast with [iterative development](#iterative-development); most teams need both.
 
 ## Iterative development
 
 Building the whole system in a rough form first and improving it on every pass, instead of trying to get it
-right the first time — a formulation revised after users react to its first plans. Contrast with
+right the first time, such as a formulation revised after users react to its first plans. Contrast with
 [incremental development](#incremental-development).
 
 ## Legacy system
@@ -121,6 +127,12 @@ a capacity never decreases the optimal value.
 
 Building a system from parts with clear boundaries, so that each part can be understood, tested and replaced
 on its own. It keeps a change small: a new requirement touches one part and leaves the others as they were.
+
+## Monitoring
+
+Collecting and watching signals from software while it runs in production, so that the team learns about a
+problem from the system rather than from its users. For decision-support software the signals include the quality
+of the decisions, not only whether the program ran.
 
 ## Mutation testing
 
@@ -189,7 +201,7 @@ small instance.
 
 ## Static analysis
 
-Checking code without running it — for type errors, unused variables, suspicious constructs — so that a class
+Checking code without running it, for type errors, unused variables or suspicious constructs, so that a class
 of mistakes is caught before the program runs at all.
 
 ## Technical debt
@@ -214,6 +226,6 @@ The full collection of [automated tests](#automated-test) for a codebase, usuall
 
 ## Waterfall
 
-A development process that runs each phase once, in order — all requirements, then all design, then all
-building, then testing and release — so that feedback from users arrives only at the end. Contrast with
+A development process that runs each phase once, in order (all requirements, then all design, then all
+building, then testing and release), so that feedback from users arrives only at the end. Contrast with
 [agile](#agile).
