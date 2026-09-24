@@ -1,115 +1,58 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 706" width="900" height="706" font-family="Helvetica, Arial, sans-serif">
-  <title>The cargo script with each line coloured by the reason it would change</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 382" width="900" height="382" font-family="Helvetica, Arial, sans-serif">
+  <title>Figure: reasons to change</title>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
-    <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
+    <marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#52606d" stroke-width="1.4"/></marker>
+    <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
   </defs>
-  <rect width="900" height="706" fill="#ffffff"/>
-  <text x="34" y="31" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">function plan_flight_load(booking_path, aircraft_path, plan_path):</text>
-  <text x="34" y="48" font-size="11" fill="#52606d" font-family="Consolas, Menlo, monospace" xml:space="preserve">    # read the inputs</text>
-  <rect x="20" y="52" width="640" height="17" fill="#dbe7f1"/>
-  <rect x="20" y="52" width="5" height="17" fill="#2f6f9f"/>
-  <text x="34" y="65" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    products = []</text>
-  <rect x="20" y="69" width="640" height="17" fill="#dbe7f1"/>
-  <rect x="20" y="69" width="5" height="17" fill="#2f6f9f"/>
-  <text x="34" y="82" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    for row in read_csv(booking_path):</text>
-  <rect x="20" y="86" width="640" height="17" fill="#dbe7f1"/>
-  <rect x="20" y="86" width="5" height="17" fill="#2f6f9f"/>
-  <text x="34" y="99" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">        products.append(record(name=row[0], weight=number(row[1]),</text>
-  <rect x="20" y="103" width="640" height="17" fill="#dbe7f1"/>
-  <rect x="20" y="103" width="5" height="17" fill="#2f6f9f"/>
-  <text x="34" y="116" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">                               volume=number(row[2]), revenue=number(row[3]),</text>
-  <rect x="20" y="120" width="640" height="17" fill="#dbe7f1"/>
-  <rect x="20" y="120" width="5" height="17" fill="#2f6f9f"/>
-  <text x="34" y="133" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">                               tendered=integer(row[4]), must_fly=integer(row[5])))</text>
-  <rect x="20" y="137" width="640" height="17" fill="#dbe7f1"/>
-  <rect x="20" y="137" width="5" height="17" fill="#2f6f9f"/>
-  <text x="34" y="150" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    aircraft = read_csv(aircraft_path)[0]</text>
-  <rect x="20" y="154" width="640" height="17" fill="#dbe7f1"/>
-  <rect x="20" y="154" width="5" height="17" fill="#2f6f9f"/>
-  <text x="34" y="167" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    W = number(aircraft[0])</text>
-  <rect x="20" y="171" width="640" height="17" fill="#dbe7f1"/>
-  <rect x="20" y="171" width="5" height="17" fill="#2f6f9f"/>
-  <text x="34" y="184" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    V = number(aircraft[1])</text>
-  <text x="34" y="201" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve"></text>
-  <text x="34" y="218" font-size="11" fill="#52606d" font-family="Consolas, Menlo, monospace" xml:space="preserve">    # committed freight must fit</text>
-  <rect x="20" y="222" width="640" height="17" fill="#fde2d0"/>
-  <rect x="20" y="222" width="5" height="17" fill="#c2410c"/>
-  <text x="34" y="235" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    if sum(p.weight * p.must_fly for p in products) &gt; W:</text>
-  <rect x="20" y="239" width="640" height="17" fill="#e4e7eb"/>
-  <rect x="20" y="239" width="5" height="17" fill="#52606d"/>
-  <text x="34" y="252" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">        write_text(plan_path, &quot;INFEASIBLE: committed freight is too heavy&quot;)</text>
-  <rect x="20" y="256" width="640" height="17" fill="#fde2d0"/>
-  <rect x="20" y="256" width="5" height="17" fill="#c2410c"/>
-  <text x="34" y="269" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">        return</text>
-  <rect x="20" y="273" width="640" height="17" fill="#fde2d0"/>
-  <rect x="20" y="273" width="5" height="17" fill="#c2410c"/>
-  <text x="34" y="286" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    if sum(p.volume * p.must_fly for p in products) &gt; V:</text>
-  <rect x="20" y="290" width="640" height="17" fill="#e4e7eb"/>
-  <rect x="20" y="290" width="5" height="17" fill="#52606d"/>
-  <text x="34" y="303" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">        write_text(plan_path, &quot;INFEASIBLE: committed freight does not fit&quot;)</text>
-  <rect x="20" y="307" width="640" height="17" fill="#fde2d0"/>
-  <rect x="20" y="307" width="5" height="17" fill="#c2410c"/>
-  <text x="34" y="320" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">        return</text>
-  <text x="34" y="337" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve"></text>
-  <text x="34" y="354" font-size="11" fill="#52606d" font-family="Consolas, Menlo, monospace" xml:space="preserve">    # drop products whose single pallet can never fit</text>
-  <rect x="20" y="358" width="640" height="17" fill="#fcefc7"/>
-  <rect x="20" y="358" width="5" height="17" fill="#b7791f"/>
-  <text x="34" y="371" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    products = [p for p in products if p.weight &lt;= W and p.volume &lt;= V]</text>
-  <text x="34" y="388" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve"></text>
-  <text x="34" y="405" font-size="11" fill="#52606d" font-family="Consolas, Menlo, monospace" xml:space="preserve">    # build and solve the model</text>
-  <rect x="20" y="409" width="640" height="17" fill="#e6defa"/>
-  <rect x="20" y="409" width="5" height="17" fill="#6b46c1"/>
-  <text x="34" y="422" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    model = highs.Model()</text>
-  <rect x="20" y="426" width="640" height="17" fill="#d9f0e1"/>
-  <rect x="20" y="426" width="5" height="17" fill="#2f855a"/>
-  <text x="34" y="439" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    x = {}</text>
-  <rect x="20" y="443" width="640" height="17" fill="#d9f0e1"/>
-  <rect x="20" y="443" width="5" height="17" fill="#2f855a"/>
-  <text x="34" y="456" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    for p in products:</text>
-  <rect x="20" y="460" width="640" height="17" fill="#d9f0e1"/>
-  <rect x="20" y="460" width="5" height="17" fill="#2f855a"/>
-  <text x="34" y="473" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">        x[p.name] = model.add_integer_var(lower=p.must_fly, upper=p.tendered)</text>
-  <rect x="20" y="477" width="640" height="17" fill="#d9f0e1"/>
-  <rect x="20" y="477" width="5" height="17" fill="#2f855a"/>
-  <text x="34" y="490" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    model.add_constraint(sum(p.weight * x[p.name] for p in products) &lt;= W)</text>
-  <rect x="20" y="494" width="640" height="17" fill="#d9f0e1"/>
-  <rect x="20" y="494" width="5" height="17" fill="#2f855a"/>
-  <text x="34" y="507" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    model.add_constraint(sum(p.volume * x[p.name] for p in products) &lt;= V)</text>
-  <rect x="20" y="511" width="640" height="17" fill="#d9f0e1"/>
-  <rect x="20" y="511" width="5" height="17" fill="#2f855a"/>
-  <text x="34" y="524" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    model.maximize(sum(p.revenue * x[p.name] for p in products))</text>
-  <rect x="20" y="528" width="640" height="17" fill="#e6defa"/>
-  <rect x="20" y="528" width="5" height="17" fill="#6b46c1"/>
-  <text x="34" y="541" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    model.solve(time_limit=60)</text>
-  <text x="34" y="558" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve"></text>
-  <text x="34" y="575" font-size="11" fill="#52606d" font-family="Consolas, Menlo, monospace" xml:space="preserve">    # write the plan</text>
-  <rect x="20" y="579" width="640" height="17" fill="#e4e7eb"/>
-  <rect x="20" y="579" width="5" height="17" fill="#52606d"/>
-  <text x="34" y="592" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    lines = [&quot;product,pallets,revenue&quot;]</text>
-  <rect x="20" y="596" width="640" height="17" fill="#e4e7eb"/>
-  <rect x="20" y="596" width="5" height="17" fill="#52606d"/>
-  <text x="34" y="609" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    for p in products:</text>
-  <rect x="20" y="613" width="640" height="17" fill="#e6defa"/>
-  <rect x="20" y="613" width="5" height="17" fill="#6b46c1"/>
-  <text x="34" y="626" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">        n = model.value(x[p.name])</text>
-  <rect x="20" y="630" width="640" height="17" fill="#e4e7eb"/>
-  <rect x="20" y="630" width="5" height="17" fill="#52606d"/>
-  <text x="34" y="643" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">        lines.append(p.name + &quot;,&quot; + text(n) + &quot;,&quot; + text(n * p.revenue))</text>
-  <rect x="20" y="647" width="640" height="17" fill="#e4e7eb"/>
-  <rect x="20" y="647" width="5" height="17" fill="#52606d"/>
-  <text x="34" y="660" font-size="11" fill="#1f2933" font-family="Consolas, Menlo, monospace" xml:space="preserve">    write_text(plan_path, join(lines, &quot;\n&quot;))</text>
-  <text x="690" y="50" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold">Reason to change</text>
-  <rect x="690" y="66" width="22" height="20" rx="3" fill="#dbe7f1" stroke="#2f6f9f" stroke-width="2"/>
-  <text x="722" y="81" text-anchor="start" font-size="14" fill="#1f2933" font-weight="normal">Input format</text>
-  <rect x="690" y="100" width="22" height="20" rx="3" fill="#fde2d0" stroke="#c2410c" stroke-width="2"/>
-  <text x="722" y="115" text-anchor="start" font-size="14" fill="#1f2933" font-weight="normal">Business rules</text>
-  <rect x="690" y="134" width="22" height="20" rx="3" fill="#fcefc7" stroke="#b7791f" stroke-width="2"/>
-  <text x="722" y="149" text-anchor="start" font-size="14" fill="#1f2933" font-weight="normal">Preprocessing</text>
-  <rect x="690" y="168" width="22" height="20" rx="3" fill="#d9f0e1" stroke="#2f855a" stroke-width="2"/>
-  <text x="722" y="183" text-anchor="start" font-size="14" fill="#1f2933" font-weight="normal">Formulation</text>
-  <rect x="690" y="202" width="22" height="20" rx="3" fill="#e6defa" stroke="#6b46c1" stroke-width="2"/>
-  <text x="722" y="217" text-anchor="start" font-size="14" fill="#1f2933" font-weight="normal">Solver library</text>
-  <rect x="690" y="236" width="22" height="20" rx="3" fill="#e4e7eb" stroke="#52606d" stroke-width="2"/>
-  <text x="722" y="251" text-anchor="start" font-size="14" fill="#1f2933" font-weight="normal">Output format</text>
+  <rect width="900" height="382" fill="#ffffff"/>
+  <text x="20" y="30" text-anchor="start" font-size="13" fill="#52606d" font-weight="bold" xml:space="preserve">Listing: tangled script</text>
+  <text x="34" y="60" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">// listing: tangled-script</text>
+  <text x="34" y="84" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">public function plan_flight_load(booking_file, aircraft_file, plan_file):</text>
+  <rect x="20" y="93" width="590" height="24" fill="#dbe7f1"/>
+  <rect x="20" y="93" width="5" height="24" fill="#2f6f9f"/>
+  <text x="34" y="108" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">    products = read each row of booking_file as a product</text>
+  <rect x="20" y="117" width="590" height="24" fill="#dbe7f1"/>
+  <rect x="20" y="117" width="5" height="24" fill="#2f6f9f"/>
+  <text x="34" y="132" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">    capacity = read weight and volume limits from aircraft_file</text>
+  <rect x="20" y="141" width="590" height="24" fill="#fde2d0"/>
+  <rect x="20" y="141" width="5" height="24" fill="#c2410c"/>
+  <text x="34" y="156" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">    if committed freight exceeds capacity:</text>
+  <rect x="20" y="165" width="590" height="24" fill="#e4e7eb"/>
+  <rect x="20" y="165" width="5" height="24" fill="#52606d"/>
+  <text x="34" y="180" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">        write &quot;INFEASIBLE&quot; to plan_file</text>
+  <rect x="20" y="189" width="590" height="24" fill="#fde2d0"/>
+  <rect x="20" y="189" width="5" height="24" fill="#c2410c"/>
+  <text x="34" y="204" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">        stop</text>
+  <rect x="20" y="213" width="590" height="24" fill="#fcefc7"/>
+  <rect x="20" y="213" width="5" height="24" fill="#b7791f"/>
+  <text x="34" y="228" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">    remove products whose single pallet cannot fit in the aircraft</text>
+  <rect x="20" y="237" width="590" height="24" fill="#e6defa"/>
+  <rect x="20" y="237" width="5" height="24" fill="#6b46c1"/>
+  <text x="34" y="252" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">    model = create a model with the solver library</text>
+  <rect x="20" y="261" width="590" height="24" fill="#d9f0e1"/>
+  <rect x="20" y="261" width="5" height="24" fill="#2f855a"/>
+  <text x="34" y="276" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">    add variables, constraints and objective to model</text>
+  <rect x="20" y="285" width="590" height="24" fill="#e6defa"/>
+  <rect x="20" y="285" width="5" height="24" fill="#6b46c1"/>
+  <text x="34" y="300" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">    solve model with a 60-second time limit</text>
+  <rect x="20" y="309" width="590" height="24" fill="#e6defa"/>
+  <rect x="20" y="309" width="5" height="24" fill="#6b46c1"/>
+  <text x="34" y="324" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">    pallets = for each product, ask model for the value of its variable</text>
+  <rect x="20" y="333" width="590" height="24" fill="#e4e7eb"/>
+  <rect x="20" y="333" width="5" height="24" fill="#52606d"/>
+  <text x="34" y="348" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">    write pallets and revenue as CSV to plan_file</text>
+  <text x="650" y="60" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">Reason to change</text>
+  <rect x="650" y="78" width="22" height="20" rx="3" fill="#dbe7f1" stroke="#2f6f9f" stroke-width="2"/>
+  <text x="682" y="93" text-anchor="start" font-size="14" fill="#1f2933" font-weight="normal" xml:space="preserve">Input format</text>
+  <rect x="650" y="110" width="22" height="20" rx="3" fill="#fde2d0" stroke="#c2410c" stroke-width="2"/>
+  <text x="682" y="125" text-anchor="start" font-size="14" fill="#1f2933" font-weight="normal" xml:space="preserve">Business rules</text>
+  <rect x="650" y="142" width="22" height="20" rx="3" fill="#fcefc7" stroke="#b7791f" stroke-width="2"/>
+  <text x="682" y="157" text-anchor="start" font-size="14" fill="#1f2933" font-weight="normal" xml:space="preserve">Preprocessing</text>
+  <rect x="650" y="174" width="22" height="20" rx="3" fill="#d9f0e1" stroke="#2f855a" stroke-width="2"/>
+  <text x="682" y="189" text-anchor="start" font-size="14" fill="#1f2933" font-weight="normal" xml:space="preserve">Formulation</text>
+  <rect x="650" y="206" width="22" height="20" rx="3" fill="#e6defa" stroke="#6b46c1" stroke-width="2"/>
+  <text x="682" y="221" text-anchor="start" font-size="14" fill="#1f2933" font-weight="normal" xml:space="preserve">Solver library</text>
+  <rect x="650" y="238" width="22" height="20" rx="3" fill="#e4e7eb" stroke="#52606d" stroke-width="2"/>
+  <text x="682" y="253" text-anchor="start" font-size="14" fill="#1f2933" font-weight="normal" xml:space="preserve">Output format</text>
 </svg>

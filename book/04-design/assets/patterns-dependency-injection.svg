@@ -1,24 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 380" width="860" height="380" font-family="Helvetica, Arial, sans-serif">
-  <title>Figure: strategy</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 470" width="860" height="470" font-family="Helvetica, Arial, sans-serif">
+  <title>Figure: dependency injection</title>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
     <marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#52606d" stroke-width="1.4"/></marker>
     <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
   </defs>
-  <rect width="860" height="380" fill="#ffffff"/>
-  <rect x="40" y="30" width="360" height="94" rx="4" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
-  <text x="220.0" y="50" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold" xml:space="preserve">Optimize</text>
-  <line x1="40" y1="60" x2="400" y2="60" stroke="#2f6f9f" stroke-width="1"/>
+  <rect width="860" height="470" fill="#ffffff"/>
+  <rect x="40" y="30" width="340" height="94" rx="4" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="210.0" y="50" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold" xml:space="preserve">Optimize</text>
+  <line x1="40" y1="60" x2="380" y2="60" stroke="#2f6f9f" stroke-width="1"/>
   <text x="50" y="80" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">- providers</text>
-  <text x="50" y="98" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ run(products, capacity): LoadPlan</text>
-  <text x="50" y="116" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">- choose(products): SolutionProvider</text>
+  <text x="50" y="98" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ Optimize(providers)</text>
+  <text x="50" y="116" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ run(products, capacity): LoadPlan</text>
   <rect x="470" y="50" width="350" height="72" rx="4" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5" stroke-dasharray="5 3"/>
   <text x="645.0" y="67" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">«interface»</text>
   <text x="645.0" y="85" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold" xml:space="preserve">SolutionProvider</text>
   <line x1="470" y1="94" x2="820" y2="94" stroke="#2f6f9f" stroke-width="1"/>
   <text x="480" y="114" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ solve(products, capacity): LoadPlan</text>
-  <line x1="402" y1="90" x2="468" y2="90" stroke="#52606d" stroke-width="1.6" marker-end="url(#open)"/>
-  <text x="435" y="82" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">uses</text>
+  <line x1="382" y1="90" x2="468" y2="90" stroke="#52606d" stroke-width="1.6" marker-end="url(#open)"/>
+  <text x="425" y="82" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">uses</text>
   <rect x="40" y="230" width="250" height="58" rx="4" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
   <text x="165.0" y="250" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold" xml:space="preserve">EnumerationProvider</text>
   <line x1="40" y1="260" x2="290" y2="260" stroke="#2f6f9f" stroke-width="1"/>
@@ -34,8 +34,13 @@
   <line x1="580" y1="260" x2="830" y2="260" stroke="#2f6f9f" stroke-width="1"/>
   <text x="590" y="280" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ solve(products, capacity)</text>
   <line x1="705.0" y1="230" x2="705" y2="124" stroke="#52606d" stroke-width="1.6" marker-end="url(#hollow)"/>
-  <text x="165" y="318" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">chosen for small instances</text>
-  <text x="435" y="318" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">chosen for medium instances</text>
-  <text x="705" y="318" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">chosen for very large instances</text>
-  <text x="40" y="362" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ public    - private</text>
+  <rect x="40" y="350" width="790" height="60" rx="6" fill="#fde2d0" stroke="#c2410c" stroke-width="2"/>
+  <text x="435" y="375" text-anchor="middle" font-size="15" fill="#9a3412" font-weight="bold" xml:space="preserve">Composition root</text>
+  <text x="435" y="395" text-anchor="middle" font-size="13" fill="#9a3412" font-weight="normal" xml:space="preserve">builds the providers and Optimize, and passes the providers in</text>
+  <line x1="165" y1="350" x2="165" y2="293" stroke="#c2410c" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <line x1="435" y1="350" x2="435" y2="293" stroke="#c2410c" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <line x1="705" y1="350" x2="705" y2="293" stroke="#c2410c" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <path d="M40,380 H20 V77.0 H38" fill="none" stroke="#c2410c" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <text x="40" y="452" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ public    - private</text>
+  <text x="830" y="452" text-anchor="end" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">dashed orange: builds and passes in</text>
 </svg>

@@ -1,13 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="800" height="300" font-family="Helvetica, Arial, sans-serif">
-  <title>How often each part of a decision-support system changes</title>
+  <title>Figure: change speeds</title>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
-    <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
+    <marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#52606d" stroke-width="1.4"/></marker>
+    <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
   </defs>
   <rect width="800" height="300" fill="#ffffff"/>
   <rect x="250" y="30" width="520" height="40" rx="4" fill="#f5f7fa" stroke="#e4e7eb"/>
-  <text x="30" y="48" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold">Data</text>
-  <text x="30" y="65" text-anchor="start" font-size="13" fill="#52606d" font-weight="normal">every run</text>
+  <text x="30" y="48" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">Data</text>
+  <text x="30" y="65" text-anchor="start" font-size="13" fill="#52606d" font-weight="normal" xml:space="preserve">every run</text>
   <rect x="254" y="36" width="4" height="28" rx="1.5" fill="#2f6f9f"/>
   <rect x="263" y="36" width="4" height="28" rx="1.5" fill="#2f6f9f"/>
   <rect x="272" y="36" width="4" height="28" rx="1.5" fill="#2f6f9f"/>
@@ -67,34 +68,34 @@
   <rect x="758" y="36" width="4" height="28" rx="1.5" fill="#2f6f9f"/>
   <rect x="767" y="36" width="4" height="28" rx="1.5" fill="#2f6f9f"/>
   <rect x="250" y="85" width="520" height="40" rx="4" fill="#f5f7fa" stroke="#e4e7eb"/>
-  <text x="30" y="103" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold">Business rules</text>
-  <text x="30" y="120" text-anchor="start" font-size="13" fill="#52606d" font-weight="normal">every few months</text>
+  <text x="30" y="103" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">Business rules</text>
+  <text x="30" y="120" text-anchor="start" font-size="13" fill="#52606d" font-weight="normal" xml:space="preserve">every few months</text>
   <rect x="378" y="91" width="4" height="28" rx="1.5" fill="#c2410c"/>
   <rect x="548" y="91" width="4" height="28" rx="1.5" fill="#c2410c"/>
   <rect x="698" y="91" width="4" height="28" rx="1.5" fill="#c2410c"/>
   <rect x="250" y="140" width="520" height="40" rx="4" fill="#f5f7fa" stroke="#e4e7eb"/>
-  <text x="30" y="158" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold">Formulation</text>
-  <text x="30" y="175" text-anchor="start" font-size="13" fill="#52606d" font-weight="normal">as the team learns</text>
+  <text x="30" y="158" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">Formulation</text>
+  <text x="30" y="175" text-anchor="start" font-size="13" fill="#52606d" font-weight="normal" xml:space="preserve">as the team learns</text>
   <rect x="308" y="146" width="4" height="28" rx="1.5" fill="#2f855a"/>
   <rect x="423" y="146" width="4" height="28" rx="1.5" fill="#2f855a"/>
   <rect x="488" y="146" width="4" height="28" rx="1.5" fill="#2f855a"/>
   <rect x="658" y="146" width="4" height="28" rx="1.5" fill="#2f855a"/>
   <rect x="250" y="195" width="520" height="40" rx="4" fill="#f5f7fa" stroke="#e4e7eb"/>
-  <text x="30" y="213" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold">Solver</text>
-  <text x="30" y="230" text-anchor="start" font-size="13" fill="#52606d" font-weight="normal">every few years</text>
+  <text x="30" y="213" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">Solver</text>
+  <text x="30" y="230" text-anchor="start" font-size="13" fill="#52606d" font-weight="normal" xml:space="preserve">every few years</text>
   <rect x="598" y="201" width="4" height="28" rx="1.5" fill="#6b46c1"/>
   <line x1="250" y1="255" x2="778" y2="255" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <text x="271.7" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">J</text>
-  <text x="315.0" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">F</text>
-  <text x="358.3" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">M</text>
-  <text x="401.7" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">A</text>
-  <text x="445.0" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">M</text>
-  <text x="488.3" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">J</text>
-  <text x="531.7" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">J</text>
-  <text x="575.0" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">A</text>
-  <text x="618.3" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">S</text>
-  <text x="661.7" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">O</text>
-  <text x="705.0" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">N</text>
-  <text x="748.3" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">D</text>
-  <text x="250" y="295" text-anchor="start" font-size="13" fill="#52606d" font-weight="normal">one year of a decision-support system</text>
+  <text x="271.7" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">J</text>
+  <text x="315.0" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">F</text>
+  <text x="358.3" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">M</text>
+  <text x="401.7" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">A</text>
+  <text x="445.0" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">M</text>
+  <text x="488.3" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">J</text>
+  <text x="531.7" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">J</text>
+  <text x="575.0" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">A</text>
+  <text x="618.3" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">S</text>
+  <text x="661.7" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">O</text>
+  <text x="705.0" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">N</text>
+  <text x="748.3" y="275" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">D</text>
+  <text x="250" y="295" text-anchor="start" font-size="13" fill="#52606d" font-weight="normal" xml:space="preserve">one year of a decision-support system</text>
 </svg>

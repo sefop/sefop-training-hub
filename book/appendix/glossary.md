@@ -225,6 +225,12 @@ check them. When a generated input fails, the library usually [shrinks](#shrinki
 A second, independent implementation of the same [contract](#contract), used as the reference in
 [differential testing](#differential-testing). Brute-force enumeration is a typical pseudo-oracle for small instances.
 
+## Public and private
+
+Markers that say who may use a function or a piece of data. Anything may call a public function; only the code
+around a private one, such as the rest of its class, may. Keeping details private is how
+[information hiding](#information-hiding) is enforced.
+
 ## Pull request
 
 A proposal to merge a [branch](#branch) into the shared code, shown as the exact lines it changes so that a
@@ -306,6 +312,18 @@ Whatever decides whether an output is correct. For a calculator, it is arithmeti
 ## Test suite
 
 The full collection of [automated tests](#automated-test) for a codebase, usually run together with a single command.
+
+## Testability
+
+How easily each part of a system can be checked on its own, quickly, without running the others. A function that
+takes values and returns values is highly testable; one that reads files and calls a solver in the middle of its
+logic is not.
+
+## Unified Modeling Language
+
+A standard notation for drawing software, abbreviated UML. This book uses a simplified form: a box per class or
+interface, members marked `+` for public and `-` for private, and a hollow arrowhead from a class to the interface
+it implements.
 
 ## Waterfall
 
