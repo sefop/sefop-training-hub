@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 510" width="900" height="510" font-family="Helvetica, Arial, sans-serif">
+  <!-- Figure: test levels. The same example program is drawn three times, once per level of
+       functional test. The coloured shapes mark what one test of that level runs; the hues match
+       unit-test-pyramid.svg (green unit, yellow integration, blue acceptance). -->
+
+  <!-- Light background baked in, so the figure stays readable on a dark theme. -->
+  <rect width="900" height="510" fill="#ffffff"/>
+
+  <!-- Arrowhead for the flow of data from one function to the next. -->
+  <defs>
+    <marker id="flow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#37474f"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Panel: unit tests ===== -->
+  <g id="panel-unit">
+    <!-- Title and the scope one test of this level covers. -->
+    <text x="150" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#1b5e20">Unit tests</text>
+    <text x="150" y="52" text-anchor="middle" font-size="14" fill="#1b5e20">Each function, alone</text>
+    <!-- The example program: three modules of two functions each, data flowing downward. -->
+    <!-- Module 1: reading data. -->
+    <rect x="30" y="80" width="240" height="120" rx="6" fill="none" stroke="#78909c" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="38" y="97" font-size="12" font-style="italic" fill="#78909c">Reading data</text>
+    <rect x="65" y="108" width="170" height="28" rx="4" fill="#a5d6a7" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="150" y="127" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">read_user</text>
+    <line x1="150" y1="136" x2="150" y2="156" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <rect x="65" y="158" width="170" height="28" rx="4" fill="#a5d6a7" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="150" y="177" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">read_db</text>
+    <line x1="150" y1="186" x2="150" y2="246" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <!-- Module 2: business logic. -->
+    <rect x="30" y="220" width="240" height="120" rx="6" fill="none" stroke="#78909c" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="38" y="237" font-size="12" font-style="italic" fill="#78909c">Business logic</text>
+    <rect x="65" y="248" width="170" height="28" rx="4" fill="#a5d6a7" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="150" y="267" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">calculate_income</text>
+    <line x1="150" y1="276" x2="150" y2="296" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <rect x="65" y="298" width="170" height="28" rx="4" fill="#a5d6a7" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="150" y="317" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">calculate_tax</text>
+    <line x1="150" y1="326" x2="150" y2="386" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <!-- Module 3: processing results. -->
+    <rect x="30" y="360" width="240" height="120" rx="6" fill="none" stroke="#78909c" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="38" y="377" font-size="12" font-style="italic" fill="#78909c">Processing results</text>
+    <rect x="65" y="388" width="170" height="28" rx="4" fill="#a5d6a7" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="150" y="407" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">create_report</text>
+    <line x1="150" y1="416" x2="150" y2="436" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <rect x="65" y="438" width="170" height="28" rx="4" fill="#a5d6a7" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="150" y="457" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">display_report</text>
+  </g>
+
+  <!-- ===== Panel: integration tests ===== -->
+  <g id="panel-integration">
+    <!-- Title and the scope one test of this level covers. -->
+    <text x="450" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#6d4c00">Integration tests</text>
+    <text x="450" y="52" text-anchor="middle" font-size="14" fill="#6d4c00">Groups of functions, together</text>
+    <!-- Highlight: one test per group of functions that work together. Reading data is one
+         group; business logic and processing results form the other. -->
+    <rect x="320" y="72" width="260" height="136" rx="10" fill="#fff59d" stroke="#f9a825" stroke-width="2"/>
+    <rect x="320" y="212" width="260" height="276" rx="10" fill="#fff59d" stroke="#f9a825" stroke-width="2"/>
+    <!-- The example program: three modules of two functions each, data flowing downward. -->
+    <!-- Module 1: reading data. -->
+    <rect x="330" y="80" width="240" height="120" rx="6" fill="none" stroke="#78909c" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="338" y="97" font-size="12" font-style="italic" fill="#78909c">Reading data</text>
+    <rect x="365" y="108" width="170" height="28" rx="4" fill="#ffffff" stroke="#37474f" stroke-width="1.5"/>
+    <text x="450" y="127" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">read_user</text>
+    <line x1="450" y1="136" x2="450" y2="156" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <rect x="365" y="158" width="170" height="28" rx="4" fill="#ffffff" stroke="#37474f" stroke-width="1.5"/>
+    <text x="450" y="177" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">read_db</text>
+    <line x1="450" y1="186" x2="450" y2="246" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <!-- Module 2: business logic. -->
+    <rect x="330" y="220" width="240" height="120" rx="6" fill="none" stroke="#78909c" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="338" y="237" font-size="12" font-style="italic" fill="#78909c">Business logic</text>
+    <rect x="365" y="248" width="170" height="28" rx="4" fill="#ffffff" stroke="#37474f" stroke-width="1.5"/>
+    <text x="450" y="267" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">calculate_income</text>
+    <line x1="450" y1="276" x2="450" y2="296" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <rect x="365" y="298" width="170" height="28" rx="4" fill="#ffffff" stroke="#37474f" stroke-width="1.5"/>
+    <text x="450" y="317" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">calculate_tax</text>
+    <line x1="450" y1="326" x2="450" y2="386" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <!-- Module 3: processing results. -->
+    <rect x="330" y="360" width="240" height="120" rx="6" fill="none" stroke="#78909c" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="338" y="377" font-size="12" font-style="italic" fill="#78909c">Processing results</text>
+    <rect x="365" y="388" width="170" height="28" rx="4" fill="#ffffff" stroke="#37474f" stroke-width="1.5"/>
+    <text x="450" y="407" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">create_report</text>
+    <line x1="450" y1="416" x2="450" y2="436" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <rect x="365" y="438" width="170" height="28" rx="4" fill="#ffffff" stroke="#37474f" stroke-width="1.5"/>
+    <text x="450" y="457" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">display_report</text>
+  </g>
+
+  <!-- ===== Panel: acceptance tests ===== -->
+  <g id="panel-acceptance">
+    <!-- Title and the scope one test of this level covers. -->
+    <text x="750" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#0d47a1">Acceptance tests</text>
+    <text x="750" y="52" text-anchor="middle" font-size="14" fill="#0d47a1">The whole program, start to end</text>
+    <!-- Highlight: one test runs everything, from read_user to display_report. -->
+    <rect x="620" y="70" width="260" height="420" rx="10" fill="#90caf9" stroke="#1565c0" stroke-width="2"/>
+    <!-- The example program: three modules of two functions each, data flowing downward. -->
+    <!-- Module 1: reading data. -->
+    <rect x="630" y="80" width="240" height="120" rx="6" fill="none" stroke="#78909c" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="638" y="97" font-size="12" font-style="italic" fill="#78909c">Reading data</text>
+    <rect x="665" y="108" width="170" height="28" rx="4" fill="#ffffff" stroke="#37474f" stroke-width="1.5"/>
+    <text x="750" y="127" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">read_user</text>
+    <line x1="750" y1="136" x2="750" y2="156" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <rect x="665" y="158" width="170" height="28" rx="4" fill="#ffffff" stroke="#37474f" stroke-width="1.5"/>
+    <text x="750" y="177" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">read_db</text>
+    <line x1="750" y1="186" x2="750" y2="246" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <!-- Module 2: business logic. -->
+    <rect x="630" y="220" width="240" height="120" rx="6" fill="none" stroke="#78909c" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="638" y="237" font-size="12" font-style="italic" fill="#78909c">Business logic</text>
+    <rect x="665" y="248" width="170" height="28" rx="4" fill="#ffffff" stroke="#37474f" stroke-width="1.5"/>
+    <text x="750" y="267" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">calculate_income</text>
+    <line x1="750" y1="276" x2="750" y2="296" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <rect x="665" y="298" width="170" height="28" rx="4" fill="#ffffff" stroke="#37474f" stroke-width="1.5"/>
+    <text x="750" y="317" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">calculate_tax</text>
+    <line x1="750" y1="326" x2="750" y2="386" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <!-- Module 3: processing results. -->
+    <rect x="630" y="360" width="240" height="120" rx="6" fill="none" stroke="#78909c" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="638" y="377" font-size="12" font-style="italic" fill="#78909c">Processing results</text>
+    <rect x="665" y="388" width="170" height="28" rx="4" fill="#ffffff" stroke="#37474f" stroke-width="1.5"/>
+    <text x="750" y="407" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">create_report</text>
+    <line x1="750" y1="416" x2="750" y2="436" stroke="#37474f" stroke-width="1.5" marker-end="url(#flow)"/>
+    <rect x="665" y="438" width="170" height="28" rx="4" fill="#ffffff" stroke="#37474f" stroke-width="1.5"/>
+    <text x="750" y="457" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">display_report</text>
+  </g>
+</svg>

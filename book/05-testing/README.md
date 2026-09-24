@@ -39,11 +39,17 @@ scenario, the way its users would.
        alt="A pyramid of three levels of functional tests: unit tests at the wide base, integration tests in the middle, acceptance tests at the narrow top. Cost per test rises toward the top, speed rises toward the base, and the base holds the most tests">
 </p>
 
-Take a small program that reads a user's records, computes their income and tax, and reports the result. It has three
-modules: reading data (`read_user`, `read_db`), business logic (`calculate_income`, `calculate_tax`) and processing
-results (`create_report`, `display_report`). A unit test calls `calculate_tax` alone, with an income the test chooses.
-An integration test feeds what `read_db` returns into `calculate_income` and checks that the two agree on the shape of
-the data. An acceptance test starts at `read_user`, ends at `display_report`, and checks the report a user sees.
+Take a small program that reads a user's records, computes their income and tax, and reports the result.
+[Figure: test levels](#fig-test-levels) draws it once per level and colours what a single test of that level runs.
+
+<a id="fig-test-levels"></a>
+
+**Figure: test levels**
+
+<p align="center">
+  <img src="assets/unit-test-levels.svg" width="780"
+       alt="The same example program drawn three times, as six functions in three modules with data flowing downward: read_user and read_db in reading data, calculate_income and calculate_tax in business logic, create_report and display_report in processing results. Unit tests: each function is highlighted on its own. Integration tests: two groups are highlighted, reading data, and business logic together with processing results. Acceptance tests: the whole program is highlighted as one">
+</p>
 
 As [Figure: test pyramid](#fig-test-pyramid) shows, each step up runs more of the program, so each test costs more to
 write and runs slower. A healthy suite holds many unit tests, fewer integration tests and a handful of acceptance
