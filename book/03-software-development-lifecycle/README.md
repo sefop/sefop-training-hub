@@ -7,9 +7,78 @@
 The software development life cycle (SDLC) is a process that breaks down the process of creating software in phases.
 There are 2 main models of applying SDCL: Waterfall and Agile.
 
-## Waterfall v/s Agile
+### Ideas to develop
 
-To develop this.
+#### Why the lifecycle needs feedback
+
+- **Software is not civil engineering.** A bridge is robust to small errors, and its requirements are known
+  reasonably well before anything is built. Software is flexible and fragile at the same time: one wrong character
+  changes what it does, and the team works with highly imperfect information throughout. The lifecycle a team
+  chooses is a response to that asymmetry, not an administrative preference.
+- **Building the system is how the requirements are discovered.** Users do not fully know what they want, they
+  change their minds once they see a plan, and construction reveals constraints nobody stated. For decision-support
+  software the effect is sharper: a planner cannot describe an objective function, and the business rules that
+  matter often surface only when the first plan looks wrong to them. This is the material `### Elicitation` needs.
+- **Two abilities decide how a team fares: learning quickly and adapting quickly.** Learning quickly needs short
+  feedback loops and a disciplined way to draw conclusions from them. Adapting quickly needs low complexity:
+  modularity to isolate a change, and safety mechanisms to make it without fear. Working hypothesis: every later
+  section of this book is one of those two abilities applied to one lifecycle phase.
+- **Why waterfall loses here.** It defers learning to the end — the team finds out what is wrong once everything is
+  built — and treats development as a rigid linear process, so adapting costs a restart. Worth noting that Royce's
+  1970 paper, the origin of the diagram, already argued for iteration; the caricature outlived the recommendation.
+  Source: Royce (1970), "Managing the Development of Large Software Systems", *Proceedings, IEEE WESCON*.
+- **Agile is a learning device, not a ceremony.** Its value is the short loop between a change and evidence about
+  that change. Sources: Beck et al., the Agile Manifesto (2001); Forsgren, Humble & Kim, *Accelerate* (2018) for the
+  measured link between fast feedback and delivery performance.
+- **Iterative and incremental are two different moves.** Incremental: do not build it all at once. Iterative: do not
+  try to get it right the first time. A decision-support team usually needs both — one region live before all
+  regions (incremental), and a formulation revised after planners react to its first plans (iterative). Sources:
+  Larman & Basili (2003), "Iterative and Incremental Development: A Brief History", *IEEE Computer*; Patton, *User
+  Story Mapping* (2014). Candidate figure: the two moves side by side.
+
+#### Learning: the scientific method as the engineering discipline
+
+- **The reader already owns the method; only the object changes.** A scientist applies skepticism, evidence,
+  reproducibility and causality to a claim about the world. The same principles apply to the claim "this code
+  works". Working hypothesis: framed this way, engineering practice needs no separate justification for this
+  audience — which is the same lever Section 08 uses to change a team's behavior.
+- **Six principles, and what each one demands of code.** The table below is the chapter's core; the right-hand
+  column collects violations heard in the field, to become a `### Check yourself`.
+
+  | Principle | What it demands | A violation to use later |
+  |---|---|---|
+  | Skepticism | Do not trust, demand evidence | "No test needed — it is the same constraint as in another repository, which has worked for a long time." |
+  | Evidence over authority | It does not matter who wrote the code, only what the evidence says | "It was written by [the boss / a principal engineer]." |
+  | Relevance | Prove the experiment matters | "This will cut the model's run time from 10 seconds to 9.8 seconds." |
+  | Testability | The hypothesis must be objective and measurable | "I will run 100 instances and see whether the results look OK." |
+  | Reproducibility | Anyone should be able to run it again | "Follow the README, then call me — there are steps that are not written down." |
+  | Causality | Control the variables so the result shows cause | "The tests pass either way; I was not asserting anything, only checking that it ran." |
+
+- **Each practice serves a principle.** Static analysis catches errors before a run (skepticism); automated tests
+  state the hypothesis and check it (testability, reproducibility); continuous integration gives evidence on every
+  change (reproducibility); pinned environments make a run repeatable (reproducibility); branches and pull requests
+  are isolated laboratories where one variable changes at a time (causality). The substance of testing is
+  Section 05 — here the point is only which principle each practice serves.
+
+#### Adapting: modularity and safety mechanisms
+
+- **Adapting means changing code that already works.** Modularity isolates the change and keeps it small; automated
+  tests are the safety mechanism that lets someone make it without fear. The techniques belong to Sections 04 and
+  05. The lifecycle claim is narrower: a team without both cannot absorb change at the rate the business asks for
+  it, whatever process it follows.
+
+### Out of scope
+
+- **Design principles and the parts of a system.** Coupling, cohesion, single responsibility, information hiding
+  and where the boundaries of a system go are
+  [Section 04 — Designing decision-support software](../04-design/README.md). This section claims only that a team
+  needs modularity, never how to get it.
+- **How to test any of it.** Every oracle, technique and test-design idea is
+  [Section 05 — Testing decision-support software](../05-testing/README.md).
+- **Tool tutorials.** Version control mechanics, continuous-integration configuration and environment management are
+  in the [learning roadmap](../appendix/learning-roadmap.md).
+- **What weak practice costs, and the failures that show it.** That case is made in
+  [Section 01](../01-introduction/README.md#ch-what-goes-wrong).
 
 ## Context
 
