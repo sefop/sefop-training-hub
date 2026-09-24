@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 480" width="820" height="480" font-family="Helvetica, Arial, sans-serif">
+  <title>Clean architecture: four rings, with dependencies pointing inward</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
+    <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
+  </defs>
+  <rect width="820" height="480" fill="#ffffff"/>
+  <circle cx="260" cy="240" r="220" fill="#eef2f6" stroke="#9aa5b1" stroke-width="1.5"/>
+  <circle cx="260" cy="240" r="165" fill="#dbe7f1" stroke="#7b9bb8" stroke-width="1.5"/>
+  <circle cx="260" cy="240" r="110" fill="#bcd3e6" stroke="#4f82ad" stroke-width="1.5"/>
+  <circle cx="260" cy="240" r="55" fill="#2f6f9f" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="260" y="44" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold">Frameworks and drivers</text>
+  <text x="260" y="99" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold">Interface adapters</text>
+  <text x="260" y="154" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold">Use cases</text>
+  <text x="260" y="245" text-anchor="middle" font-size="14" fill="#ffffff" font-weight="bold">Entities</text>
+  <line x1="426.7" y1="348.2" x2="408.1" y2="325.5" stroke="#c2410c" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="379.1" y1="320.8" x2="360.5" y2="298.0" stroke="#c2410c" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="331.4" y1="293.2" x2="312.8" y2="270.5" stroke="#c2410c" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="520" y="74" width="16" height="16" rx="3" fill="#2f6f9f" stroke="#2f6f9f"/>
+  <text x="546" y="87" text-anchor="start" font-size="14" fill="#1f2933" font-weight="bold">Entities</text>
+  <text x="546" y="106" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal">business objects and their rules</text>
+  <rect x="520" y="144" width="16" height="16" rx="3" fill="#bcd3e6" stroke="#4f82ad"/>
+  <text x="546" y="157" text-anchor="start" font-size="14" fill="#1f2933" font-weight="bold">Use cases</text>
+  <text x="546" y="176" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal">what this application does with the entities</text>
+  <rect x="520" y="214" width="16" height="16" rx="3" fill="#dbe7f1" stroke="#7b9bb8"/>
+  <text x="546" y="227" text-anchor="start" font-size="14" fill="#1f2933" font-weight="bold">Interface adapters</text>
+  <text x="546" y="246" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal">translate between use cases and the outside world</text>
+  <rect x="520" y="284" width="16" height="16" rx="3" fill="#eef2f6" stroke="#9aa5b1"/>
+  <text x="546" y="297" text-anchor="start" font-size="14" fill="#1f2933" font-weight="bold">Frameworks and drivers</text>
+  <text x="546" y="316" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal">the tools: web framework, database, files</text>
+  <line x1="524" y1="400" x2="560" y2="400" stroke="#c2410c" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="570" y="404" text-anchor="start" font-size="13" fill="#9a3412" font-weight="bold">source dependencies point inward</text>
+</svg>

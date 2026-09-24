@@ -10,6 +10,12 @@ A named interface that hides how something is done behind what it does. A cargo 
 method, `solve`, and several implementations — enumeration, a MIP solver — can stand behind it. It is what lets you
 swap solvers without rewriting the code that calls them.
 
+## Adapter pattern
+
+A [design pattern](#design-pattern) in which a small class translates between the interface a system expects and
+the one it is given, such as a reader that turns a CSV file into the system's own objects. Each outside source gets
+its own adapter, and the rest of the system never sees the source's format.
+
 ## Agile
 
 A way of organizing software development around short feedback loops: release a small change, learn from the
@@ -32,6 +38,12 @@ fit (infeasible) and one that leaves room to spare. Think of the breakpoints in 
 A separate line of work in version control where a change is made without touching the shared code. When the
 change is ready, it is merged back, usually through a [pull request](#pull-request).
 
+## Clean architecture
+
+An [architecture](#software-architecture) that arranges a system in four concentric rings (entities, use cases,
+interface adapters, frameworks and drivers) and allows dependencies to point only inward, so that file formats,
+databases and web frameworks can change without touching the business logic.
+
 ## Code complexity
 
 How much a person has to hold in mind to understand what a piece of code does: how many branches, how many
@@ -42,6 +54,17 @@ makes every change slower and riskier.
 
 The share of your code's lines (or branches) that the test suite executes. Useful as a signal of what is untested;
 misleading as a goal, because executing a line is not the same as checking that it is right.
+
+## Cohesion
+
+How closely the elements inside one part of a system belong together. A cohesive part serves one purpose, so a
+single kind of change touches it and nothing else. Aim for high cohesion; contrast with [coupling](#coupling).
+
+## Composition root
+
+The one place in a program, usually its entry point, where every concrete part is built and connected to the
+parts that use it. With [dependency injection](#dependency-injection), it is the only code that knows which concrete
+classes were chosen.
 
 ## Contract
 
@@ -59,11 +82,28 @@ integration as CI/CD.
 Running the build and the [test suite](#test-suite) automatically on every change, so a change that breaks something
 is found in minutes instead of at the next release. Abbreviated CI.
 
+## Coupling
+
+How much one part of a system depends on another. Two parts are tightly coupled when a change to one forces a
+change to the other. Aim for low coupling; contrast with [cohesion](#cohesion).
+
 ## Decision-support system
 
 Software that runs repeatedly to turn data, mathematical models, and business rules into decisions the business acts
 on. Abbreviated DSS. A one-off study that answers a question once is not one: what makes a system decision-support
 software is that the decision recurs and somebody owns the software that produces it.
+
+## Dependency injection
+
+Passing a part the parts it depends on from outside, instead of letting it create them itself. A class that
+receives its solver can be given a different one, or a fake one in a test, without editing the class. See
+[composition root](#composition-root).
+
+## Dependency inversion principle
+
+The rule that high-level policy should not depend on low-level details; both should depend on an
+[abstraction](#abstraction). An optimization step depends on a solution-provider interface, and each solver
+implements it, instead of the step calling one solver library directly. The D in [SOLID](#solid).
 
 ## Derived oracle
 
@@ -71,10 +111,21 @@ A [test oracle](#test-oracle) that decides correctness from something other than
 a [metamorphic relation](#metamorphic-relation) between two runs, or agreement with a
 [pseudo-oracle](#pseudo-oracle).
 
+## Design pattern
+
+A named, reusable solution to a problem that recurs in software design, such as
+[strategy](#strategy-pattern) or [adapter](#adapter-pattern). Patterns save reinventing a solution and give a team a
+shared vocabulary for describing a design.
+
 ## Differential testing
 
 Running two independent implementations of the same [contract](#contract) on the same inputs and comparing their
 outputs. A disagreement means at least one of them is wrong.
+
+## Don't repeat yourself
+
+The rule that each piece of knowledge, such as a business rule or an output format, should live in exactly one
+place in the code, so that changing it means one edit. Abbreviated DRY.
 
 ## Equivalence partitioning
 
@@ -106,6 +157,16 @@ without knowing anything about the expected answer. Every test gets one for free
 
 Building a system one part at a time, each part finished and released before the next begins: one region
 live before all regions. Contrast with [iterative development](#iterative-development); most teams need both.
+
+## Information hiding
+
+Keeping each part's [implementation details](#implementation-detail) behind an [interface](#interface), so that
+the rest of the system knows what the part does but never how. Introduced by David Parnas in 1972.
+
+## Interface
+
+The set of operations a part of a system offers to the rest, without saying how they are carried out. Code that
+depends only on an interface keeps working when the implementation behind it changes.
 
 ## Iterative development
 
@@ -189,10 +250,26 @@ the main job of an automated test suite.
 Automatically reducing a failing generated input to the smallest input that still fails, so that a person can understand
 the failure. A feature of [property-based testing](#property-based-testing) libraries.
 
+## Single responsibility principle
+
+The rule that a part of a system should have only one reason to change. A responsibility is an axis of change,
+such as the input format or the formulation, not a task the code performs. The S in [SOLID](#solid).
+
+## Software architecture
+
+The design of a whole system: the few large decisions about its parts and their boundaries that are expensive to
+reverse later.
+
 ## Software development lifecycle
 
 The phases a piece of software passes through during its life: working out what is needed, planning, design,
 building, testing, deployment, operation and evolution. Abbreviated SDLC.
+
+## SOLID
+
+Five design principles collected by Robert C. Martin: single responsibility, open-closed, Liskov substitution,
+interface segregation and dependency inversion. Each one raises [cohesion](#cohesion), lowers
+[coupling](#coupling), or both.
 
 ## Specified oracle
 
@@ -203,6 +280,12 @@ small instance.
 
 Checking code without running it, for type errors, unused variables or suspicious constructs, so that a class
 of mistakes is caught before the program runs at all.
+
+## Strategy pattern
+
+A [design pattern](#design-pattern) that puts a family of interchangeable algorithms behind one interface, so
+the code using them can choose one at run time, such as enumeration, a MIP solver or a heuristic chosen by instance
+size.
 
 ## Technical debt
 

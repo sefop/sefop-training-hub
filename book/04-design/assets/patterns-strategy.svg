@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 330" width="820" height="330" font-family="Helvetica, Arial, sans-serif">
+  <title>The strategy pattern: the optimize step chooses a solution provider</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
+    <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
+  </defs>
+  <rect width="820" height="330" fill="#ffffff"/>
+  <rect x="20" y="135" width="120" height="50" rx="6" fill="#f5f7fa" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="80.0" y="164.9" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="normal">Instance</text>
+  <rect x="180" y="40" width="470" height="250" rx="6" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="200" y="64" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold">Optimize step</text>
+  <line x1="142" y1="160" x2="206" y2="160" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <polygon points="270,120 330,160 270,200 210,160" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="270" y="157" text-anchor="middle" font-size="12" fill="#1f2933" font-weight="normal">choose by</text>
+  <text x="270" y="172" text-anchor="middle" font-size="12" fill="#1f2933" font-weight="normal">instance size</text>
+  <rect x="410" y="85" width="220" height="50" rx="6" fill="#dbe7f1" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="520" y="106" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold">EnumerationProvider</text>
+  <text x="520" y="124" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">exact, lists every selection</text>
+  <path d="M330,160 C360,160 360,110 406,110" fill="none" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="402" y="99" text-anchor="end" font-size="12" fill="#52606d" font-weight="normal">small</text>
+  <rect x="410" y="155" width="220" height="50" rx="6" fill="#dbe7f1" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="520" y="176" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold">MipProviderHighs</text>
+  <text x="520" y="194" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">exact, solves the MIP</text>
+  <path d="M330,160 C360,160 360,180 406,180" fill="none" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="402" y="169" text-anchor="end" font-size="12" fill="#52606d" font-weight="normal">medium</text>
+  <rect x="410" y="225" width="220" height="50" rx="6" fill="#dbe7f1" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="520" y="246" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold">GreedyHeuristicProvider</text>
+  <text x="520" y="264" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">fast, approximate</text>
+  <path d="M330,160 C360,160 360,250 406,250" fill="none" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="402" y="269" text-anchor="end" font-size="12" fill="#52606d" font-weight="normal">very large</text>
+  <path d="M640,85 H652 V290 H640" fill="none" stroke="#c2410c" stroke-width="1.5"/>
+  <text x="700" y="175" text-anchor="middle" font-size="12" fill="#9a3412" font-weight="normal">all implement</text>
+  <text x="700" y="191" text-anchor="middle" font-size="12" fill="#9a3412" font-weight="bold">SolutionProvider</text>
+  <rect x="690" y="245" width="110" height="45" rx="6" fill="#f5f7fa" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="745.0" y="272.4" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="normal">LoadPlan</text>
+  <line x1="652" y1="268" x2="686" y2="268" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="415" y="312" text-anchor="middle" font-size="13" fill="#52606d" font-weight="normal">preprocess and postprocess never learn which provider ran</text>
+</svg>

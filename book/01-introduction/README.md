@@ -148,8 +148,9 @@ listed in the [practice repositories appendix](../appendix/practice-repositories
    software, built on imperfect information and sensitive to tiny errors, demands a team that learns quickly and
    adapts quickly, and what changes in each lifecycle phase when the software produces decisions. It is the map for
    the sections that follow.
-4. **[04 — Designing decision-support software](../04-design/README.md)** — tips for designing a decision-support
-   system.
+4. **[04 — Designing decision-support software](../04-design/README.md)** — how
+   coupling and cohesion, a few principles and patterns, and a clean architecture keep a decision-support system easy
+   to change.
 5. **[05 — Testing decision-support software](../05-testing/README.md)** — how to test a decision-support system.
 6. **[06 — Deploying decision-support software](../06-deployment/README.md)** — challenges of deployment.
 7. **[07 — Working with legacy decision-support software](../07-working-with-legacy-dss/README.md)** — changing a

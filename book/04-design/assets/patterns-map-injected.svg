@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 412" width="820" height="412" font-family="Helvetica, Arial, sans-serif">
+  <title>The cargo system with its parts injected by a composition root</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
+    <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
+  </defs>
+  <rect width="820" height="412" fill="#ffffff"/>
+  <rect x="30" y="60" width="170" height="50" rx="6" fill="#dbe7f1" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="115.0" y="89.9" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="normal">BookingReader</text>
+  <rect x="260" y="40" width="300" height="90" rx="6" fill="#dbe7f1" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="410" y="62" text-anchor="middle" font-size="15" fill="#1f2933" font-weight="bold">PlanFlightLoad</text>
+  <rect x="275" y="80" width="85" height="34" rx="6" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="317.5" y="101.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">preprocess</text>
+  <rect x="370" y="80" width="85" height="34" rx="6" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="412.5" y="101.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">optimize</text>
+  <rect x="465" y="80" width="85" height="34" rx="6" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="507.5" y="101.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">postprocess</text>
+  <rect x="620" y="60" width="170" height="50" rx="6" fill="#dbe7f1" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="705.0" y="89.9" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="normal">PlanWriter</text>
+  <line x1="202" y1="85" x2="256" y2="85" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="562" y1="85" x2="616" y2="85" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="300" y="175" width="220" height="30" rx="6" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="410.0" y="194.6" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold">«interface» SolutionProvider</text>
+  <line x1="410" y1="116" x2="410" y2="171" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="240" y="225" width="108" height="32" rx="6" fill="#dbe7f1" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="294.0" y="245.2" text-anchor="middle" font-size="12" fill="#1f2933" font-weight="normal">Enumeration</text>
+  <line x1="294" y1="223" x2="370" y2="209" stroke="#52606d" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#hollow)"/>
+  <rect x="355" y="225" width="108" height="32" rx="6" fill="#dbe7f1" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="409.0" y="245.2" text-anchor="middle" font-size="12" fill="#1f2933" font-weight="normal">GreedyHeuristic</text>
+  <line x1="409" y1="223" x2="410" y2="209" stroke="#52606d" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#hollow)"/>
+  <rect x="470" y="225" width="108" height="32" rx="6" fill="#dbe7f1" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="524.0" y="245.2" text-anchor="middle" font-size="12" fill="#1f2933" font-weight="normal">MipProviderHighs</text>
+  <line x1="524" y1="223" x2="450" y2="209" stroke="#52606d" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#hollow)"/>
+  <rect x="30" y="320" width="760" height="54" rx="6" fill="#fde2d0" stroke="#c2410c" stroke-width="2"/>
+  <text x="410" y="343" text-anchor="middle" font-size="15" fill="#9a3412" font-weight="bold">Composition root</text>
+  <text x="410" y="362" text-anchor="middle" font-size="13" fill="#9a3412" font-weight="normal">the one place that builds every concrete piece and passes it in</text>
+  <line x1="115" y1="318" x2="115" y2="118" stroke="#c2410c" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <line x1="705" y1="318" x2="705" y2="118" stroke="#c2410c" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <line x1="294" y1="318" x2="294" y2="265" stroke="#c2410c" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <line x1="409" y1="318" x2="409" y2="265" stroke="#c2410c" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <line x1="524" y1="318" x2="524" y2="265" stroke="#c2410c" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <path d="M600,318 V112 H566" fill="none" stroke="#c2410c" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <text x="410" y="400" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">solid arrows: uses · dashed orange: builds and injects</text>
+</svg>

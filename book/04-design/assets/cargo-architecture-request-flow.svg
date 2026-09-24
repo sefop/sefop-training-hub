@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 250" width="900" height="250" font-family="Helvetica, Arial, sans-serif">
+  <title>One request through the cargo loading system, from booking file to plan file</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
+    <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
+  </defs>
+  <rect width="900" height="250" fill="#ffffff"/>
+  <rect x="20" y="90" width="84" height="60" rx="6" fill="#eef2f6" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="62.0" y="116.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">booking</text>
+  <text x="62.0" y="132.6" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">file</text>
+  <text x="62.0" y="172" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">frameworks</text>
+  <rect x="118" y="90" width="84" height="60" rx="6" fill="#dbe7f1" stroke="#7b9bb8" stroke-width="1.5"/>
+  <text x="160.0" y="116.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">CsvBooking</text>
+  <text x="160.0" y="132.6" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">Reader</text>
+  <text x="160.0" y="172" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">adapters</text>
+  <line x1="105" y1="120" x2="115" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="216" y="90" width="84" height="60" rx="6" fill="#2f6f9f" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="258.0" y="116.5" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="normal">BookingList</text>
+  <text x="258.0" y="132.6" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="normal">Aircraft</text>
+  <text x="258.0" y="172" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">entities</text>
+  <line x1="203" y1="120" x2="213" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="314" y="90" width="84" height="60" rx="6" fill="#bcd3e6" stroke="#4f82ad" stroke-width="1.5"/>
+  <text x="356.0" y="124.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">preprocess</text>
+  <text x="356.0" y="172" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">use case</text>
+  <line x1="301" y1="120" x2="311" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="412" y="90" width="84" height="60" rx="6" fill="#bcd3e6" stroke="#4f82ad" stroke-width="1.5"/>
+  <text x="454.0" y="124.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">optimize</text>
+  <text x="454.0" y="172" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">use case</text>
+  <line x1="399" y1="120" x2="409" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="510" y="90" width="84" height="60" rx="6" fill="#bcd3e6" stroke="#4f82ad" stroke-width="1.5"/>
+  <text x="552.0" y="124.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">postprocess</text>
+  <text x="552.0" y="172" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">use case</text>
+  <line x1="497" y1="120" x2="507" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="608" y="90" width="84" height="60" rx="6" fill="#2f6f9f" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="650.0" y="124.5" text-anchor="middle" font-size="13" fill="#ffffff" font-weight="normal">LoadPlan</text>
+  <text x="650.0" y="172" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">entities</text>
+  <line x1="595" y1="120" x2="605" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="706" y="90" width="84" height="60" rx="6" fill="#dbe7f1" stroke="#7b9bb8" stroke-width="1.5"/>
+  <text x="748.0" y="116.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">CsvPlan</text>
+  <text x="748.0" y="132.6" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">Writer</text>
+  <text x="748.0" y="172" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">adapters</text>
+  <line x1="693" y1="120" x2="703" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="804" y="90" width="84" height="60" rx="6" fill="#eef2f6" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="846.0" y="116.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">plan</text>
+  <text x="846.0" y="132.6" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal">file</text>
+  <text x="846.0" y="172" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal">frameworks</text>
+  <line x1="791" y1="120" x2="801" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="308" y="70" width="292" height="92" rx="8" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="454.0" y="62" text-anchor="middle" font-size="14" fill="#9a3412" font-weight="bold">PlanFlightLoad</text>
+  <text x="450.0" y="215" text-anchor="middle" font-size="13" fill="#52606d" font-weight="normal">The request crosses inward to the use case and back out; only the data moves outward.</text>
+</svg>
