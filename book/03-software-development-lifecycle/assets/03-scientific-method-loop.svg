@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 350" width="800" height="350" font-family="Helvetica, Arial, sans-serif">
+  <title>The scientific method applied to a code change</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#52606d"/>
+    </marker>
+  </defs>
+  <rect width="800" height="350" fill="#ffffff"/>
+
+  <text x="185" y="26" text-anchor="middle" font-size="14" fill="#52606d">A bug report or a new requirement</text>
+  <line x1="185" y1="36" x2="185" y2="66" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <g stroke="#2f6f9f" stroke-width="1.5" fill="#dbe7f1">
+    <rect x="60" y="70" width="250" height="80" rx="8"/>
+    <rect x="490" y="70" width="250" height="80" rx="8"/>
+    <rect x="490" y="230" width="250" height="80" rx="8"/>
+    <rect x="60" y="230" width="250" height="80" rx="8"/>
+  </g>
+  <g text-anchor="middle" fill="#1f2933">
+    <text x="185" y="98" font-size="17" font-weight="bold">Hypothesis</text>
+    <text x="185" y="120" font-size="14">Write a test that states</text>
+    <text x="185" y="138" font-size="14">what the change must do</text>
+
+    <text x="615" y="98" font-size="17" font-weight="bold">Experiment</text>
+    <text x="615" y="120" font-size="14">Make the change and</text>
+    <text x="615" y="138" font-size="14">run the test suite</text>
+
+    <text x="615" y="258" font-size="17" font-weight="bold">Evidence</text>
+    <text x="615" y="280" font-size="14">Test results and the CI report,</text>
+    <text x="615" y="298" font-size="14">not anyone's opinion</text>
+
+    <text x="185" y="258" font-size="17" font-weight="bold">Conclusion</text>
+    <text x="185" y="280" font-size="14">Merge the change, or</text>
+    <text x="185" y="298" font-size="14">revise the hypothesis</text>
+  </g>
+
+  <g stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)">
+    <line x1="314" y1="110" x2="486" y2="110"/>
+    <line x1="615" y1="154" x2="615" y2="226"/>
+    <line x1="486" y1="270" x2="314" y2="270"/>
+    <line x1="185" y1="226" x2="185" y2="154"/>
+  </g>
+
+  <text x="400" y="186" text-anchor="middle" font-size="14" fill="#9a3412" font-weight="bold">One change,</text>
+  <text x="400" y="205" text-anchor="middle" font-size="14" fill="#9a3412" font-weight="bold">one variable per loop</text>
+</svg>

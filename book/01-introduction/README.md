@@ -144,9 +144,10 @@ listed in the [practice repositories appendix](../appendix/practice-repositories
 2. **[02 — When a company needs decision-support software and an OR team](../02-do-you-need-dss/README.md)** —
    whether a recurring decision justifies software at all, whether to build the team in-house or buy from a vendor,
    and where the team belongs in the organization.
-3. **[03 — The lifecycle of decision-support software](../03-software-development-lifecycle/README.md)** — the phases
-   every piece of software passes through, and the twist each phase takes when the software produces decisions. It
-   is the map for the sections that follow.
+3. **[03 — The lifecycle of decision-support software](../03-software-development-lifecycle/README.md)** — why
+   software is built in short feedback loops, the two abilities those loops demand (learning quickly and adapting
+   quickly), and the twist each lifecycle phase takes when the software produces decisions. It is the map for the
+   sections that follow.
 4. **[04 — Designing decision-support software](../04-design/README.md)** — tips for designing a decision-support
    system.
 5. **[05 — Testing decision-support software](../05-testing/README.md)** — how to test a decision-support system.

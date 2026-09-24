@@ -1,190 +1,352 @@
 # Section 03 — The lifecycle of decision-support software
 
-> **Status:** in construction
-
 ## Introduction
 
-The software development life cycle (SDLC) is a process that breaks down the process of creating software in phases.
-There are 2 main models of applying SDCL: Waterfall and Agile.
+Every piece of software moves through the same phases: someone works out what is needed, the team plans and designs
+it, builds and tests it, releases it, runs it, and changes it for as long as it lives. That sequence is the
+[software development lifecycle](../appendix/glossary.md#software-development-lifecycle). It is tempting to read it as
+administration, a set of boxes a manager ticks. This section reads it differently: the lifecycle a team follows is its
+answer to one fact, that software is built under highly imperfect information. A team that answers well learns what
+is wrong quickly and changes the code quickly. A team that answers badly finds out at the end.
+
+Decision-support software makes that fact sharper. The people who will use the system cannot state what they want as
+a model, and the evidence that a decision is good arrives slowly. **The difference this section addresses:** the
+phases are the same as for any software, but in several of them learning and adapting are harder, and the section
+names where.
 
 ### Ideas to develop
 
-#### Why the lifecycle needs feedback
+#### Elicitation
 
-- **Software is not civil engineering.** A bridge is robust to small errors, and its requirements are known
-  reasonably well before anything is built. Software is flexible and fragile at the same time: one wrong character
-  changes what it does, and the team works with highly imperfect information throughout. The lifecycle a team
-  chooses is a response to that asymmetry, not an administrative preference.
-- **Building the system is how the requirements are discovered.** Users do not fully know what they want, they
-  change their minds once they see a plan, and construction reveals constraints nobody stated. For decision-support
-  software the effect is sharper: a planner cannot describe an objective function, and the business rules that
-  matter often surface only when the first plan looks wrong to them. This is the material `### Elicitation` needs.
-- **Two abilities decide how a team fares: learning quickly and adapting quickly.** Learning quickly needs short
-  feedback loops and a disciplined way to draw conclusions from them. Adapting quickly needs low complexity:
-  modularity to isolate a change, and safety mechanisms to make it without fear. Working hypothesis: every later
-  section of this book is one of those two abilities applied to one lifecycle phase.
-- **Why waterfall loses here.** It defers learning to the end — the team finds out what is wrong once everything is
-  built — and treats development as a rigid linear process, so adapting costs a restart. Worth noting that Royce's
-  1970 paper, the origin of the diagram, already argued for iteration; the caricature outlived the recommendation.
-  Source: Royce (1970), "Managing the Development of Large Software Systems", *Proceedings, IEEE WESCON*.
-- **Agile is a learning device, not a ceremony.** Its value is the short loop between a change and evidence about
-  that change. Sources: Beck et al., the Agile Manifesto (2001); Forsgren, Humble & Kim, *Accelerate* (2018) for the
-  measured link between fast feedback and delivery performance.
-- **Iterative and incremental are two different moves.** Incremental: do not build it all at once. Iterative: do not
-  try to get it right the first time. A decision-support team usually needs both — one region live before all
-  regions (incremental), and a formulation revised after planners react to its first plans (iterative). Sources:
-  Larman & Basili (2003), "Iterative and Incremental Development: A Brief History", *IEEE Computer*; Patton, *User
-  Story Mapping* (2014). Candidate figure: the two moves side by side.
+- **Avoid the mathematical vocabulary with the client.** Asking a planner "what is your objective function?" or
+  "what are your variables?" gets no useful answer. The requirements have to be drawn out in the planner's own
+  language: what a good plan looks like, what makes them reject one.
+- **Business rules surface when the first plan looks wrong.** The rules that matter often reach the team only as a
+  reaction to a plan. A first, deliberately incomplete model is an elicitation tool, not only a deliverable.
 
-#### Learning: the scientific method as the engineering discipline
+#### Operation
 
-- **The reader already owns the method; only the object changes.** A scientist applies skepticism, evidence,
-  reproducibility and causality to a claim about the world. The same principles apply to the claim "this code
-  works". Working hypothesis: framed this way, engineering practice needs no separate justification for this
-  audience — which is the same lever Section 08 uses to change a team's behavior.
-- **Six principles, and what each one demands of code.** The table below is the chapter's core; the right-hand
-  column collects violations heard in the field, to become a `### Check yourself`.
-
-  | Principle | What it demands | A violation to use later |
-  |---|---|---|
-  | Skepticism | Do not trust, demand evidence | "No test needed — it is the same constraint as in another repository, which has worked for a long time." |
-  | Evidence over authority | It does not matter who wrote the code, only what the evidence says | "It was written by [the boss / a principal engineer]." |
-  | Relevance | Prove the experiment matters | "This will cut the model's run time from 10 seconds to 9.8 seconds." |
-  | Testability | The hypothesis must be objective and measurable | "I will run 100 instances and see whether the results look OK." |
-  | Reproducibility | Anyone should be able to run it again | "Follow the README, then call me — there are steps that are not written down." |
-  | Causality | Control the variables so the result shows cause | "The tests pass either way; I was not asserting anything, only checking that it ran." |
-
-- **Each practice serves a principle.** Static analysis catches errors before a run (skepticism); automated tests
-  state the hypothesis and check it (testability, reproducibility); continuous integration gives evidence on every
-  change (reproducibility); pinned environments make a run repeatable (reproducibility); branches and pull requests
-  are isolated laboratories where one variable changes at a time (causality). The substance of testing is
-  Section 05 — here the point is only which principle each practice serves.
-
-#### Adapting: modularity and safety mechanisms
-
-- **Adapting means changing code that already works.** Modularity isolates the change and keeps it small; automated
-  tests are the safety mechanism that lets someone make it without fear. The techniques belong to Sections 04 and
-  05. The lifecycle claim is narrower: a team without both cannot absorb change at the rate the business asks for
-  it, whatever process it follows.
+- **A run that finishes is not the same as a run that produced a good decision.** What to monitor, and how the team
+  knows the model is behaving correctly in production, are open questions for this subsection.
 
 ### Out of scope
 
-- **Design principles and the parts of a system.** Coupling, cohesion, single responsibility, information hiding
-  and where the boundaries of a system go are
-  [Section 04 — Designing decision-support software](../04-design/README.md). This section claims only that a team
-  needs modularity, never how to get it.
-- **How to test any of it.** Every oracle, technique and test-design idea is
-  [Section 05 — Testing decision-support software](../05-testing/README.md).
+- **Design principles and the parts of a system.** Coupling, cohesion, single responsibility, information hiding and
+  where the boundaries of a system go are in [the design section](../04-design/README.md). This section claims only
+  that a team needs modularity, never how to get it.
+- **How to test any of it.** Every oracle, technique and test-design idea is in
+  [the testing section](../05-testing/README.md).
 - **Tool tutorials.** Version control mechanics, continuous-integration configuration and environment management are
   in the [learning roadmap](../appendix/learning-roadmap.md).
 - **What weak practice costs, and the failures that show it.** That case is made in
-  [Section 01](../01-introduction/README.md#ch-what-goes-wrong).
+  [the introduction](../01-introduction/README.md).
+- **Project-management frameworks.** Estimation techniques, backlog tools and the ceremonies of a named framework
+  are not covered in this book.
 
-## Context
+The chapters argue from the general to the particular. Chapter 01 states the fact the whole section rests on:
+building software is how its requirements are discovered. Chapter 02 draws the consequence, short feedback loops.
+Chapters 03 and 04 name the two abilities those loops demand, learning quickly and adapting quickly. Chapter 05
+applies all of it to decision-support software, one phase at a time. Read them in order.
 
-Assume you are working in an ongoing project. The project is a decision-support software that runs an optimization
-model to recommend a decision to your client. The project has a code repository hosted in GitHub and it has 3
-environments: develop environment, stage environment and production environment.
+## Chapters
 
-## SDLC in decision-support software
+| # | Chapter | After it you can… |
+|:---:|---|---|
+| 01 | [Software is a discovery process](#ch-discovery) | Explain why a plan made before building will be wrong, and what that costs under waterfall |
+| 02 | [Short loops: iterative and incremental](#ch-short-loops) | Tell iterative from incremental work, and plan a release that does each |
+| 03 | [Learning quickly: the scientific method applied to code](#ch-learning) | Name which scientific principle a team practice serves, and spot the violation in a claim that "the code works" |
+| 04 | [Adapting quickly: modularity and safety nets](#ch-adapting) | Explain why no process lets a team change code fast without both |
+| 05 | [The lifecycle of decision-support software](#ch-phases) | Name, for each phase, what makes it harder when the software produces decisions |
+| 06 | [Conclusion](#ch-conclusion) | Recall in one page why the lifecycle is a loop, and where decision-support software strains it |
 
-On this section we will look at the main phases of the Agile SDLC and identify which phases require specialized
-knowledge for a decision-support software. Each phase requiring specialized knowledge will be revisited later on its
-own section of the book.
+---
 
-A typical development process starts from an idea that our client wants. Let's enumerate all the phases that this
-idea has to go through to be usable by the client:
+<a id="ch-discovery"></a>
 
-1. Elicitation
-2. Planning
-3. Design
-4. Testing
-5. Deployment
-6. Monitoring
+## 01 — Software is a discovery process
+
+A civil engineer designing a bridge works with two advantages. The structure is robust to small errors: a beam a few
+millimetres short does not bring the bridge down. And the requirements are known reasonably well before anything is
+built: the span, the load, the soil. Planning everything first and then building it is a sound way to work under
+those conditions.
+
+Software has neither advantage. It is flexible and fragile at the same time: anything can be changed, and one wrong
+character changes what the program does. And the requirements are not known before building starts, for three
+reasons:
+
+1. **Users do not fully know what they want.** They know their problem, not the shape of the system that solves it.
+2. **Users change their minds.** Seeing a first version changes what they ask for next.
+3. **Building reveals what nobody stated.** A data source turns out to be incomplete, or two rules turn out to
+   contradict each other, only once the code tries to use them.
+
+Decision-support software feels all three more strongly. A crew planner can tell you, in detail, why a roster is
+unacceptable. The same planner cannot write down the objective function that would have ranked it lower, and the
+business rules that matter most often surface only when the first plan looks wrong to them. For this kind of software,
+building the system is how the requirements are discovered.
+
+### Why waterfall loses here
+
+The [waterfall](../appendix/glossary.md#waterfall) model runs the phases once, in order: gather all the requirements,
+design everything, build everything, test it, release it. It is the civil engineer's process applied to software, and
+it fails in two ways when requirements are discovered rather than known:
+
+- **It learns late.** The first real feedback comes after release, when every phase has already spent its budget on
+  assumptions that may be wrong.
+- **It adapts expensively.** A requirement found late sends the team back through design and build, because the
+  process treats each phase as finished once it hands over.
+
+<p align="center">
+  <img src="assets/01-waterfall-vs-loop.svg" width="720"
+       alt="Waterfall as a staircase from requirements to release with a single feedback point at the bottom, next to a loop of plan, build, release and feedback repeated every few weeks">
+</p>
+
+The caricature is older than the recommendation. Royce's 1970 paper, the source of the staircase diagram, already
+warned that the single pass "is risky and invites failure" and argued for building the system twice and feeding what
+the first pass teaches into the second. The industry kept the diagram and dropped the advice.
+
+### Where this stops working
+
+> [!WARNING]
+> When requirements really are known and stable, planning first is not a mistake.
+
+A calculation fixed by regulation, such as a tax rule implemented to the letter, leaves little to discover, and a
+single pass can serve it well. The argument of this chapter holds to the degree that the problem is uncertain, and
+most decision-support problems are.
+
+### Further reading
+
+- Winston W. Royce, "Managing the Development of Large Software Systems", *Proceedings, IEEE WESCON*, 1970 — the
+  origin of the waterfall diagram, and an argument against using it as a single pass.
+
+---
+
+<a id="ch-short-loops"></a>
+
+## 02 — Short loops: iterative and incremental
+
+If requirements are discovered by building, the team's best move is to shorten the time between a change and evidence
+about that change. That interval is a feedback loop: build something small, show it to the people who will use it,
+learn what is wrong, and feed the lesson into the next change. The shorter the loop, the less work is built on a wrong
+assumption before someone notices.
+
+[Agile](../appendix/glossary.md#agile) development is the name for organizing a team around short loops. Its value is
+the loop itself, not its meetings or its vocabulary: a team that holds every ceremony but ships to users twice a year
+is running waterfall with extra steps. The evidence for the loop is empirical: the survey research behind *Accelerate*
+found that teams which release small changes often also report fewer failed changes and faster recovery, not more.
+
+A short loop combines two different moves, and it helps to keep them apart:
+
+- **[Incremental](../appendix/glossary.md#incremental-development):** do not build it all at once. Release one part
+  of the system, finished, then the next.
+- **[Iterative](../appendix/glossary.md#iterative-development):** do not try to get it right the first time. Release
+  the whole system in a rough form, then improve it on every pass.
+
+<p align="center">
+  <img src="assets/02-incremental-vs-iterative.svg" width="720"
+       alt="Two rows of four releases. Incremental: one part of a four-part system is finished per release. Iterative: all four parts exist from the first release and become more complete each time">
+</p>
+
+A decision-support team usually needs both. A vehicle-routing system for a distribution company might go live in one
+region before the others, which is incremental: that region's dispatchers use real routes while the rest of the
+system is still being built. Within that region, the formulation is revised after dispatchers react to the first
+routes, which is iterative: a time-window rule nobody mentioned is added once they point at a route that breaks it.
+
+### Check yourself
+
+1. A team builds the data loading, then the model, then the report, and shows nothing to users until all three are
+   done. Is that incremental, iterative, both or neither?
+2. A scheduling tool is released with a simplified model that ignores overtime rules, and the rules are added two
+   releases later after supervisors review the schedules. Which move is that?
+
+<details>
+<summary>Answers</summary>
+
+1. Neither, from the user's point of view. The work is split into parts, but no part reaches a user before the end,
+   so no feedback arrives earlier than it would under waterfall.
+2. Iterative: the whole tool exists from the first release, and a pass improves it in response to feedback.
+
+</details>
+
+### Further reading
+
+- Kent Beck et al., [*Manifesto for Agile Software Development*](https://agilemanifesto.org/), 2001 — four lines and
+  twelve principles; short enough to read in full.
+- Craig Larman and Victor R. Basili, "Iterative and Incremental Development: A Brief History", *IEEE Computer*,
+  2003 — shows that iterative practice predates the word agile by decades.
+- Jeff Patton, *User Story Mapping*, O'Reilly, 2014 — the clearest treatment of incremental and iterative as separate
+  moves.
+- Nicole Forsgren, Jez Humble and Gene Kim, *Accelerate*, IT Revolution, 2018 — the survey research linking frequent
+  small releases with stability.
+
+---
+
+<a id="ch-learning"></a>
+
+## 03 — Learning quickly: the scientific method applied to code
+
+A short loop produces evidence, but evidence only helps a team that draws sound conclusions from it. The reader
+already owns the discipline for that: the scientific method. A scientist applies skepticism, evidence,
+reproducibility and causality to a claim about the world. Software engineering applies the same principles to one
+particular claim: *this code works*. Nothing about the method changes; only its object does.
+
+<p align="center">
+  <img src="assets/03-scientific-method-loop.svg" width="720"
+       alt="A loop of four steps starting from a bug report or new requirement: hypothesis, a test stating what the change must do; experiment, make the change and run the test suite; evidence, test results and the CI report; conclusion, merge or revise">
+</p>
+
+Six principles carry over, and each one makes a specific demand of code:
+
+| Principle | What it demands of code |
+|---|---|
+| Skepticism | Do not trust that code works; demand evidence that it does |
+| Evidence over authority | Who wrote the code does not matter, only what the evidence says |
+| Relevance | Show that a change matters before spending effort on it |
+| Testability | State what "works" means in a form that is objective and measurable |
+| Reproducibility | Anyone should be able to run the check again and get the same result |
+| Causality | Change one thing at a time, so the result shows what caused it |
+
+### Each practice serves a principle
+
+The engineering practices a team adopts are not rituals. Each one is a principle made cheap enough to apply on every
+change:
+
+- **[Static analysis](../appendix/glossary.md#static-analysis)** reads the code without running it and flags errors
+  before a run. It serves skepticism.
+- **[Automated tests](../appendix/glossary.md#automated-test)** write the hypothesis down and check it on demand.
+  They serve testability and reproducibility.
+- **[Continuous integration](../appendix/glossary.md#continuous-integration)** runs those tests on every change, so
+  evidence arrives in minutes. It serves reproducibility.
+- **[Pinned environments](../appendix/glossary.md#pinned-environment)** fix the exact versions of every library, so a
+  result on one machine is a result on every machine. They serve reproducibility.
+- **[Branches](../appendix/glossary.md#branch) and [pull requests](../appendix/glossary.md#pull-request)** isolate
+  one change and put it in front of a reviewer before it joins the shared code. They serve causality and evidence
+  over authority.
+
+### Check yourself
+
+Each statement below was heard on a real team. Which principle does it break?
+
+1. "No test needed: it is the same constraint as in another repository, and that one has worked for years."
+2. "It was written by our principal engineer, so it is fine."
+3. "This change cuts the model's run time from 10 seconds to 9.8 seconds."
+4. "I will run 100 instances and see whether the results look OK."
+5. "Follow the README, then call me: some steps are not written down."
+6. "The tests pass either way. I was not asserting anything, only checking that it ran."
+
+<details>
+<summary>Answers</summary>
+
+1. Skepticism: past behaviour in a different codebase is not evidence about this one.
+2. Evidence over authority.
+3. Relevance: unless 0.2 seconds matters to a user, the effort is better spent elsewhere.
+4. Testability: "looks OK" is not objective. State what a correct result must satisfy.
+5. Reproducibility: a result that needs its author present cannot be repeated by anyone else.
+6. Causality: a test that cannot fail cannot show that the code caused the result.
+
+</details>
+
+---
+
+<a id="ch-adapting"></a>
+
+## 04 — Adapting quickly: modularity and safety nets
+
+Learning quickly is half of what a short loop demands. The other half is acting on what was learned, which in
+software means changing code that already works. Two properties decide how cheaply a team can do that:
+
+- **[Modularity](../appendix/glossary.md#modularity)** keeps a change small. When a system is built from parts with
+  clear boundaries, a new requirement touches one part, and the rest stays as it was.
+- **Safety nets** make the change safe to attempt. An automated test suite checks, in minutes, that everything that
+  worked before still works. Without it, every change is a gamble, and people stop making them.
+
+The claim of this chapter is narrow. A team without both cannot absorb change at the rate the business asks for it,
+whatever process it follows: short loops deliver feedback that the code is too tangled, or too unprotected, to act on.
+How to draw the boundaries and how to write the tests are large subjects of their own, and this section does not
+teach them.
+
+---
+
+<a id="ch-phases"></a>
+
+## 05 — The lifecycle of decision-support software
+
+Decision-support software goes through the same phases as any other software. What changes is how hard it is to learn
+and to adapt in each of them. The table names that twist for every phase; the subsections below expand every row
+except Planning.
+
+| Phase | The twist for decision-support software |
+|---|---|
+| Elicitation | Users cannot state what they want as a model; requirements surface as reactions to plans |
+| Planning | None: estimation, backlog management and iterations work as they do for any software |
+| Design | The parts change at very different speeds: data every run, the formulation as the team learns, the solver rarely |
+| Testing | The expected answer is the very thing the model exists to compute |
+| Deployment | What ships is code together with a model, a solver and a solver license |
+| Operation | A run that finishes is not the same as a run that produced a good decision |
+| Evolution | Every change to the model can change decisions that users already trust |
 
 ### Elicitation
 
-This phase is related to gathering requirements, discovering and interpreting what the client actually wants. As an
-OR scientist there are some nuances you should take in consideration when talking with your client, for example,
-avoid talking in math terms:
-
-- Avoid asking 'what is your objective function'
-- Avoid asking 'what is your variable'
-
-Because of these nuances, this will be assessed on a single section.
-
-### Planning
-
-This phase is related to estimation, backlog management and agile iterations. Working in decision-support software
-does not have significant differences in planning than in traditional software, thus this will not be a specific
-section.
+Elicitation is the work of finding out what the users need. This subsection will cover how to draw requirements out
+of planners who reason in plans rather than in formulations: which questions to ask in place of "what is your
+objective function?", and how a first, deliberately incomplete model becomes the tool that surfaces the rules nobody
+stated. It is the phase where [chapter 01](#ch-discovery) applies most directly.
 
 ### Design
 
-Design is related to the structure of the code. There is structure at all levels of an application:
-
-- Function-level
-- Class-level
-- Component-level
-- Program-level
-- Application-level
-- Enterprise-level
-
-For the purposes of DSS, we will focus from function-level to application-level. Usually at the program-level and
-upward we tend to use the word 'architecture' instead, but that is just a detail. DSS have unique questions from the
-class-level to the application-level, so we will dive into those in the design section. Some example questions to
-answer:
-
-- How should we design a DSS to be solver-agnostic?
-- How should we design a DSS to support multiple solution algorithms?
-
-Other design questions also come on this phase, which are related to situations where most of the big foundations
-are already in place, and now I need to -for example- add a new constraint to the model. How should I design this
-feature? Here we will dive into some principles for you to have in mind (ex: SOLID principles), with specific
-examples for DSS.
+A decision-support system mixes parts that change at different speeds: the data changes on every run, business rules
+every few months, the formulation whenever the team learns something about the problem, and the solver perhaps once
+in the system's life. Good design keeps each of those changes inside one part, which is the modularity of
+[chapter 04](#ch-adapting) applied to optimization. Staying solver-agnostic, supporting more than one solution
+algorithm, and deciding where a new constraint belongs are the questions of
+[the design section](../04-design/README.md).
 
 ### Testing
 
-The testing phase is in charge of applying automated tests to the DSS features. This phase is deep in new questions
-that arise from the mixture of DSS and software engineering, for example:
-
-- How to automatically test the formulation of an optimization model?
-- How to automatically test the output of an optimization model?
-- How does integration test look like in DSS?
-- How does end-to-end tests look like in DSS?
-
-We will dive deep on this phase on the related section.
+An ordinary test compares the output with an answer someone already knows. For the optimization model, that answer is
+the thing the model exists to compute, so the usual method has nothing to compare against. Testing the formulation,
+testing the output without knowing the optimum, and what integration and end-to-end tests look like around a solver
+are the questions of [the testing section](../05-testing/README.md).
 
 ### Deployment
 
-When deploying DSS there are no much differences from deploying traditional software. As of now this will not be a
-new section.
+Releasing decision-support software ships more than code: the model, the solver it depends on, and the license that
+solver needs on the production machine. A new solver version can change which of several equally good solutions comes
+back, so a release can change decisions without a single line of the team's code changing. These are the questions of
+[the deployment section](../06-deployment/README.md).
 
-### Monitoring
+### Operation
 
-Monitoring a DSS may have some unique questions: what to monitor? how do I know if the model is behaving correctly
-in production? We will explore these and other questions on this section.
+This subsection will cover what to watch once the system runs in production. A run that finishes without error can
+still return a poor decision, or one that planners quietly override, and neither shows up in an error log. The
+subsection will name the signals that reveal whether the model is behaving correctly, so that the feedback loop of
+[chapter 02](#ch-short-loops) keeps running after release.
+
+### Evolution
+
+Most of a decision-support system's life is spent being changed. Users build trust in its decisions over months, and
+a change to the model can shift decisions nobody asked to shift. Changing a system you inherited without breaking
+what already works is the subject of [the legacy section](../07-working-with-legacy-dss/README.md).
 
 ---
 
 <a id="ch-conclusion"></a>
 
-## Conclusion
+## 06 — Conclusion
 
-Decision-support software goes through the same lifecycle as any other software. The phases do not change; what
-changes is how much specialized knowledge each one demands.
+The lifecycle is a feedback loop, and decision-support software strains that loop in specific phases.
 
-| Phase | Does it demand specialized knowledge? |
-|---|---|
-| Elicitation | Yes — the client does not think in objective functions and variables, so the requirements have to be drawn out in their own language |
-| Planning | No — estimation, backlog management and iterations work here as they do anywhere |
-| Design | Yes — staying solver-agnostic, supporting several solution algorithms, and deciding where a new constraint belongs |
-| Testing | Yes — the expected answer is the very thing the model computes |
-| Deployment | Yes — what ships is code together with a model, a solver and its license |
-| Monitoring | Yes — a run that finishes is not the same as a run that produced a good decision |
+- **Requirements are discovered by building** ([chapter 01](#ch-discovery)). A plan made before building will be
+  wrong, and waterfall finds out at the end.
+- **Short loops make learning cheap** ([chapter 02](#ch-short-loops)). Release small, incremental parts and iterate
+  on them while users react.
+- **The scientific method is the discipline for learning** ([chapter 03](#ch-learning)). Every engineering practice
+  applies one of its principles to the claim that the code works.
+- **Adapting needs modularity and safety nets** ([chapter 04](#ch-adapting)). Without both, feedback arrives that
+  nobody can act on.
+- **The phases do not change; their difficulty does** ([chapter 05](#ch-phases)). Elicitation, design, testing,
+  deployment, operation and evolution each take a twist when the software produces decisions.
 
-That verdict is the map for the rest of the book: every phase in the Yes rows gets a section of its own, and each of
-those sections opens by naming the difference it addresses.
+The sections that follow take those twists one at a time, starting with design.
 
 ---
 

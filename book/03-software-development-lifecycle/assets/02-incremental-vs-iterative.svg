@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 380" width="800" height="380" font-family="Helvetica, Arial, sans-serif">
+  <title>Incremental against iterative development</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#52606d"/>
+    </marker>
+    <!-- One frame: four parts of a system in a 2x2 grid -->
+  </defs>
+  <rect width="800" height="380" fill="#ffffff"/>
+
+  <!-- Row 1: incremental -->
+  <text x="45" y="38" font-size="17" font-weight="bold" fill="#1f2933">Incremental <tspan font-weight="normal" fill="#52606d">— don't build it all at once</tspan></text>
+  <g stroke-width="1.5">
+    <!-- frame 1 -->
+    <rect x="45" y="55" width="150" height="95" rx="6" fill="#f5f7fa" stroke="#9aa5b1"/>
+    <rect x="52" y="62" width="65" height="37" fill="#2f6f9f" stroke="#2f6f9f"/>
+    <rect x="123" y="62" width="65" height="37" fill="none" stroke="#9aa5b1" stroke-dasharray="4 3"/>
+    <rect x="52" y="106" width="65" height="37" fill="none" stroke="#9aa5b1" stroke-dasharray="4 3"/>
+    <rect x="123" y="106" width="65" height="37" fill="none" stroke="#9aa5b1" stroke-dasharray="4 3"/>
+    <!-- frame 2 -->
+    <rect x="235" y="55" width="150" height="95" rx="6" fill="#f5f7fa" stroke="#9aa5b1"/>
+    <rect x="242" y="62" width="65" height="37" fill="#2f6f9f" stroke="#2f6f9f"/>
+    <rect x="313" y="62" width="65" height="37" fill="#2f6f9f" stroke="#2f6f9f"/>
+    <rect x="242" y="106" width="65" height="37" fill="none" stroke="#9aa5b1" stroke-dasharray="4 3"/>
+    <rect x="313" y="106" width="65" height="37" fill="none" stroke="#9aa5b1" stroke-dasharray="4 3"/>
+    <!-- frame 3 -->
+    <rect x="425" y="55" width="150" height="95" rx="6" fill="#f5f7fa" stroke="#9aa5b1"/>
+    <rect x="432" y="62" width="65" height="37" fill="#2f6f9f" stroke="#2f6f9f"/>
+    <rect x="503" y="62" width="65" height="37" fill="#2f6f9f" stroke="#2f6f9f"/>
+    <rect x="432" y="106" width="65" height="37" fill="#2f6f9f" stroke="#2f6f9f"/>
+    <rect x="503" y="106" width="65" height="37" fill="none" stroke="#9aa5b1" stroke-dasharray="4 3"/>
+    <!-- frame 4 -->
+    <rect x="615" y="55" width="150" height="95" rx="6" fill="#f5f7fa" stroke="#9aa5b1"/>
+    <rect x="622" y="62" width="65" height="37" fill="#2f6f9f" stroke="#2f6f9f"/>
+    <rect x="693" y="62" width="65" height="37" fill="#2f6f9f" stroke="#2f6f9f"/>
+    <rect x="622" y="106" width="65" height="37" fill="#2f6f9f" stroke="#2f6f9f"/>
+    <rect x="693" y="106" width="65" height="37" fill="#2f6f9f" stroke="#2f6f9f"/>
+  </g>
+  <g stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)">
+    <line x1="199" y1="102" x2="231" y2="102"/>
+    <line x1="389" y1="102" x2="421" y2="102"/>
+    <line x1="579" y1="102" x2="611" y2="102"/>
+  </g>
+  <g font-size="13" fill="#52606d" text-anchor="middle">
+    <text x="120" y="170">Release 1</text>
+    <text x="310" y="170">Release 2</text>
+    <text x="500" y="170">Release 3</text>
+    <text x="690" y="170">Release 4</text>
+  </g>
+
+  <!-- Row 2: iterative -->
+  <text x="45" y="225" font-size="17" font-weight="bold" fill="#1f2933">Iterative <tspan font-weight="normal" fill="#52606d">— don't try to get it right the first time</tspan></text>
+  <g stroke-width="1.5">
+    <!-- frame 1: sketch -->
+    <rect x="45" y="242" width="150" height="95" rx="6" fill="#f5f7fa" stroke="#9aa5b1"/>
+    <g fill="none" stroke="#2f6f9f" stroke-dasharray="4 3">
+      <rect x="52" y="249" width="65" height="37"/>
+      <rect x="123" y="249" width="65" height="37"/>
+      <rect x="52" y="293" width="65" height="37"/>
+      <rect x="123" y="293" width="65" height="37"/>
+    </g>
+    <!-- frame 2 -->
+    <rect x="235" y="242" width="150" height="95" rx="6" fill="#f5f7fa" stroke="#9aa5b1"/>
+    <g fill="#dbe7f1" stroke="#2f6f9f">
+      <rect x="242" y="249" width="65" height="37"/>
+      <rect x="313" y="249" width="65" height="37"/>
+      <rect x="242" y="293" width="65" height="37"/>
+      <rect x="313" y="293" width="65" height="37"/>
+    </g>
+    <!-- frame 3 -->
+    <rect x="425" y="242" width="150" height="95" rx="6" fill="#f5f7fa" stroke="#9aa5b1"/>
+    <g fill="#8fb4d3" stroke="#2f6f9f">
+      <rect x="432" y="249" width="65" height="37"/>
+      <rect x="503" y="249" width="65" height="37"/>
+      <rect x="432" y="293" width="65" height="37"/>
+      <rect x="503" y="293" width="65" height="37"/>
+    </g>
+    <!-- frame 4 -->
+    <rect x="615" y="242" width="150" height="95" rx="6" fill="#f5f7fa" stroke="#9aa5b1"/>
+    <g fill="#2f6f9f" stroke="#2f6f9f">
+      <rect x="622" y="249" width="65" height="37"/>
+      <rect x="693" y="249" width="65" height="37"/>
+      <rect x="622" y="293" width="65" height="37"/>
+      <rect x="693" y="293" width="65" height="37"/>
+    </g>
+  </g>
+  <g stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)">
+    <line x1="199" y1="289" x2="231" y2="289"/>
+    <line x1="389" y1="289" x2="421" y2="289"/>
+    <line x1="579" y1="289" x2="611" y2="289"/>
+  </g>
+  <g font-size="13" fill="#52606d" text-anchor="middle">
+    <text x="120" y="357">Release 1</text>
+    <text x="310" y="357">Release 2</text>
+    <text x="500" y="357">Release 3</text>
+    <text x="690" y="357">Release 4</text>
+  </g>
+</svg>

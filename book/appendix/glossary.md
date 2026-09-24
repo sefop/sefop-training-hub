@@ -10,6 +10,12 @@ A named interface that hides how something is done behind what it does. A cargo 
 method, `solve`, and several implementations — enumeration, a MIP solver — can stand behind it. It is what lets you
 swap solvers without rewriting the code that calls them.
 
+## Agile
+
+A way of organizing software development around short feedback loops: release a small change, learn from the
+people who use it, and feed the lesson into the next change. Its value is the loop, not its meetings or vocabulary.
+Contrast with [waterfall](#waterfall).
+
 ## Automated test
 
 A small program that runs your code on a known input and checks the output against an expected answer, without a person
@@ -20,6 +26,11 @@ looking at the result. A collection of them is a [test suite](#test-suite).
 Choosing test inputs exactly on the border between two [equivalence classes](#equivalence-partitioning), where behavior
 changes character — for example, committed cargo that exactly fills an aircraft, between a commitment that does not
 fit (infeasible) and one that leaves room to spare. Think of the breakpoints in sensitivity analysis.
+
+## Branch
+
+A separate line of work in version control where a change is made without touching the shared code. When the
+change is ready, it is merged back, usually through a [pull request](#pull-request).
 
 ## Code coverage
 
@@ -85,6 +96,17 @@ changes.
 A [test oracle](#test-oracle) that catches failures wrong in any program at all — a crash, a hang, a corrupted result —
 without knowing anything about the expected answer. Every test gets one for free.
 
+## Incremental development
+
+Building a system one part at a time, each part finished and released before the next begins — one region
+live before all regions. Contrast with [iterative development](#iterative-development); most teams need both.
+
+## Iterative development
+
+Building the whole system in a rough form first and improving it on every pass, instead of trying to get it
+right the first time — a formulation revised after users react to its first plans. Contrast with
+[incremental development](#incremental-development).
+
 ## Legacy system
 
 Software that is difficult to change safely — not because it is old, but because it lacks the safety mechanisms, such as
@@ -94,6 +116,11 @@ a [test suite](#test-suite), that make change possible.
 
 A relation that must hold between the outputs of two related runs, even when neither output is known. Example: raising
 a capacity never decreases the optimal value.
+
+## Modularity
+
+Building a system from parts with clear boundaries, so that each part can be understood, tested and replaced
+on its own. It keeps a change small: a new requirement touches one part and leaves the others as they were.
 
 ## Mutation testing
 
@@ -110,6 +137,11 @@ procedures that pass data between them. Abbreviated OOP.
 The difficulty of building a [test oracle](#test-oracle) when the correct output is expensive, or impossible, to compute
 independently of the code under test. Optimization models are a prime example.
 
+## Pinned environment
+
+A record of the exact version of every library a program depends on, used to rebuild the same environment on
+any machine. It makes a result on one machine a result on every machine.
+
 ## Property-based testing
 
 Writing tests as properties that must hold for all inputs of some kind, then letting a library generate many inputs to
@@ -119,6 +151,11 @@ check them. When a generated input fails, the library usually [shrinks](#shrinki
 
 A second, independent implementation of the same [contract](#contract), used as the reference in
 [differential testing](#differential-testing). Brute-force enumeration is a typical pseudo-oracle for small instances.
+
+## Pull request
+
+A proposal to merge a [branch](#branch) into the shared code, shown as the exact lines it changes so that a
+reviewer and [continuous integration](#continuous-integration) can check it first.
 
 ## Random seed
 
@@ -140,10 +177,20 @@ the main job of an automated test suite.
 Automatically reducing a failing generated input to the smallest input that still fails, so that a person can understand
 the failure. A feature of [property-based testing](#property-based-testing) libraries.
 
+## Software development lifecycle
+
+The phases a piece of software passes through during its life: working out what is needed, planning, design,
+building, testing, deployment, operation and evolution. Abbreviated SDLC.
+
 ## Specified oracle
 
 A [test oracle](#test-oracle) in which the expected answer is stated in advance — in this book, worked out by hand for a
 small instance.
+
+## Static analysis
+
+Checking code without running it — for type errors, unused variables, suspicious constructs — so that a class
+of mistakes is caught before the program runs at all.
 
 ## Technical debt
 
@@ -164,3 +211,9 @@ Whatever decides whether an output is correct. For a calculator, it is arithmeti
 ## Test suite
 
 The full collection of [automated tests](#automated-test) for a codebase, usually run together with a single command.
+
+## Waterfall
+
+A development process that runs each phase once, in order — all requirements, then all design, then all
+building, then testing and release — so that feedback from users arrives only at the end. Contrast with
+[agile](#agile).
