@@ -61,32 +61,48 @@ A unit test sits at the base of the pyramid: it checks one unit of code, such as
 milliseconds. This part builds unit tests for a `Calculator` with two operations: `add` comes with its tests already
 written, and `divide` is yours to test in the exercise at the end.
 
+### Interface vs implementation
+
+Every unit of code has two parts. Its [interface](../appendix/glossary.md#interface) says what the unit does: its
+name, the inputs it accepts, and the outputs and errors it returns. Programmers also call it the signature, the
+application programming interface (API), or the [contract](../appendix/glossary.md#contract). Its implementation is
+how the unit does it, and everything in it is an [implementation detail](../appendix/glossary.md#implementation-detail).
+[Figure: add interface and implementation](#fig-add-interface-implementation) marks the two parts on the calculator's
+`add`.
+
+<a id="fig-add-interface-implementation"></a>
+
+**Figure: add interface and implementation**
+
+<p align="center">
+  <img src="assets/unit-test-interface-implementation.svg" width="780"
+       alt="The pseudocode of add split in two. Top, in blue, the interface: the line public add(a, b) returns number and the comments stating its promises (the sum, commutativity, identity, an invalid-input error, an overflow error), labelled what the unit does, also called signature, API or contract, its comments are part of it, visible to every client. Bottom, in orange, the implementation: the input checks, the sum, the overflow check and the return, labelled how the unit does it, hidden from clients, one of many possible behind the interface">
+</p>
+
+Two design practices follow from the split. The interface states what the unit does and never how, and the comments
+that state its promises belong to it as much as its first line does. The implementation stays hidden from the code
+that calls the unit, its *clients*, so it can change, or give way to a different implementation, without any client
+noticing.
+
+A wall socket shows the same split. [Figure: socket](#fig-socket) draws it: the socket is the interface, a fixed shape
+that delivers a fixed voltage. Behind the wall, the power may come from a gas plant, a wind farm or solar panels; that
+is the implementation, and the utility can change it at any time. The lamp, the laptop and the phone are the clients,
+and they rely on the socket alone. A test of the service aims where the clients do, at the socket. Unit tests do the
+same: they check the interface.
+
+<a id="fig-socket"></a>
+
+**Figure: socket**
+
+<p align="center">
+  <img src="assets/unit-test-socket.svg" width="780"
+       alt="The electricity service in three zones. Left, in orange, the implementation hidden behind the wall: a gas plant, a wind farm and solar panels wired to one line. Middle, in blue, the interface: a socket on the wall, with an arrow labelled tests aim here. Right, in green, the clients: a lamp, a laptop and a phone plugged into the socket">
+</p>
+
 ### What to test
 
-Every unit has an [interface](../appendix/glossary.md#interface): what it promises its callers, meaning its name, its
-inputs, its outputs and the errors it may raise. The comments that state those promises are part of the interface.
-How the unit keeps them is an [implementation detail](../appendix/glossary.md#implementation-detail), and a unit may
-have many implementations behind one interface.
-
-A wall socket is a good picture. Whoever plugs in a lamp relies on the voltage at the socket, never on how the power
-station produces it, so the tests are aimed at the socket. Unit tests do the same: they check the interface.
-
-<a id="pseudo-add-interface"></a>
-
-**Pseudocode: add interface**
-
-```
-// pseudocode: add-interface
-public add(a, b) returns number
-    // Returns the sum a + b.
-    // Commutativity: add(a, b) = add(b, a)
-    // Identity: add(a, 0) = a
-    // Fails with an invalid-input error if a or b is not a finite number
-    // Fails with an overflow error if the sum is too large to represent
-```
-
-An interface has one or more *behaviors*, and each one is something to test.
-[Pseudocode: add interface](#pseudo-add-interface) promises five:
+An interface has one or more *behaviors*, and each one is something to test. The interface in
+[Figure: add interface and implementation](#fig-add-interface-implementation) promises five:
 
 1. **The base case**, also called the [happy path](../appendix/glossary.md#happy-path): `add(3, 4) = 7`.
 2. **Commutativity**: `add(3, 4) = add(4, 3)`.
@@ -95,8 +111,6 @@ An interface has one or more *behaviors*, and each one is something to test.
 5. **Overflow**: adding the largest representable number to itself fails with an overflow error.
 
 A behavior may need more than one case: identity holds for 3, and also for a negative number and a very large one.
-The Python practice repository splits invalid input into cases specific to the language, such as a value of the wrong
-type or an infinite value, and also checks that the result is always a floating-point number.
 
 ### How to write a unit test
 
@@ -169,7 +183,7 @@ public add(a, b) returns number
 ```
 
 > [!NOTE]
-> The pseudocode is illustrative: a real coverage tool reports the same pattern for the Python `add`, over more lines.
+> The pseudocode is illustrative: a coverage tool reports the same pattern for `add` written in a real language, over more lines.
 
 The three lines that never run belong to the invalid-input and overflow behaviors. Add a test for each, and every line
 runs: coverage reaches 100%. Now delete the commutativity test. Coverage stays at 100%, because the happy-path test
@@ -178,33 +192,11 @@ behavior no test checks. Use it to find what is missing, and use the list of beh
 
 ### Exercise 1: a calculator
 
-The calculator's `divide` is implemented but untested. Write a unit test for each behavior in
-[Pseudocode: divide interface](#pseudo-divide-interface), named and structured as in [Pseudocode: add test](#pseudo-add-test),
-until coverage of `divide` reaches 100%.
-
-<a id="pseudo-divide-interface"></a>
-
-**Pseudocode: divide interface**
-
-```
-// pseudocode: divide-interface
-public divide(a, b) returns number
-    // Returns the quotient a / b.
-    // Identity: divide(a, 1) = a
-    // Inverse: divide(a, a) = 1 for any non-zero a
-    // Fails with an invalid-input error if a or b is not a finite number
-    // Fails with a zero-division error if b is zero
-    // Fails with an overflow error if the quotient is too large to represent
-```
+The exercise lives in the practice repositories: test the calculator's `divide` the way this part tested `add`.
 
 > **Practice it**
 >
-> - Python: [training-testing-python, exercise 1](https://github.com/sefop/training-testing-python/tree/main/exercises/1_unit-tests-and-coverage).
->   Read [`calculator.py`](https://github.com/sefop/training-testing-python/blob/main/src/calculator.py) and
->   [`test_calculator_add.py`](https://github.com/sefop/training-testing-python/blob/main/tests/test_calculator_add.py),
->   fill in [`test_calculator_divide.py`](https://github.com/sefop/training-testing-python/blob/main/tests/test_calculator_divide.py),
->   and measure with the [coverage guide](https://github.com/sefop/training-testing-python/blob/main/exercises/1_unit-tests-and-coverage/how-to-code-coverage.md).
->   The solutions are on the `solutions` branch.
+> - Python: [training-testing-python, exercise 1](https://github.com/sefop/training-testing-python/tree/main/exercises/1_unit-tests-and-coverage)
 > - Java: coming soon
 
 ## The running example

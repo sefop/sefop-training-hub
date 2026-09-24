@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 420" width="920" height="420" font-family="Helvetica, Arial, sans-serif">
+  <!-- Figure: socket. The electricity service as an interface and its implementations. Left to right:
+       the implementations hidden behind the wall (orange), the socket on the wall that every client
+       relies on (blue), and the clients that plug in (green). Tests aim at the socket. The hues match
+       unit-test-interface-implementation.svg. -->
+
+  <!-- Light background baked in, so the figure stays readable on a dark theme. -->
+  <rect width="920" height="420" fill="#ffffff"/>
+
+  <defs>
+    <!-- Arrowhead for the "tests aim here" pointer. -->
+    <marker id="aim" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1565c0"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Column titles ===== -->
+  <text x="230" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#bf360c">Implementation</text>
+  <text x="230" y="56" text-anchor="middle" font-size="14" fill="#bf360c">Hidden behind the wall; many are possible</text>
+  <text x="490" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#0d47a1">Interface</text>
+  <text x="490" y="56" text-anchor="middle" font-size="14" fill="#0d47a1">The socket</text>
+  <text x="760" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#1b5e20">Clients</text>
+  <text x="760" y="56" text-anchor="middle" font-size="14" fill="#1b5e20">Rely only on the socket</text>
+
+  <!-- ===== Implementation zone: three interchangeable power sources wired to the socket ===== -->
+  <g id="implementation">
+    <rect x="20" y="75" width="420" height="320" rx="10" fill="#fff3e0" stroke="#e65100" stroke-width="2" stroke-dasharray="6 4"/>
+
+    <!-- Gas plant: a building, a chimney and smoke. -->
+    <rect x="50" y="118" width="60" height="40" fill="#ffcc80" stroke="#bf360c" stroke-width="1.5"/>
+    <rect x="90" y="96" width="12" height="22" fill="#ffcc80" stroke="#bf360c" stroke-width="1.5"/>
+    <circle cx="99" cy="90" r="5" fill="#ffe0b2" stroke="#bf360c"/>
+    <circle cx="108" cy="83" r="4" fill="#ffe0b2" stroke="#bf360c"/>
+    <text x="130" y="143" font-size="14" fill="#bf360c">Gas plant</text>
+
+    <!-- Wind turbine: a pole, a hub and three blades. -->
+    <line x1="80" y1="200" x2="80" y2="255" stroke="#bf360c" stroke-width="2"/>
+    <line x1="80" y1="200" x2="80" y2="172" stroke="#bf360c" stroke-width="3"/>
+    <line x1="80" y1="200" x2="104" y2="214" stroke="#bf360c" stroke-width="3"/>
+    <line x1="80" y1="200" x2="56" y2="214" stroke="#bf360c" stroke-width="3"/>
+    <circle cx="80" cy="200" r="4" fill="#bf360c"/>
+    <text x="130" y="225" font-size="14" fill="#bf360c">Wind farm</text>
+
+    <!-- Solar panel: a tilted panel with a grid, on a stand. -->
+    <polygon points="45,335 65,300 115,300 95,335" fill="#ffcc80" stroke="#bf360c" stroke-width="1.5"/>
+    <line x1="55" y1="317" x2="105" y2="317" stroke="#bf360c"/>
+    <line x1="82" y1="300" x2="70" y2="335" stroke="#bf360c"/>
+    <line x1="80" y1="335" x2="80" y2="355" stroke="#bf360c" stroke-width="2"/>
+    <text x="130" y="325" font-size="14" fill="#bf360c">Solar panels</text>
+
+    <!-- Wiring: each source joins at one point, and one line runs to the back of the socket. -->
+    <path d="M225,138 L320,220 M225,220 L320,220 M225,320 L320,220 M320,220 L462,220" fill="none" stroke="#e65100" stroke-width="2.5"/>
+    <circle cx="320" cy="220" r="4" fill="#e65100"/>
+  </g>
+
+  <!-- ===== The wall, with the socket mounted on its face ===== -->
+  <g id="interface">
+    <rect x="462" y="75" width="28" height="320" fill="#cfd8dc" stroke="#90a4ae" stroke-width="1.5"/>
+    <!-- Socket plate: the only part a client can touch. -->
+    <rect x="476" y="180" width="52" height="80" rx="10" fill="#e3f2fd" stroke="#1565c0" stroke-width="3"/>
+    <rect x="490" y="198" width="6" height="18" rx="1" fill="#0d47a1"/>
+    <rect x="508" y="198" width="6" height="18" rx="1" fill="#0d47a1"/>
+    <rect x="498" y="230" width="8" height="12" rx="4" fill="#0d47a1"/>
+    <!-- "Tests aim here": the pointer lands on the socket, not on the wiring. -->
+    <text x="502" y="322" text-anchor="middle" font-size="15" font-weight="bold" fill="#1565c0">Tests aim here</text>
+    <line x1="502" y1="304" x2="502" y2="268" stroke="#1565c0" stroke-width="2.5" marker-end="url(#aim)"/>
+  </g>
+
+  <!-- ===== Clients zone: appliances whose cords end in a plug at the socket ===== -->
+  <g id="clients">
+    <rect x="620" y="75" width="280" height="320" rx="10" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" stroke-dasharray="6 4"/>
+
+    <!-- Plug in the socket, and one cord per appliance. -->
+    <rect x="530" y="210" width="22" height="20" rx="3" fill="#37474f"/>
+    <path d="M552,220 C600,220 640,112 742,112 M552,220 L735,220 M552,220 C600,220 640,317 758,317" fill="none" stroke="#37474f" stroke-width="2"/>
+
+    <!-- Lamp: a shade, a stem and a base. -->
+    <polygon points="752,95 788,95 798,120 742,120" fill="#a5d6a7" stroke="#1b5e20" stroke-width="1.5"/>
+    <line x1="770" y1="120" x2="770" y2="145" stroke="#1b5e20" stroke-width="2"/>
+    <rect x="755" y="145" width="30" height="5" fill="#1b5e20"/>
+    <text x="815" y="125" font-size="14" fill="#1b5e20">Lamp</text>
+
+    <!-- Laptop: a screen and a keyboard base. -->
+    <rect x="745" y="198" width="50" height="32" rx="2" fill="#a5d6a7" stroke="#1b5e20" stroke-width="1.5"/>
+    <polygon points="738,232 802,232 808,240 732,240" fill="#1b5e20"/>
+    <text x="815" y="225" font-size="14" fill="#1b5e20">Laptop</text>
+
+    <!-- Phone on its charger. -->
+    <rect x="758" y="295" width="24" height="44" rx="4" fill="#a5d6a7" stroke="#1b5e20" stroke-width="1.5"/>
+    <text x="815" y="322" font-size="14" fill="#1b5e20">Phone</text>
+  </g>
+</svg>
