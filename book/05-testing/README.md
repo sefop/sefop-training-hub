@@ -196,8 +196,8 @@ The exercise lives in the practice repositories: test the calculator's `divide` 
 
 > **Practice it**
 >
-> - Python: [training-testing-python, exercise 1](https://github.com/sefop/training-testing-python/tree/main/exercises/1_unit-tests-and-coverage)
-> - Java: coming soon
+> - Python: [Unit testing exercise](https://github.com/sefop/training-testing-python/tree/main/exercises/1_unit-tests-and-coverage)
+> - Java: [Unit testing exercise](https://github.com/sefop/sefop-training-java/tree/main/src/main/java/unit_tests_and_coverage)
 
 ## The running example
 
