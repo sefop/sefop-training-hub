@@ -718,7 +718,6 @@ is a new adapter, a dangerous-goods rule is a change to preprocess, a heuristic 
 new provider and a line in the composition root, and the rule that removes unfit products is tested by calling
 preprocess with a few values.
 
-
 ---
 
 <a id="ch-conclusion"></a>

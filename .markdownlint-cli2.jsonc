@@ -25,10 +25,11 @@
     // Pseudocode blocks are deliberately language-agnostic, so they carry no language tag.
     "MD040": false,
 
-    // Chapter headings are "## 01 — Title"; the em dash is not trailing punctuation.
+    // Only trailing punctuation in a heading is flagged; older sections still carry "## 01 — Title".
     "MD026": { "punctuation": ".,;:!。，；：！" }
   },
   // .claude/ is local-only and not part of the book, so linting it locally would
-  // report problems CI can never see.
-  "globs": ["**/*.md", "!workshops/**", "!node_modules/**", "!.claude/**"]
+  // report problems CI can never see. markdown_tips.md is an authoring note of alert
+  // examples, not reader content.
+  "globs": ["**/*.md", "!workshops/**", "!node_modules/**", "!.claude/**", "!book/appendix/markdown_tips.md"]
 }

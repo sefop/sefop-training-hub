@@ -195,13 +195,13 @@ change:
 
 ### Check yourself
 
+Questions 1 and 2 are about the two moves of a short loop. Questions 3 to 8 quote statements heard on real teams:
+name the principle each one breaks.
+
 1. A team builds the data loading, then the model, then the report, and shows nothing to users until all three are
    done. Is that incremental, iterative, both or neither?
 2. A scheduling tool is released with a simplified model that ignores overtime rules, and the rules are added two
    releases later after supervisors review the schedules. Which move is that?
-
-Each statement below was heard on a real team. Which principle does it break?
-
 3. "No test needed: it is the same constraint as in another repository, and that one has worked for years."
 4. "It was written by our principal engineer, so it is fine."
 5. "This change cuts the model's run time from 10 seconds to 9.8 seconds."
