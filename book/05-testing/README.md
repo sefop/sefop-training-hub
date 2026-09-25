@@ -594,7 +594,7 @@ one cycle at a time.
 
 ## A cargo loading example
 
-The chapters from [Test doubles](#ch-test-doubles) onward test the cargo loading system defined in
+The following chapters are going to use the cargo loading system example defined in
 [the appendix](../appendix/running-example.md): for one departure, how many pallets of each tendered product to load,
 so that the revenue carried is as large as possible without exceeding the aircraft's maximum weight or the capacity
 of its hold. This section holds that model fixed, so the testing ideas change while the model stays still.
