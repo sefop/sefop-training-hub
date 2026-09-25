@@ -147,13 +147,13 @@ In the pseudocode, `expect` makes the assertion: the test fails if its condition
 ```
 // pseudocode: add-test
 public test__add__given_two_numbers__returns_their_sum()
-    // arrange
+    // Arrange
     calculator = Calculator()
 
-    // act
+    // Act
     result = calculator.add(1, 2)
 
-    // assert
+    // Assert
     expect result == 3
 ```
 
