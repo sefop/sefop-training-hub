@@ -413,7 +413,7 @@ test, and each test reads on its own.
   unit test": the same ground from another angle, on one behavior per test, no branching in tests, and setup shared
   between tests.
 
-## The running example
+## A cargo loading example
 
 The chapters from [Test doubles](#ch-test-doubles) onward test the cargo loading system defined in
 [the appendix](../appendix/running-example.md): for one departure, how many pallets of each tendered product to load,
@@ -439,27 +439,6 @@ removes that guarantee, and an instance whose must-go pallets exceed a capacity 
 [formulation](../appendix/running-example.md#an-optimization-model-for-this-problem) and the
 [two-pallet instance](../appendix/running-example.md#ex-two-pallet) the chapters work with are in the appendix.
 
-## How to read the pseudocode
-
-Chapters show tests as short, language-agnostic pseudocode, so the ideas transfer to any language. The conventions:
-
-```
-a = item(name="A", weight=2, volume=1, revenue=10, max_quantity=1)
-
-result = solve([a], weight_capacity=2, volume_capacity=2)
-
-expect result.feasible == true
-expect result.total_revenue == 10
-```
-
-- `solve(items, weight_capacity, volume_capacity)` runs whichever solver is under test. When a chapter needs a specific
-  one, it writes `enumeration_solver().solve(...)` or `mip_solver().solve(...)`.
-- `result` has five fields: `feasible`, `quantities` (item name → units chosen), `total_revenue`, `total_weight`, and
-  `total_volume`. When `feasible` is false, the other fields carry no meaning.
-- `item(...)` also takes `min_quantity`, the pallets of that product which must fly. It defaults to 0, so it appears
-  only where a chapter needs committed freight.
-- `expect` marks an assertion: the test fails if the condition is false. `==` on numbers means equal within a small
-  numerical tolerance.
 
 <a id="ch-test-doubles"></a>
 
