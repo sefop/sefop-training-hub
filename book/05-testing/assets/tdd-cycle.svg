@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 410" width="620" height="410" font-family="Helvetica, Arial, sans-serif">
+  <!-- Figure: TDD cycle. The three steps of test-driven development as a loop: red (write a failing
+       test), green (make it pass with the minimum code) and refactor (improve the code while the tests
+       still pass). The last arrow, labelled "next requirement", closes the loop back to red. -->
+
+  <!-- Light background baked in, so the figure stays readable on a dark theme. -->
+  <rect width="620" height="410" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#37474f"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Nodes: red at the top, green bottom right, refactor bottom left ===== -->
+  <g id="red">
+    <rect x="200" y="30" width="220" height="80" rx="14" fill="#ffcdd2" stroke="#c62828" stroke-width="2"/>
+    <text x="310" y="64" text-anchor="middle" font-size="20" font-weight="bold" fill="#b71c1c">Red</text>
+    <text x="310" y="89" text-anchor="middle" font-size="14" fill="#b71c1c">Write a failing test</text>
+  </g>
+  <g id="green">
+    <rect x="340" y="300" width="260" height="80" rx="14" fill="#c8e6c9" stroke="#2e7d32" stroke-width="2"/>
+    <text x="470" y="334" text-anchor="middle" font-size="20" font-weight="bold" fill="#1b5e20">Green</text>
+    <text x="470" y="359" text-anchor="middle" font-size="14" fill="#1b5e20">Make it pass with the minimum code</text>
+  </g>
+  <g id="refactor">
+    <rect x="20" y="300" width="250" height="80" rx="14" fill="#bbdefb" stroke="#1565c0" stroke-width="2"/>
+    <text x="145" y="334" text-anchor="middle" font-size="20" font-weight="bold" fill="#0d47a1">Refactor</text>
+    <text x="145" y="359" text-anchor="middle" font-size="14" fill="#0d47a1">Improve the code, tests still pass</text>
+  </g>
+
+  <!-- ===== Arrows: clockwise, red to green to refactor, then back to red ===== -->
+  <g fill="none" stroke="#37474f" stroke-width="2.5" marker-end="url(#arrow)">
+    <path d="M425,75 C520,90 520,210 485,292"/>
+    <path d="M336,340 L276,340"/>
+    <path d="M135,292 C100,210 110,90 193,75"/>
+  </g>
+  <text x="62" y="190" text-anchor="middle" font-size="14" font-style="italic" fill="#37474f">next</text>
+  <text x="62" y="208" text-anchor="middle" font-size="14" font-style="italic" fill="#37474f">requirement</text>
+</svg>

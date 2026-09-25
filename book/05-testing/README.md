@@ -233,16 +233,15 @@ The exercise lives in the practice repositories: test the calculator's `divide` 
 
 > **Practice it**
 >
-> - Python: [Unit testing exercise](https://github.com/sefop/training-testing-python/tree/main/exercises/1_unit-tests-and-coverage)
+> - Python: [Unit testing exercise](https://github.com/sefop/training-testing-python/tree/main/src/unit_tests_and_coverage)
 > - Java: [Unit testing exercise](https://github.com/sefop/sefop-training-java/tree/main/src/main/java/unit_tests_and_coverage)
 
 <a id="ch-clear-tests"></a>
 
-## Writing clear tests
+## Writing good tests
 
-Nothing tests a test, so a test must be obviously correct at a glance, and when it fails, its reader must see at once
-what broke. [Unit testing](#ch-unit-testing) gave a test its structure and its name; five more practices keep its body
-just as clear. Each one below sets an unclear test of the calculator's `add` beside a clear one.
+[Unit testing](#ch-unit-testing) gave a test its structure and its name; the following practices provide some well-known
+techniques to differentiate good tests from bad tests.
 
 ### Complete and concise
 
@@ -412,6 +411,177 @@ test, and each test reads on its own.
 - Vladimir Khorikov, *Unit Testing: Principles, Practices and Patterns*, Manning, 2020, chapter 3, "The anatomy of a
   unit test": the same ground from another angle, on one behavior per test, no branching in tests, and setup shared
   between tests.
+
+<a id="ch-tdd"></a>
+
+## Test-driven development
+
+[Test-driven development (TDD)](../appendix/glossary.md#test-driven-development) writes each test before the code it
+checks. In the terms of the scientific experiment in [Unit testing](#ch-unit-testing), it states the hypothesis
+before it builds the experiment: the test says what the code must do while that code does not exist yet.
+
+### The cycle: red, green, refactor
+
+TDD advances in short cycles of three steps, named after the colors a test tool shows:
+
+1. **Red.** Write one test for the next requirement, run it, and watch it fail.
+2. **Green.** Write the minimum code that makes it pass.
+3. **Refactor.** Improve the code while every test keeps passing. Changing code without changing what it does is
+   called [refactoring](../appendix/glossary.md#refactoring).
+
+Then the next requirement starts the next cycle. [Figure: TDD cycle](#fig-tdd-cycle) draws the loop.
+
+<a id="fig-tdd-cycle"></a>
+
+**Figure: TDD cycle**
+
+<p align="center">
+  <img src="assets/tdd-cycle.svg" width="520"
+       alt="A loop of three steps. Red: write a failing test. Green: make it pass with the minimum code. Refactor:
+improve the code, tests still pass. An arrow labelled next requirement leads from refactor back to red">
+</p>
+
+### Why each step matters
+
+**Red shows that the test can fail.** A test that has never failed has never been shown to test anything: it may
+check the wrong value, or not run at all. Watching it fail first is the evidence that it can tell working code from
+missing code.
+
+**Red, then green, shows causality.** The test failed, one change was made, and now the test passes: that change is
+why it passes. This is the causality principle of
+[the scientific method](../03-software-development-lifecycle/README.md#ch-learning) applied to code: change one thing
+at a time, so the result shows what caused it. A test written after the code passes on its first run, and cannot tell
+whether the code made it pass or whether it would have passed anyway.
+
+**Green with the minimum code keeps every line accountable.** Each line of production code exists because a test
+demanded it, so no line goes untested and no behavior is built that nobody asked for.
+
+**Refactor is safe because the tests check the interface.** The tests pin down what the code does, never how, as
+[Interface vs implementation](#ch-interface) set out. The code can change shape underneath them, and a test that
+turns red means a promise broke, not that the code merely moved.
+
+### A worked example
+
+A linear expression $a_0 + a_1 x_1 + \dots + a_n x_n$ is the building block from which a modeling library writes
+objectives and constraints. `LinearExpression` represents this class: a scalar $a_0$, and a coefficient for each
+variable. This example builds the scalar part test-first, in three cycles, with these requirements:
+
+- An expression built with no arguments has scalar 0.0.
+- An expression built with a scalar has that scalar.
+- Adding a value to the scalar increases the scalar by that value.
+
+**Cycle 1.** [Pseudocode: empty expression test](#pseudo-empty-expression-test) states the first requirement. It is
+red: `LinearExpression` does not exist yet.
+
+<a id="pseudo-empty-expression-test"></a>
+
+**Pseudocode: empty expression test**
+
+```
+// pseudocode: empty-expression-test
+public test__linear_expression__given_no_arguments__has_scalar_zero()
+    expression = LinearExpression()
+    expect expression.scalar() == 0.0
+```
+
+The minimum code that turns it green returns a constant, as
+[Pseudocode: constant scalar](#pseudo-constant-scalar) shows. It looks like cheating, and on purpose: one test
+demands no more than this, and the next test will force the real code.
+
+<a id="pseudo-constant-scalar"></a>
+
+**Pseudocode: constant scalar**
+
+```
+// pseudocode: constant-scalar
+class LinearExpression
+    public scalar() returns number
+        return 0.0
+```
+
+**Cycle 2.** [Pseudocode: scalar-only test](#pseudo-scalar-only-test) states the second requirement. It is red: the
+constant 0.0 is not 3.0.
+
+<a id="pseudo-scalar-only-test"></a>
+
+**Pseudocode: scalar-only test**
+
+```
+// pseudocode: scalar-only-test
+public test__linear_expression__given_a_scalar__has_that_scalar()
+    expression = LinearExpression(scalar = 3.0)
+    expect expression.scalar() == 3.0
+```
+
+To pass both tests, the expression must keep the scalar it receives, with 0.0 when it receives none.
+[Pseudocode: stored scalar](#pseudo-stored-scalar) does that, and the constant is gone. The refactor step finds
+nothing to improve yet, and a cycle may end that way.
+
+<a id="pseudo-stored-scalar"></a>
+
+**Pseudocode: stored scalar**
+
+```
+// pseudocode: stored-scalar
+class LinearExpression
+    private stored_scalar
+
+    public constructor(scalar = 0.0)
+        stored_scalar = scalar
+
+    public scalar() returns number
+        return stored_scalar
+```
+
+**Cycle 3.** [Pseudocode: add scalar test](#pseudo-add-scalar-test) states the third requirement. It is red:
+`add_scalar` does not exist yet.
+
+<a id="pseudo-add-scalar-test"></a>
+
+**Pseudocode: add scalar test**
+
+```
+// pseudocode: add-scalar-test
+public test__add_scalar__given_a_value__increases_the_scalar_by_it()
+    expression = LinearExpression(scalar = 1.0)
+    expression.add_scalar(3.0)
+    expect expression.scalar() == 4.0
+```
+
+[Pseudocode: add scalar](#pseudo-add-scalar) adds the method, and all three tests pass.
+
+<a id="pseudo-add-scalar"></a>
+
+**Pseudocode: add scalar**
+
+```
+// pseudocode: add-scalar
+class LinearExpression
+    private stored_scalar
+
+    public constructor(scalar = 0.0)
+        stored_scalar = scalar
+
+    public scalar() returns number
+        return stored_scalar
+
+    public add_scalar(value)
+        stored_scalar = stored_scalar + value
+```
+
+The scalar part is done. The variables are the exercise: building an expression with a term, adding a term to a
+variable that is already present, merging two expressions, and reading back the variables and their coefficients,
+one cycle at a time.
+
+### Further reading
+
+- Kent Beck, *Test-Driven Development: By Example*, Addison-Wesley, 2002: the book that named the cycle, worked
+  through at the same small step size as this chapter.
+
+> **Practice it**
+>
+> - Python: [Test-driven development exercise](https://github.com/sefop/training-testing-python/tree/main/src/test_driven_development)
+> - Java: [Test-driven development exercise](https://github.com/sefop/sefop-training-java/tree/main/src/main/java/test_driven_development)
 
 ## A cargo loading example
 
@@ -608,10 +778,10 @@ In code, a contract usually lives in an [abstraction](../appendix/glossary.md#ab
 single method, `solve`, that several implementations fulfil. In the Python exercise it is an abstract class with two
 implementations, one enumerating every selection and one calling the HiGHS solver.
 
-Writing contract tests first has a useful side effect. Each test is a question about the contract — "what does `solve`
-promise when nothing is affordable?" — so the contract must be made explicit before any solver exists. It also pushes
-the design toward modularity: a component that can be tested without looking at its internals is, by construction, a
-component whose internals do not leak into its interface.
+Writing contract tests [first](#ch-tdd) has a useful side effect. Each test is a question about the contract —
+"what does `solve` promise when nothing is affordable?" — so the contract must be made explicit before any solver
+exists. It also pushes the design toward modularity: a component that can be tested without looking at its
+internals is, by construction, a component whose internals do not leak into its interface.
 
 The same instance from [chapter 02](#ch-oracle-problem), tested two ways. First, a test
 coupled to the algorithm:
