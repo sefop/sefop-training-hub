@@ -236,25 +236,183 @@ The exercise lives in the practice repositories: test the calculator's `divide` 
 > - Python: [Unit testing exercise](https://github.com/sefop/training-testing-python/tree/main/exercises/1_unit-tests-and-coverage)
 > - Java: [Unit testing exercise](https://github.com/sefop/sefop-training-java/tree/main/src/main/java/unit_tests_and_coverage)
 
+<a id="ch-clear-tests"></a>
 
+## Writing clear tests
 
+Nothing tests a test, so a test must be obviously correct at a glance, and when it fails, its reader must see at once
+what broke. [Unit testing](#ch-unit-testing) gave a test its structure and its name; five more practices keep its body
+just as clear. Each one below sets an unclear test of the calculator's `add` beside a clear one.
 
+### Complete and concise
 
+A test is *complete* when its body holds everything a reader needs to understand its result, and *concise* when it
+holds nothing else. [Pseudocode: cluttered test](#pseudo-cluttered-test) fails both ways: the constructor arguments
+play no part in addition, and the numbers that decide the result hide inside helper functions.
 
+<a id="pseudo-cluttered-test"></a>
 
+**Pseudocode: cluttered test**
 
+```
+// pseudocode: cluttered-test
+public test__add__given_two_numbers__returns_their_sum()
+    calculator = Calculator(precision=10, rounding="half-even", log_file="calc.log")
+    result = calculator.add(first_operand(), second_operand())
+    expect result == 5
+```
 
+[Pseudocode: concise test](#pseudo-concise-test) keeps the numbers that matter in view and drops the rest.
 
+<a id="pseudo-concise-test"></a>
 
+**Pseudocode: concise test**
 
+```
+// pseudocode: concise-test
+public test__add__given_two_numbers__returns_their_sum()
+    calculator = Calculator()
+    result = calculator.add(2, 3)
+    expect result == 5
+```
 
+### One behavior per test
 
+[Pseudocode: method test](#pseudo-method-test) checks three behaviors of `add` at once. When it fails, its name cannot
+say which behavior broke, and the first failing `expect` stops the test, so the ones after it go unchecked.
 
+<a id="pseudo-method-test"></a>
 
+**Pseudocode: method test**
+
+```
+// pseudocode: method-test
+public test__add__works()
+    calculator = Calculator()
+    expect calculator.add(3, 4) == 7
+    expect calculator.add(3, 4) == calculator.add(4, 3)
+    expect calculator.add(3, 0) == 3
+```
+
+[Pseudocode: behavior tests](#pseudo-behavior-tests) splits it into one test per behavior, each named for the
+behavior it checks. A name that needs the word "and" describes two behaviors, and belongs to two tests.
+
+<a id="pseudo-behavior-tests"></a>
+
+**Pseudocode: behavior tests**
+
+```
+// pseudocode: behavior-tests
+public test__add__given_two_numbers__returns_their_sum()
+    calculator = Calculator()
+    result = calculator.add(3, 4)
+    expect result == 7
+
+public test__add__given_swapped_operands__returns_the_same_sum()
+    calculator = Calculator()
+    expect calculator.add(3, 4) == calculator.add(4, 3)
+
+public test__add__given_zero__returns_the_other_number()
+    calculator = Calculator()
+    result = calculator.add(3, 0)
+    expect result == 3
+```
+
+### No logic in tests
+
+Production code must handle any input, so it needs logic: loops, conditions, arithmetic. A test handles a few chosen
+inputs, so it needs none, and each piece of logic it carries is a computation its reader must run in their head.
+[Pseudocode: logic test](#pseudo-logic-test) loops over six pairs of numbers and computes each expected value with
+`a + b`, the very operation `add` performs. The test repeats the implementation instead of checking it.
+
+<a id="pseudo-logic-test"></a>
+
+**Pseudocode: logic test**
+
+```
+// pseudocode: logic-test
+public test__add__given_two_numbers__returns_their_sum()
+    calculator = Calculator()
+    for each a in [1, 2, 3]
+        for each b in [4, 5]
+            expect calculator.add(a, b) == a + b
+```
+
+[Pseudocode: concise test](#pseudo-concise-test) is straight-line code with a literal expected value: a reader checks
+that 2 plus 3 is 5 at a glance.
+
+### Clear failure messages
+
+When a test fails, its failure message is often the first thing a reader sees, and sometimes the only one. A good
+message states the inputs, the expected value and the actual value. So far, `expect` has taken a condition; it also
+takes a message after a comma, which the test reports when the condition is false.
+[Pseudocode: vague failure](#pseudo-vague-failure) reduces the comparison to true or false before asserting it, so
+its failure reads only "expected true, got false".
+
+<a id="pseudo-vague-failure"></a>
+
+**Pseudocode: vague failure**
+
+```
+// pseudocode: vague-failure
+public test__add__given_two_numbers__returns_their_sum()
+    calculator = Calculator()
+    result = calculator.add(2, 3)
+    expect (result == 5) is true
+```
+
+[Pseudocode: clear failure](#pseudo-clear-failure) fails with "add(2, 3) returned 6, expected 5", which points at the
+broken behavior before anyone opens the test.
+
+<a id="pseudo-clear-failure"></a>
+
+**Pseudocode: clear failure**
+
+```
+// pseudocode: clear-failure
+public test__add__given_two_numbers__returns_their_sum()
+    calculator = Calculator()
+    result = calculator.add(2, 3)
+    expect result == 5, "add(2, 3) returned {result}, expected 5"
+```
+
+### DAMP, not DRY
+
+Production code follows [don't repeat yourself (DRY)](../appendix/glossary.md#dont-repeat-yourself): each piece of
+knowledge lives in one place, so a change is one edit. Test code follows
+[descriptive and meaningful phrases (DAMP)](../appendix/glossary.md#descriptive-and-meaningful-phrases) instead: a
+little repetition is welcome when it lets each test be read on its own.
+[Pseudocode: too-DRY tests](#pseudo-too-dry-tests) shares its calculator and its numbers across the file, so to check
+either test, a reader must first scroll up to learn what `a` and `b` are.
+
+<a id="pseudo-too-dry-tests"></a>
+
+**Pseudocode: too-DRY tests**
+
+```
+// pseudocode: too-dry-tests
+calculator = Calculator()
+a = 3
+b = 4
+
+public test__add__given_two_numbers__returns_their_sum()
+    expect calculator.add(a, b) == 7
+
+public test__add__given_swapped_operands__returns_the_same_sum()
+    expect calculator.add(a, b) == calculator.add(b, a)
+```
+
+[Pseudocode: behavior tests](#pseudo-behavior-tests) repeats `calculator = Calculator()` and its numbers in every
+test, and each test reads on its own.
+
+### Further reading
+
+- Titus Winters, Tom Manshreck and Hyrum Wright, *Software Engineering at Google*, O'Reilly, 2020, chapter 12, "Unit
+  Testing": the source of these five practices, each shown on tests from a code base of Google's size.
 
 ## The running example
 
-Chapters 02–09 test the cargo loading system defined in
+The chapters from [Test doubles](#ch-test-doubles) onward test the cargo loading system defined in
 [the appendix](../appendix/running-example.md): for one departure, how many pallets of each tendered product to load,
 so that the revenue carried is as large as possible without exceeding the aircraft's maximum weight or the capacity
 of its hold. This section holds that model fixed, so the testing ideas change while the model stays still.
@@ -300,6 +458,25 @@ expect result.total_revenue == 10
 - `expect` marks an assertion: the test fails if the condition is false. `==` on numbers means equal within a small
   numerical tolerance.
 
+<a id="ch-test-doubles"></a>
+
+## Test doubles
+
+A unit of the cargo loading system rarely works alone: planning a load calls a solver, and reading the tendered
+pallets calls another system. A real solver can take minutes, and the other system may be out of reach from a test.
+A [test double](../appendix/glossary.md#test-double) stands in for such a dependency during a test: a *stub* returns
+fixed answers, a *fake* is a simpler working version, and a *mock* records how it was called. The chapter will show
+how [dependency injection](../appendix/glossary.md#dependency-injection) lets a test pass a double in, and when the
+real implementation is the better choice.
+
+<a id="ch-integration"></a>
+
+## Integration testing
+
+An [integration test](../appendix/glossary.md#integration-test) combines several units and checks that they work
+together, the middle level of [Figure: test pyramid](#fig-test-pyramid). The chapter will test the cargo loading
+system with its real collaborators, such as reading the tendered pallets from a real data source and handing them to
+the planning of the load, and show what such a test catches that no unit test can.
 
 ---
 

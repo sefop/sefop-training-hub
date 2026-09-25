@@ -116,6 +116,12 @@ A [test oracle](#test-oracle) that decides correctness from something other than
 a [metamorphic relation](#metamorphic-relation) between two runs, or agreement with a
 [pseudo-oracle](#pseudo-oracle).
 
+## Descriptive and meaningful phrases
+
+The rule that test code should favor readability over the removal of repetition: each test states its own setup and
+values, even when other tests repeat them, so it can be read on its own. Abbreviated DAMP. Contrast with
+[don't repeat yourself](#dont-repeat-yourself), the rule for production code.
+
 ## Design pattern
 
 A named, reusable solution to a problem that recurs in software design, such as
@@ -328,6 +334,11 @@ size.
 The future cost of a shortcut taken today: code, tests, or documentation left in a state that makes the next change
 more expensive. Like financial debt, it can be a deliberate and reasonable choice — as long as somebody knows it was
 taken and what the interest is.
+
+## Test double
+
+An object that stands in for a real dependency during a test. A *stub* returns fixed answers, a *fake* is a simpler
+working version of the dependency, and a *mock* records how it was called so the test can check it.
 
 ## Test-driven development
 
