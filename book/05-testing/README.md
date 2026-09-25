@@ -376,7 +376,7 @@ public test__add__given_two_numbers__returns_their_sum()
     expect result == 5, "add(2, 3) returned {result}, expected 5"
 ```
 
-### DAMP, not DRY
+### Descriptive and meaningful
 
 Production code follows [don't repeat yourself (DRY)](../appendix/glossary.md#dont-repeat-yourself): each piece of
 knowledge lives in one place, so a change is one edit. Test code follows
@@ -409,6 +409,9 @@ test, and each test reads on its own.
 
 - Titus Winters, Tom Manshreck and Hyrum Wright, *Software Engineering at Google*, O'Reilly, 2020, chapter 12, "Unit
   Testing": the source of these five practices, each shown on tests from a code base of Google's size.
+- Vladimir Khorikov, *Unit Testing: Principles, Practices and Patterns*, Manning, 2020, chapter 3, "The anatomy of a
+  unit test": the same ground from another angle, on one behavior per test, no branching in tests, and setup shared
+  between tests.
 
 ## The running example
 
