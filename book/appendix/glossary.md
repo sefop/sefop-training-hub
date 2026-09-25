@@ -98,6 +98,11 @@ Software that runs repeatedly to turn data, mathematical models, and business ru
 on. Abbreviated DSS. A one-off study that answers a question once is not one: what makes a system decision-support
 software is that the decision recurs and somebody owns the software that produces it.
 
+## Dependency
+
+Another unit of code that a unit calls to do part of its work. A planning job that sends pages through a pager
+depends on the pager.
+
 ## Dependency injection
 
 Passing a part the parts it depends on from outside, instead of letting it create them itself. A class that
@@ -217,9 +222,9 @@ a capacity never decreases the optimal value.
 
 ## Mock
 
-A stand-in for a dependency, created by a test, that records the calls it receives so the test can check them. Used
-when the behavior under test is a call to another system, such as sending a message. One kind of
-[test double](#test-double).
+A stand-in for a [dependency](#dependency), created by a test, that records the calls it receives from the unit
+under test so the test can check them. Used when the behavior under test is a call to another system, such as
+sending a message. One kind of [test double](#test-double).
 
 ## Modularity
 

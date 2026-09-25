@@ -596,28 +596,63 @@ one cycle at a time.
 
 ## Mocks
 
-Some behaviors return nothing. Their effect is a call to another system: paging a person, sending an email, writing
-to another program. Such a behavior leaves no result for a test to `expect` on, yet it is often the one that matters
-most.
+A unit test checks the behaviors a unit promises through its [interface](../appendix/glossary.md#interface). A unit
+rarely works alone: it calls another unit, its [dependency](../appendix/glossary.md#dependency), to do part of its
+work. A behavior may be visible in a returned value or error, in an outgoing call, or in both: `add` returns a sum,
+while a nightly planning job asks a pager to wake someone up. The earlier tests checked the first kind. The second
+raises a problem: a unit test must not make an external call for real.
 
 ### Why the real dependency stays out of the test
 
-A test runs many times a day, on developers' laptops and on shared servers. If it made the real call, every run would
-page a real person or write to a real system. The real system may also be slow, or out of reach from the machine that
-runs the test. And even when the call succeeds, it leaves nothing inside the program that the test could inspect.
+A test runs many times a day, on developers' laptops and on shared servers. When a dependency's calls reach a person
+or an external system, every run would page a real person or write to a real system. That system may also be slow,
+or out of reach from the machine that runs the test. And whatever record it keeps lives outside the program, where
+the test has no dependable way to read it.
 
 ### What a mock is
 
-A [mock](../appendix/glossary.md#mock) is a stand-in that the test creates in place of the dependency. It accepts the
-same calls as the real one, does nothing else, and records every call it receives, with its arguments. After acting,
-the test asserts on those records. The unit receives the mock the way it would receive the real dependency, from
-outside, through [dependency injection](../appendix/glossary.md#dependency-injection).
+A [mock](../appendix/glossary.md#mock) is a stand-in that the test puts in place of the dependency. It accepts the
+same calls as the real one, does nothing else, and records every call it receives, with its arguments. The unit
+receives it the way it would receive the real dependency, from outside, through
+[dependency injection](../appendix/glossary.md#dependency-injection). After acting, the test asserts on the record.
 
-The pseudocode adds three forms for mocks:
+[Figure: real pager and mock](#fig-mocks-real-vs-mock) sets the two side by side. They share the same
+[interface](#ch-interface); only what sits behind it differs.
 
-- `pager = mock(Pager)` creates a mock that accepts the calls of the `Pager` interface.
-- `expect pager.page called once with "<message>"` asserts that exactly one call was made, with that argument.
-- `expect pager.page never called` asserts that no call was made.
+<a id="fig-mocks-real-vs-mock"></a>
+
+**Figure: real pager and mock**
+
+<p align="center">
+  <img src="assets/mocks-real-vs-mock.svg" width="700"
+       alt="Two pagers side by side with the same interface on top, page(message), joined by an equals sign. Left,
+the real pager: behind the interface, in orange, its implementation connects to the SMS service and sends the text,
+and an arrow leaves the object to a phone, labelled a real person is woken up. Right, the mock pager: behind the same
+interface, in green, only a record of the calls it received, page with the message Instance 2026-09-26: no feasible
+plan exists, labelled sends nothing. Caption: same interface, the unit that calls page cannot tell them apart">
+</p>
+
+Nothing more is needed to build one. [Pseudocode: recording pager](#pseudo-recording-pager) is a complete mock of a
+pager: it keeps the messages it is asked to send, and sends none.
+
+<a id="pseudo-recording-pager"></a>
+
+**Pseudocode: recording pager**
+
+```
+// pseudocode: recording-pager
+class RecordingPager implements Pager
+    private messages = empty list
+
+    public page(message)
+        append message to messages
+```
+
+Test tools build such an object for any interface, so tests rarely write one by hand. The pseudocode writes
+`pager = mock(Pager)` to create one, and reads its record with two assertions:
+
+- `expect pager.page called once with "<message>"` holds when exactly one call was made, with that argument.
+- `expect pager.page never called` holds when no call was made.
 
 ### A worked example
 
@@ -692,10 +727,9 @@ public test__review__given_a_feasible_plan__sends_no_page()
 
 ### What to mock
 
-Mock the dependencies whose calls leave the program: people, other systems, the outside world. Those calls are
-behaviors a client relies on, so checking them checks the [interface](#ch-interface). Keep the unit's own internal
-parts real. A test that mocks them checks how the unit does its work, and breaks the day that work is reorganized,
-even though no promise changed.
+Mock the dependencies whose calls reach people or external systems. Those calls are behaviors a client relies on,
+so checking them checks the [interface](#ch-interface). Keep the unit's own internal parts real. A test that mocks
+them checks how the unit does its work, and breaks the day that work is reorganized, even though no promise changed.
 
 ### Further reading
 

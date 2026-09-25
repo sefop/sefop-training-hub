@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" width="900" height="450" font-family="Helvetica, Arial, sans-serif">
+  <!-- Figure: real pager and mock. Two objects with the same interface (blue surface, page(message)).
+       Behind it, the real pager holds its implementation (orange) and reaches a real phone; the mock holds
+       only a record of the calls it received (green) and sends nothing. The blue and orange hues match
+       interface-implementation.svg and interface-socket.svg. -->
+
+  <!-- Light background baked in, so the figure stays readable on a dark theme. -->
+  <rect width="900" height="450" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#bf360c"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Titles ===== -->
+  <text x="210" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#37474f">Real pager</text>
+  <text x="690" y="34" text-anchor="middle" font-size="19" font-weight="bold" fill="#37474f">Mock pager</text>
+
+  <!-- ===== Real pager: interface surface, implementation behind it ===== -->
+  <g id="real">
+    <rect x="30" y="105" width="360" height="200" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+    <rect x="30" y="55" width="360" height="50" fill="#bbdefb" stroke="#1565c0" stroke-width="2"/>
+    <text x="210" y="86" text-anchor="middle" font-family="Consolas, Menlo, monospace" font-size="16" fill="#0d47a1">page(message)</text>
+
+    <!-- Internals: the steps of the real implementation. -->
+    <rect x="70" y="130" width="280" height="44" rx="8" fill="#ffe0b2" stroke="#e65100" stroke-width="1.5"/>
+    <text x="210" y="157" text-anchor="middle" font-size="14" fill="#bf360c">Connect to the SMS service</text>
+    <line x1="210" y1="174" x2="210" y2="196" stroke="#bf360c" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="70" y="200" width="280" height="44" rx="8" fill="#ffe0b2" stroke="#e65100" stroke-width="1.5"/>
+    <text x="210" y="227" text-anchor="middle" font-size="14" fill="#bf360c">Send the text to the planner</text>
+    <text x="48" y="290" font-size="13" font-style="italic" fill="#bf360c">Implementation</text>
+
+    <!-- The call leaves the object and reaches a real person. -->
+    <line x1="210" y1="244" x2="210" y2="355" stroke="#bf360c" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="195" y="360" width="30" height="50" rx="5" fill="#ffffff" stroke="#37474f" stroke-width="2"/>
+    <rect x="200" y="367" width="20" height="30" fill="#cfd8dc"/>
+    <text x="240" y="390" font-size="14" fill="#37474f">A real person is woken up</text>
+  </g>
+
+  <!-- ===== Same interface ===== -->
+  <text x="450" y="92" text-anchor="middle" font-size="34" font-weight="bold" fill="#1565c0">=</text>
+
+  <!-- ===== Mock pager: the same surface, only a record behind it ===== -->
+  <g id="mock">
+    <rect x="510" y="105" width="360" height="200" fill="#fafafa" stroke="#90a4ae" stroke-width="2"/>
+    <rect x="510" y="55" width="360" height="50" fill="#bbdefb" stroke="#1565c0" stroke-width="2"/>
+    <text x="690" y="86" text-anchor="middle" font-family="Consolas, Menlo, monospace" font-size="16" fill="#0d47a1">page(message)</text>
+
+    <!-- The only thing inside: the record of calls received. -->
+    <rect x="535" y="130" width="310" height="104" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="690" y="155" text-anchor="middle" font-size="14" font-weight="bold" fill="#1b5e20">Recorded calls</text>
+    <text x="552" y="185" font-family="Consolas, Menlo, monospace" font-size="13" fill="#1b5e20">page("Instance 2026-09-26:</text>
+    <text x="599" y="205" font-family="Consolas, Menlo, monospace" font-size="13" fill="#1b5e20">no feasible plan exists.")</text>
+    <text x="690" y="285" text-anchor="middle" font-size="13" font-style="italic" fill="#607d8b">Sends nothing</text>
+  </g>
+
+  <!-- ===== Caption ===== -->
+  <text x="450" y="438" text-anchor="middle" font-size="15" fill="#0d47a1">Same interface: the unit that calls page cannot tell them apart</text>
+</svg>
