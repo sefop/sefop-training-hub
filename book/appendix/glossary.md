@@ -100,8 +100,8 @@ software is that the decision recurs and somebody owns the software that produce
 
 ## Dependency
 
-Another unit of code that a unit calls to do part of its work. A planning job that sends pages through a pager
-depends on the pager.
+Another unit of code that a unit calls to do part of its work. A planning job that notifies people through a
+notifier depends on the notifier.
 
 ## Dependency injection
 
@@ -214,6 +214,12 @@ right the first time, such as a formulation revised after users react to its fir
 
 Software that is difficult to change safely — not because it is old, but because it lacks the safety mechanisms, such as
 a [test suite](#test-suite), that make change possible.
+
+## Managed dependency
+
+A [dependency](#dependency) outside the program that only the program itself uses, such as its own files or its own
+database. Integration tests use the real one, because how the program uses it is an implementation detail. Contrast
+with [unmanaged dependency](#unmanaged-dependency).
 
 ## Metamorphic relation
 
@@ -381,6 +387,12 @@ it implements.
 
 A [functional test](#functional-test) that checks one small piece of code, such as a function, in isolation. The
 fastest and cheapest kind of test, so a suite holds many.
+
+## Unmanaged dependency
+
+A [dependency](#dependency) outside the program that other people or systems observe, such as a notification
+service. Tests replace it with a [mock](#mock), because the calls it receives are behavior others rely on. Contrast
+with [managed dependency](#managed-dependency).
 
 ## Waterfall
 

@@ -228,7 +228,7 @@ runs: coverage reaches 100%. Now delete the commutativity test. Coverage stays a
 already runs every line the commutativity test runs. Coverage points at lines no test runs; it cannot point at a
 behavior no test checks. Use it to find what is missing, and use the list of behaviors to decide when you are done.
 
-### Exercise 1: a calculator
+### Exercise: a calculator
 
 The exercise lives in the practice repositories: test the calculator's `divide` the way this part tested `add`.
 
@@ -599,13 +599,13 @@ one cycle at a time.
 A unit test checks the behaviors a unit promises through its [interface](../appendix/glossary.md#interface). A unit
 rarely works alone: it calls another unit, its [dependency](../appendix/glossary.md#dependency), to do part of its
 work. A behavior may be visible in a returned value or error, in an outgoing call, or in both: `add` returns a sum,
-while a nightly planning job asks a pager to wake someone up. The earlier tests checked the first kind. The second
+while a nightly planning job asks a notifier to wake someone up. The earlier tests checked the first kind. The second
 raises a problem: a unit test must not make an external call for real.
 
 ### Why the real dependency stays out of the test
 
 A test runs many times a day, on developers' laptops and on shared servers. When a dependency's calls reach a person
-or an external system, every run would page a real person or write to a real system. That system may also be slow,
+or an external system, every run would wake a real person or write to a real system. That system may also be slow,
 or out of reach from the machine that runs the test. And whatever record it keeps lives outside the program, where
 the test has no dependable way to read it.
 
@@ -616,49 +616,49 @@ same calls as the real one, does nothing else, and records every call it receive
 receives it the way it would receive the real dependency, from outside, through
 [dependency injection](../appendix/glossary.md#dependency-injection). After acting, the test asserts on the record.
 
-[Figure: real pager and mock](#fig-mocks-real-vs-mock) sets the two side by side. They share the same
+[Figure: real notifier and mock](#fig-mocks-real-vs-mock) sets the two side by side. They share the same
 [interface](#ch-interface); only what sits behind it differs.
 
 <a id="fig-mocks-real-vs-mock"></a>
 
-**Figure: real pager and mock**
+**Figure: real notifier and mock**
 
 <p align="center">
   <img src="assets/mocks-real-vs-mock.svg" width="700"
-       alt="Two pagers side by side with the same interface on top, page(message), joined by an equals sign. Left,
-the real pager: behind the interface, in orange, its implementation connects to the SMS service and sends the text,
-and an arrow leaves the object to a phone, labeled a real person is woken up. Right, the mock pager: behind the same
-interface, in green, only a record of the calls it received, page with the message Instance 2026-09-26: no feasible
-plan exists, labeled sends nothing. Caption: same interface, the unit that calls page cannot tell them apart">
+       alt="Two notifiers side by side with the same interface on top, notify(message), joined by an equals sign. Left,
+the real notifier: behind the interface, in orange, its implementation connects to the SMS service and sends the text,
+and an arrow leaves the object to a phone, labeled a real person is woken up. Right, the mock notifier: behind the same
+interface, in green, only a record of the calls it received, notify with the message Instance 2026-09-26: no feasible
+plan exists, labeled sends nothing. Caption: same interface, the unit that calls notify cannot tell them apart">
 </p>
 
-Nothing more is needed to build one. [Pseudocode: recording pager](#pseudo-recording-pager) is a complete mock of a
-pager: it keeps the messages it is asked to send, and sends none.
+Nothing more is needed to build one. [Pseudocode: recording notifier](#pseudo-recording-notifier) is a complete mock
+of a notifier: it keeps the messages it is asked to send, and sends none.
 
-<a id="pseudo-recording-pager"></a>
+<a id="pseudo-recording-notifier"></a>
 
-**Pseudocode: recording pager**
+**Pseudocode: recording notifier**
 
 ```
-// pseudocode: recording-pager
-class RecordingPager implements Pager
+// pseudocode: recording-notifier
+class RecordingNotifier implements Notifier
     private messages = empty list
 
-    public page(message)
+    public notify(message)
         append message to messages
 ```
 
 Test tools build such an object for any interface, so tests rarely write one by hand. The pseudocode writes
-`pager = mock(Pager)` to create one, and reads its record with two assertions:
+`notifier = mock(Notifier)` to create one, and reads its record with two assertions:
 
-- `expect pager.page called once with "<message>"` holds when exactly one call was made, with that argument.
-- `expect pager.page never called` holds when no call was made.
+- `expect notifier.notify called once with "<message>"` holds when exactly one call was made, with that argument.
+- `expect notifier.notify never called` holds when no call was made.
 
 ### A worked example
 
 Every night, a planning job solves tomorrow's plan. When the model reports that no feasible plan exists, someone must
-act before morning, so the job pages the planner on call. [Pseudocode: nightly planner](#pseudo-nightly-planner)
-receives the result of the solve and the pager; it never calls the solver itself.
+act before morning, so the job notifies the planner on call. [Pseudocode: nightly planner](#pseudo-nightly-planner)
+receives the result of the solve and the notifier; it never calls the solver itself.
 
 <a id="pseudo-nightly-planner"></a>
 
@@ -666,45 +666,45 @@ receives the result of the solve and the pager; it never calls the solver itself
 
 ```
 // pseudocode: nightly-planner
-interface Pager
-    public page(message)
+interface Notifier
+    public notify(message)
 
 class NightlyPlanner
-    private pager
+    private notifier
 
-    public constructor(pager)
-        keep pager
+    public constructor(notifier)
+        keep notifier
 
     public review(result)
         if result.status is infeasible
-            pager.page("Instance " + result.instance_id + ": no feasible plan exists.")
+            notifier.notify("Instance " + result.instance_id + ": no feasible plan exists.")
 ```
 
-The page is the behavior, so the test checks the page.
-[Pseudocode: infeasible pages test](#pseudo-infeasible-pages-test) hands `NightlyPlanner` a mock and an infeasible
+The notification is the behavior, so the test checks the notification.
+[Pseudocode: infeasible notifies test](#pseudo-infeasible-notifies-test) hands `NightlyPlanner` a mock and an infeasible
 result, then asserts on the one call the mock recorded.
 
-<a id="pseudo-infeasible-pages-test"></a>
+<a id="pseudo-infeasible-notifies-test"></a>
 
-**Pseudocode: infeasible pages test**
+**Pseudocode: infeasible notifies test**
 
 ```
-// pseudocode: infeasible-pages-test
-public test__review__given_an_infeasible_plan__pages_once_with_the_instance()
+// pseudocode: infeasible-notifies-test
+public test__review__given_an_infeasible_plan__notifies_once_with_the_instance()
     // arrange
-    pager = mock(Pager)
-    planner = NightlyPlanner(pager)
+    notifier = mock(Notifier)
+    planner = NightlyPlanner(notifier)
     result = SolveResult(instance_id = "2026-09-26", status = infeasible)
 
     // act
     planner.review(result)
 
     // assert
-    expect pager.page called once with "Instance 2026-09-26: no feasible plan exists."
+    expect notifier.notify called once with "Instance 2026-09-26: no feasible plan exists."
 ```
 
 A feasible night must stay quiet. [Pseudocode: feasible silent test](#pseudo-feasible-silent-test) asserts that no
-page was sent, which only a record of calls can show.
+notification was sent, which only a record of calls can show.
 
 <a id="pseudo-feasible-silent-test"></a>
 
@@ -712,17 +712,17 @@ page was sent, which only a record of calls can show.
 
 ```
 // pseudocode: feasible-silent-test
-public test__review__given_a_feasible_plan__sends_no_page()
+public test__review__given_a_feasible_plan__sends_no_notification()
     // arrange
-    pager = mock(Pager)
-    planner = NightlyPlanner(pager)
+    notifier = mock(Notifier)
+    planner = NightlyPlanner(notifier)
     result = SolveResult(instance_id = "2026-09-26", status = feasible)
 
     // act
     planner.review(result)
 
     // assert
-    expect pager.page never called
+    expect notifier.notify never called
 ```
 
 ### What to mock
@@ -742,6 +742,115 @@ them checks how the unit does its work, and breaks the day that work is reorgani
 >
 > - Python: [Mocks exercise](https://github.com/sefop/training-testing-python/tree/main/src/mocks)
 > - Java: [Mocks exercise](https://github.com/sefop/sefop-training-java/tree/main/src/main/java/mocks)
+
+<a id="ch-integration"></a>
+
+## Integration testing
+
+The [integration test](../appendix/glossary.md#integration-test) is the middle level of
+[Figure: test pyramid](#fig-test-pyramid). A program's units do not only call each other: they also meet real things
+outside the program, such as files, databases and other systems, and many bugs live in that meeting. A file written
+in one format and read in another, a folder that is not where the code expects it: a unit test with a
+[mock](../appendix/glossary.md#mock) cannot see such bugs, because the mock stands exactly where the bug is. An
+integration test runs the units together with those real dependencies.
+
+### Which dependencies stay real
+
+Not every dependency should be real in an integration test. The rule depends on who else can see it.
+
+- A [managed dependency](../appendix/glossary.md#managed-dependency) is used only by your program, such as its own
+  files or its own database. It stays real: how the program uses it is an implementation detail, and only the real
+  one shows whether that detail works.
+- An [unmanaged dependency](../appendix/glossary.md#unmanaged-dependency) is observed by other people or systems,
+  such as the notifier. It stays a mock, as in [Mocks](#ch-mocks): a test must not wake a real person, and the call
+  itself is the behavior to check.
+
+[Figure: real and mocked dependencies](#fig-integration-dependencies) applies the rule to the nightly planner.
+
+<a id="fig-integration-dependencies"></a>
+
+**Figure: real and mocked dependencies**
+
+<p align="center">
+  <img src="assets/integration-dependencies.svg" width="720"
+       alt="NightlyPlanner in the middle of an integration test. On the left, in green, the results file: a managed
+dependency, only this program uses it, so the test keeps it real. On the right, in purple, the notifier: an unmanaged
+dependency, people observe it, so the test replaces it with a mock">
+</p>
+
+### What an integration test covers
+
+An integration test is slower and costlier than a unit test, so it covers one happy path per scenario, through every
+real dependency. The edge cases stay in unit tests, with one exception: an edge case that only the real dependency
+can produce, such as tonight's file being missing, belongs in an integration test.
+
+### A worked example
+
+The nightly planner no longer receives the result of the solve as an argument. The solve job saves each night's
+result to a file with a `ResultsWriter`, and the planner reads it back with its own `ResultsReader`. They are two
+units, owned by two teams, and they share no code: each one encodes its own idea of the file's format.
+[Pseudocode: nightly planner with reader](#pseudo-nightly-planner-with-reader) shows the planner.
+
+<a id="pseudo-nightly-planner-with-reader"></a>
+
+**Pseudocode: nightly planner with reader**
+
+```
+// pseudocode: nightly-planner-with-reader
+class NightlyPlanner
+    private reader
+    private notifier
+
+    public constructor(reader, notifier)
+        keep reader and notifier
+
+    public review_tonight(instance_id)
+        result = reader.read(instance_id)
+        if result.status is infeasible
+            notifier.notify("Instance " + instance_id + ": no feasible plan exists.")
+```
+
+[Pseudocode: infeasible night integration test](#pseudo-infeasible-night-integration-test) writes a real file with
+the real writer, runs the planner with the real reader, and keeps only the notifier a mock.
+
+<a id="pseudo-infeasible-night-integration-test"></a>
+
+**Pseudocode: infeasible night integration test**
+
+```
+// pseudocode: infeasible-night-integration-test
+public test__review_tonight__given_an_infeasible_result_on_disk__notifies_once()
+    // Arrange
+    folder = a new, empty temporary folder
+    ResultsWriter(folder).write(SolveResult(instance_id = "2026-09-26", status = infeasible))
+    notifier = mock(Notifier)
+    planner = NightlyPlanner(ResultsReader(folder), notifier)
+
+    // Act
+    planner.review_tonight("2026-09-26")
+
+    // Assert
+    expect notifier.notify called once with "Instance 2026-09-26: no feasible plan exists."
+```
+
+Suppose the solve job's team changes how it writes the status, `Infeasible` instead of `infeasible`, and updates its
+own tests to match. The writer's tests pass, and so do the reader's, each against its own idea of the format. Only
+this test, which joins the two, fails.
+
+### Further reading
+
+- Vladimir Khorikov, *Unit Testing: Principles, Practices and Patterns*, Manning, 2020, chapters 8, "Why integration
+  testing?", and 10, "Testing the database": the rule for managed and unmanaged dependencies, and how many
+  integration tests to write.
+- Titus Winters, Tom Manshreck and Hyrum Wright, *Software Engineering at Google*, O'Reilly, 2020, chapter 14,
+  "Larger Testing": tests beyond the unit, and the gaps in unit tests they close.
+
+> **Practice it**
+>
+> - Python: [Integration testing exercise](https://github.com/sefop/training-testing-python/tree/main/src/integration_testing)
+> - Java: [Integration testing exercise](https://github.com/sefop/sefop-training-java/tree/main/src/main/java/integration_testing)
+
+---
 
 ## A cargo loading example
 
@@ -769,20 +878,9 @@ removes that guarantee, and an instance whose must-go pallets exceed a capacity 
 [formulation](../appendix/running-example.md#an-optimization-model-for-this-problem) and the
 [two-pallet instance](../appendix/running-example.md#ex-two-pallet) the chapters work with are in the appendix.
 
-<a id="ch-integration"></a>
-
-## Integration testing
-
-An [integration test](../appendix/glossary.md#integration-test) combines several units and checks that they work
-together, the middle level of [Figure: test pyramid](#fig-test-pyramid). The chapter will test the cargo loading
-system with its real collaborators, such as reading the tendered pallets from a real data source and handing them to
-the planning of the load, and show what such a test catches that no unit test can.
-
----
-
 <a id="ch-what-to-test"></a>
 
-## 01 — What to test in decision-support software
+## What to test in decision-support software
 
 A decision-support system is more than its optimization model. Data arrives from other systems, business rules turn it
 into model parameters, the model computes a decision, and the decision flows back to the people and systems that act
@@ -882,7 +980,7 @@ enough to reason about by hand, not because it is the hardest case.
 
 > **Practice it**
 >
-> - Python: [training-testing-python — exercise 5, Setup](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#setup)
+> - Python: [MIP testing exercise, Setup](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#setup)
 > - Java: coming soon
 
 ### Further reading
@@ -991,7 +1089,7 @@ test suites assume.
 
 > **Practice it**
 >
-> - Python: [training-testing-python — exercise 5, Practice: the contract](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#practice-the-contract)
+> - Python: [MIP testing exercise, Practice: the contract](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#practice-the-contract)
 > - Java: coming soon
 
 ### Further reading
@@ -1103,7 +1201,7 @@ and the solver promises exact optimality. [Chapter 07](#ch-no-optimality) drops 
 
 > **Practice it**
 >
-> - Python: [training-testing-python — exercise 5, Practice: situation tables](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#practice-situation-tables)
+> - Python: [MIP testing exercise, Practice: situation tables](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#practice-situation-tables)
 > - Java: coming soon
 
 ### Further reading
@@ -1196,7 +1294,7 @@ metamorphic relations the part of this toolkit that scales.
 
 > **Practice it**
 >
-> - Python: [training-testing-python — exercise 5, Practice: metamorphic relations](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#practice-metamorphic-relations)
+> - Python: [MIP testing exercise, Practice: metamorphic relations](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#practice-metamorphic-relations)
 > - Java: coming soon
 
 ### Further reading
@@ -1293,7 +1391,7 @@ that nobody anticipated.
 
 > **Practice it**
 >
-> - Python: [training-testing-python — exercise 5, Practice: differential testing](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#practice-differential-testing)
+> - Python: [MIP testing exercise, Practice: differential testing](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#practice-differential-testing)
 > - Java: coming soon
 
 ### Further reading
@@ -1401,7 +1499,7 @@ expect after.total_revenue <= exact.total_revenue
 
 > **Practice it**
 >
-> - Python: [training-testing-python — exercise 5, Your turn: shortest path](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#your-turn-shortest-path) — apply chapters 04–06 to an untested solver
+> - Python: [MIP testing exercise, Your turn: shortest path](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md#your-turn-shortest-path) — apply chapters 04–06 to an untested solver
 > - Java: coming soon
 
 ### Further reading
@@ -1423,7 +1521,7 @@ rather than computes.
 
 > **Practice it**
 >
-> - Python: [training-testing-python — exercise 4](https://github.com/sefop/training-testing-python/tree/main/exercises/4-testing-lp-single-objective) (in preparation)
+> - Python: [LP testing exercise](https://github.com/sefop/training-testing-python/tree/main/exercises/4-testing-lp-single-objective) (in preparation)
 > - Java: coming soon
 
 ---
@@ -1439,7 +1537,7 @@ agree with the corresponding lexicographic single-objective optima.
 
 > **Practice it**
 >
-> - Python: [training-testing-python — exercise 6](https://github.com/sefop/training-testing-python/tree/main/exercises/6-testing-mip-multi-objective) (in preparation)
+> - Python: [Multi-objective testing exercise](https://github.com/sefop/training-testing-python/tree/main/exercises/6-testing-mip-multi-objective) (in preparation)
 > - Java: coming soon
 
 ---
