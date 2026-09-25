@@ -10,11 +10,6 @@ A named interface that hides how something is done behind what it does. A cargo 
 method, `solve`, and several implementations — enumeration, a MIP solver — can stand behind it. It is what lets you
 swap solvers without rewriting the code that calls them.
 
-## Acceptance test
-
-A [functional test](#functional-test) that runs the whole application in a real-world scenario, the way its users
-would. The slowest and costliest kind of test, so a suite holds only a few.
-
 ## Adapter pattern
 
 A [design pattern](#design-pattern) in which a small class translates between the interface a system expects and
@@ -136,6 +131,11 @@ outputs. A disagreement means at least one of them is wrong.
 
 The rule that each piece of knowledge, such as a business rule or an output format, should live in exactly one
 place in the code, so that changing it means one edit. Abbreviated DRY.
+
+## End-to-end test
+
+A [functional test](#functional-test) that runs the whole application in a real-world scenario, the way its users
+would. The slowest and costliest kind of test, so a suite holds only a few.
 
 ## Equivalence partitioning
 

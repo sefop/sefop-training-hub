@@ -341,8 +341,9 @@ algorithm, and deciding where a new constraint belongs are the questions of
 
 An ordinary test compares the output with an answer someone already knows. For the optimization model, that answer is
 the thing the model exists to compute, so the usual method has nothing to compare against. Testing the formulation,
-testing the output without knowing the optimum, and what integration and end-to-end tests look like around a solver
-are the questions of [the testing section](../05-testing/README.md).
+testing the output without knowing the optimum, and what integration and
+[end-to-end tests](../appendix/glossary.md#end-to-end-test) look like around a solver are the questions of
+[the testing section](../05-testing/README.md).
 
 ### Deployment
 

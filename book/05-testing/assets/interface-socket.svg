@@ -1,18 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 420" width="920" height="420" font-family="Helvetica, Arial, sans-serif">
   <!-- Figure: socket. The electricity service as an interface and its implementations. Left to right:
        the implementations hidden behind the wall (orange), the socket on the wall that every client
-       relies on (blue), and the clients that plug in (green). Tests aim at the socket. The hues match
-       unit-test-interface-implementation.svg. -->
+       relies on (blue), and the clients that plug in (green). The hues match
+       interface-implementation.svg. -->
 
   <!-- Light background baked in, so the figure stays readable on a dark theme. -->
   <rect width="920" height="420" fill="#ffffff"/>
-
-  <defs>
-    <!-- Arrowhead for the "tests aim here" pointer. -->
-    <marker id="aim" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
-      <path d="M0,0 L10,5 L0,10 z" fill="#1565c0"/>
-    </marker>
-  </defs>
 
   <!-- ===== Column titles ===== -->
   <text x="230" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#bf360c">Implementation</text>
@@ -61,9 +54,6 @@
     <rect x="490" y="198" width="6" height="18" rx="1" fill="#0d47a1"/>
     <rect x="508" y="198" width="6" height="18" rx="1" fill="#0d47a1"/>
     <rect x="498" y="230" width="8" height="12" rx="4" fill="#0d47a1"/>
-    <!-- "Tests aim here": the pointer lands on the socket, not on the wiring. -->
-    <text x="502" y="322" text-anchor="middle" font-size="15" font-weight="bold" fill="#1565c0">Tests aim here</text>
-    <line x1="502" y1="304" x2="502" y2="268" stroke="#1565c0" stroke-width="2.5" marker-end="url(#aim)"/>
   </g>
 
   <!-- ===== Clients zone: appliances whose cords end in a plug at the socket ===== -->

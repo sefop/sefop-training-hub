@@ -6,9 +6,9 @@
     </marker>
   </defs>
 
-  <!-- acceptance -->
+  <!-- end-to-end -->
   <polygon points="400,40 480,170 320,170" fill="#90caf9" stroke="#1565c0" stroke-width="2"/>
-  <text x="400" y="140" text-anchor="middle" font-size="17" font-weight="bold" fill="#0d47a1">Acceptance</text>
+  <text x="400" y="140" text-anchor="middle" font-size="17" font-weight="bold" fill="#0d47a1">End-to-end</text>
   <text x="500" y="110" font-size="15" fill="#0d47a1">The whole application,</text>
   <text x="500" y="130" font-size="15" fill="#0d47a1">in a real-world scenario</text>
 

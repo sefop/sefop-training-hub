@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 450" width="960" height="450" font-family="Helvetica, Arial, sans-serif">
+  <!-- Figure: interface and implementation. The calculator's add and its private helper is_finite, written
+       as pseudocode in one colour with comments in green. Brackets on the right mark the parts: the
+       interface (blue), the implementation of add (orange) and the private method, also an implementation
+       detail (orange). The hues match interface-socket.svg, where the same two parts appear as a wall
+       socket and the wiring behind it. -->
+
+  <!-- Light background baked in, so the figure stays readable on a dark theme. -->
+  <rect width="960" height="450" fill="#ffffff"/>
+
+  <!-- ===== Pseudocode: one line every 22 px; each indent level shifts x by 29 px (four monospace characters) ===== -->
+  <g font-family="Consolas, Menlo, monospace" font-size="13" fill="#212121">
+    <text x="36" y="48">public add(a, b) returns number</text>
+    <g fill="#2e7d32">
+      <text x="65" y="70">// Returns the sum a + b.</text>
+      <text x="65" y="92">// Commutativity: add(a, b) = add(b, a)</text>
+      <text x="65" y="114">// Identity: add(a, 0) = a</text>
+      <text x="65" y="136">// Fails with an invalid-input error if a or b is not a finite number</text>
+      <text x="65" y="158">// Fails with an overflow error if the sum is too large to represent</text>
+    </g>
+    <text x="65" y="180">if not is_finite(a)</text>
+    <text x="94" y="202">fail with invalid-input error</text>
+    <text x="65" y="224">if not is_finite(b)</text>
+    <text x="94" y="246">fail with invalid-input error</text>
+    <text x="65" y="268">result = a + b</text>
+    <text x="65" y="290">if result is too large to represent</text>
+    <text x="94" y="312">fail with overflow error</text>
+    <text x="65" y="334">return result</text>
+    <text x="36" y="378">private is_finite(x) returns boolean</text>
+    <text x="65" y="400">return x is a finite number</text>
+  </g>
+
+  <!-- ===== Interface: the signature and the comments that state its promises ===== -->
+  <g id="interface">
+    <path d="M600,32 L612,32 L612,164 L600,164" fill="none" stroke="#1565c0" stroke-width="2"/>
+    <text x="628" y="70" font-size="18" font-weight="bold" fill="#0d47a1">Interface</text>
+    <text x="628" y="94" font-size="14" fill="#0d47a1">What the unit does</text>
+    <text x="628" y="114" font-size="14" fill="#0d47a1">Also called signature, API, contract or abstraction</text>
+    <text x="628" y="134" font-size="14" fill="#0d47a1">Its comments are part of it</text>
+    <text x="628" y="154" font-size="14" fill="#0d47a1">Visible to every client</text>
+  </g>
+
+  <!-- ===== Implementation: the body of add that keeps the promises ===== -->
+  <g id="implementation">
+    <path d="M600,168 L612,168 L612,340 L600,340" fill="none" stroke="#e65100" stroke-width="2"/>
+    <text x="628" y="228" font-size="18" font-weight="bold" fill="#bf360c">Implementation</text>
+    <text x="628" y="252" font-size="14" fill="#bf360c">How the unit does it</text>
+    <text x="628" y="272" font-size="14" fill="#bf360c">Hidden from clients</text>
+    <text x="628" y="292" font-size="14" fill="#bf360c">One of many possible behind the interface</text>
+  </g>
+
+  <!-- ===== Private method: also an implementation detail ===== -->
+  <g id="private-method">
+    <path d="M600,362 L612,362 L612,408 L600,408" fill="none" stroke="#e65100" stroke-width="2"/>
+    <text x="628" y="378" font-size="18" font-weight="bold" fill="#bf360c">Private method</text>
+    <text x="628" y="400" font-size="14" fill="#bf360c">Also an implementation detail</text>
+    <text x="628" y="420" font-size="14" fill="#bf360c">Clients cannot call it</text>
+  </g>
+</svg>

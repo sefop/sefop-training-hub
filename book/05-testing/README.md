@@ -27,7 +27,7 @@ This section is about functional tests.
 Functional tests come in three levels, told apart by how much of the program each one runs. A
 [unit test](../appendix/glossary.md#unit-test) checks one small piece of code in isolation. An
 [integration test](../appendix/glossary.md#integration-test) combines several units and checks that they work
-together. An [acceptance test](../appendix/glossary.md#acceptance-test) runs the whole application in a real-world
+together. An [end-to-end test](../appendix/glossary.md#end-to-end-test) runs the whole application in a real-world
 scenario, the way its users would.
 
 <a id="fig-test-pyramid"></a>
@@ -36,11 +36,13 @@ scenario, the way its users would.
 
 <p align="center">
   <img src="assets/unit-test-pyramid.svg" width="640"
-       alt="A pyramid of three levels of functional tests: unit tests at the wide base, integration tests in the middle, acceptance tests at the narrow top. Cost per test rises toward the top, speed rises toward the base, and the base holds the most tests">
+       alt="A pyramid of three levels of functional tests: unit tests at the wide base, integration tests in the middle,
+            end-to-end tests at the narrow top. Cost per test rises toward the top, speed rises toward the base, and the
+            base holds the most tests">
 </p>
 
 Take a small program that reads a user's records, computes their income and tax, and reports the result.
-[Figure: test levels](#fig-test-levels) draws it once per level and colours what a single test of that level runs.
+[Figure: test levels](#fig-test-levels) draws it once per level and colors what a single test of that level runs.
 
 <a id="fig-test-levels"></a>
 
@@ -48,55 +50,72 @@ Take a small program that reads a user's records, computes their income and tax,
 
 <p align="center">
   <img src="assets/unit-test-levels.svg" width="780"
-       alt="The same example program drawn three times, as six functions in three modules with data flowing downward: read_user and read_db in reading data, calculate_income and calculate_tax in business logic, create_report and display_report in processing results. Unit tests: each function is highlighted on its own. Integration tests: two groups are highlighted, reading data, and business logic together with processing results. Acceptance tests: the whole program is highlighted as one">
+       alt="The same example program drawn three times, as six functions in three modules with data flowing downward:
+read_user and read_db in reading data, calculate_income and calculate_tax in business logic, create_report and
+display_report in processing results. Unit tests: each function is highlighted on its own. Integration tests: two groups
+are highlighted, reading data, and business logic together with processing results. End-to-end tests: the whole program
+is highlighted as one">
 </p>
 
 As [Figure: test pyramid](#fig-test-pyramid) shows, each step up runs more of the program, so each test costs more to
-write and runs slower. A healthy suite holds many unit tests, fewer integration tests and a handful of acceptance
+write and runs slower. A healthy suite holds many unit tests, fewer integration tests and a handful of end-to-end
 tests.
 
-## Unit testing
+<a id="ch-interface"></a>
 
-A unit test sits at the base of the pyramid: it checks one unit of code, such as a function, on its own, and runs in
-milliseconds.
-
-### Interface vs implementation
+## Interface vs implementation
 
 Every unit of code has two parts. Its [interface](../appendix/glossary.md#interface) says what the unit does: its
 name, the inputs it accepts, and the outputs and errors it returns. Programmers also call it the signature, the
-application programming interface (API), or the [contract](../appendix/glossary.md#contract). Its implementation is
-how the unit does it, and everything in it is an [implementation detail](../appendix/glossary.md#implementation-detail).
-[Figure: add interface and implementation](#fig-interface-implementation) marks the two parts on the calculator's
-`add`.
+application programming interface (API), the [contract](../appendix/glossary.md#contract), or the
+[abstraction](../appendix/glossary.md#abstraction). Its implementation is how the unit does it, and everything in it
+is an [implementation detail](../appendix/glossary.md#implementation-detail). Any code that calls the unit is one of
+its *clients*. Implementation details include any [private](../appendix/glossary.md#public-and-private) method the
+unit calls, such as `is_finite` in the figure: no client can call it, so it can change freely.
+[Figure: interface and implementation](#fig-interface-implementation) marks the parts on the calculator's `add`.
 
 <a id="fig-interface-implementation"></a>
 
 **Figure: interface and implementation**
 
 <p align="center">
-  <img src="assets/unit-test-interface-implementation.svg" width="780"
-       alt="The pseudocode of add split in two. Top, in blue, the interface: the line public add(a, b) returns number and the comments stating its promises (the sum, commutativity, identity, an invalid-input error, an overflow error), labelled what the unit does, also called signature, API or contract, its comments are part of it, visible to every client. Bottom, in orange, the implementation: the input checks, the sum, the overflow check and the return, labelled how the unit does it, hidden from clients, one of many possible behind the interface">
+  <img src="assets/interface-implementation.svg" width="780"
+       alt="The pseudocode of add and its private helper is_finite, in one colour with comments in green, and three
+braces on the right. The first brace, in blue, marks the interface: the line public add(a, b) returns number and the
+comments stating its promises (the sum, commutativity, identity, an invalid-input error, an overflow error), labelled
+what the unit does, also called signature, API, contract or abstraction, its comments are part of it, visible to every client.
+The second brace, in orange, marks the implementation: the input checks that call is_finite, the sum, the overflow check
+and the return, labelled how the unit does it, hidden from clients, one of many possible behind the interface. The third
+brace, in orange, marks the private method is_finite(x), labelled also an implementation detail, clients cannot call it">
 </p>
 
 Two design practices follow from the split. The interface states what the unit does and never how, and the comments
-that state its promises belong to it as much as its first line does. The implementation stays hidden from the code
-that calls the unit, its *clients*, so it can change, or give way to a different implementation, without any client
-noticing.
+that state its promises belong to it as much as its first line does. The implementation stays hidden from the
+clients, so it can change, or give way to a different implementation, without any client noticing.
 
 A wall socket shows the same split. [Figure: socket](#fig-socket) draws it: the socket is the interface, a fixed shape
 that delivers a fixed voltage. Behind the wall, the power may come from a gas plant, a wind farm or solar panels; that
 is the implementation, and the utility can change it at any time. The lamp, the laptop and the phone are the clients,
-and they rely on the socket alone. A test of the service aims where the clients do, at the socket. Unit tests do the
-same: they check the interface.
+and they rely on the socket alone. Telling the interface from the implementation is foundational knowledge, in
+[design](../04-design/README.md) as much as in [testing](#ch-unit-testing).
 
 <a id="fig-socket"></a>
 
 **Figure: socket**
 
 <p align="center">
-  <img src="assets/unit-test-socket.svg" width="780"
-       alt="The electricity service in three zones. Left, in orange, the implementation hidden behind the wall: a gas plant, a wind farm and solar panels wired to one line. Middle, in blue, the interface: a socket on the wall, with an arrow labelled tests aim here. Right, in green, the clients: a lamp, a laptop and a phone plugged into the socket">
+  <img src="assets/interface-socket.svg" width="780"
+       alt="The electricity service in three zones. Left, in orange, the implementation hidden behind the wall: a gas
+plant, a wind farm and solar panels wired to one line. Middle, in blue, the interface: a socket on the wall. Right, in
+green, the clients: a lamp, a laptop and a phone plugged into the socket">
 </p>
+
+<a id="ch-unit-testing"></a>
+
+## Unit testing
+
+A unit test sits at the base of the pyramid: it checks one unit of code, such as a function, on its own, and runs in
+milliseconds.
 
 ### What to test
 
@@ -138,7 +157,26 @@ public test__add__given_two_numbers__returns_their_sum()
     expect result == 3
 ```
 
-### Where to test
+### A scientific experiment
+
+A unit test is a scientific experiment in miniature, and it holds every part an experiment in a laboratory holds.
+The table finds each part in [Pseudocode: add test](#pseudo-add-test).
+
+| Part of the experiment | In Pseudocode: add test |
+|---|---|
+| Hypothesis | The name: `add`, given two numbers, returns their sum |
+| Controlled conditions | *Arrange*: a new `Calculator` and the fixed inputs 1 and 2 |
+| Intervention | *Act*: one call, `calculator.add(1, 2)` |
+| Observation | `result`, the value the call returns |
+| Prediction checked against the observation | *Assert*: `expect result == 3` |
+| Conclusion | The test passes, and the evidence supports the hypothesis; or it fails, and refutes it |
+
+The parts carry the principles of [the scientific method](../03-software-development-lifecycle/README.md#ch-learning)
+with them. The hypothesis is testable, because the assertion states it as an objective, measurable condition. The
+conditions are controlled, because the test runs one unit on its own, with inputs it fixes itself, so a failure has
+one cause: `add`. And the experiment is reproducible: anyone can run it again, on any machine, and get the same result.
+
+### Where to place the test
 
 Test code lives apart from production code, in a folder tree that mirrors it, so each module's tests sit at the same
 place in the tests tree as the module does in the source tree.
@@ -171,9 +209,9 @@ only the happy-path test.
 ```
 // pseudocode: add-coverage
 public add(a, b) returns number
-    if a is not a finite number             // ✓ run
+    if not is_finite(a)                     // ✓ run
         fail with invalid-input error       // ✗ not run
-    if b is not a finite number             // ✓ run
+    if not is_finite(b)                     // ✓ run
         fail with invalid-input error       // ✗ not run
     result = a + b                          // ✓ run
     if result is too large to represent     // ✓ run
@@ -197,6 +235,22 @@ The exercise lives in the practice repositories: test the calculator's `divide` 
 >
 > - Python: [Unit testing exercise](https://github.com/sefop/training-testing-python/tree/main/exercises/1_unit-tests-and-coverage)
 > - Java: [Unit testing exercise](https://github.com/sefop/sefop-training-java/tree/main/src/main/java/unit_tests_and_coverage)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## The running example
 
@@ -246,15 +300,6 @@ expect result.total_revenue == 10
 - `expect` marks an assertion: the test fails if the condition is false. `==` on numbers means equal within a small
   numerical tolerance.
 
-## Practice
-
-Every chapter ends with a **Practice it** box linking to runnable exercises.
-
-- **Python:** [training-testing-python — exercise 5](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md),
-  which implements the same model with two solvers and ends with an untested shortest-path solver for you to test.
-- **Java:** coming soon.
-
-All practice repositories are listed in the [appendix](../appendix/practice-repositories.md).
 
 ---
 

@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 510" width="900" height="510" font-family="Helvetica, Arial, sans-serif">
   <!-- Figure: test levels. The same example program is drawn three times, once per level of
        functional test. The coloured shapes mark what one test of that level runs; the hues match
-       unit-test-pyramid.svg (green unit, yellow integration, blue acceptance). -->
+       unit-test-pyramid.svg (green unit, yellow integration, blue end-to-end). -->
 
   <!-- Light background baked in, so the figure stays readable on a dark theme. -->
   <rect width="900" height="510" fill="#ffffff"/>
@@ -85,10 +85,10 @@
     <text x="450" y="457" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#37474f">display_report</text>
   </g>
 
-  <!-- ===== Panel: acceptance tests ===== -->
-  <g id="panel-acceptance">
+  <!-- ===== Panel: end-to-end tests ===== -->
+  <g id="panel-end-to-end">
     <!-- Title and the scope one test of this level covers. -->
-    <text x="750" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#0d47a1">Acceptance tests</text>
+    <text x="750" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#0d47a1">End-to-end tests</text>
     <text x="750" y="52" text-anchor="middle" font-size="14" fill="#0d47a1">The whole program, start to end</text>
     <!-- Highlight: one test runs everything, from read_user to display_report. -->
     <rect x="620" y="70" width="260" height="420" rx="10" fill="#90caf9" stroke="#1565c0" stroke-width="2"/>
