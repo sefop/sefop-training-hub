@@ -460,11 +460,20 @@ demanded it, so no line goes untested and no behavior is built that nobody asked
 [Interface vs implementation](#ch-interface) set out. The code can change shape underneath them, and a test that
 turns red means a promise broke, not that the code merely moved.
 
-### A worked example
+### A linear expression example
 
-A linear expression $a_0 + a_1 x_1 + \dots + a_n x_n$ is the building block from which a modeling library writes
-objectives and constraints. `LinearExpression` represents this class: a scalar $a_0$, and a coefficient for each
-variable. This example builds the scalar part test-first, in three cycles, with these requirements:
+A linear expression represents the following: $a_0 + a_1 x_1 + \dots + a_n x_n$. It consists of a scalar $a_0$ and a set
+of variables $x_i$ and coefficients$a_i$ . In this example it is going to be represented by a class `LinearExpression`.
+The scalar and the coefficients are floating-point numbers, and each variable is identified by its name, a
+string. For example:
+
+| Expression | Scalar | Coefficients |
+|---|---|---|
+| $0$ | 0.0 | none |
+| $1 + 2x$ | 1.0 | `"x"`: 2.0 |
+| $-1 - x + 2y$ | -1.0 | `"x"`: -1.0, `"y"`: 2.0 |
+
+This example builds the scalar part test-first, in three cycles, with these requirements:
 
 - An expression built with no arguments has scalar 0.0.
 - An expression built with a scalar has that scalar.
