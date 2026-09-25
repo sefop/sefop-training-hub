@@ -80,13 +80,13 @@ unit calls, such as `is_finite` in the figure: no client can call it, so it can 
 
 <p align="center">
   <img src="assets/interface-implementation.svg" width="780"
-       alt="The pseudocode of add and its private helper is_finite, in one colour with comments in green, and three
+       alt="The pseudocode of add and its private helper is_finite, in one color with comments in green, and three
 braces on the right. The first brace, in blue, marks the interface: the line public add(a, b) returns number and the
-comments stating its promises (the sum, commutativity, identity, an invalid-input error, an overflow error), labelled
+comments stating its promises (the sum, commutativity, identity, an invalid-input error, an overflow error), labeled
 what the unit does, also called signature, API, contract or abstraction, its comments are part of it, visible to every client.
 The second brace, in orange, marks the implementation: the input checks that call is_finite, the sum, the overflow check
-and the return, labelled how the unit does it, hidden from clients, one of many possible behind the interface. The third
-brace, in orange, marks the private method is_finite(x), labelled also an implementation detail, clients cannot call it">
+and the return, labeled how the unit does it, hidden from clients, one of many possible behind the interface. The third
+brace, in orange, marks the private method is_finite(x), labeled also an implementation detail, clients cannot call it">
 </p>
 
 Two design practices follow from the split. The interface states what the unit does and never how, and the comments
@@ -199,8 +199,8 @@ project/
 
 How do you know you tested every behavior? The starting point is
 [code coverage](../appendix/glossary.md#code-coverage): a tool records which lines of the production code the tests
-run, and reports the rest. [Pseudocode: add coverage](#pseudo-add-coverage) marks each line of `add` for a suite that holds
-only the happy-path test.
+run, and reports the rest. [Pseudocode: add coverage](#pseudo-add-coverage) marks each line of `add` for a suite
+that holds only the happy-path test.
 
 <a id="pseudo-add-coverage"></a>
 
@@ -220,7 +220,8 @@ public add(a, b) returns number
 ```
 
 > [!NOTE]
-> The pseudocode is illustrative: a coverage tool reports the same pattern for `add` written in a real language, over more lines.
+> The pseudocode is illustrative: a coverage tool reports the same pattern for `add` written in a real language, over
+> more lines.
 
 The three lines that never run belong to the invalid-input and overflow behaviors. Add a test for each, and every line
 runs: coverage reaches 100%. Now delete the commutativity test. Coverage stays at 100%, because the happy-path test
@@ -240,8 +241,8 @@ The exercise lives in the practice repositories: test the calculator's `divide` 
 
 ## Writing good tests
 
-[Unit testing](#ch-unit-testing) gave a test its structure and its name; the following practices provide some well-known
-techniques to differentiate good tests from bad tests.
+[Unit testing](#ch-unit-testing) gave a test its structure and its name; the practices below tell a good test from a
+bad one.
 
 ### Complete and concise
 
@@ -438,7 +439,7 @@ Then the next requirement starts the next cycle. [Figure: TDD cycle](#fig-tdd-cy
 <p align="center">
   <img src="assets/tdd-cycle.svg" width="520"
        alt="A loop of three steps. Red: write a failing test. Green: make it pass with the minimum code. Refactor:
-improve the code, tests still pass. An arrow labelled next requirement leads from refactor back to red">
+improve the code, tests still pass. An arrow labeled next requirement leads from refactor back to red">
 </p>
 
 ### Why each step matters
@@ -462,10 +463,9 @@ turns red means a promise broke, not that the code merely moved.
 
 ### A linear expression example
 
-A linear expression represents the following: $a_0 + a_1 x_1 + \dots + a_n x_n$. It consists of a scalar $a_0$ and a set
-of variables $x_i$ and coefficients$a_i$ . In this example it is going to be represented by a class `LinearExpression`.
-The scalar and the coefficients are floating-point numbers, and each variable is identified by its name, a
-string. For example:
+A linear expression has the form $a_0 + a_1 x_1 + \dots + a_n x_n$: a scalar $a_0$, and a coefficient $a_i$ for each
+variable $x_i$. The class `LinearExpression` represents one. The scalar and the coefficients are floating-point
+numbers, and each variable is identified by its name, a string. For example:
 
 | Expression | Scalar | Coefficients |
 |---|---|---|
@@ -627,9 +627,9 @@ receives it the way it would receive the real dependency, from outside, through
   <img src="assets/mocks-real-vs-mock.svg" width="700"
        alt="Two pagers side by side with the same interface on top, page(message), joined by an equals sign. Left,
 the real pager: behind the interface, in orange, its implementation connects to the SMS service and sends the text,
-and an arrow leaves the object to a phone, labelled a real person is woken up. Right, the mock pager: behind the same
+and an arrow leaves the object to a phone, labeled a real person is woken up. Right, the mock pager: behind the same
 interface, in green, only a record of the calls it received, page with the message Instance 2026-09-26: no feasible
-plan exists, labelled sends nothing. Caption: same interface, the unit that calls page cannot tell them apart">
+plan exists, labeled sends nothing. Caption: same interface, the unit that calls page cannot tell them apart">
 </p>
 
 Nothing more is needed to build one. [Pseudocode: recording pager](#pseudo-recording-pager) is a complete mock of a
@@ -745,7 +745,7 @@ them checks how the unit does its work, and breaks the day that work is reorgani
 
 ## A cargo loading example
 
-The following chapters are going to use the cargo loading system example defined in
+The following chapters use the cargo loading system defined in
 [the appendix](../appendix/running-example.md): for one departure, how many pallets of each tendered product to load,
 so that the revenue carried is as large as possible without exceeding the aircraft's maximum weight or the capacity
 of its hold. This section holds that model fixed, so the testing ideas change while the model stays still.
@@ -768,7 +768,6 @@ feasible region can be empty: when nothing must fly, loading nothing is always l
 removes that guarantee, and an instance whose must-go pallets exceed a capacity has no solution at all. The
 [formulation](../appendix/running-example.md#an-optimization-model-for-this-problem) and the
 [two-pallet instance](../appendix/running-example.md#ex-two-pallet) the chapters work with are in the appendix.
-
 
 <a id="ch-integration"></a>
 
@@ -828,7 +827,7 @@ kinds of oracle that work around the problem, each at a different price.
 
 The simplest oracle is a person. Take the
 [two-pallet instance](../appendix/running-example.md#ex-two-pallet): each $x_i \in \{0, 1\}$, so there are
-$2  imes 2 = 4$ candidate selections, few enough to list.
+$2 	imes 2 = 4$ candidate selections, few enough to list.
 
 | $x_A$ | $x_B$ | Weight (≤ 2) | Volume (≤ 2) | Revenue | Feasible? |
 |:---:|:---:|:---:|:---:|:---:|---|
@@ -874,7 +873,7 @@ person can only be the oracle at teaching scale, which is exactly how [chapter 0
 ### Where this stops working
 
 > [!WARNING]
-> The knapsack does not fully honour the claim of this chapter.
+> The knapsack does not fully honor the claim of this chapter.
 
 It is only *weakly* NP-hard: a pseudo-polynomial dynamic
 program solves it exactly, so a cheap independent oracle does exist for this particular problem. The oracle problem
@@ -924,7 +923,7 @@ cutting planes, or enumeration say *how* to find it. That is why you can swap so
 contract test checks the formulation's promise, so it runs unchanged against every solver that keeps it.
 
 In code, a contract usually lives in an [abstraction](../appendix/glossary.md#abstraction): a named interface with a
-single method, `solve`, that several implementations fulfil. In the Python exercise it is an abstract class with two
+single method, `solve`, that several implementations fulfill. In the Python exercise it is an abstract class with two
 implementations, one enumerating every selection and one calling the HiGHS solver.
 
 Writing contract tests [first](#ch-tdd) has a useful side effect. Each test is a question about the contract —
@@ -983,10 +982,10 @@ fail.
 > [!WARNING]
 > Contract tests are a trade-off, not a free win.
 
-They tell you *that* a solver is wrong, not *why*: a failing situation
-does not point at the line that caused it. Tests written against an algorithm's internals — say, the table a dynamic
-program fills — catch bugs earlier and closer to their cause. They are legitimate, as long as everyone agrees that they
-may be deleted together with the algorithm they test. Keep them separate from the contract tests. What contract tests
+They tell you *that* a solver is wrong, not *why*: a failing situation does not point at the line that caused it.
+Tests written against an algorithm's internals — say, the table a dynamic program fills — catch bugs earlier and
+closer to their cause. They are legitimate, as long as everyone agrees that they may be deleted together with the
+algorithm they test. Keep them separate from the contract tests. What contract tests
 buy in exchange is a suite that survives a solver swap, which in a production pipeline happens more often than most
 test suites assume.
 
@@ -1179,8 +1178,8 @@ metamorphic relations the part of this toolkit that scales.
 <details>
 <summary>Answers</summary>
 
-1. Never increases. With non-negative weights, every selection that fits the doubled weights also fit the original ones,
-   so the feasible region can only shrink.
+1. Never increases. With non-negative weights, every selection that fits the doubled weights also fits the original
+   ones, so the feasible region can only shrink.
 2. None of them: 0 ≥ 0, 0 = k × 0, and 0 = 0. See the next section.
 3. It never increases — the reverse of adding an item.
 
@@ -1378,7 +1377,7 @@ expect after.total_revenue <= exact.total_revenue
 
 1. A MIP solver reaches its 60-second time limit and returns an incumbent with a 3% gap. Should the exact-value
    assertion of situation 7 apply to it?
-2. Does situation 2 (negative payload capacity → infeasible) still hold for a heuristic?
+2. Does situation 2 (must-go cargo exceeds the payload → infeasible) still hold for a heuristic?
 3. On the same instance, a heuristic reports 12 revenue and enumeration reports 10. Is that a bug?
 
 <details>
