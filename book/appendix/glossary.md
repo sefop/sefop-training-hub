@@ -215,6 +215,12 @@ a [test suite](#test-suite), that make change possible.
 A relation that must hold between the outputs of two related runs, even when neither output is known. Example: raising
 a capacity never decreases the optimal value.
 
+## Mock
+
+A stand-in for a dependency, created by a test, that records the calls it receives so the test can check them. Used
+when the behavior under test is a call to another system, such as sending a message. One kind of
+[test double](#test-double).
+
 ## Modularity
 
 Building a system from parts with clear boundaries, so that each part can be understood, tested and replaced

@@ -592,6 +592,123 @@ one cycle at a time.
 > - Python: [Test-driven development exercise](https://github.com/sefop/training-testing-python/tree/main/src/test_driven_development)
 > - Java: [Test-driven development exercise](https://github.com/sefop/sefop-training-java/tree/main/src/main/java/test_driven_development)
 
+<a id="ch-mocks"></a>
+
+## Mocks
+
+Some behaviors return nothing. Their effect is a call to another system: paging a person, sending an email, writing
+to another program. Such a behavior leaves no result for a test to `expect` on, yet it is often the one that matters
+most.
+
+### Why the real dependency stays out of the test
+
+A test runs many times a day, on developers' laptops and on shared servers. If it made the real call, every run would
+page a real person or write to a real system. The real system may also be slow, or out of reach from the machine that
+runs the test. And even when the call succeeds, it leaves nothing inside the program that the test could inspect.
+
+### What a mock is
+
+A [mock](../appendix/glossary.md#mock) is a stand-in that the test creates in place of the dependency. It accepts the
+same calls as the real one, does nothing else, and records every call it receives, with its arguments. After acting,
+the test asserts on those records. The unit receives the mock the way it would receive the real dependency, from
+outside, through [dependency injection](../appendix/glossary.md#dependency-injection).
+
+The pseudocode adds three forms for mocks:
+
+- `pager = mock(Pager)` creates a mock that accepts the calls of the `Pager` interface.
+- `expect pager.page called once with "<message>"` asserts that exactly one call was made, with that argument.
+- `expect pager.page never called` asserts that no call was made.
+
+### A worked example
+
+Every night, a planning job solves tomorrow's plan. When the model reports that no feasible plan exists, someone must
+act before morning, so the job pages the planner on call. [Pseudocode: nightly planner](#pseudo-nightly-planner)
+receives the result of the solve and the pager; it never calls the solver itself.
+
+<a id="pseudo-nightly-planner"></a>
+
+**Pseudocode: nightly planner**
+
+```
+// pseudocode: nightly-planner
+interface Pager
+    public page(message)
+
+class NightlyPlanner
+    private pager
+
+    public constructor(pager)
+        keep pager
+
+    public review(result)
+        if result.status is infeasible
+            pager.page("Instance " + result.instance_id + ": no feasible plan exists.")
+```
+
+The page is the behavior, so the test checks the page.
+[Pseudocode: infeasible pages test](#pseudo-infeasible-pages-test) hands `NightlyPlanner` a mock and an infeasible
+result, then asserts on the one call the mock recorded.
+
+<a id="pseudo-infeasible-pages-test"></a>
+
+**Pseudocode: infeasible pages test**
+
+```
+// pseudocode: infeasible-pages-test
+public test__review__given_an_infeasible_plan__pages_once_with_the_instance()
+    // arrange
+    pager = mock(Pager)
+    planner = NightlyPlanner(pager)
+    result = SolveResult(instance_id = "2026-09-26", status = infeasible)
+
+    // act
+    planner.review(result)
+
+    // assert
+    expect pager.page called once with "Instance 2026-09-26: no feasible plan exists."
+```
+
+A feasible night must stay quiet. [Pseudocode: feasible silent test](#pseudo-feasible-silent-test) asserts that no
+page was sent, which only a record of calls can show.
+
+<a id="pseudo-feasible-silent-test"></a>
+
+**Pseudocode: feasible silent test**
+
+```
+// pseudocode: feasible-silent-test
+public test__review__given_a_feasible_plan__sends_no_page()
+    // arrange
+    pager = mock(Pager)
+    planner = NightlyPlanner(pager)
+    result = SolveResult(instance_id = "2026-09-26", status = feasible)
+
+    // act
+    planner.review(result)
+
+    // assert
+    expect pager.page never called
+```
+
+### What to mock
+
+Mock the dependencies whose calls leave the program: people, other systems, the outside world. Those calls are
+behaviors a client relies on, so checking them checks the [interface](#ch-interface). Keep the unit's own internal
+parts real. A test that mocks them checks how the unit does its work, and breaks the day that work is reorganized,
+even though no promise changed.
+
+### Further reading
+
+- Vladimir Khorikov, *Unit Testing: Principles, Practices and Patterns*, Manning, 2020, chapters 5, "Mocks and test
+  fragility", and 9, "Mocking best practices": when a mock protects a test and when it makes the test brittle.
+- Titus Winters, Tom Manshreck and Hyrum Wright, *Software Engineering at Google*, O'Reilly, 2020, chapter 13, "Test
+  Doubles": the other kinds of stand-ins, such as stubs and fakes, and when to prefer the real dependency.
+
+> **Practice it**
+>
+> - Python: [Mocks exercise](https://github.com/sefop/training-testing-python/tree/main/src/mocks)
+> - Java: [Mocks exercise](https://github.com/sefop/sefop-training-java/tree/main/src/main/java/mocks)
+
 ## A cargo loading example
 
 The following chapters are going to use the cargo loading system example defined in
@@ -618,17 +735,6 @@ removes that guarantee, and an instance whose must-go pallets exceed a capacity 
 [formulation](../appendix/running-example.md#an-optimization-model-for-this-problem) and the
 [two-pallet instance](../appendix/running-example.md#ex-two-pallet) the chapters work with are in the appendix.
 
-
-<a id="ch-test-doubles"></a>
-
-## Test doubles
-
-A unit of the cargo loading system rarely works alone: planning a load calls a solver, and reading the tendered
-pallets calls another system. A real solver can take minutes, and the other system may be out of reach from a test.
-A [test double](../appendix/glossary.md#test-double) stands in for such a dependency during a test: a *stub* returns
-fixed answers, a *fake* is a simpler working version, and a *mock* records how it was called. The chapter will show
-how [dependency injection](../appendix/glossary.md#dependency-injection) lets a test pass a double in, and when the
-real implementation is the better choice.
 
 <a id="ch-integration"></a>
 
