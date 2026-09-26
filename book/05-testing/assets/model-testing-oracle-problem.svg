@@ -48,7 +48,7 @@
   <g font-size="14" fill="#263238">
     <rect x="490" y="70" width="120" height="50" rx="8" fill="#eceff1" stroke="#455a64" stroke-width="1.5"/>
     <text x="550" y="92" text-anchor="middle">Instance</text>
-    <text x="550" y="110" text-anchor="middle" font-size="12">4,000 products</text>
+    <text x="550" y="110" text-anchor="middle" font-size="12">10,000 variables</text>
 
     <rect x="640" y="70" width="130" height="50" rx="8" fill="#ffe0b2" stroke="#e65100" stroke-width="1.5"/>
     <text x="705" y="92" text-anchor="middle" fill="#bf360c">Model and</text>
@@ -56,7 +56,7 @@
 
     <rect x="800" y="70" width="120" height="50" rx="8" fill="#eceff1" stroke="#455a64" stroke-width="1.5"/>
     <text x="860" y="92" text-anchor="middle">Output</text>
-    <text x="860" y="110" text-anchor="middle" font-family="Consolas, Menlo, monospace">revenue 26,031</text>
+    <text x="860" y="110" text-anchor="middle" font-family="Consolas, Menlo, monospace">26,031</text>
 
     <rect x="800" y="200" width="120" height="50" rx="8" fill="#fafafa" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="6 4"/>
     <text x="860" y="222" text-anchor="middle" fill="#607d8b">Expected</text>

@@ -13,6 +13,13 @@ before still works. With both pillars in place, a team can change working code a
 Decision-support software adds one difficulty ordinary software rarely poses: the correct answer of its optimization
 model is hard to know in advance.
 
+### Verification vs validation
+
+Two questions can be asked of a decision-support system. [Verification](../appendix/glossary.md#verification) asks *are
+we building the model right?*: a software question, whether the code does what the mathematical model says it should.
+[Validation](../appendix/glossary.md#validation) asks *are we building the right model?*: a business question, whether
+the model captures the real decision well enough to be useful. This section deals only with verification.
+
 ### Types of tests
 
 Tests fall into two families, told apart by the question each one answers.
@@ -69,6 +76,9 @@ tests.
 - **Input validation.** Items are never checked for nonsense values such as a negative weight: every infeasible
   instance in this section comes from the capacities, never from a malformed item.
 - **Pareto fronts.** Models with several objectives appear only in their lexicographic form.
+- **Validation.** Whether a model captures the right decision is a business question, not covered in this book.
+- **Reviewing a formulation.** Checking the mathematics of a model on paper is not covered: the tests here check the
+  output of solving it.
 
 [Interface vs implementation](#ch-interface) separates what a unit promises from how it keeps the promise, and every
 later chapter tests the promise. [Unit testing](#ch-unit-testing), [Writing good tests](#ch-clear-tests) and
@@ -875,19 +885,37 @@ this test, which joins the two, fails.
 
 Every test so far compared an output with an expected value that someone could work out before running the code:
 `add(2, 3)` is 5, and a notification carries a known message. An optimization model breaks that assumption, because
-its expected output is the very thing it exists to compute. Throughout this chapter, the tests have access to the
-solver behind the model.
+its expected output is the very thing it exists to compute.
+
+Testing a model can mean reviewing its formulation or checking the output of solving it. This chapter does the second,
+as [verification](../appendix/glossary.md#verification). The model is implemented in code, and a *solver*, the program
+that finds a provably optimal solution of a model, solves it: a commercial one such as Gurobi or Xpress, or an
+open-source one such as HiGHS. The tests check what comes back, with full access to the solver.
 
 <a id="model-difficulties"></a>
 
 ### Why an optimization model is harder to test
 
-**The oracle problem.** Whatever decides whether an output is correct is called a [test
-oracle](../appendix/glossary.md#test-oracle). For the calculator, the oracle is arithmetic you already know. For a
-model, writing `expect result.total_revenue == ???` needs the optimal value, and for an instance large enough to be
+Six properties of an optimization model make its output harder to test than the output of the calculator:
+
+1. [The oracle problem](#difficulty-oracle): the expected answer costs as much to compute as the output it checks.
+2. [The answer may or may not be unique](#difficulty-uniqueness): a correct solver can return any of several optimal
+   solutions.
+3. [An empty feasible region is an answer](#difficulty-infeasible): "no solution exists" can be the correct output.
+4. [Numbers are floating point](#difficulty-floating-point): two correct answers can differ in their last digits.
+5. [Optimality may not be promised](#difficulty-optimality): some solvers return a good answer, not the best one.
+6. [The algorithm may change](#difficulty-algorithm): the solver behind the model can be replaced.
+
+<a id="difficulty-oracle"></a>
+
+#### The oracle problem
+
+Whatever decides whether an output is correct is called a [test oracle](../appendix/glossary.md#test-oracle). For the
+calculator, the oracle is arithmetic you already know: 2 plus 3 is 5, worked out without reading a line of `add`. For a
+model, writing `expect result.objective_value == ???` needs the optimal value, and for an instance large enough to be
 interesting, computing it independently means solving the very problem the model exists to solve. The difficulty has a
-name in the software testing literature: the [oracle problem](../appendix/glossary.md#oracle-problem). [Figure: the
-oracle problem](#fig-oracle-problem) sets the two situations side by side.
+name in the software testing literature: the [oracle problem](../appendix/glossary.md#oracle-problem).
+[Figure: the oracle problem](#fig-oracle-problem) sets the two situations side by side.
 
 <a id="fig-oracle-problem"></a>
 
@@ -897,25 +925,55 @@ oracle problem](#fig-oracle-problem) sets the two situations side by side.
   <img src="assets/model-testing-oracle-problem.svg" width="760"
        alt="Two tests side by side. Left, an ordinary test: the inputs 2 and 3 go into add, which returns 5, and the
 expected value 5 comes from arithmetic done in your head, so the two can be compared. Right, a test of an optimization
-model on a large instance: the instance goes into the model and its solver, which returns a revenue, but the expected
-value is a question mark, because the only way to compute it is to solve the same problem again">
+model on a large instance: the instance goes into the model and its solver, which returns an objective value, but the
+expected value is a question mark, because the only way to compute it is to solve the same problem again">
 </p>
 
-**The answer may or may not be unique.** Several selections can tie at the optimum, and a unique optimum is just as
-possible. A test cannot know in advance which selection a correct solver returns.
+<a id="difficulty-uniqueness"></a>
 
-**An empty feasible region is an answer.** Freight committed to fly can exceed a capacity, and then no load is
-possible: "infeasible" is the correct output, not a failure. Other models can also be unbounded, a second answer of
-the same kind.
+#### The answer may or may not be unique
 
-**Numbers are floating point.** A solver computes with finite precision, so two correct answers can differ in their
-last digits, and equality can only mean equality within a tolerance.
+A model can have a single optimal solution, or several that tie at the same objective value. When two variables have the
+same objective coefficient and appear in the constraints in the same way, setting one or the other is equally optimal,
+and a correct solver may return either solution. Which one comes back depends on the solver, its settings, even the
+order of the input. A test cannot know in advance which of the optimal solutions it will receive, nor whether there is
+more than one.
 
-**Optimality may not be promised.** A [heuristic](../appendix/glossary.md#heuristic), or an exact solver stopped by a
-time limit, returns a good answer, which need not be the best one.
+<a id="difficulty-infeasible"></a>
 
-**The algorithm may change.** The solver behind a model can be replaced by another solver, or by a heuristic, while
-the promise the model makes to its users stays the same.
+#### An empty feasible region is an answer
+
+Constraints can contradict each other: one demands $x \ge 2$ while another allows at most $x \le 1$. Then no solution
+exists, and "infeasible" is the correct output, not a failure. A correct model must say so rather than return a
+solution, and a test must treat that statement as an answer to check, like any other. Other models can also be
+unbounded, a second answer of the same kind.
+
+<a id="difficulty-floating-point"></a>
+
+#### Numbers are floating point
+
+A computer stores most decimal numbers approximately: 0.1 + 0.2 is not exactly 0.3. A solver computes with that finite
+precision, and it accepts a constraint as satisfied when it is violated by less than a small tolerance. Two correct
+answers can therefore differ in their last digits, an objective value can come back as 25.999999998 instead of 26, and a
+constraint $x \le 10$ can be met at 10.000000001. Equality can only mean equality within a tolerance.
+
+<a id="difficulty-optimality"></a>
+
+#### Optimality may not be promised
+
+A [heuristic](../appendix/glossary.md#heuristic) gives up the guarantee of optimality on purpose, in exchange for speed
+on large instances. An exact solver stopped by a time limit does the same without announcing it: it returns the best
+solution found so far, which need not be the best one. For such solvers, "the optimal value" is not something the
+output promises, and two runs may even return different solutions.
+
+<a id="difficulty-algorithm"></a>
+
+#### The algorithm may change
+
+The solver behind a model is rarely permanent. A team moves from one commercial solver to another, from a commercial
+solver to an open-source one, or to a heuristic when instances grow too large. The promise the model makes to its users
+stays the same through each change, while everything about how the answer is found, and which of several optimal
+answers comes back, can change.
 
 ### The model under test
 
@@ -962,7 +1020,7 @@ finds a provably optimal load.
 
 #### Test the contract
 
-For a linear program, the [algorithm that may change](#model-difficulties) is, for example, the simplex method
+For a linear program, the [algorithm that may change](#difficulty-algorithm) is, for example, the simplex method
 giving way to an interior-point method or to another solver.
 
 When tests check *how* the answer was computed, a legitimate swap turns them red even though nothing a user cares about

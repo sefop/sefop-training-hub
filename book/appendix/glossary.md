@@ -416,6 +416,16 @@ A [dependency](#dependency) outside the program that other people or systems obs
 service. Tests replace it with a [mock](#mock), because the calls it receives are behavior others rely on. Contrast
 with [managed dependency](#managed-dependency).
 
+## Validation
+
+Checking that a model is the right one for the decision it supports: a business question, "are we building the right
+model?". Contrast with [verification](#verification).
+
+## Verification
+
+Checking that software does what its specification says; for a model, checking that the code implements the
+mathematical model correctly: "are we building the model right?". Contrast with [validation](#validation).
+
 ## Waterfall
 
 A development process that runs each phase once, in order (all requirements, then all design, then all
