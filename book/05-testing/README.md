@@ -15,10 +15,26 @@ model is hard to know in advance.
 
 ### Verification vs validation
 
-Two questions can be asked of a decision-support system. [Verification](../appendix/glossary.md#verification) asks *are
-we building the model right?*: a software question, whether the code does what the mathematical model says it should.
-[Validation](../appendix/glossary.md#validation) asks *are we building the right model?*: a business question, whether
-the model captures the real decision well enough to be useful. This section deals only with verification.
+A model reaches its users through two translations: a business problem becomes a mathematical model, and the
+mathematical model becomes code. [Validation](../appendix/glossary.md#validation) checks the first translation and asks
+*are we building the right model?*, a business question. [Verification](../appendix/glossary.md#verification) checks the
+second and asks *are we building the model right?*, a software question: does the code do what the mathematical model
+says? [Figure: verification and validation](#fig-verification-validation) places each question on its translation.
+
+<a id="fig-verification-validation"></a>
+
+**Figure: verification and validation**
+
+<p align="center">
+  <img src="assets/intro-verification-validation.svg" width="760"
+       alt="A chain of three boxes joined by arrows labeled translation: a business problem, a decision to support; a
+mathematical model, max c transpose x subject to A x at most b; and code, model.py or Model.java. A muted brace under
+the first translation reads validation, are we building the right model, a business question. An emphasized brace
+under the second translation reads verification, are we building the model right, a software question, this
+section">
+</p>
+
+This section deals only with verification.
 
 ### Types of tests
 

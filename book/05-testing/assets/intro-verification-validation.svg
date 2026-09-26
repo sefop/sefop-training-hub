@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 320" width="900" height="320" font-family="Helvetica, Arial, sans-serif">
+  <!-- Figure: verification and validation. A model reaches its users through two translations: a business problem
+       becomes a mathematical model, and the mathematical model becomes code. Validation checks the first
+       translation (muted: out of scope); verification checks the second (emphasized: this section). Code is orange,
+       the implementation hue used across the book's figures. -->
+
+  <!-- Light background baked in, so the figure stays readable on a dark theme. -->
+  <rect width="900" height="320" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#37474f"/>
+    </marker>
+  </defs>
+
+  <!-- ===== The chain: business problem, mathematical model, code ===== -->
+  <rect x="20" y="30" width="210" height="100" rx="10" fill="#eceff1" stroke="#455a64" stroke-width="2"/>
+  <text x="125" y="72" text-anchor="middle" font-size="17" font-weight="bold" fill="#263238">Business problem</text>
+  <text x="125" y="98" text-anchor="middle" font-size="13" fill="#455a64">a decision to support</text>
+
+  <rect x="345" y="30" width="210" height="100" rx="10" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+  <text x="450" y="64" text-anchor="middle" font-size="17" font-weight="bold" fill="#0d47a1">Mathematical model</text>
+  <text x="450" y="92" text-anchor="middle" font-size="14" font-style="italic" fill="#0d47a1">max cᵀx</text>
+  <text x="450" y="112" text-anchor="middle" font-size="14" font-style="italic" fill="#0d47a1">subject to Ax ≤ b</text>
+
+  <rect x="670" y="30" width="210" height="100" rx="10" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+  <text x="775" y="72" text-anchor="middle" font-size="17" font-weight="bold" fill="#bf360c">Code</text>
+  <text x="775" y="98" text-anchor="middle" font-family="Consolas, Menlo, monospace" font-size="13" fill="#bf360c">model.py, Model.java</text>
+
+  <g fill="none" stroke="#37474f" stroke-width="2" marker-end="url(#arrow)">
+    <line x1="232" y1="80" x2="341" y2="80"/>
+    <line x1="557" y1="80" x2="666" y2="80"/>
+  </g>
+  <text x="287" y="70" text-anchor="middle" font-size="13" font-style="italic" fill="#37474f">translation</text>
+  <text x="612" y="70" text-anchor="middle" font-size="13" font-style="italic" fill="#37474f">translation</text>
+
+  <!-- ===== Validation: checks the first translation (out of scope, muted) ===== -->
+  <path d="M125,150 Q125,164 139,164 L273,164 Q287,164 287,178 Q287,164 301,164 L436,164 Q450,164 450,150"
+        fill="none" stroke="#90a4ae" stroke-width="2"/>
+  <text x="287" y="210" text-anchor="middle" font-size="18" font-weight="bold" fill="#78909c">Validation</text>
+  <text x="287" y="236" text-anchor="middle" font-size="14" fill="#78909c">Are we building the right model?</text>
+  <text x="287" y="258" text-anchor="middle" font-size="13" font-style="italic" fill="#90a4ae">a business question</text>
+
+  <!-- ===== Verification: checks the second translation (this section, emphasized) ===== -->
+  <path d="M450,150 Q450,164 464,164 L598,164 Q612,164 612,178 Q612,164 626,164 L761,164 Q775,164 775,150"
+        fill="none" stroke="#2e7d32" stroke-width="3"/>
+  <rect x="487" y="188" width="250" height="110" rx="10" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+  <text x="612" y="214" text-anchor="middle" font-size="18" font-weight="bold" fill="#1b5e20">Verification</text>
+  <text x="612" y="240" text-anchor="middle" font-size="14" fill="#1b5e20">Are we building the model right?</text>
+  <text x="612" y="262" text-anchor="middle" font-size="13" font-style="italic" fill="#1b5e20">a software question</text>
+  <text x="612" y="286" text-anchor="middle" font-size="13" font-weight="bold" fill="#1b5e20">This section</text>
+</svg>
