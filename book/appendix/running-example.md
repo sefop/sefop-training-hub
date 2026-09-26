@@ -179,3 +179,29 @@ earns more than water. The optimal solution is $x_A = 1$, $x_B = 0$:
 | Revenue | $10 \cdot 1 + 6 \cdot 0$ | 10 thousand USD |
 | Payload used | $2 \cdot 1 + 1 \cdot 0$ | 2 of 2 tonnes |
 | Hold used | $1 \cdot 1 + 2 \cdot 0$ | 1 of 2 m³ |
+
+## Evolutions of the model
+
+The model above is held fixed across the book. Two explicit evolutions of it appear in
+[Testing an optimization model](../05-testing/README.md#ch-model-testing), each a change in the business, not a side
+effect of a chapter.
+
+<a id="ev-bulk"></a>
+
+### Bulk variant: a linear program
+
+Before the business moves to pallets, products are loaded in bulk, by the tonne. Each quantity $x_i$ becomes a real
+number with $l_i \le x_i \le u_i$, measured in the unit the product is sold in, and every other element of the model
+stays the same. With continuous variables, the model is a linear program.
+
+<a id="ev-second-objective"></a>
+
+### A second objective: minimum weight
+
+Among the loads that carry the most revenue, the airline prefers the lightest, because weight burns fuel. The model
+becomes lexicographic: first maximize revenue, then, among the loads that keep revenue at its maximum, minimize the
+total weight
+
+$$
+\min_{x} \quad \sum_{i \in I} w_i x_i .
+$$

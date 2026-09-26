@@ -143,6 +143,12 @@ outputs. A disagreement means at least one of them is wrong.
 The rule that each piece of knowledge, such as a business rule or an output format, should live in exactly one
 place in the code, so that changing it means one edit. Abbreviated DRY.
 
+## Duality
+
+The pairing of every linear program with a second one, its dual, whose optimal value bounds the first. By strong
+duality, a feasible solution and a feasible dual solution with equal objective values are both optimal, so the pair
+certifies optimality without solving the problem again.
+
 ## End-to-end test
 
 A [functional test](#functional-test) that runs the whole application in a real-world scenario, the way its users
@@ -215,6 +221,16 @@ right the first time, such as a formulation revised after users react to its fir
 Software that is difficult to change safely — not because it is old, but because it lacks the safety mechanisms, such as
 a [test suite](#test-suite), that make change possible.
 
+## Lexicographic optimization
+
+Optimizing several objectives in a fixed order of priority: the first objective is optimized, then the second is
+optimized among the solutions that keep the first at its optimum, and so on. Also called hierarchical optimization.
+
+## Linear program
+
+An optimization model whose objective and constraints are linear and whose variables are continuous. Abbreviated LP.
+Solvers find a provably optimal solution, and [duality](#duality) certifies it.
+
 ## Managed dependency
 
 A [dependency](#dependency) outside the program that only the program itself uses, such as its own files or its own
@@ -225,6 +241,12 @@ with [unmanaged dependency](#unmanaged-dependency).
 
 A relation that must hold between the outputs of two related runs, even when neither output is known. Example: raising
 a capacity never decreases the optimal value.
+
+## Mixed-integer program
+
+A [linear program](#linear-program) in which some or all variables must take integer values, such as a number of
+whole pallets. Abbreviated MIP. Integrality makes the problem much harder to solve and removes the certificate of
+optimality that duality gives a linear program.
 
 ## Mock
 

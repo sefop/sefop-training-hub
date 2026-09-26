@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 360" width="940" height="360" font-family="Helvetica, Arial, sans-serif">
+  <!-- Figure: the oracle problem. Left, an ordinary test: the output of add is compared with an expected value
+       computed independently and cheaply. Right, a test of an optimization model on a large instance: the output
+       of the solve has nothing to be compared with, because the expected value can only be obtained by solving the
+       same problem again. The code under test is orange (implementation), a known expected value green. -->
+
+  <!-- Light background baked in, so the figure stays readable on a dark theme. -->
+  <rect width="940" height="360" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#37474f"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Left: an ordinary test ===== -->
+  <text x="225" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#37474f">An ordinary test</text>
+  <g font-size="14" fill="#263238">
+    <rect x="20" y="70" width="110" height="50" rx="8" fill="#eceff1" stroke="#455a64" stroke-width="1.5"/>
+    <text x="75" y="92" text-anchor="middle">Inputs</text>
+    <text x="75" y="110" text-anchor="middle" font-family="Consolas, Menlo, monospace">2, 3</text>
+
+    <rect x="170" y="70" width="110" height="50" rx="8" fill="#ffe0b2" stroke="#e65100" stroke-width="1.5"/>
+    <text x="225" y="100" text-anchor="middle" font-family="Consolas, Menlo, monospace" fill="#bf360c">add</text>
+
+    <rect x="320" y="70" width="110" height="50" rx="8" fill="#eceff1" stroke="#455a64" stroke-width="1.5"/>
+    <text x="375" y="92" text-anchor="middle">Output</text>
+    <text x="375" y="110" text-anchor="middle" font-family="Consolas, Menlo, monospace">5</text>
+
+    <rect x="320" y="200" width="110" height="50" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="375" y="222" text-anchor="middle" fill="#1b5e20">Expected</text>
+    <text x="375" y="240" text-anchor="middle" font-family="Consolas, Menlo, monospace" fill="#1b5e20">5</text>
+  </g>
+  <g fill="none" stroke="#37474f" stroke-width="2" marker-end="url(#arrow)">
+    <line x1="132" y1="95" x2="166" y2="95"/>
+    <line x1="282" y1="95" x2="316" y2="95"/>
+    <path d="M75,122 L75,225 L316,225"/>
+  </g>
+  <text x="80" y="275" font-size="13" fill="#1b5e20">worked out in your head, independently of add</text>
+  <text x="392" y="165" font-size="14" font-weight="bold" fill="#1b5e20">compare</text>
+  <line x1="375" y1="124" x2="375" y2="196" stroke="#2e7d32" stroke-width="2" stroke-dasharray="4 3"/>
+
+  <!-- ===== Divider ===== -->
+  <line x1="470" y1="20" x2="470" y2="295" stroke="#cfd8dc" stroke-width="2"/>
+
+  <!-- ===== Right: a test of an optimization model ===== -->
+  <text x="705" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#37474f">A test of an optimization model</text>
+  <g font-size="14" fill="#263238">
+    <rect x="490" y="70" width="120" height="50" rx="8" fill="#eceff1" stroke="#455a64" stroke-width="1.5"/>
+    <text x="550" y="92" text-anchor="middle">Instance</text>
+    <text x="550" y="110" text-anchor="middle" font-size="12">4,000 products</text>
+
+    <rect x="640" y="70" width="130" height="50" rx="8" fill="#ffe0b2" stroke="#e65100" stroke-width="1.5"/>
+    <text x="705" y="92" text-anchor="middle" fill="#bf360c">Model and</text>
+    <text x="705" y="110" text-anchor="middle" fill="#bf360c">solver</text>
+
+    <rect x="800" y="70" width="120" height="50" rx="8" fill="#eceff1" stroke="#455a64" stroke-width="1.5"/>
+    <text x="860" y="92" text-anchor="middle">Output</text>
+    <text x="860" y="110" text-anchor="middle" font-family="Consolas, Menlo, monospace">revenue 26,031</text>
+
+    <rect x="800" y="200" width="120" height="50" rx="8" fill="#fafafa" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="860" y="222" text-anchor="middle" fill="#607d8b">Expected</text>
+    <text x="860" y="242" text-anchor="middle" font-size="20" font-weight="bold" fill="#607d8b">?</text>
+  </g>
+  <g fill="none" stroke="#37474f" stroke-width="2" marker-end="url(#arrow)">
+    <line x1="612" y1="95" x2="636" y2="95"/>
+    <line x1="772" y1="95" x2="796" y2="95"/>
+  </g>
+  <path d="M550,122 L550,225 L796,225" fill="none" stroke="#90a4ae" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+  <text x="560" y="265" font-size="13" fill="#607d8b">only by solving the same problem again</text>
+  <text x="877" y="165" font-size="14" font-weight="bold" fill="#607d8b">?</text>
+  <line x1="860" y1="124" x2="860" y2="196" stroke="#90a4ae" stroke-width="2" stroke-dasharray="4 3"/>
+
+  <!-- ===== Caption ===== -->
+  <text x="470" y="335" text-anchor="middle" font-size="14" fill="#37474f">For a large, general instance, the expected value costs as much to compute as the output it checks</text>
+</svg>
