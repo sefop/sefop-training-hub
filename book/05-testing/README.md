@@ -1101,7 +1101,11 @@ necessarily written as comments.
 3. If the provided `Instance` is not null, this method returns an `Solution` object. The `Solution` object could
 be null, which means a solution could not be found. It its `non-null`, it means a feasible solution was found.
 
-**Mathematical promises**:
+Mathematical promises varies if the underlying algorithm solving the model guarantees optimality or not. For
+simplicity let's assume optimality, and then we will review which of these are dropped when optimality is not
+guaranteed.
+
+**Mathematical promises assuming optimality**:
 
 
 
