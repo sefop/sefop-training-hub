@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 240" width="860" height="240" font-family="Helvetica, Arial, sans-serif">
-  <!-- Figure: an incumbent and its bound. A number line of revenue. The incumbent's objective value (orange, the load
-       returned) sits left of the proven bound (blue). The optimum lies between them, unknown on a large instance
-       (grey). The optimality gap spans incumbent to bound. -->
+  <!-- Figure: an incumbent and its bounds. A number line of revenue. The incumbent's objective value (orange, the load
+       returned) sits left of the linear relaxation value (blue), which the test computes. The optimum lies between
+       them, computed by enumeration on small instances only (grey). The gap spans incumbent to relaxation. -->
 
   <!-- Light background baked in, so the figure stays readable on a dark theme. -->
   <rect width="860" height="240" fill="#ffffff"/>
@@ -25,16 +25,16 @@
   <!-- ===== Optimum, unknown ===== -->
   <circle cx="440" cy="130" r="9" fill="#ffffff" stroke="#78909c" stroke-width="2" stroke-dasharray="3 2"/>
   <text x="440" y="90" text-anchor="middle" font-size="15" font-weight="bold" fill="#607d8b">Optimum</text>
-  <text x="440" y="110" text-anchor="middle" font-size="13" fill="#607d8b">somewhere in between</text>
-  <text x="440" y="160" text-anchor="middle" font-size="13" fill="#607d8b">unknown on a large instance</text>
+  <text x="440" y="110" text-anchor="middle" font-size="13" fill="#607d8b">in between</text>
+  <text x="440" y="160" text-anchor="middle" font-size="13" fill="#607d8b">enumeration, small instances only</text>
 
   <!-- ===== Bound ===== -->
   <circle cx="640" cy="130" r="9" fill="#1565c0"/>
-  <text x="640" y="90" text-anchor="middle" font-size="15" font-weight="bold" fill="#0d47a1">Proven bound</text>
-  <text x="640" y="110" text-anchor="middle" font-family="Consolas, Menlo, monospace" font-size="13" fill="#0d47a1">bound</text>
-  <text x="640" y="160" text-anchor="middle" font-size="13" fill="#0d47a1">no load earns more</text>
+  <text x="640" y="90" text-anchor="middle" font-size="15" font-weight="bold" fill="#0d47a1">Linear relaxation</text>
+  <text x="640" y="110" text-anchor="middle" font-family="Consolas, Menlo, monospace" font-size="13" fill="#0d47a1">lp_relaxation_value</text>
+  <text x="640" y="160" text-anchor="middle" font-size="13" fill="#0d47a1">computed by the test</text>
 
   <!-- ===== Gap ===== -->
   <path d="M230,182 L230,194 L640,194 L640,182" fill="none" stroke="#37474f" stroke-width="2"/>
-  <text x="435" y="220" text-anchor="middle" font-size="14" font-weight="bold" fill="#37474f">optimality gap</text>
+  <text x="435" y="220" text-anchor="middle" font-size="14" font-weight="bold" fill="#37474f">gap to the linear relaxation</text>
 </svg>

@@ -143,11 +143,6 @@ outputs. A disagreement means at least one of them is wrong.
 The rule that each piece of knowledge, such as a business rule or an output format, should live in exactly one
 place in the code, so that changing it means one edit. Abbreviated DRY.
 
-## Dual bound
-
-A value proven to be at least the optimal value of a maximization problem (at most, for a minimization), kept by a
-solver while it searches. When it meets the value of the [incumbent](#incumbent), the incumbent is proven optimal.
-
 ## Duality
 
 The pairing of every linear program with a second one, its dual, whose optimal value bounds the first. By strong
@@ -246,6 +241,12 @@ optimized among the solutions that keep the first at its optimum, and so on. Als
 An optimization model whose objective and constraints are linear and whose variables are continuous. Abbreviated LP.
 Solvers find a provably optimal solution, and [duality](#duality) certifies it.
 
+## Linear relaxation
+
+The [linear program](#linear-program) obtained from a [mixed-integer program](#mixed-integer-program) by dropping the
+requirement that variables take integer values. Every integer solution is also a solution of the relaxation, so its
+optimal value bounds the optimal value of the mixed-integer program: from above for a maximization.
+
 ## Managed dependency
 
 A [dependency](#dependency) outside the program that only the program itself uses, such as its own files or its own
@@ -294,11 +295,6 @@ security, speed, usability, availability, scalability. Contrast with [functional
 
 Organizing a program around objects that hold data together with the operations allowed on it, instead of around
 procedures that pass data between them. Abbreviated OOP.
-
-## Optimality gap
-
-The distance between the value of the [incumbent](#incumbent) and the [dual bound](#dual-bound), usually relative:
-(bound − incumbent) / bound for a positive bound in a maximization. A gap of zero proves the incumbent optimal.
 
 ## Oracle problem
 

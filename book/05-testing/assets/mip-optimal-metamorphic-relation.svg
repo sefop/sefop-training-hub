@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 310" width="860" height="310" font-family="Helvetica, Arial, sans-serif">
   <!-- Figure: a metamorphic relation. An instance and a transformed copy (payload capacity raised) both go through
-       the pipeline (orange). Neither optimal revenue is known (grey question marks), yet the relation between them,
+       Optimization.run (orange). Neither optimal revenue is known (grey question marks), yet the relation between them,
        the second is at least the first, is checked (green). -->
 
   <!-- Light background baked in, so the figure stays readable on a dark theme. -->
@@ -19,7 +19,7 @@
     <text x="115" y="76" font-size="13" fill="#455a64">payload 5 tonnes</text>
 
     <rect x="300" y="30" width="160" height="60" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
-    <text x="380" y="65" fill="#bf360c">Pipeline</text>
+    <text x="380" y="65" fill="#bf360c">Optimization.run</text>
 
     <rect x="550" y="30" width="160" height="60" rx="8" fill="#fafafa" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="6 4"/>
     <text x="630" y="56" fill="#607d8b">Optimal revenue</text>
@@ -33,7 +33,7 @@
     <text x="115" y="266" font-size="13" fill="#455a64">payload 8 tonnes</text>
 
     <rect x="300" y="220" width="160" height="60" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
-    <text x="380" y="255" fill="#bf360c">Pipeline</text>
+    <text x="380" y="255" fill="#bf360c">Optimization.run</text>
 
     <rect x="550" y="220" width="160" height="60" rx="8" fill="#fafafa" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="6 4"/>
     <text x="630" y="246" fill="#607d8b">Optimal revenue</text>

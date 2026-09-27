@@ -987,7 +987,7 @@ algorithm to assert correctness.
 ### A cargo model example
 
 For the next parts of the section we are going to use this example. The full definition of the cargo loading system is
-written here [the appendix](../appendix/running-example.md#an-optimization-model-for-this-problem): for one cargo
+written in [the appendix](../appendix/running-example.md#an-optimization-model-for-this-problem). for one cargo
 flight, the question is what cargo to load to maximize revenue and respect operational constraints. The model is
 is a [mixed-integer program](../appendix/glossary.md#mixed-integer-program) (MIP).
 
@@ -1015,105 +1015,105 @@ x_i \in \mathbb{Z} \quad \forall i \in I & \text{whole pallets}
 \end{aligned}
 $$
 
+<a id="model-contract"></a>
+
+### The contract
+
+[Interface vs implementation](#ch-interface) showed that a caller relies on what the abstraction promises, never on
+how it keeps the promise. What, then, does the cargo model promise to its caller? A promise must be written down before
+it can be tested. A [contract](../appendix/glossary.md#contract) is the promise a piece of code makes to its callers: what it
+needs as input and what it guarantees as output, and nothing about how. Everything else, the algorithm, its running
+time, its internal data structures, are [implementation details](../appendix/glossary.md#implementation-detail).
+
+The cargo model sits behind one class, `Optimization`, with a single public method, `run`. It receives an `Instance`
+object and returns a `Solution` object. [Pseudocode: optimization contract](#pseudo-optimization-contract) defines the
+three classes and the method. A comment starting with `requires` states what the caller must provide, and one starting with `returns` what
+the method guarantees; `or null` means the method may return no object at all.
+
+<a id="pseudo-optimization-contract"></a>
+
+**Pseudocode: optimization contract**
+
+```
+// pseudocode: optimization-contract
+class Product
+    public name
+    public weight                        // per pallet
+    public volume                        // per pallet
+    public revenue                       // per pallet
+    public committed_quantity            // pallets that must fly, 0 by default
+
+class Instance
+    public products                      // list of Product
+    public weight_capacity
+    public volume_capacity
+
+class Solution
+    public picked                        // product name -> whole number of pallets, 0 when left behind
+    public objective_value               // revenue of the load
+    public total_weight                  // weight of the load
+    public total_volume                  // volume of the load
+
+class Optimization
+    // requires: instance is not null
+    // returns:  a Solution filled with the load found, or null when the optimization phase
+    //           could not provide a feasible solution
+    public run(instance) returns Solution or null
+```
+
+A caller writes two lines, as shown in [Pseudocode: optimization usage](#pseudo-optimization-usage):
+
+<a id="pseudo-optimization-usage"></a>
+
+**Pseudocode: optimization usage**
+
+```
+// pseudocode: optimization-usage
+optimization = Optimization()
+solution = optimization.run(instance)
+```
+
+Note that the contract says nothing about the algorithm behind `run`, and nothing about why
+the optimization module could fail to provide one. Behind `run`, five private steps make up the *optimization phase*,
+as [Figure: the optimization phase](#fig-model-pipeline) shows: receive the instance, build the model, solve it,
+assemble the solution, and return it. They are implementation details: a caller cannot reach them and does not know
+anything about them.
+
+<a id="fig-model-pipeline"></a>
+
+**Figure: the optimization module**
+
+<p align="center">
+  <img src="assets/model-testing-pipeline.svg" width="420"
+       alt="A vertical diagram. An Instance at the top enters the class Optimization through its only public method,
+run, shown in blue: run takes an Instance and returns a Solution. Inside the class, five private steps in orange
+run from top to bottom: receive the instance, build the model, solve, assemble the solution, return the solution,
+labeled private implementation details. A Solution leaves at the bottom">
+</p>
+
+So what does this contract offers? There are two types of promises: software promises (derived from the pseudocode) and
+mathematical promises (derived from optimization theory). Mathematical promises might be implicit and not
+necessarily written as comments.
+
+**Software promises**:
+1. There is a single public method called `run` which receives a non-null `Instance` object.
+2. If the provided `Instance` is null, then an error is going to be thrown by the program.
+3. If the provided `Instance` is not null, this method returns an `Solution` object. The `Solution` object could
+be null, which means a solution could not be found. It its `non-null`, it means a feasible solution was found.
+
+**Mathematical promises**:
+
+
+
 <a id="model-what-to-test"></a>
 
 ### What to test
 
-[Interface vs implementation](#ch-interface) set the rule every chapter since has followed: a test checks what code
-promises, not how it keeps the promise. A model, however, is not one unit of code. Between an instance and a decision,
-five modules work in sequence:
+As we saw previously the best practice is to test the public behaviors of the contract. In this example, that is the
+`run` public method within the `Optimization` module. Because many "units" of code are executed in that function, these
+tests belong to the category of [integration tests](../appendix/glossary.md#integration-test). The solver should be
+truly called, whatever is the algorithm, to make sure these integration tests work in real examples.
 
-1. **Receive the instance**, already checked for nonsense values.
-2. **Build the model**: its variables, objective and constraints.
-3. **Solve it** with an algorithm.
-4. **Assemble the solution**: read the solver's values back into pallets per product and totals.
-5. **Return the result.**
-
-None of them on its own shows that the load is right. A model built correctly and solved correctly still yields the
-wrong load if the assembly reads the values in the wrong order. The tests therefore run the five modules together, as
-[integration tests](../appendix/glossary.md#integration-test): they hand the pipeline an instance and check what comes
-back, as [Figure: the pipeline under test](#fig-model-pipeline) shows.
-
-<a id="fig-model-pipeline"></a>
-
-**Figure: the pipeline under test**
-
-<p align="center">
-  <img src="assets/model-testing-pipeline.svg" width="760"
-       alt="Five orange boxes in a row inside a dashed boundary labeled integration test: receive the instance, build
-the model, solve, assemble the solution, return the result. An instance enters the boundary on the left and a result
-leaves it on the right, both through a blue edge labeled contract. The test hands in the instance and reads only the
-result">
-</p>
-
-The solver stays real in these tests. It is a library inside the program, not a
-[managed dependency](../appendix/glossary.md#managed-dependency) such as the program's own files, but it stays real for
-the reason [What an integration test covers](#what-an-integration-test-covers) gives for edge cases: the optimum, an
-infeasible instance and a tie are behaviors that only the real solver produces.
-
-**The contract comes first.** A promise must be written down before it can be tested. A
-[contract](../appendix/glossary.md#contract) is the promise a piece of code makes to its callers: what it needs as input
-and what it guarantees as output, and nothing about how. Everything else, the algorithm, its running time, its internal
-data structures, is an [implementation detail](../appendix/glossary.md#implementation-detail). For the cargo model,
-`solve` returns a `result` with five fields:
-
-- `status`: `OPTIMAL` when a load was found and proven the best, or `INFEASIBLE` when no load is feasible. The contract
-  names the second because [an empty feasible region is an answer](#difficulty-infeasible).
-- `picked`: the pallets loaded of each product, from product name to a whole number, 0 for a product left behind.
-- `objective_value`: the revenue of the load.
-- `total_weight` and `total_volume`: the weight and the volume of the load.
-
-Two clauses complete it:
-
-1. When `status` is `INFEASIBLE`, the other fields carry no meaning.
-2. When several loads tie for the best revenue, any one of them may be returned.
-
-**Why the contract, and not the algorithm.** [The algorithm may change](#difficulty-algorithm), and a test that checks
-how the answer was computed turns red at a legitimate change even though nothing a user cares about got worse. A
-[regression](../appendix/glossary.md#regression), a behavior that used to work and no longer does, never happened, yet
-the test reports one. Take two pipelines around the same model: `enumeration_solver()` tries every load, and
-`mip_solver()` calls a MIP solver. [Pseudocode: algorithm-coupled test](#pseudo-algorithm-coupled-test) is coupled to
-the first:
-
-<a id="pseudo-algorithm-coupled-test"></a>
-
-**Pseudocode: algorithm-coupled test**
-
-```
-// pseudocode: algorithm-coupled-test
-a = item(name="A", weight=2, volume=1, revenue=10)
-b = item(name="B", weight=1, volume=2, revenue=6)
-
-solver = enumeration_solver()
-result = solver.solve([a, b], weight_capacity=2, volume_capacity=2)
-
-expect solver.loads_checked == 4             // how the answer was found
-expect result.objective_value == 10
-```
-
-Replace `enumeration_solver()` with `mip_solver()` and this test breaks: a MIP solver never enumerates loads, so there
-is no count to check. The optimum is still 10, yet the test fails. [Pseudocode: contract test](#pseudo-contract-test)
-reads only what the contract promises:
-
-<a id="pseudo-contract-test"></a>
-
-**Pseudocode: contract test**
-
-```
-// pseudocode: contract-test
-for solver in [enumeration_solver(), mip_solver()]:
-    result = solver.solve([a, b], weight_capacity=2, volume_capacity=2)
-
-    expect result.status == OPTIMAL
-    expect result.objective_value == 10
-```
-
-Running it against two very different algorithms is itself the evidence that it tests the contract: if it depended on
-either one's internals, one of the two would fail.
-
-You already make this separation in optimization. The formulation says *what* the optimal solution is; branch-and-bound,
-cutting planes or enumeration say *how* to find it. That is why you can change solvers without rewriting the model, and
-why a contract test runs unchanged against every solver that keeps the promise.
 
 ---
 
@@ -1121,10 +1121,28 @@ why a contract test runs unchanged against every solver that keeps the promise.
 
 ## Testing a single-objective mixed-integer program with optimality guaranteed
 
-The contract of [What to test](#model-what-to-test) promises the best load there is, whenever the status is `OPTIMAL`. A
-promise can only be tested through what it implies about an output, and each implication needs a
-[test oracle](../appendix/glossary.md#test-oracle) to check it. Which oracle a test can use depends on what it knows
-before it runs: the answer itself, a second way to compute the answer, or nothing about the answer at all.
+The contract of [The contract](#model-contract) promises a load, and says nothing about how good it is. Most users of an
+optimization model expect more: the best load there is. [Pseudocode: optimal contract](#pseudo-optimal-contract) adds
+that promise to `run`.
+
+<a id="pseudo-optimal-contract"></a>
+
+**Pseudocode: optimal contract**
+
+```
+// pseudocode: optimal-contract
+class Optimization
+    // requires: instance is not null
+    // returns:  a Solution, which is optimal: no feasible load earns more revenue,
+    //           or null when the optimization phase could not provide a feasible solution
+    public run(instance) returns Solution or null
+```
+
+A phase that promises the best load must return one whenever a feasible load exists, so under this contract `null` means
+that the instance has no feasible load. A promise can only be tested through what it implies about an output, and each
+implication needs a [test oracle](../appendix/glossary.md#test-oracle) to check it. Which oracle a test can use depends
+on what it knows before it runs: the answer itself, a second way to compute the answer, or nothing about the answer at
+all.
 
 <a id="mip-conditions"></a>
 
@@ -1135,13 +1153,14 @@ knows:
 
 | Oracle | What the test knows | Conditions it checks |
 |---|---|---|
-| [Known oracle](../appendix/glossary.md#known-oracle) | The expected answer, worked out before the run | The status and the objective value of an instance small enough to solve by hand. The status of an instance of any size, from its committed pallets alone. |
-| [Pseudo-oracle](../appendix/glossary.md#pseudo-oracle) | A second, independent way to compute the answer | The status and the objective value agree with those of enumeration. |
-| [Unknown oracle](../appendix/glossary.md#unknown-oracle) | Nothing about the answer | `picked` respects both capacities and the committed pallets. The objective value and the totals match `picked`. [Metamorphic relations](../appendix/glossary.md#metamorphic-relation) between runs hold. |
+| [Known oracle](../appendix/glossary.md#known-oracle) | The expected answer, worked out before the run | The objective value of an instance small enough to solve by hand. A `null` for an instance of any size whose committed pallets exceed a capacity. |
+| [Pseudo-oracle](../appendix/glossary.md#pseudo-oracle) | A second, independent way to compute the answer | The objective value agrees with that of enumeration, and both return `null` on the same instances. |
+| [Unknown oracle](../appendix/glossary.md#unknown-oracle) | Nothing about the answer | The load respects both capacities and the committed pallets. The objective value and the totals match `picked`. The objective value is at most that of the [linear relaxation](../appendix/glossary.md#linear-relaxation). [Metamorphic relations](../appendix/glossary.md#metamorphic-relation) between runs hold. |
 
-The status of a large instance is known in advance only because of this model: every pallet weighs something and takes
-room, so the committed pallets alone are the lightest and smallest load allowed, and the instance is infeasible exactly
-when they exceed a capacity. For a MIP in general, deciding feasibility can be as hard as solving it.
+The expected `null` of a large instance is known in advance only because of this model: every pallet weighs something
+and takes room, so the committed pallets alone are the lightest and smallest load allowed, and the instance has no
+feasible load exactly when they exceed a capacity. For a MIP in general, deciding feasibility can be as hard as solving
+it.
 
 The literature on the [oracle problem](../appendix/glossary.md#oracle-problem) sorts oracles by mechanism rather than by
 what a test knows, so its terms do not map one to one onto these three: a known oracle is its
@@ -1171,9 +1190,9 @@ unknown oracle, reach every size, but check only conditions a correct output mus
 
 ### Known oracle
 
-The simplest oracle is a person. In the example instance of [A cargo model example](#model-cargo), chocolate fits at
-most once by weight and water at most once by volume, so each $x_i \in \{0, 1\}$ and there are $2 \times 2 = 4$
-candidate loads, few enough to list:
+The simplest oracle is a person. In the [example instance](../appendix/running-example.md#ex-two-pallet) of the
+appendix, with nothing committed to fly, chocolate fits at most once by weight and water at most once by volume, so each
+$x_i \in \{0, 1\}$ and there are $2 \times 2 = 4$ candidate loads, few enough to list:
 
 | $x_A$ | $x_B$ | Weight (≤ 2) | Volume (≤ 2) | Revenue | Feasible? |
 |:---:|:---:|:---:|:---:|:---:|---|
@@ -1191,13 +1210,14 @@ it can serve as the expected value of a test:
 
 ```
 // pseudocode: two-pallet-test
-a = item(name="A", weight=2, volume=1, revenue=10)
-b = item(name="B", weight=1, volume=2, revenue=6)
+a = Product(name="A", weight=2, volume=1, revenue=10)
+b = Product(name="B", weight=1, volume=2, revenue=6)
+instance = Instance(products=[a, b], weight_capacity=2, volume_capacity=2)
 
-result = solve([a, b], weight_capacity=2, volume_capacity=2)
+solution = Optimization().run(instance)
 
-expect result.status == OPTIMAL
-expect result.objective_value == 10
+expect solution != null
+expect solution.objective_value == 10
 ```
 
 The price of a human oracle grows fast. The capacities allow at most $m_i = \lfloor \min(W / w_i, V / v_i) \rfloor$
@@ -1221,8 +1241,8 @@ Applied to the cargo model, the two techniques produce the situations below, fro
 
 | # | Situation | Expected behavior |
 |:---:|---|---|
-| 1 | No products at all | Nothing to load: `OPTIMAL`, an empty load worth zero. |
-| 2 | Committed cargo exceeds the payload | The committed pallets alone weigh more than the aircraft may carry: `INFEASIBLE`. |
+| 1 | No products at all | Nothing to load: a Solution with an empty load worth zero. |
+| 2 | Committed cargo exceeds the payload | The committed pallets alone weigh more than the aircraft may carry: `null`. |
 | 3 | Committed cargo exceeds the hold | The mirror of situation 2, for volume. |
 | 4 | Committed cargo fits exactly | The boundary between 2–3 and the rest: the committed load is the only feasible one. |
 | 5 | Nothing fits on its own | Every product exceeds a capacity on its own; the empty load is still feasible, worth zero. |
@@ -1235,7 +1255,7 @@ Applied to the cargo model, the two techniques produce the situations below, fro
 | 12 | One product too heavy to load | A product that exceeds the payload on its own is left behind without disturbing the rest of the load. |
 
 Read situations 2 and 3 against 4 and 5. All four leave the aircraft carrying the committed load and nothing more, and
-only two of them are infeasible. That distinction is exactly what a boundary is for.
+only two of them have no feasible load. That distinction is exactly what a boundary is for.
 [Pseudocode: committed mail test](#pseudo-committed-mail-test) writes situation 2: two pallets of mail are committed,
 one tonne each, and the aircraft may carry one tonne.
 
@@ -1245,17 +1265,17 @@ one tonne each, and the aircraft may carry one tonne.
 
 ```
 // pseudocode: committed-mail-test
-m = item(name="M", weight=1, volume=1, revenue=4, min_quantity=2)
+m = Product(name="M", weight=1, volume=1, revenue=4, committed_quantity=2)
+instance = Instance(products=[m], weight_capacity=1, volume_capacity=5)
 
-result = solve([m], weight_capacity=1, volume_capacity=5)
+solution = Optimization().run(instance)
 
-expect result.status == INFEASIBLE
+expect solution == null
 ```
 
-The expected status was derived without a solver: the mail weighs 2 tonnes, and the aircraft may carry 1. The test does
-not assert the load or the revenue, because the contract says those fields carry no meaning when the instance is
-infeasible. The same sum gives the expected status of an instance of any size, so for this model the known oracle of the
-status scales, while the known oracle of the optimal value stops at teaching scale.
+The expected `null` was derived without a solver: the mail weighs 2 tonnes, and the aircraft may carry 1. The same sum
+gives the expected answer for an instance of any size, so for this model the known oracle of feasibility scales, while
+the known oracle of the optimal value stops at teaching scale.
 
 <a id="mip-pseudo-oracle"></a>
 
@@ -1263,21 +1283,23 @@ status scales, while the known oracle of the optimal value stops at teaching sca
 
 A [pseudo-oracle](../appendix/glossary.md#pseudo-oracle) is a second, independent implementation of the same contract.
 [Differential testing](../appendix/glossary.md#differential-testing) runs both on the same inputs and compares their
-outputs. For small instances, enumeration makes a good pseudo-oracle: it is slow, but correct by inspection. A MIP
-solver such as Gurobi is very unlikely to compute a wrong optimum for the model it was given; the realistic risk is that
-the code builds a different model from the one on paper, and a disagreement with enumeration points at that.
+outputs. Here the second implementation is an `EnumerationSolver`: a class that exists only in the tests, has a `run`
+method with the same contract, and tries every candidate load. It is slow, but correct by inspection, and it only makes
+sense for instances small enough to enumerate. A MIP solver such as Gurobi is very unlikely to compute a wrong optimum
+for the model it was given; the realistic risk is that the code builds a different model from the one on paper, and a
+disagreement with enumeration points at that.
 
 This is the disciplined version of a sanity check most modelers already run by hand, comparing a new model with brute
 force on a toy case. Three details turn that habit into a reliable test:
 
 1. **Generate many instances instead of picking a few.** Hundreds of small random instances explore corners that nobody
-   would think to write by hand, including infeasible ones whenever the generator commits more cargo than the aircraft
-   can carry.
+   would think to write by hand, including ones with no feasible load whenever the generator commits more cargo than the
+   aircraft can carry.
 2. **Fix the [random seed](../appendix/glossary.md#random-seed).** The same inputs must always produce the same outputs,
    as in a controlled experiment. A failure that vanishes on the retry cannot be investigated, so the test must also
    report the instance that failed.
-3. **Compare only what the contract promises.** The status and the objective value, never `picked`: when several loads
-   tie, the contract allows the two implementations to return different ones.
+3. **Compare only what the contract promises.** Whether a Solution came back and its objective value, never `picked`:
+   when several loads tie, the contract allows the two implementations to return different ones.
 
 <a id="pseudo-differential-sweep"></a>
 
@@ -1288,17 +1310,16 @@ force on a toy case. Three details turn that habit into a reliable test:
 rng = random_generator(seed=20260908)
 
 repeat 200 times:
-    items = a list of rng.integer(1, 4) items, each with
-                weight  = rng.integer(1, 5),  volume       = rng.integer(1, 5),
-                revenue = rng.integer(0, 20), min_quantity = rng.integer(0, 2)
-    weight_capacity = rng.integer(0, 8)
-    volume_capacity = rng.integer(0, 8)
+    products = a list of rng.integer(1, 4) products, each with
+                   weight  = rng.integer(1, 5),  volume             = rng.integer(1, 5),
+                   revenue = rng.integer(0, 20), committed_quantity = rng.integer(0, 2)
+    instance = Instance(products, weight_capacity=rng.integer(0, 8), volume_capacity=rng.integer(0, 8))
 
-    reference = enumeration_solver().solve(items, weight_capacity, volume_capacity)
-    candidate = mip_solver().solve(items, weight_capacity, volume_capacity)
+    reference = EnumerationSolver().run(instance)
+    candidate = Optimization().run(instance)
 
-    expect candidate.status == reference.status
-    if reference.status == OPTIMAL:
+    expect (candidate == null) == (reference == null)
+    if reference != null:
         expect candidate.objective_value == reference.objective_value
 ```
 
@@ -1324,8 +1345,8 @@ booking list on a real aircraft, are far beyond them. For such an instance a tes
 still knows what every correct answer must satisfy.
 
 **Checking is cheaper than solving.** Proving a load optimal is expensive; checking that it is feasible and reported
-correctly takes one pass over the products. [Pseudocode: load checks](#pseudo-load-checks) applies after every solve
-that returns `OPTIMAL`, whatever the instance.
+correctly takes one pass over the products. [Pseudocode: load checks](#pseudo-load-checks) applies to every Solution
+that `run` returns, whatever the instance.
 
 <a id="pseudo-load-checks"></a>
 
@@ -1333,20 +1354,27 @@ that returns `OPTIMAL`, whatever the instance.
 
 ```
 // pseudocode: load-checks
-private expect_valid_load(items, weight_capacity, volume_capacity, result)
-    for each item in items:
-        expect result.picked[item.name] is a whole number, "pallet split"
-        expect result.picked[item.name] >= item.min_quantity, "committed pallets left behind"
-    expect result.total_weight == sum of item.weight × result.picked[item.name], "weight misreported"
-    expect result.total_volume == sum of item.volume × result.picked[item.name], "volume misreported"
-    expect result.objective_value == sum of item.revenue × result.picked[item.name], "revenue misreported"
-    expect result.total_weight <= weight_capacity, "payload exceeded"
-    expect result.total_volume <= volume_capacity, "hold exceeded"
+private expect_valid_load(instance, solution)
+    for each product in instance.products:
+        expect solution.picked[product.name] is a whole number, "pallet split"
+        expect solution.picked[product.name] >= product.committed_quantity, "committed pallets left behind"
+    expect solution.total_weight == sum of product.weight × solution.picked[product.name], "weight misreported"
+    expect solution.total_volume == sum of product.volume × solution.picked[product.name], "volume misreported"
+    expect solution.objective_value == sum of product.revenue × solution.picked[product.name], "revenue misreported"
+    expect solution.total_weight <= instance.weight_capacity, "payload exceeded"
+    expect solution.total_volume <= instance.volume_capacity, "hold exceeded"
 ```
 
 The helper holds logic, which [No logic in tests](#no-logic-in-tests) warns against. The warning is about a test that
-repeats the implementation; these sums do not: the pipeline searches for a load, and the helper only adds one up. On its
-own, it does not certify optimality: a feasible load can leave revenue behind.
+repeats the implementation; these sums do not: the optimization phase searches for a load, and the helper only adds one
+up. On its own, it does not certify optimality: a feasible load can leave revenue behind.
+
+**A bound from outside.** Drop the requirement that pallets be whole, and the model becomes its
+[linear relaxation](../appendix/glossary.md#linear-relaxation), a linear program that solves fast even for large
+instances. Every load of whole pallets is also a load of the relaxation, so the best revenue of the relaxation is at
+least the best revenue of the MIP. A test computes it itself, with `lp_relaxation_value(instance)`, a helper that exists
+only in the tests, and asserts `solution.objective_value <= lp_relaxation_value(instance)`. For the example instance the
+relaxation loads two thirds of a pallet of each product, worth $32/3 \approx 10.67$, above the 10 of whole pallets.
 
 **Metamorphic relations.** A [metamorphic relation](../appendix/glossary.md#metamorphic-relation) is a relation that
 must hold between the outputs of two related runs, even when neither output is known. The recipe has three steps:
@@ -1356,9 +1384,9 @@ must hold between the outputs of two related runs, even when neither output is k
 3. Solve both versions and check that the relation holds.
 
 You already prove relations like these as theorems. Relaxing a constraint cannot make the optimal value worse, the same
-reasoning that makes an LP relaxation a valid bound. A metamorphic relation turns such a theorem into a test, as
-[Figure: a metamorphic relation](#fig-metamorphic-relation) shows. For the cargo model, four hold on every feasible
-instance:
+reasoning that makes the linear relaxation a valid bound. A metamorphic relation turns such a theorem into a test, as
+[Figure: a metamorphic relation](#fig-metamorphic-relation) shows. For the cargo model, four hold on every instance with
+a feasible load:
 
 <a id="fig-metamorphic-relation"></a>
 
@@ -1366,9 +1394,9 @@ instance:
 
 <p align="center">
   <img src="assets/mip-optimal-metamorphic-relation.svg" width="720"
-       alt="An instance and a transformed copy with a larger payload capacity. Both go through the pipeline, and both
-optimal revenues are unknown, shown as question marks. A green check between them tests only that the second is at least
-the first">
+       alt="An instance and a transformed copy with a larger payload capacity. Both go through run, and both optimal
+revenues are unknown, shown as question marks. A green check between them tests only that the second is at least the
+first">
 </p>
 
 | Transformation | Relation on the optimal revenue | Why it holds |
@@ -1388,12 +1416,12 @@ second relation:
 
 ```
 // pseudocode: capacity-relation-test
-a = item(name="A", weight=2, volume=1, revenue=10)
-b = item(name="B", weight=1, volume=2, revenue=6)
-c = item(name="C", weight=3, volume=1, revenue=14)
+a = Product(name="A", weight=2, volume=1, revenue=10)
+b = Product(name="B", weight=1, volume=2, revenue=6)
+c = Product(name="C", weight=3, volume=1, revenue=14)
 
-before = solve([a, b, c], weight_capacity=5, volume_capacity=4)
-after  = solve([a, b, c], weight_capacity=8, volume_capacity=4)
+before = Optimization().run(Instance(products=[a, b, c], weight_capacity=5, volume_capacity=4))
+after  = Optimization().run(Instance(products=[a, b, c], weight_capacity=8, volume_capacity=4))
 
 expect after.objective_value >= before.objective_value
 ```
@@ -1404,17 +1432,19 @@ the part of the suite that scales.
 
 ### Check yourself
 
-1. Two loads tie at 5 revenue. Pipeline A returns one of them and pipeline B the other. Which contract test should fail?
-2. An instance has 4,000 products, and its committed pallets weigh 1 tonne more than the aircraft may carry. What status
-   must the result carry, and did you need a solver to know?
-3. A broken pipeline always returns `OPTIMAL` with an empty load worth 0. Which of the four relations does it violate?
+1. Two loads tie at 5 revenue. Version 1 of `Optimization` returns one of them and version 2 the other. Which contract
+   test should fail?
+2. An instance has 4,000 products, and its committed pallets weigh 1 tonne more than the aircraft may carry. What must
+   `run` return, and did you need a solver to know?
+3. A broken `Optimization` always returns a Solution with an empty load worth 0. Which of the four relations does it
+   violate?
 4. Why is the random seed of the differential sweep fixed rather than drawn fresh on every run?
 
 <details>
 <summary>Answers</summary>
 
-1. None. Clause 2 of the contract allows any optimal load, so a contract test asserts only the revenue.
-2. `INFEASIBLE`, known from one sum over the committed pallets, with no solver. That shortcut belongs to this model.
+1. None. The contract promises an optimal load, not a particular one, so a contract test asserts only the revenue.
+2. `null`, known from one sum over the committed pallets, with no solver. That shortcut belongs to this model.
 3. None of them: 0 ≥ 0, 0 ≤ 0 and 0 = k × 0. The load checks catch it when pallets are committed, and otherwise only the
    known oracle and the pseudo-oracle do.
 4. So that a failure reproduces on the next run and can be investigated.
@@ -1443,26 +1473,35 @@ the part of the suite that scales.
 
 ## Testing a multi-objective mixed-integer program with optimality guaranteed
 
-The contract of [What to test](#model-what-to-test) lets the pipeline return any of several loads that tie for the best
-revenue. For a test that is a convenience. For the airline it is a gap: two loads can carry the same revenue and differ
-in everything else, and the pipeline picks one for reasons nobody chose. Which one should the user receive?
+The contract of [Testing a single-objective mixed-integer program with optimality guaranteed](#ch-mip-optimal) lets
+`run` return any of several loads that tie for the best revenue. For a test that is a convenience. For the airline it is
+a gap: two loads can carry the same revenue and differ in everything else, and the optimization phase picks one for
+reasons nobody chose. Which one should the user receive?
 
 The airline's answer is the lightest, because weight burns fuel. That is the
 [second objective](../appendix/running-example.md#ev-second-objective): among the loads with the best revenue, minimize
 the total weight. Optimizing objectives in a fixed order like this is
 [lexicographic optimization](../appendix/glossary.md#lexicographic-optimization).
+[Pseudocode: lexicographic contract](#pseudo-lexicographic-contract) writes the promise into `run`.
 
-### The contract
+<a id="pseudo-lexicographic-contract"></a>
 
-The `result` keeps its five fields. What they promise changes:
+**Pseudocode: lexicographic contract**
 
-- `OPTIMAL` now means that both levels were proven: no load earns more revenue, and no load with that revenue weighs
-  less.
-- `total_weight` is the second objective: the minimum weight among the loads with the best revenue.
-- Clause 2 narrows: any one of several loads may be returned only when they tie on both revenue and weight.
+```
+// pseudocode: lexicographic-contract
+class Optimization
+    // requires: instance is not null
+    // returns:  a Solution, which is optimal at both levels: no feasible load earns more revenue,
+    //           and no feasible load with that revenue weighs less,
+    //           or null when the optimization phase could not provide a feasible solution
+    public run(instance) returns Solution or null
+```
 
-The oracles of [Testing a single-objective mixed-integer program with optimality guaranteed](#ch-mip-optimal) apply to
-the revenue unchanged, because the first level is that model. What follows is what each one adds for the weight.
+`Solution` keeps its fields: `objective_value` is the revenue, the first level, and `total_weight` is the second. A
+choice between loads remains free only when they tie on both revenue and weight. The oracles of the single-objective
+chapter apply to the revenue unchanged, because the first level is that model. What follows is what each one adds for
+the weight.
 
 ### What each oracle adds
 
@@ -1476,66 +1515,64 @@ tonnes, or two pallets of B, weighing 2.
 
 ```
 // pseudocode: lightest-tie-test
-a = item(name="A", weight=3, volume=1, revenue=6)
-b = item(name="B", weight=1, volume=2, revenue=3)
+a = Product(name="A", weight=3, volume=1, revenue=6)
+b = Product(name="B", weight=1, volume=2, revenue=3)
+instance = Instance(products=[a, b], weight_capacity=3, volume_capacity=4)
 
-result = solve([a, b], weight_capacity=3, volume_capacity=4)
+solution = Optimization().run(instance)
 
-expect result.status == OPTIMAL
-expect result.objective_value == 6
-expect result.total_weight == 2
-expect result.picked["B"] == 2
+expect solution != null
+expect solution.objective_value == 6
+expect solution.total_weight == 2
+expect solution.picked["B"] == 2
 ```
 
 Three pallets of B would earn 9 but need 6 m³, and A with a pallet of B would weigh 4 tonnes, so 6 is the best revenue.
 Under the single-objective contract, `picked` could not be asserted; here the second objective decides it.
 
-**Pseudo-oracle.** Enumeration compares loads by revenue first and weight second, and the differential sweep adds one
-comparison: `candidate.total_weight == reference.total_weight` whenever the status is `OPTIMAL`.
+**Pseudo-oracle.** A `LexicographicEnumerationSolver`, again a class that exists only in the tests, compares loads by
+revenue first and weight second. The differential sweep adds one comparison:
+`candidate.total_weight == reference.total_weight` whenever both return a Solution.
 
-**Unknown oracle.** The load checks apply unchanged. The relations of the single-objective chapter still hold for the
-revenue, but not all of them say anything about the weight: adding a product can raise the revenue and, with it, the
-weight. Three relations do:
+**Unknown oracle.** The load checks and the linear relaxation bound on the revenue apply unchanged. Not every relation
+of the single-objective chapter says something about the weight: adding a product that need not fly never lowers the
+revenue, but it can change which loads have the best revenue, and those may weigh more or less. One relation covers both
+levels: multiplying every revenue by $k > 0$ scales the revenue by $k$ and leaves the weight unchanged, because the
+scaling keeps every tie, so the same loads have the best revenue.
 
-| Relation | Why it holds |
-|---|---|
-| The revenue equals the one of the single-objective pipeline on the same instance | The first level is the single-objective model. |
-| The weight never exceeds that of the single-objective pipeline's load | That load has the best revenue, and the second level picks the lightest among such loads. |
-| Multiplying every revenue by $k > 0$ scales the revenue by $k$ and leaves the weight unchanged | The scaling keeps every tie, so the same loads have the best revenue. |
+<a id="pseudo-revenue-scaling-test"></a>
 
-[Pseudocode: lexicographic relation test](#pseudo-lexicographic-relation-test) checks the first two, where
-`single_objective_solver()` is the pipeline of the single-objective chapter.
-
-<a id="pseudo-lexicographic-relation-test"></a>
-
-**Pseudocode: lexicographic relation test**
+**Pseudocode: revenue scaling test**
 
 ```
-// pseudocode: lexicographic-relation-test
-single = single_objective_solver().solve(items, weight_capacity, volume_capacity)
-both   = solve(items, weight_capacity, volume_capacity)
+// pseudocode: revenue-scaling-test
+scaled = a copy of instance with every revenue multiplied by 3
 
-expect both.objective_value == single.objective_value
-expect both.total_weight <= single.total_weight
+original = Optimization().run(instance)
+rescaled = Optimization().run(scaled)
+
+expect rescaled.objective_value == 3 × original.objective_value
+expect rescaled.total_weight == original.total_weight
 ```
 
-Like every unknown oracle, it runs on any `items`, whatever their size.
+Like every unknown oracle, [Pseudocode: revenue scaling test](#pseudo-revenue-scaling-test) runs on an `instance` of any
+size.
 
 ### Check yourself
 
 1. In the lightest tie test, why may the test assert `picked["B"] == 2` when the single-objective tests never assert
    `picked`?
 2. Adding a product that need not fly never lowers the revenue. Does it ever lower the weight?
-3. A pipeline returns the single-objective load unchanged, ignoring the second objective. Which relation of the table
-   catches it?
+3. A broken `Optimization` ignores the second objective and returns any load with the best revenue. Which oracle catches
+   it reliably?
 
 <details>
 <summary>Answers</summary>
 
 1. The contract now decides between tied loads: only one load has the best revenue and the lowest weight.
 2. It can. If the new product raises the revenue, the best loads change, and they may weigh less or more.
-3. None of them on every instance: its revenue matches and its weight equals, rather than exceeds, the single-objective
-   weight. The known oracle catches it, as the lightest tie test shows, and so does the pseudo-oracle.
+3. The known oracle, as the lightest tie test shows, and the pseudo-oracle. The load checks and the revenue bound cannot
+   see it, and the scaling relation catches it only when the two runs happen to break a tie differently.
 
 </details>
 
@@ -1556,69 +1593,72 @@ Like every unknown oracle, it runs on any `items`, whatever their size.
 ## Testing a single-objective mixed-integer program without optimality guaranteed
 
 A mixed-integer program (MIP) can take hours to solve to proven optimality once its instance grows, and a load planner
-cannot wait hours before the aircraft closes. The pipeline has to answer in time, even when the best load has not been
-proven best yet. It gives the solver a time limit and, when the limit is reached, returns the best load found so far,
-the [incumbent](../appendix/glossary.md#incumbent). A test can no longer ask for the optimum. What can it still ask for?
+cannot wait hours before the aircraft closes. The optimization phase has to answer in time, even when the best load has
+not been proven best yet: its solver stops at a time limit and returns the best load found so far, the
+[incumbent](../appendix/glossary.md#incumbent). The contract can then no longer promise the optimum, and
+[Pseudocode: time-limited contract](#pseudo-time-limited-contract) says so.
 
-### The contract
+<a id="pseudo-time-limited-contract"></a>
 
-The solver knows more than its incumbent. Branch-and-bound also keeps a
-[dual bound](../appendix/glossary.md#dual-bound): a value proven to be at least the optimal revenue. The contract adds
-it to the `result` as a sixth field, `bound`, and `status` gains a value:
+**Pseudocode: time-limited contract**
 
-| `status` | `picked`, totals, `objective_value` | `bound` |
-|---|---|---|
-| `OPTIMAL` | A load proven the best | Equals `objective_value` |
-| `FEASIBLE` | A feasible load, perhaps not the best | At least `objective_value` |
-| `INFEASIBLE` | No meaning | No meaning |
+```
+// pseudocode: time-limited-contract
+class Optimization
+    // requires: instance is not null
+    // returns:  a Solution, which is feasible but may not be optimal,
+    //           or null when the optimization phase could not provide a feasible solution
+    public run(instance) returns Solution or null
+```
 
-`INFEASIBLE` means proven infeasible. The pipeline checks the committed pallets before the solver starts and, when they
-fit, hands them to the solver as its first incumbent: a result is then always either a feasible load or proven
-infeasibility, and no status such as "no load found yet" exists. The distance between the two is the
-[optimality gap](../appendix/glossary.md#optimality-gap), `(bound − objective_value) / bound` for a positive bound.
+What can a test still ask for?
 
 ### What survives
 
-- **Unchanged:** the load checks of the [unknown oracle](#mip-unknown-oracle), which never needed the optimum, and the
-  expected status of the [known oracle](#mip-known-oracle), since the committed pallets decide it at any size.
-- **When `status` is `OPTIMAL`:** every oracle of the single-objective chapter, as before. A test on an instance small
-  enough to finish well inside the time limit may expect `OPTIMAL`.
-- **Otherwise, weakened into bounds:** `objective_value ≤ bound`, and the gap the pipeline reports equals the one
-  computed from those two fields. On small instances, enumeration supplies the optimum between them, as
-  [Figure: an incumbent and its bound](#fig-bounds) shows.
-
-In [Pseudocode: time-limit bound test](#pseudo-time-limit-bound-test), `mip_solver(time_limit=…)` is the pipeline with
-its solver stopped at the given limit.
+- **The load checks,** unchanged: they never needed the optimum.
+- **Half of the feasibility oracle.** An instance whose committed pallets exceed a capacity has no feasible load, so
+  `run` must return `null`. The converse is gone: a phase stopped early may return `null` on an instance that does have
+  a feasible load, and the contract allows it.
+- **Bounds instead of values.** The objective value is at most the optimum, and the optimum is at most the value of the
+  [linear relaxation](../appendix/glossary.md#linear-relaxation). The relaxation bounds the objective value at any size;
+  on instances small enough to enumerate, `EnumerationSolver` also places the optimum in between, as
+  [Figure: an incumbent and its bounds](#fig-bounds) shows.
 
 <a id="fig-bounds"></a>
 
-**Figure: an incumbent and its bound**
+**Figure: an incumbent and its bounds**
 
 <p align="center">
   <img src="assets/mip-no-optimality-bounds.svg" width="720"
        alt="A number line of revenue. On the left, the incumbent's objective value, the revenue of the load returned. On
-the right, the proven bound. Between them, the optimum, unknown on a large instance, and the optimality gap spanning the
-distance from incumbent to bound">
+the right, the value of the linear relaxation, computed by the test. Between them, the optimum, unknown on a large
+instance and computed by enumeration on a small one, and the gap to the relaxation spanning the distance from the
+incumbent to the relaxation">
 </p>
 
-<a id="pseudo-time-limit-bound-test"></a>
+<a id="pseudo-outside-bounds-test"></a>
 
-**Pseudocode: time-limit bound test**
+**Pseudocode: outside bounds test**
 
 ```
-// pseudocode: time-limit-bound-test
-reference = enumeration_solver().solve(items, weight_capacity, volume_capacity)
-candidate = mip_solver(time_limit=1 second).solve(items, weight_capacity, volume_capacity)
+// pseudocode: outside-bounds-test
+candidate = Optimization().run(instance)
+reference = EnumerationSolver().run(instance)           // small instances only
 
-expect (candidate.status == INFEASIBLE) == (reference.status == INFEASIBLE)
-if reference.status == OPTIMAL:
+if reference == null:
+    expect candidate == null
+if candidate != null:
+    expect_valid_load(instance, candidate)
     expect candidate.objective_value <= reference.objective_value
-    expect reference.objective_value <= candidate.bound
+    expect reference.objective_value <= lp_relaxation_value(instance)
 ```
+
+On a large instance, the test drops `reference` and keeps the load checks and
+`candidate.objective_value <= lp_relaxation_value(instance)`.
 
 **The relations do not survive.** Metamorphic relations are theorems about the optimum, and an incumbent is not the
-optimum. A [heuristic](../appendix/glossary.md#heuristic) with no bound at all is the extreme case: take a greedy one
-that sorts products by revenue per tonne and loads each while it fits.
+optimum. A [heuristic](../appendix/glossary.md#heuristic) shows it most plainly: take a greedy one that sorts products
+by revenue per tonne and loads each while it fits.
 
 <a id="pseudo-greedy-relation-test"></a>
 
@@ -1626,54 +1666,55 @@ that sorts products by revenue per tonne and loads each while it fits.
 
 ```
 // pseudocode: greedy-relation-test
-a = item(name="A", weight=3, volume=1, revenue=10)
-d = item(name="D", weight=2, volume=1, revenue=7)
+a = Product(name="A", weight=3, volume=1, revenue=10)
+d = Product(name="D", weight=2, volume=1, revenue=7)
 
-before = greedy_solver().solve([a],    weight_capacity=3, volume_capacity=10)   // loads A: 10
-after  = greedy_solver().solve([a, d], weight_capacity=3, volume_capacity=10)   // loads D first, then nothing fits: 7
+before = GreedyOptimization().run(Instance(products=[a],    weight_capacity=3, volume_capacity=10))   // loads A: 10
+after  = GreedyOptimization().run(Instance(products=[a, d], weight_capacity=3, volume_capacity=10))   // loads D: 7
 
-expect after.objective_value >= before.objective_value                          // fails: 7 < 10
+expect after.objective_value >= before.objective_value                                                // fails: 7 < 10
 ```
 
-D earns 3.5 per tonne and A 3.3, so the greedy method loads D, and the tonne left takes nothing. The optimum with D
-available is still 10, one pallet of A. The heuristic dropped to 7 while behaving exactly as designed, so the failure is
-in the test, which asked an incumbent for a theorem about optima.
+`GreedyOptimization` keeps the time-limited contract: its loads are feasible and may not be optimal. D earns 3.5 per
+tonne and A 3.3, so it loads D, and the tonne left takes nothing. The optimum with D available is still 10, one pallet
+of A. The heuristic dropped to 7 while behaving exactly as designed, so the failure is in the test, which asked a load
+that may not be optimal for a theorem about optima.
 
 ### Where this stops working
 
 > [!WARNING]
 > A bound test passes whenever the bound is loose, so it shows far less than the optimality tests it replaces.
 
-- **A loose or wrong bound passes.** `objective_value ≤ bound` holds for any bound large enough, including a wrong one.
-- **A large instance's bound cannot be checked independently.** Enumeration confirms it only on small instances.
-- **A poor load passes.** The committed pallets alone satisfy every weakened check. Without an approximation guarantee
-  there is no floor to assert, so solution quality is better tracked as a benchmark over time, the average gap on a
-  fixed set of instances, than as a pass/fail test.
+- **The linear relaxation can be far above the optimum.** A load well below the optimum still passes
+  `objective_value ≤ lp_relaxation_value`.
+- **Enumeration reaches only small instances.** On a large one, nothing places the optimum.
+- **A poor load passes.** The committed pallets alone satisfy every weakened check. Solution quality is better tracked
+  as a benchmark over time, the average gap to the linear relaxation on a fixed set of instances, than as a pass/fail
+  test.
 
 ### Check yourself
 
-1. A solver reaches its 60-second limit and returns `FEASIBLE` with a 3% gap. Should the exact-value assertion of
-   situation 6 apply to it?
-2. On the same small instance, the pipeline reports 12 revenue and enumeration reports 10. Is that a bug?
-3. Why does the pipeline hand the committed pallets to the solver before it starts?
+1. `run` reaches its time limit and returns a Solution. Should the exact-value assertion of situation 6 apply to it?
+2. On the same small instance, `Optimization` reports 12 revenue and `EnumerationSolver` reports 10. Is that a bug?
+3. `run` returns `null` on an instance whose committed pallets fit. Does that break the time-limited contract?
 
 <details>
 <summary>Answers</summary>
 
-1. No. It applies only when the status is `OPTIMAL`; for `FEASIBLE`, assert the load checks and the bounds.
+1. No. The contract does not promise an optimal load, so assert the load checks and the bounds.
 2. Yes. No feasible load beats the optimum, so either the load is infeasible or its revenue is misreported, and the load
    checks show which.
-3. So that the solver always has a feasible incumbent when the committed pallets fit: the result is then either a
-   feasible load or proven infeasibility.
+3. No. `null` means only that the phase could not provide a feasible solution. The contract forces `null` on an instance
+   with no feasible load, but it never forces a Solution.
 
 </details>
 
 ### Further reading
 
-- Laurence A. Wolsey, *Integer Programming*, 2nd edition, Wiley, 2020: primal and dual bounds, and how branch-and-bound
-  closes the gap between them.
+- Laurence A. Wolsey, *Integer Programming*, 2nd edition, Wiley, 2020: linear relaxations, the bounds they give, and how
+  branch-and-bound closes the gap between a load and its bound.
 - David P. Williamson and David B. Shmoys, *The Design of Approximation Algorithms*, Cambridge University Press, 2011:
-  where approximation guarantees, the floor a heuristic test can assert, come from.
+  where approximation guarantees, a floor a heuristic test could assert, come from.
 
 > **Practice it**
 >
@@ -1687,62 +1728,65 @@ in the test, which asked an incumbent for a theorem about optima.
 ## Testing a multi-objective mixed-integer program without optimality guaranteed
 
 The second objective picks the lightest load among those with the best revenue. Under a time limit, the best revenue
-itself may be unproven, and the second level has to choose from loads whose revenue is only as good as the first level
-managed. Each level can stop early, so each needs its own promise.
+itself may be unproven, and the lightest load is chosen among loads whose revenue is only as good as the first level
+managed. Neither level can promise its optimum, and
+[Pseudocode: time-limited lexicographic contract](#pseudo-time-limited-lexicographic-contract) says so.
 
-### The contract
+<a id="pseudo-time-limited-lexicographic-contract"></a>
 
-The `result` of the multi-objective chapter reports each level separately:
+**Pseudocode: time-limited lexicographic contract**
 
-- `revenue_status` and `revenue_bound`: whether the revenue was proven the best, and a proven upper bound on it.
-- `weight_status` and `weight_bound`: whether the weight was proven the lowest, and a proven lower bound on it.
-
-`objective_value` and `total_weight` stay the revenue and the weight of the load returned. Internally, the second level
-searches the loads that earn at least the revenue the first level found. The load returned may earn more, and
-`weight_bound` remains valid for it: a bound over a larger set of loads also holds over the smaller one.
+```
+// pseudocode: time-limited-lexicographic-contract
+class Optimization
+    // requires: instance is not null
+    // returns:  a Solution, which is feasible, but whose revenue may not be the best
+    //           and whose weight may not be the lowest among the loads with that revenue,
+    //           or null when the optimization phase could not provide a feasible solution
+    public run(instance) returns Solution or null
+```
 
 ### What survives
 
-- **Unchanged:** the load checks and the expected status from the committed pallets.
-- **Always:** `objective_value ≤ revenue_bound` and `total_weight ≥ weight_bound`.
-- **When `revenue_status` is `OPTIMAL`:** the revenue relations and oracles of the single-objective chapter.
-- **Only when both statuses are `OPTIMAL`:** the claim that the load is the lightest among the loads with the best
-  revenue, and with it every oracle of the multi-objective chapter. A proven revenue is not enough: a second level
-  stopped early can return a heavier load than the lightest.
+- **Everything that survives for a single objective** applies to the revenue: the load checks, `null` on an instance
+  whose committed pallets exceed a capacity, and the linear relaxation bound.
+- **The weight, only through a reference.** On a small instance, `LexicographicEnumerationSolver` gives the best revenue
+  and the lowest weight among the loads that earn it. A load that reaches the best revenue can weigh no less than that
+  lowest weight. A load below the best revenue can weigh anything, even less, so no assertion on its weight follows.
+- **Never "the lightest".** The contract does not promise it, so no test may ask for it.
 
-<a id="pseudo-level-bounds-test"></a>
+<a id="pseudo-lexicographic-reference-test"></a>
 
-**Pseudocode: level bounds test**
+**Pseudocode: lexicographic reference test**
 
 ```
-// pseudocode: level-bounds-test
-result = mip_solver(time_limit=1 second).solve(items, weight_capacity, volume_capacity)
+// pseudocode: lexicographic-reference-test
+candidate = Optimization().run(instance)
+reference = LexicographicEnumerationSolver().run(instance)    // small instances only
 
-expect result.objective_value <= result.revenue_bound
-expect result.total_weight >= result.weight_bound
-if result.revenue_status == OPTIMAL and result.weight_status == OPTIMAL:
-    expect result.objective_value == result.revenue_bound
-    expect result.total_weight == result.weight_bound
+if candidate != null:
+    expect_valid_load(instance, candidate)
+    expect candidate.objective_value <= reference.objective_value
+    if candidate.objective_value == reference.objective_value:
+        expect candidate.total_weight >= reference.total_weight
 ```
 
-The limits of [Where this stops working](#where-this-stops-working) apply to each level: a loose bound passes, and a
-large instance's bounds cannot be checked independently.
+The limits of [Where this stops working](#where-this-stops-working) apply to both levels, and the weight has no bound at
+all on a large instance.
 
 ### Check yourself
 
-1. `revenue_status` is `OPTIMAL` and `weight_status` is `FEASIBLE`. May a test assert that the revenue equals the
-   single-objective optimum? That the weight is the lowest possible?
-2. Why is `weight_bound` still valid when the load returned earns more than the first level found?
-3. Which assertion of the lightest tie test survives when both levels stop at `FEASIBLE`?
+1. A Solution matches the reference on both revenue and weight. Does the test require that?
+2. Why does the test not assert `candidate.total_weight >= reference.total_weight` when the revenue is lower?
+3. Which assertions of the lightest tie test survive under this contract?
 
 <details>
 <summary>Answers</summary>
 
-1. The revenue, yes: it was proven. The weight, no: assert only `total_weight ≥ weight_bound`.
-2. The bound holds for every load earning at least the first level's revenue, and the loads earning at least the
-   returned revenue are among them.
-3. Only the feasibility half: the load checks and the two bounds. The revenue of 6, the weight of 2 and the two pallets
-   of B all assume proven levels.
+1. No. It is allowed, and on that instance it is optimal, but the contract promises neither level.
+2. A load with less revenue can be lighter than the optimal one: leaving a pallet behind lowers both.
+3. Only the feasibility half: the load checks, and a revenue of at most 6. The revenue of exactly 6, the weight of 2 and
+   the two pallets of B all assume proven levels.
 
 </details>
 
@@ -1757,20 +1801,18 @@ large instance's bounds cannot be checked independently.
 
 ## Testing a decision-support system
 
-A decision-support system promises its users a decision, not an algorithm: behind its [interface](#ch-interface),
-the load may come from enumeration, a heuristic or a solver, and the choice may change. Its tests therefore see only
-what the interface returns.
+A decision-support system promises its users a decision, not an algorithm: behind its [interface](#ch-interface), the
+load may come from enumeration, a heuristic or a solver, and the choice may change. Its tests therefore see only what
+the interface returns.
 
 A decision-support system is more than its optimization model. Data arrives from other systems, business rules turn it
-into model parameters, the model computes a decision, and the decision flows back to the people and systems that act
-on it. Each of these parts can break. For most of them, the expected output is cheap to write down: you know what a
-data check or a business rule should return before running it. The model is the exception, because its expected
-output is the very thing it exists to compute. The chapter will map each part of the system to the kind of test that
-fits it.
+into model parameters, the model computes a decision, and the decision flows back to the people and systems that act on
+it. Each of these parts can break. For most of them, the expected output is cheap to write down: you know what a data
+check or a business rule should return before running it. The model is the exception, because its expected output is the
+very thing it exists to compute. The chapter will map each part of the system to the kind of test that fits it.
 
-The chapter will also sort the oracles of the model chapters by what survives behind an interface. The contract,
-the load checks, the known oracle, the metamorphic relations and differential testing only need the system's output.
-A solver's bounds and gaps need the solver itself.
+The chapter will also sort the oracles of the model chapters by what survives behind an interface. All of them already
+treat `Optimization` as a black box: they need only the instance and what `run` returns.
 
 ---
 
@@ -1792,8 +1834,8 @@ to the case where the answer is the very thing the model computes.
   keeps the record the test checks.
 - **Keep what only your program uses real** ([Integration testing](#ch-integration)). Mock what others observe, and let
   the real files and databases show where units disagree.
-- **Test the pipeline through its contract** ([Testing an optimization model](#ch-model-testing)). The status, the load
-  and its totals are the promise; the algorithm behind them is not.
+- **Test the pipeline through its contract** ([Testing an optimization model](#ch-model-testing)). `run` and the
+  Solution it returns are the promise; the five private steps behind them are not.
 - **Sort the checks by what the test knows**
   ([Testing a single-objective mixed-integer program with optimality guaranteed](#ch-mip-optimal)). A known answer, a
   second implementation, or only conditions every answer meets.
@@ -1805,7 +1847,7 @@ to the case where the answer is the very thing the model computes.
   checks survive, and the rest weaken into bounds.
 - **Each level keeps its own promise**
   ([Testing a multi-objective mixed-integer program without optimality guaranteed](#ch-multi-no-optimality)). A claim
-  about the weight needs both levels proven.
+  about the weight needs a reference that proves the revenue first.
 - **Behind an interface, only the output counts** ([Testing a decision-support system](#ch-dss-testing)). The techniques
   that read the output survive a hidden algorithm; the ones that need the solver do not.
 

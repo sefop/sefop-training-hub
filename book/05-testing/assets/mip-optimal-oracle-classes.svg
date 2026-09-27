@@ -27,7 +27,7 @@
   <text x="510" y="125" font-size="14" fill="#6a1b9a">enumeration</text>
 
   <path d="M210,168 L858,168 L876,180 L858,192 L210,192 Z" fill="#e0f2f1" stroke="#00897b" stroke-width="2" stroke-linejoin="round"/>
-  <text x="226" y="185" font-size="14" fill="#00695c">output relations: feasibility, reported totals, metamorphic relations</text>
+  <text x="226" y="185" font-size="14" fill="#00695c">output relations: feasibility, reported totals, linear relaxation, metamorphic relations</text>
 
   <!-- ===== Axis ===== -->
   <line x1="210" y1="232" x2="880" y2="232" stroke="#37474f" stroke-width="2" marker-end="url(#arrow)"/>
