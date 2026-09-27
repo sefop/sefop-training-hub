@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" width="900" height="300" font-family="Helvetica, Arial, sans-serif">
+  <!-- Figure: the reach of each oracle. Instance size runs left to right. Each band shows how far one oracle reaches:
+       hand-calculated optimal values (known oracle) only tiny instances, enumeration (pseudo-oracle) small ones,
+       output relations (unknown oracle) every size. Each class has its own hue. -->
+
+  <!-- Light background baked in, so the figure stays readable on a dark theme. -->
+  <rect width="900" height="300" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#37474f"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Class labels ===== -->
+  <g font-size="15" font-weight="bold" text-anchor="end">
+    <text x="190" y="66" fill="#8d6e00">Known oracle</text>
+    <text x="190" y="126" fill="#6a1b9a">Pseudo-oracle</text>
+    <text x="190" y="186" fill="#00695c">Unknown oracle</text>
+  </g>
+
+  <!-- ===== Bands ===== -->
+  <rect x="210" y="42" width="130" height="36" rx="6" fill="#fff8e1" stroke="#f9a825" stroke-width="2"/>
+  <text x="350" y="65" font-size="14" fill="#8d6e00">hand-calculated optimal values</text>
+
+  <rect x="210" y="102" width="290" height="36" rx="6" fill="#f3e5f5" stroke="#8e24aa" stroke-width="2"/>
+  <text x="510" y="125" font-size="14" fill="#6a1b9a">enumeration</text>
+
+  <path d="M210,168 L858,168 L876,180 L858,192 L210,192 Z" fill="#e0f2f1" stroke="#00897b" stroke-width="2" stroke-linejoin="round"/>
+  <text x="226" y="185" font-size="14" fill="#00695c">output relations: feasibility, reported totals, metamorphic relations</text>
+
+  <!-- ===== Axis ===== -->
+  <line x1="210" y1="232" x2="880" y2="232" stroke="#37474f" stroke-width="2" marker-end="url(#arrow)"/>
+  <g font-size="13" fill="#37474f" text-anchor="middle">
+    <line x1="275" y1="227" x2="275" y2="237" stroke="#37474f" stroke-width="1.5"/>
+    <text x="275" y="254">tiny</text>
+    <text x="275" y="270" fill="#607d8b">a few products</text>
+    <line x1="420" y1="227" x2="420" y2="237" stroke="#37474f" stroke-width="1.5"/>
+    <text x="420" y="254">small</text>
+    <text x="420" y="270" fill="#607d8b">a few thousand loads</text>
+    <line x1="760" y1="227" x2="760" y2="237" stroke="#37474f" stroke-width="1.5"/>
+    <text x="760" y="254">large</text>
+    <text x="760" y="270" fill="#607d8b">a real booking list</text>
+  </g>
+  <text x="880" y="292" text-anchor="end" font-size="14" font-weight="bold" fill="#37474f">instance size</text>
+</svg>

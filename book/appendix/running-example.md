@@ -182,9 +182,21 @@ earns more than water. The optimal solution is $x_A = 1$, $x_B = 0$:
 
 ## Evolutions of the model
 
-The model above is held fixed across the book. Two explicit evolutions of it appear in
-[Testing an optimization model](../05-testing/README.md#ch-model-testing), each a change in the business, not a side
-effect of a chapter.
+The model above is held fixed across the book. The evolutions below are the only changes to it, each a change in the
+business, not a side effect of a chapter.
+
+<a id="ev-unlimited-tender"></a>
+
+### Unlimited tender
+
+The shipper will tender as many pallets of each product as the aircraft takes, so the booking list no longer limits a
+product. Constraint (C3) and the parameter $u_i$ disappear, and the committed freight of (C4) stays. Every pallet must
+now weigh something and take some room, $w_i > 0$ and $v_i > 0$: a pallet with neither weight nor volume and a
+positive revenue could be loaded without limit, and the revenue would grow without bound. The capacities alone then
+limit each product to at most $\min(W / w_i, V / v_i)$ pallets.
+
+[The example instance](#ex-two-pallet) keeps its optimal solution: chocolate fits at most once by weight and water at
+most once by volume, the same limits the tender set.
 
 <a id="ev-bulk"></a>
 
@@ -205,3 +217,6 @@ total weight
 $$
 \min_{x} \quad \sum_{i \in I} w_i x_i .
 $$
+
+The second objective combines with [unlimited tender](#ev-unlimited-tender): the two evolutions change different parts
+of the model.

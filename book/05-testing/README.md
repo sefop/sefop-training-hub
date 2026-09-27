@@ -100,8 +100,10 @@ tests.
 later chapter tests the promise. [Unit testing](#ch-unit-testing), [Writing good tests](#ch-clear-tests) and
 [Test-driven development](#ch-tdd) test one unit on its own. [Mocks](#ch-mocks) and
 [Integration testing](#ch-integration) take a test beyond the unit, to the systems it calls and the files it reads.
-[Testing an optimization model](#ch-model-testing) then meets the difficulty specific to decision-support software, in
-models of growing difficulty, and [Testing a decision-support system](#ch-dss-testing) applies it to the whole system
+[Testing an optimization model](#ch-model-testing) then meets the difficulty specific to decision-support software and
+sets up the pipeline and contract that the next four chapters test: a single objective, then two, first with optimality
+guaranteed ([single](#ch-mip-optimal), [multi](#ch-multi-optimal)) and then without ([single](#ch-mip-no-optimality),
+[multi](#ch-multi-no-optimality)). [Testing a decision-support system](#ch-dss-testing) applies them to the whole system
 behind its interface. Read them in order: each chapter uses only what the chapters before it defined.
 
 <a id="ch-interface"></a>
@@ -900,38 +902,39 @@ this test, which joins the two, fails.
 ## Testing an optimization model
 
 Every test so far compared an output with an expected value that someone could work out before running the code:
-`add(2, 3)` is 5, and a notification carries a known message. An optimization model breaks that assumption, because
-its expected output is the very thing it exists to compute.
+`add(2, 3)` is 5, and a notification carries a known message. An optimization model breaks that assumption, because its
+expected output is the very thing it exists to compute.
 
-Testing a model can mean reviewing its formulation or checking the output of solving it. This chapter does the second,
-as [verification](../appendix/glossary.md#verification). The model is implemented in code, and a *solver*, the program
-that finds a provably optimal solution of a model, solves it: a commercial one such as Gurobi or Xpress, or an
-open-source one such as HiGHS. The tests check what comes back, with full access to the solver.
+Before jumping into the details, lets clarify some things first. Testing an optimization model can mean two different things:
+1. Given some instance data, test the formulation is coded correctly.
+2. Given some instance data, test the output of the solved model is correct.
+
+What should we do? the difference is subtle, but very important. Both are plausible, indeed. Let's go back to the first
+principles to answer the question.
+
+Testing the formulation is possible, but I advise against it. This idea has 2 flaws. The first flaw is that it
+assumes there is a formulation coded in the first place, which might not necessarily be true in some situations. For
+example, if you are solving a problem with a heuristic or metaheuristic, then there is no formulation coded. The
+second flaw is that it does not test the public behavior of interest (the optimization model output). The
+formulation is indeed, an implementation detail. Thus, we should only test the output of the solved model. That is
+the correct public behavior that (should) be offered by this abstraction. If the abstraction is promising that a
+particular solver is being used (Gurobi, XPress, Cplex, etc.), that is a design problem (known as a leaky abstraction).
 
 <a id="model-difficulties"></a>
 
 ### Why an optimization model is harder to test
 
-Six properties of an optimization model make its output harder to test than the output of the calculator:
-
-1. [The oracle problem](#difficulty-oracle): the expected answer costs as much to compute as the output it checks.
-2. [The answer may or may not be unique](#difficulty-uniqueness): a correct solver can return any of several optimal
-   solutions.
-3. [An empty feasible region is an answer](#difficulty-infeasible): "no solution exists" can be the correct output.
-4. [Numbers are floating point](#difficulty-floating-point): two correct answers can differ in their last digits.
-5. [Optimality may not be promised](#difficulty-optimality): some solvers return a good answer, not the best one.
-6. [The algorithm may change](#difficulty-algorithm): the solver behind the model can be replaced.
+Six properties of an optimization model make its output harder to test than the output of the calculator.
 
 <a id="difficulty-oracle"></a>
 
-#### The oracle problem
-
-Whatever decides whether an output is correct is called a [test oracle](../appendix/glossary.md#test-oracle). For the
-calculator, the oracle is arithmetic you already know: 2 plus 3 is 5, worked out without reading a line of `add`. For a
-model, writing `expect result.objective_value == ???` needs the optimal value, and for an instance large enough to be
-interesting, computing it independently means solving the very problem the model exists to solve. The difficulty has a
-name in the software testing literature: the [oracle problem](../appendix/glossary.md#oracle-problem).
-[Figure: the oracle problem](#fig-oracle-problem) sets the two situations side by side.
+**The oracle problem.** Whatever decides whether an output is correct is called a
+[test oracle](../appendix/glossary.md#test-oracle). For the calculator, the oracle is arithmetic you already know: 2
+plus 3 is 5, worked out without reading a line of `add`. For an optimization model, writing `expect result.objective_value == ???`
+needs the optimal value, and for an instance large enough, computing it independently means solving
+the problem the model exists to solve. The difficulty has a name in the software testing literature: the
+[oracle problem](../appendix/glossary.md#oracle-problem). [Figure: the oracle problem](#fig-oracle-problem) sets the two
+situations side by side.
 
 <a id="fig-oracle-problem"></a>
 
@@ -947,287 +950,130 @@ expected value is a question mark, because the only way to compute it is to solv
 
 <a id="difficulty-uniqueness"></a>
 
-#### The answer may or may not be unique
-
-A model can have a single optimal solution, or several that tie at the same objective value. When two variables have the
-same objective coefficient and appear in the constraints in the same way, setting one or the other is equally optimal,
-and a correct solver may return either solution. Which one comes back depends on the solver, its settings, even the
-order of the input. A test cannot know in advance which of the optimal solutions it will receive, nor whether there is
-more than one.
+**The answer may not be unique.** A model instance can have a single optimal solution, or several that tie at the same
+objective value. Which one comes back depends on the solver, its settings, even the order of the input. A test cannot know
+in advance which of the optimal solutions it will receive, nor whether there is more than one.
 
 <a id="difficulty-infeasible"></a>
 
-#### An empty feasible region is an answer
-
-Constraints can contradict each other: one demands $x \ge 2$ while another allows at most $x \le 1$. Then no solution
-exists, and "infeasible" is the correct output, not a failure. A correct model must say so rather than return a
-solution, and a test must treat that statement as an answer to check, like any other. Other models can also be
-unbounded, a second answer of the same kind.
+**An empty feasible region is an answer.** Constraints can contradict each other: one demands $x \ge 2$ while another
+allows at most $x \le 1$. Then no solution exists, and "infeasible" is the correct output, not a failure. A correct
+model must say so rather than return a solution, and a test must treat that statement as an answer to check, like any
+other.
 
 <a id="difficulty-floating-point"></a>
 
-#### Numbers are floating point
-
-A computer stores most decimal numbers approximately: 0.1 + 0.2 is not exactly 0.3. A solver computes with that finite
-precision, and it accepts a constraint as satisfied when it is violated by less than a small tolerance. Two correct
-answers can therefore differ in their last digits, an objective value can come back as 25.999999998 instead of 26, and a
-constraint $x \le 10$ can be met at 10.000000001. Equality can only mean equality within a tolerance.
+**Numbers are floating point.** A computer stores most decimal numbers approximately: 0.1 + 0.2 is not exactly 0.3. A
+solver computes with that finite precision, and it accepts a constraint as satisfied when it is violated by less than a
+small tolerance. Two correct answers can therefore differ in their last digits, an objective value can come back as
+25.999999998 instead of 26, and a constraint $x \le 10$ can be met at 10.000000001. Equality can only mean equality
+within a tolerance.
 
 <a id="difficulty-optimality"></a>
 
-#### Optimality may not be promised
-
-A [heuristic](../appendix/glossary.md#heuristic) gives up the guarantee of optimality on purpose, in exchange for speed
-on large instances. An exact solver stopped by a time limit does the same without announcing it: it returns the best
-solution found so far, which need not be the best one. For such solvers, "the optimal value" is not something the
-output promises, and two runs may even return different solutions.
+**Optimality may not be guaranteed.** A [heuristic](../appendix/glossary.md#heuristic) gives up the guarantee of
+optimality on purpose, in exchange for speed on large instances. An exact solver stopped by a time limit does the same
+without announcing it: it returns the best solution found so far, which need not be the best one. For such solvers, "the
+optimal value" is not something the output promises, and two runs may even return different solutions.
 
 <a id="difficulty-algorithm"></a>
 
-#### The algorithm may change
-
-The solver behind a model is rarely permanent. A team moves from one commercial solver to another, from a commercial
-solver to an open-source one, or to a heuristic when instances grow too large. The promise the model makes to its users
-stays the same through each change, while everything about how the answer is found, and which of several optimal
-answers comes back, can change.
-
-### The model under test
-
-The chapter tests the cargo loading system of [the appendix](../appendix/running-example.md): for one departure, how
-much of each tendered product to load, so that the revenue carried is as large as possible without exceeding the
-aircraft's maximum weight or the capacity of its hold. It starts from the
-[bulk variant](../appendix/running-example.md#ev-bulk), where products are loaded by the tonne and each quantity can
-take any value between its bounds.
-
-The symbols the chapter uses, all fixed, **non-negative** parameters except the decision variable:
-
-| Symbol | Meaning | Unit |
-|:---:|---|---|
-| $r_i$ | revenue of one pallet of product $i$ | thousands of USD |
-| $w_i$ | weight of one pallet | tonnes |
-| $v_i$ | volume of one pallet | m³ |
-| $u_i$ | pallets of product $i$ tendered | count |
-| $l_i$ | pallets of product $i$ that must fly | count |
-| $W$, $V$ | max weight and hold capacity | tonnes, m³ |
-| $x_i$ | quantity of product $i$ loaded | continuous |
-
-A load is *loadable* when it respects both capacities, loads no more of a product than was tendered, and loads at
-least what must fly.
-
-The tests write an instance and a solve in a few pseudocode forms:
-
-- `item(name, weight, volume, revenue, max_quantity, min_quantity)` describes one product; `min_quantity`, what must
-  fly, defaults to 0.
-- `solve(items, weight_capacity, volume_capacity)` runs whichever solver is under test. When a test needs a specific
-  one, it writes `enumeration_solver().solve(...)`, `mip_solver().solve(...)` or `greedy_solver().solve(...)`.
-- `result` has five fields: `feasible`, `quantities` (product name to quantity loaded), `total_revenue`,
-  `total_weight` and `total_volume`.
-- `==` on numbers means equal within a small numerical tolerance.
-
-<a id="model-lp"></a>
-
-### A linear program
-
-With continuous quantities, a linear objective and linear constraints, the bulk model is a [linear
-program](../appendix/glossary.md#linear-program): an algorithm such as the simplex method, run by a solver like Gurobi,
-finds a provably optimal load.
-
-<a id="model-contract"></a>
-
-#### Test the contract
-
-For a linear program, the [algorithm that may change](#difficulty-algorithm) is, for example, the simplex method
-giving way to an interior-point method or to another solver.
-
-When tests check *how* the answer was computed, a legitimate swap turns them red even though nothing a user cares about
-got worse. A [regression](../appendix/glossary.md#regression), a behavior that used to work and no longer does,
-never happened, yet the tests report one. Teams in that situation learn to rewrite tests with every change, or to
-ignore red tests altogether. Both defeat the purpose of having tests.
-
-A [contract](../appendix/glossary.md#contract) is the promise a piece of code makes to its callers: what it needs as
-input and what it guarantees as output, and nothing about how. Everything else — the algorithm, its running time, its
-internal data structures — is an [implementation detail](../appendix/glossary.md#implementation-detail).
-
-For the load planner, the contract fits in one sentence: *given a catalogue of items and two capacities, return the
-revenue-maximizing loadable selection if one exists, or report that the instance is infeasible.* Two clauses make it
-precise:
-
-1. When `feasible` is false, the other result fields carry no meaning.
-2. When several selections tie for the best revenue total, any one of them may be returned.
-
-You already make this separation in optimization. The formulation says *what* the optimal solution is; branch-and-bound,
-cutting planes, or enumeration say *how* to find it. That is why you can swap solvers without rewriting the model. A
-contract test checks the formulation's promise, so it runs unchanged against every solver that keeps it.
-
-Writing contract tests [first](#ch-tdd) has a useful side effect. Each test is a question about the contract —
-"what does `solve` promise when nothing is affordable?" — so the contract must be made explicit before any solver
-exists. It also pushes the design toward modularity: a component that can be tested without looking at its
-internals is, by construction, a component whose internals do not leak into its interface.
-
-An example of a contract test on the bulk model will show a test that reads only the promised fields, the status
-and the revenue, so that it survives a change of solver.
-
-<a id="model-feasibility"></a>
-
-#### Check feasibility
-
-Checking that a load is *feasible* is cheap: substitute the returned quantities into each constraint, and recompute
-the revenue from them to compare with the one the solver reports. Proving that the load is *optimal* is expensive.
-This part will show the feasibility check as a test that applies to every returned load, whatever the instance. On
-its own it does not certify optimality: a feasible load can still leave revenue behind.
-
-<a id="model-duality"></a>
-
-#### Duality as an oracle
-
-Linear programming is the exception to the cost of proving optimality. By strong
-[duality](../appendix/glossary.md#duality), a primal feasible solution and a dual feasible solution with equal objective
-values prove each other optimal. A test can therefore ask the solver for both, and verify optimality with a few
-matrix-vector products: an oracle that checks rather than computes.
-
-<a id="model-mip"></a>
-
-### A mixed-integer program
-
-The business moves from bulk cargo to pallets, and a pallet flies whole or not at all: each $x_i$ becomes an integer, as
-in the [appendix model](../appendix/running-example.md#an-optimization-model-for-this-problem), and the model becomes a
-[mixed-integer program](../appendix/glossary.md#mixed-integer-program) (MIP). Integrality breaks the certificate of
-[Duality as an oracle](#model-duality): the best load of whole pallets can fall short of the best load of the linear
-program, so the dual no longer proves the optimum, and the oracle problem returns in full.
-
-<a id="model-hand-oracles"></a>
-
-#### Oracles by hand
-
-The simplest oracle is a person. Take the
-[two-pallet instance](../appendix/running-example.md#ex-two-pallet): each $x_i \in \{0, 1\}$, so there are
-$2 	imes 2 = 4$ candidate selections, few enough to list.
-
-| $x_A$ | $x_B$ | Weight (≤ 2) | Volume (≤ 2) | Revenue | Feasible? |
-|:---:|:---:|:---:|:---:|:---:|---|
-| 0 | 0 | 0 | 0 | 0 | yes |
-| 1 | 0 | 2 | 1 | 10 | yes |
-| 0 | 1 | 1 | 2 | 6 | yes |
-| 1 | 1 | 3 | 3 | 16 | no — both capacities exceeded |
-
-The best feasible selection is $x_A = 1$, $x_B = 0$, worth a revenue of 10. Nobody needed a solver to produce that
-answer, so it can serve as the expected value of a test:
-
-
-<a id="pseudo-two-pallet-test"></a>
-
-**Pseudocode: two-pallet test**
-
-```
-// pseudocode: two-pallet-test
-a = item(name="A", weight=2, volume=1, revenue=10, max_quantity=1)
-b = item(name="B", weight=1, volume=2, revenue=6,  max_quantity=1)
-
-result = solve([a, b], weight_capacity=2, volume_capacity=2)
-
-expect result.feasible == true
-expect result.total_revenue == 10
-```
-
-The price of a human oracle grows fast. The number of candidate selections is $\prod_{i \in I} (u_i - l_i + 1)$: 4
-for this instance, but $4^{30} \approx 1.2 \times 10^{18}$ for 30 items that can each be loaded up to 3 times. A
-person can only be the oracle at teaching scale, which is exactly how this part uses one.
-
-The knapsack, however, is only *weakly* NP-hard: a pseudo-polynomial dynamic
-program solves it exactly, so a cheap independent oracle does exist for this particular problem. The oracle problem
-bites hardest on general MIPs, where no such shortcut is available. The knapsack is used here because it is small
-enough to reason about by hand, not because it is the hardest case.
-
-A person can solve a two-item instance by hand. The harder question is *which* instances to write. Small instances
-picked at random tend to cover whatever comes to mind first, which is usually the ordinary case. Bugs, however, cluster
-at the edges: an empty catalogue, a capacity of exactly zero, two items that tie. Without a method, those edges are left
-to luck.
-
-This part uses the first of three oracle families that the MIP tests build on:
-
-| Oracle | How it decides whether an output is correct | Where |
-|---|---|---|
-| [Specified oracle](../appendix/glossary.md#specified-oracle) | The expected answer is stated in advance, worked out by a person | [Oracles by hand](#model-hand-oracles) |
-| [Metamorphic relation](../appendix/glossary.md#metamorphic-relation) | A relation between two runs must hold, whatever their answers are | [Metamorphic relations](#model-metamorphic) |
-| [Pseudo-oracle](../appendix/glossary.md#pseudo-oracle) | A second, independent implementation must agree | [Differential testing](#model-differential) |
-
-A fourth kind comes for free in every test: an [implicit oracle](../appendix/glossary.md#implicit-oracle) catches what
-is wrong in any program at all — a crash, a hang, a corrupted result. A solver that raises an error fails its test
-regardless of what was asserted.
-
-A specified oracle only needs a person and a small instance. To choose the instances, two standard techniques help:
-
-- **[Equivalence partitioning](../appendix/glossary.md#equivalence-partitioning)** splits the input space into classes
-  expected to behave the same way, then tests one instance per class.
-- **[Boundary value analysis](../appendix/glossary.md#boundary-value-analysis)** adds instances exactly on the border
-  between two classes, where behavior changes character.
-
-If you have done sensitivity analysis, you have seen this structure. As you vary a right-hand side, the optimal basis
-stays the same over a range, then changes at a breakpoint. The ranges are equivalence classes; the breakpoints are
-boundary values. You would never probe sensitivity only in the middle of each range, and the same holds for tests.
-
-Applied to the load planner, the two techniques produce the table below, ordered from the simplest instance to the most
-involved:
-
-| # | Situation | Expected behavior |
-|:---:|---|---|
-| 1 | No items at all | Nothing to pick: a feasible, zero-revenue empty selection. |
-| 2 | Must-go cargo exceeds the payload | The committed pallets alone weigh more than the aircraft may carry: infeasible. |
-| 3 | Must-go cargo exceeds the hold | The mirror of situation 2, for volume. |
-| 4 | Must-go cargo fits exactly | The boundary between 2–3 and the rest: the committed load is the only one that fits, and nothing can be added. |
-| 5 | An item that cannot be loaded | An item with maximum quantity zero is ignored, however attractive its revenue. |
-| 6 | Nothing fits on its own | Every item exceeds a capacity on its own; the empty selection is still feasible, worth zero. |
-| 7 | Unique optimum | One item dominates the other; the basic case. |
-| 8 | Only the payload capacity binds | The optimum exhausts the payload capacity and leaves volume unused. |
-| 9 | Only the hold capacity binds | The mirror of situation 8. |
-| 10 | Both capacities bind at once | The optimum exhausts both capacities simultaneously. |
-| 11 | Several optimal selections | Two interchangeable items tie; only the shared revenue total is asserted, never which item was picked. |
-| 12 | More than one unit of an item | Quantities are genuine integers, not 0/1 choices in disguise. |
-| 13 | One item too heavy to load | A single item that exceeds the payload on its own is excluded without disturbing the rest of the selection. |
-
-Read situations 2 and 3 against 4 and 6. All four leave the aircraft carrying the committed load and nothing more,
-and only two of them are infeasible. That distinction is exactly what a boundary is for.
-
-Take one row of the table, situation 2, written as a specified-oracle test. Two pallets of mail are committed to this
-departure, one tonne each, and the aircraft may carry one tonne:
-
-
-<a id="pseudo-committed-mail-test"></a>
-
-**Pseudocode: committed mail test**
-
-```
-// pseudocode: committed-mail-test
-m = item(name="M", weight=1, volume=1, revenue=4, min_quantity=2, max_quantity=2)
-
-result = solve([m], weight_capacity=1, volume_capacity=5)
-
-expect result.feasible == false
-```
-
-The expected answer was derived by hand, without a solver: both pallets of mail must fly, they weigh 2 tonnes
-together, and the aircraft may carry 1. Every permitted selection violates the payload constraint, so none exists.
-Notice what the test does *not* assert: quantities and revenue. The [contract](#model-contract) says those fields carry
-no meaning when the instance is infeasible, so asserting them would test a promise that was never made.
-
-Thirteen situations pin down thirteen points in an input space that is effectively unbounded, and every one of them
-required a person to work out the answer first. That is the ceiling of a specified oracle: it does not scale to a
-catalogue of thousands of items, and it is not meant to. Its job is to fix expected behavior across a representative
-slice of the input space. Two further assumptions are worth naming: the instances are small enough to solve by hand, and
-the solver promises exact optimality. [When optimality is not guaranteed](#model-no-optimality) drops the second one.
-
-<a id="model-contract-applied"></a>
-
-#### The contract, applied
-
-In code, a contract usually lives in an [abstraction](../appendix/glossary.md#abstraction): a named interface with a
-single method, `solve`, that several implementations fulfill. In the Python exercise it is an abstract class with two
-implementations, one enumerating every selection and one calling the HiGHS solver.
-
-The contract defined for the linear program carries over unchanged; only the examples change. The
-[two-pallet instance](../appendix/running-example.md#ex-two-pallet), tested two ways. First, a test
-coupled to the algorithm:
-
+**The algorithm may change.** An optimization model can be solved with many algorithms, such as a commercial-solver,
+a heuristic, a metaheuristic, dynamic programming, etc. Thus, the tests should not use leaked information from the
+algorithm to assert correctness.
+
+<a id="model-cargo"></a>
+
+### A cargo model example
+
+For the next parts of the section we are going to use this example. The full definition of the cargo loading system is
+written here [the appendix](../appendix/running-example.md#an-optimization-model-for-this-problem): for one cargo
+flight, the question is what cargo to load to maximize revenue and respect operational constraints. The model is
+is a [mixed-integer program](../appendix/glossary.md#mixed-integer-program) (MIP).
+
+The symbols are defined in the following table:
+
+| Symbol | Meaning                                                      | Unit |
+|:---:|--------------------------------------------------------------|---|
+| $r_i$ | revenue of one pallet of product $i$, non-negative           | thousands of USD |
+| $w_i$ | weight of one pallet, positive                               | tonnes |
+| $v_i$ | volume of one pallet, positive                               | m³ |
+| $l_i$ | pallets of product $i$ that must fly, a non-negative integer | pallets |
+| $W$, $V$ | max weight and hold capacity, non-negative                   | tonnes, m³ |
+| $x_i$ | pallets of product $i$ to load                               | pallets |
+
+The optimization model is:
+
+$$
+\begin{aligned}
+\max_{x} \quad & \sum_{i \in I} r_i x_i & \text{maximize revenue} \\
+\text{s.t.} \quad &
+\sum_{i \in I} w_i x_i \le W & \text{weight capacity} \\ &
+\sum_{i \in I} v_i x_i \le V & \text{hold capacity} \\ &
+x_i \ge l_i \quad \forall i \in I & \text{committed freight} \\ &
+x_i \in \mathbb{Z} \quad \forall i \in I & \text{whole pallets}
+\end{aligned}
+$$
+
+<a id="model-what-to-test"></a>
+
+### What to test
+
+[Interface vs implementation](#ch-interface) set the rule every chapter since has followed: a test checks what code
+promises, not how it keeps the promise. A model, however, is not one unit of code. Between an instance and a decision,
+five modules work in sequence:
+
+1. **Receive the instance**, already checked for nonsense values.
+2. **Build the model**: its variables, objective and constraints.
+3. **Solve it** with an algorithm.
+4. **Assemble the solution**: read the solver's values back into pallets per product and totals.
+5. **Return the result.**
+
+None of them on its own shows that the load is right. A model built correctly and solved correctly still yields the
+wrong load if the assembly reads the values in the wrong order. The tests therefore run the five modules together, as
+[integration tests](../appendix/glossary.md#integration-test): they hand the pipeline an instance and check what comes
+back, as [Figure: the pipeline under test](#fig-model-pipeline) shows.
+
+<a id="fig-model-pipeline"></a>
+
+**Figure: the pipeline under test**
+
+<p align="center">
+  <img src="assets/model-testing-pipeline.svg" width="760"
+       alt="Five orange boxes in a row inside a dashed boundary labeled integration test: receive the instance, build
+the model, solve, assemble the solution, return the result. An instance enters the boundary on the left and a result
+leaves it on the right, both through a blue edge labeled contract. The test hands in the instance and reads only the
+result">
+</p>
+
+The solver stays real in these tests. It is a library inside the program, not a
+[managed dependency](../appendix/glossary.md#managed-dependency) such as the program's own files, but it stays real for
+the reason [What an integration test covers](#what-an-integration-test-covers) gives for edge cases: the optimum, an
+infeasible instance and a tie are behaviors that only the real solver produces.
+
+**The contract comes first.** A promise must be written down before it can be tested. A
+[contract](../appendix/glossary.md#contract) is the promise a piece of code makes to its callers: what it needs as input
+and what it guarantees as output, and nothing about how. Everything else, the algorithm, its running time, its internal
+data structures, is an [implementation detail](../appendix/glossary.md#implementation-detail). For the cargo model,
+`solve` returns a `result` with five fields:
+
+- `status`: `OPTIMAL` when a load was found and proven the best, or `INFEASIBLE` when no load is feasible. The contract
+  names the second because [an empty feasible region is an answer](#difficulty-infeasible).
+- `picked`: the pallets loaded of each product, from product name to a whole number, 0 for a product left behind.
+- `objective_value`: the revenue of the load.
+- `total_weight` and `total_volume`: the weight and the volume of the load.
+
+Two clauses complete it:
+
+1. When `status` is `INFEASIBLE`, the other fields carry no meaning.
+2. When several loads tie for the best revenue, any one of them may be returned.
+
+**Why the contract, and not the algorithm.** [The algorithm may change](#difficulty-algorithm), and a test that checks
+how the answer was computed turns red at a legitimate change even though nothing a user cares about got worse. A
+[regression](../appendix/glossary.md#regression), a behavior that used to work and no longer does, never happened, yet
+the test reports one. Take two pipelines around the same model: `enumeration_solver()` tries every load, and
+`mip_solver()` calls a MIP solver. [Pseudocode: algorithm-coupled test](#pseudo-algorithm-coupled-test) is coupled to
+the first:
 
 <a id="pseudo-algorithm-coupled-test"></a>
 
@@ -1235,18 +1081,19 @@ coupled to the algorithm:
 
 ```
 // pseudocode: algorithm-coupled-test
+a = item(name="A", weight=2, volume=1, revenue=10)
+b = item(name="B", weight=1, volume=2, revenue=6)
+
 solver = enumeration_solver()
 result = solver.solve([a, b], weight_capacity=2, volume_capacity=2)
 
-expect solver.combinations_checked == 4      // how the answer was found
-expect result.total_revenue == 10
+expect solver.loads_checked == 4             // how the answer was found
+expect result.objective_value == 10
 ```
 
-Replace `enumeration_solver()` with `mip_solver()` and this test breaks: a MIP solver never enumerates combinations,
-so there is no count to check. The optimum is still 10, yet the test fails.
-
-Second, a test against the contract:
-
+Replace `enumeration_solver()` with `mip_solver()` and this test breaks: a MIP solver never enumerates loads, so there
+is no count to check. The optimum is still 10, yet the test fails. [Pseudocode: contract test](#pseudo-contract-test)
+reads only what the contract promises:
 
 <a id="pseudo-contract-test"></a>
 
@@ -1257,114 +1104,180 @@ Second, a test against the contract:
 for solver in [enumeration_solver(), mip_solver()]:
     result = solver.solve([a, b], weight_capacity=2, volume_capacity=2)
 
-    expect result.feasible == true
-    expect result.total_revenue == 10
+    expect result.status == OPTIMAL
+    expect result.objective_value == 10
 ```
 
-This test only calls `solve` and reads the promised fields. Running it against two very different solvers is itself
-the evidence that it asserts on the contract: if it depended on either algorithm's internals, one of the two would
-fail.
+Running it against two very different algorithms is itself the evidence that it tests the contract: if it depended on
+either one's internals, one of the two would fail.
 
-They tell you *that* a solver is wrong, not *why*: a failing situation does not point at the line that caused it.
-Tests written against an algorithm's internals, say the table a dynamic program fills, catch bugs earlier and
-closer to their cause. They are legitimate, as long as everyone agrees that they may be deleted together with the
-algorithm they test. Keep them separate from the contract tests. What contract tests
-buy in exchange is a suite that survives a solver swap, which in a production pipeline happens more often than most
-test suites assume.
+You already make this separation in optimization. The formulation says *what* the optimal solution is; branch-and-bound,
+cutting planes or enumeration say *how* to find it. That is why you can change solvers without rewriting the model, and
+why a contract test runs unchanged against every solver that keeps the promise.
 
-<a id="model-metamorphic"></a>
+---
 
-#### Metamorphic relations
+<a id="ch-mip-optimal"></a>
 
-Every expected answer in [Oracles by hand](#model-hand-oracles) required a person to work it out first. That
-caps testing at instances small enough to enumerate by hand. The instances you care about in practice — a real
-catalogue, a real network — are far beyond that, and no one can tell you their optimal value.
+## Testing a single-objective mixed-integer program with optimality guaranteed
 
-A [metamorphic relation](../appendix/glossary.md#metamorphic-relation) is a relation that must hold between the
-outputs of two related runs, even when you know neither output. The recipe has three steps:
+The contract of [What to test](#model-what-to-test) promises the best load there is, whenever the status is `OPTIMAL`. A
+promise can only be tested through what it implies about an output, and each implication needs a
+[test oracle](../appendix/glossary.md#test-oracle) to check it. Which oracle a test can use depends on what it knows
+before it runs: the answer itself, a second way to compute the answer, or nothing about the answer at all.
 
-1. Take an instance, any instance.
-2. Transform it in a way whose effect on the optimum you can prove.
-3. Solve both versions and check that the relation holds.
+<a id="mip-conditions"></a>
 
-In the survey's vocabulary, a metamorphic relation is a *derived* oracle: it derives correctness from a relation
-rather than from a known answer.
+### What the contract implies
 
-You already prove relations like these as theorems. Relaxing a constraint cannot make the optimal value worse — the
-same reasoning that makes an LP relaxation a valid bound. A metamorphic relation turns such a theorem into a test. For
-the load planner, four of them hold on every instance:
+The promise of a mixed-integer program (MIP) solved to optimality implies the conditions below, sorted by what the test
+knows:
 
-| Transformation | Relation on the optimal revenue total | Why it holds |
+| Oracle | What the test knows | Conditions it checks |
 |---|---|---|
-| Add an item that need not fly | Never decreases | Every previous selection is still available, with the new item at quantity zero. |
-| Raise the payload or hold capacity | Never decreases | Relaxing a constraint only enlarges the feasible region. |
-| Multiply every revenue by $k > 0$ | Scales by exactly $k$ | The feasible region is unchanged; only the objective is rescaled. |
-| Cap an item's maximum quantity at zero | Equals the value with that item removed | An item that cannot be loaded cannot take part in any selection. |
+| [Known oracle](../appendix/glossary.md#known-oracle) | The expected answer, worked out before the run | The status and the objective value of an instance small enough to solve by hand. The status of an instance of any size, from its committed pallets alone. |
+| [Pseudo-oracle](../appendix/glossary.md#pseudo-oracle) | A second, independent way to compute the answer | The status and the objective value agree with those of enumeration. |
+| [Unknown oracle](../appendix/glossary.md#unknown-oracle) | Nothing about the answer | `picked` respects both capacities and the committed pallets. The objective value and the totals match `picked`. [Metamorphic relations](../appendix/glossary.md#metamorphic-relation) between runs hold. |
 
-The first and last both require the item in question to be uncommitted. Adding an item that *must* fly can lower the
-optimum or empty the feasible region outright, and an item with pallets committed cannot have its maximum capped at
-zero at all — the two bounds would cross.
+The status of a large instance is known in advance only because of this model: every pallet weighs something and takes
+room, so the committed pallets alone are the lightest and smallest load allowed, and the instance is infeasible exactly
+when they exceed a capacity. For a MIP in general, deciding feasibility can be as hard as solving it.
 
-None of the four compares the selected quantities. A transformation can turn a near-tie into an exact tie, and the
-[contract](#model-contract) never promised which selection wins among equals.
+The literature on the [oracle problem](../appendix/glossary.md#oracle-problem) sorts oracles by mechanism rather than by
+what a test knows, so its terms do not map one to one onto these three: a known oracle is its
+[specified oracle](../appendix/glossary.md#specified-oracle), and it counts both pseudo-oracles and metamorphic
+relations as [derived oracles](../appendix/glossary.md#derived-oracle). It also names an
+[implicit oracle](../appendix/glossary.md#implicit-oracle), a failure wrong in any program: a crash, and a hang once the
+test sets a time limit that turns it into a failure.
 
-Written as a test, the first relation — raising a capacity never decreases the optimum — looks like this:
+[Figure: the reach of each oracle](#fig-oracle-classes) shows why a suite needs all three.
 
+<a id="fig-oracle-classes"></a>
 
-<a id="pseudo-capacity-relation-test"></a>
+**Figure: the reach of each oracle**
 
-**Pseudocode: capacity relation test**
+<p align="center">
+  <img src="assets/mip-optimal-oracle-classes.svg" width="760"
+       alt="A horizontal axis of instance size, from tiny to large, with three bands. Hand-calculated optimal values,
+the known oracle, reach only tiny instances. Enumeration, the pseudo-oracle, reaches small ones. Output relations, the
+unknown oracle, reach every size, but check only conditions a correct output must meet">
+</p>
+
+> [!NOTE]
+> The unknown oracle reaches any size because it never establishes optimality: a load that meets every condition can
+> still leave revenue behind.
+
+<a id="mip-known-oracle"></a>
+
+### Known oracle
+
+The simplest oracle is a person. In the example instance of [A cargo model example](#model-cargo), chocolate fits at
+most once by weight and water at most once by volume, so each $x_i \in \{0, 1\}$ and there are $2 \times 2 = 4$
+candidate loads, few enough to list:
+
+| $x_A$ | $x_B$ | Weight (≤ 2) | Volume (≤ 2) | Revenue | Feasible? |
+|:---:|:---:|:---:|:---:|:---:|---|
+| 0 | 0 | 0 | 0 | 0 | yes |
+| 1 | 0 | 2 | 1 | 10 | yes |
+| 0 | 1 | 1 | 2 | 6 | yes |
+| 1 | 1 | 3 | 3 | 16 | no, both capacities exceeded |
+
+The best feasible load is $x_A = 1$, $x_B = 0$, worth a revenue of 10. Nobody needed a solver to produce that answer, so
+it can serve as the expected value of a test:
+
+<a id="pseudo-two-pallet-test"></a>
+
+**Pseudocode: two-pallet test**
 
 ```
-// pseudocode: capacity-relation-test
-a = item(name="A", weight=2, volume=1, revenue=10, max_quantity=2)
-b = item(name="B", weight=1, volume=2, revenue=6,  max_quantity=1)
-c = item(name="C", weight=3, volume=1, revenue=14, max_quantity=1)
+// pseudocode: two-pallet-test
+a = item(name="A", weight=2, volume=1, revenue=10)
+b = item(name="B", weight=1, volume=2, revenue=6)
 
-before = solve([a, b, c], weight_capacity=5, volume_capacity=4)
-after  = solve([a, b, c], weight_capacity=8, volume_capacity=4)
+result = solve([a, b], weight_capacity=2, volume_capacity=2)
 
-expect after.total_revenue >= before.total_revenue
+expect result.status == OPTIMAL
+expect result.objective_value == 10
 ```
 
-The optimum of the first instance happens to be 26 revenue (two units of A plus one of B), but the test never needs
-to know that. The same three lines work unchanged on a catalogue of four thousand items, which is what makes
-metamorphic relations the part of this toolkit that scales.
+The price of a human oracle grows fast. The capacities allow at most $m_i = \lfloor \min(W / w_i, V / v_i) \rfloor$
+pallets of product $i$, so the candidate loads number $\prod_{i \in I} (m_i - l_i + 1)$: 4 for this instance, but
+$4^{30} \approx 1.2 \times 10^{18}$ for 30 products that each fit up to 3 times. A person can only be the oracle at
+teaching scale.
 
-**Numerical tolerance.** "Scales by exactly $k$" means within a small tolerance once revenues are real numbers.
+The harder question is *which* instances to write. Small instances picked at random tend to cover whatever comes to mind
+first, which is usually the ordinary case. Bugs, however, cluster at the edges: an empty catalogue, a capacity of
+exactly zero, two products that tie. Two standard techniques find the edges:
 
-<a id="model-differential"></a>
+- **[Equivalence partitioning](../appendix/glossary.md#equivalence-partitioning)** splits the input space into classes
+  expected to behave the same way, then tests one instance per class.
+- **[Boundary value analysis](../appendix/glossary.md#boundary-value-analysis)** adds instances exactly on the border
+  between two classes, where behavior changes character.
 
-#### Differential testing
+If you have done sensitivity analysis, you have seen this structure. As you vary a right-hand side, the optimal basis
+stays the same over a range, then changes at a breakpoint. The ranges are equivalence classes; the breakpoints are
+boundary values. You would never probe sensitivity only in the middle of each range, and the same holds for tests.
+Applied to the cargo model, the two techniques produce the situations below, from the simplest to the most involved:
 
-The relations of [Metamorphic relations](#model-metamorphic) check that runs are consistent with each other, but a model
-can be consistently wrong. The mistakes that matter most in practice live in the formulation: a coefficient attached to
-the wrong sum, a capacity applied to the wrong constraint, an index set that silently drops an item. The solver then
-optimizes the wrong model faithfully.
+| # | Situation | Expected behavior |
+|:---:|---|---|
+| 1 | No products at all | Nothing to load: `OPTIMAL`, an empty load worth zero. |
+| 2 | Committed cargo exceeds the payload | The committed pallets alone weigh more than the aircraft may carry: `INFEASIBLE`. |
+| 3 | Committed cargo exceeds the hold | The mirror of situation 2, for volume. |
+| 4 | Committed cargo fits exactly | The boundary between 2–3 and the rest: the committed load is the only feasible one. |
+| 5 | Nothing fits on its own | Every product exceeds a capacity on its own; the empty load is still feasible, worth zero. |
+| 6 | Unique optimum | One product dominates the other; the basic case. |
+| 7 | Only the payload capacity binds | The optimum exhausts the payload and leaves volume unused. |
+| 8 | Only the hold capacity binds | The mirror of situation 7. |
+| 9 | Both capacities bind at once | The optimum exhausts both capacities. |
+| 10 | Several optimal loads | Two interchangeable products tie; only the revenue is asserted, never which product was picked. |
+| 11 | Several pallets of one product | The optimum loads a product more than once: quantities are integers, not 0/1 choices. |
+| 12 | One product too heavy to load | A product that exceeds the payload on its own is left behind without disturbing the rest of the load. |
 
-It is worth being precise here. A mature MIP solver such as HiGHS is very unlikely to compute a wrong optimum for the
-model it was given. The realistic risk is that the model does not say what you meant.
+Read situations 2 and 3 against 4 and 5. All four leave the aircraft carrying the committed load and nothing more, and
+only two of them are infeasible. That distinction is exactly what a boundary is for.
+[Pseudocode: committed mail test](#pseudo-committed-mail-test) writes situation 2: two pallets of mail are committed,
+one tonne each, and the aircraft may carry one tonne.
+
+<a id="pseudo-committed-mail-test"></a>
+
+**Pseudocode: committed mail test**
+
+```
+// pseudocode: committed-mail-test
+m = item(name="M", weight=1, volume=1, revenue=4, min_quantity=2)
+
+result = solve([m], weight_capacity=1, volume_capacity=5)
+
+expect result.status == INFEASIBLE
+```
+
+The expected status was derived without a solver: the mail weighs 2 tonnes, and the aircraft may carry 1. The test does
+not assert the load or the revenue, because the contract says those fields carry no meaning when the instance is
+infeasible. The same sum gives the expected status of an instance of any size, so for this model the known oracle of the
+status scales, while the known oracle of the optimal value stops at teaching scale.
+
+<a id="mip-pseudo-oracle"></a>
+
+### Pseudo-oracle
 
 A [pseudo-oracle](../appendix/glossary.md#pseudo-oracle) is a second, independent implementation of the same contract.
-[Differential testing](../appendix/glossary.md#differential-testing) runs both implementations on the same inputs and
-compares their outputs. For small instances, brute-force enumeration makes a good pseudo-oracle: it is slow,
-but correct by inspection. When it disagrees with the MIP solver, the disagreement points at the formulation.
+[Differential testing](../appendix/glossary.md#differential-testing) runs both on the same inputs and compares their
+outputs. For small instances, enumeration makes a good pseudo-oracle: it is slow, but correct by inspection. A MIP
+solver such as Gurobi is very unlikely to compute a wrong optimum for the model it was given; the realistic risk is that
+the code builds a different model from the one on paper, and a disagreement with enumeration points at that.
 
-This is the disciplined version of a sanity check most modelers already run informally — "let me compare my new model
-against brute force on a toy case." Three details turn that habit into a reliable test:
+This is the disciplined version of a sanity check most modelers already run by hand, comparing a new model with brute
+force on a toy case. Three details turn that habit into a reliable test:
 
-1. **Generate many instances instead of picking a few.** Hundreds of small random instances explore corners that
-   nobody would think to write by hand, including infeasible ones whenever the generator commits more cargo than the
-   aircraft can carry.
-2. **Fix the [random seed](../appendix/glossary.md#random-seed).** Reproducibility works here the way it does in a
-   controlled experiment: the same inputs must always produce the same outputs. A failure that vanishes on the retry
-   cannot be investigated, so the test must also report the instance that failed.
-3. **Compare only what the contract promises.** Feasibility and the revenue total, never the selected quantities. When
-   several selections tie, the [contract](#model-contract) allows the two implementations to
-   return different ones.
-
-In code, the comparison over generated instances looks like this:
-
+1. **Generate many instances instead of picking a few.** Hundreds of small random instances explore corners that nobody
+   would think to write by hand, including infeasible ones whenever the generator commits more cargo than the aircraft
+   can carry.
+2. **Fix the [random seed](../appendix/glossary.md#random-seed).** The same inputs must always produce the same outputs,
+   as in a controlled experiment. A failure that vanishes on the retry cannot be investigated, so the test must also
+   report the instance that failed.
+3. **Compare only what the contract promises.** The status and the objective value, never `picked`: when several loads
+   tie, the contract allows the two implementations to return different ones.
 
 <a id="pseudo-differential-sweep"></a>
 
@@ -1376,79 +1289,336 @@ rng = random_generator(seed=20260908)
 
 repeat 200 times:
     items = a list of rng.integer(1, 4) items, each with
-                weight       = rng.integer(0, 5),  volume       = rng.integer(0, 5),
-                revenue      = rng.integer(0, 20), max_quantity = rng.integer(1, 3),
-                min_quantity = rng.integer(0, max_quantity)
+                weight  = rng.integer(1, 5),  volume       = rng.integer(1, 5),
+                revenue = rng.integer(0, 20), min_quantity = rng.integer(0, 2)
     weight_capacity = rng.integer(0, 8)
     volume_capacity = rng.integer(0, 8)
 
     reference = enumeration_solver().solve(items, weight_capacity, volume_capacity)
     candidate = mip_solver().solve(items, weight_capacity, volume_capacity)
 
-    expect candidate.feasible == reference.feasible
-    if reference.feasible:
-        expect candidate.total_revenue == reference.total_revenue
+    expect candidate.status == reference.status
+    if reference.status == OPTIMAL:
+        expect candidate.objective_value == reference.objective_value
 ```
 
-The largest generated instance has 4 items with up to 4 quantity values each, so enumeration checks at most
-$4^4 = 256$ selections. The reference stays cheap.
+Weights and volumes start at 1, so no product fits more than 8 times, and enumeration checks at most $9^4 = 6561$ loads.
+The reference stays cheap.
 
-What does this catch that the oracles written by hand do not? Suppose the formulation mistakenly uses each item's volume
-in the weight constraint. Some of the thirteen hand-written situations will catch that mistake and some will not,
-because they were chosen to cover the contract, not this particular error. A sweep over 200 generated instances is far
-more likely to hit one that exposes it. Neither approach guarantees detection; the difference is how reliably each one
-finds a mistake that nobody anticipated.
+What does this catch that the known oracle does not? Suppose the code mistakenly uses each product's volume in the
+weight constraint. Some of the twelve situations catch that mistake and some do not, because they were chosen to cover
+the contract, not this particular error. A sweep over 200 generated instances is far more likely to hit one that exposes
+it. Neither guarantees detection; the difference is how reliably each one finds a mistake nobody anticipated.
 
 - **The reference must stay tractable.** Differential testing against enumeration lives in the same small-instance
-  regime as [Oracles by hand](#model-hand-oracles). It broadens coverage considerably within that regime; it does not
-  reach the large instances where you would most want an answer.
-- **The two implementations must be independent.** If both share the same misunderstanding of the problem — say, both
-  treat every item as a 0/1 choice — they agree with each other and are both wrong. A pseudo-oracle only protects
-  against mistakes the two implementations do not have in common.
+  regime as the known oracle. It broadens coverage within that regime; it does not reach the large instances.
+- **The two implementations must be independent.** If both share the same misunderstanding, say both treat every product
+  as a 0/1 choice, they agree with each other and are both wrong.
 
-<a id="model-no-optimality"></a>
+<a id="mip-unknown-oracle"></a>
 
-### When optimality is not guaranteed
+### Unknown oracle
 
-Every expected answer in [Oracles by hand](#model-hand-oracles) and every relation in [Metamorphic
-relations](#model-metamorphic) assumes that the solver returns a truly optimal answer. That assumption fails for a
-[heuristic](../appendix/glossary.md#heuristic): a method that gives up the guarantee of optimality on purpose, in
-exchange for finishing in reasonable time on instances too large to solve exactly.
+The known oracle and the pseudo-oracle both stop at small instances, and the instances that matter in practice, a real
+booking list on a real aircraft, are far beyond them. For such an instance a test knows nothing about the answer. It
+still knows what every correct answer must satisfy.
 
-It also fails, less visibly, for an exact MIP solver with a time limit. When the clock runs out, the solver returns its
-best incumbent and an optimality gap. From the contract's point of view, that solver is a heuristic. Testing either one
-against "did you find the exact optimum" fails it for doing precisely what it was designed to do.
+**Checking is cheaper than solving.** Proving a load optimal is expensive; checking that it is feasible and reported
+correctly takes one pass over the products. [Pseudocode: load checks](#pseudo-load-checks) applies after every solve
+that returns `OPTIMAL`, whatever the instance.
 
-Start again from the [contract](#model-contract). A heuristic's contract is weaker:
+<a id="pseudo-load-checks"></a>
 
-- return a *feasible* selection, or report infeasibility when no selection exists;
-- its revenue total is at most the optimum;
-- if, and only if, the method carries an approximation guarantee, its revenue total is at least a known fraction of the
-  optimum.
+**Pseudocode: load checks**
 
-A test survives exactly as far as it checks something this weaker contract still promises. This is the asymmetry of
-[Check feasibility](#model-feasibility) coming back: tests that rely on *feasibility* survive untouched, because
-checking feasibility never needed the optimum. Tests that rely on *optimality* must be weakened into bounds, or dropped.
+```
+// pseudocode: load-checks
+private expect_valid_load(items, weight_capacity, volume_capacity, result)
+    for each item in items:
+        expect result.picked[item.name] is a whole number, "pallet split"
+        expect result.picked[item.name] >= item.min_quantity, "committed pallets left behind"
+    expect result.total_weight == sum of item.weight × result.picked[item.name], "weight misreported"
+    expect result.total_volume == sum of item.volume × result.picked[item.name], "volume misreported"
+    expect result.objective_value == sum of item.revenue × result.picked[item.name], "revenue misreported"
+    expect result.total_weight <= weight_capacity, "payload exceeded"
+    expect result.total_volume <= volume_capacity, "hold exceeded"
+```
 
-**[Oracles by hand](#model-hand-oracles).** One reasonable sorting of the thirteen situations:
+The helper holds logic, which [No logic in tests](#no-logic-in-tests) warns against. The warning is about a test that
+repeats the implementation; these sums do not: the pipeline searches for a load, and the helper only adds one up. On its
+own, it does not certify optimality: a feasible load can leave revenue behind.
 
-| Verdict | Situations | Why |
-|---|:---:|---|
-| Unchanged | 1, 2, 3, 4, 6 | The feasible region is empty, or holds a single selection — the committed load and nothing more — so any correct solver is forced to the same answer. |
-| Weakened | 5, 8, 9, 10, 13 | The feasibility half survives — the capped item and the too-heavy item stay at zero, and capacities are respected. The claims about the optimal total or about which capacity binds do not. |
-| Lose their purpose | 7, 11, 12 | They exist to check which value is optimal. Weakened to feasibility, they only repeat the rows above. |
+**Metamorphic relations.** A [metamorphic relation](../appendix/glossary.md#metamorphic-relation) is a relation that
+must hold between the outputs of two related runs, even when neither output is known. The recipe has three steps:
 
-**[Metamorphic relations](#model-metamorphic).** These are theorems about the optimal value, not about algorithms, so
-they do not transfer automatically. A perfectly correct heuristic can violate them — the worked example below shows one.
-What survives is applying a feasibility check to every transformed instance.
+1. Take an instance, any instance.
+2. Transform it in a way whose effect on the optimum you can prove.
+3. Solve both versions and check that the relation holds.
 
-**[Differential testing](#model-differential).** It survives in weakened form. Keep the exact reference and compare
-`candidate.feasible == reference.feasible` and `candidate.total_revenue <= reference.total_revenue`, plus a floor
-if the heuristic has a guarantee.
+You already prove relations like these as theorems. Relaxing a constraint cannot make the optimal value worse, the same
+reasoning that makes an LP relaxation a valid bound. A metamorphic relation turns such a theorem into a test, as
+[Figure: a metamorphic relation](#fig-metamorphic-relation) shows. For the cargo model, four hold on every feasible
+instance:
 
-Take a greedy heuristic that sorts items by revenue per tonne and takes each one while it still fits. One item, a
-payload capacity of 2, and a hold capacity of 10 that never binds:
+<a id="fig-metamorphic-relation"></a>
 
+**Figure: a metamorphic relation**
+
+<p align="center">
+  <img src="assets/mip-optimal-metamorphic-relation.svg" width="720"
+       alt="An instance and a transformed copy with a larger payload capacity. Both go through the pipeline, and both
+optimal revenues are unknown, shown as question marks. A green check between them tests only that the second is at least
+the first">
+</p>
+
+| Transformation | Relation on the optimal revenue | Why it holds |
+|---|---|---|
+| Add a product that need not fly | Never decreases | Every previous load is still available, with the new product at zero. |
+| Raise the payload or the hold capacity | Never decreases | Relaxing a constraint only enlarges the feasible region. |
+| Commit more pallets of a product | Never increases | Tightening a constraint only shrinks the feasible region. |
+| Multiply every revenue by $k > 0$ | Scales by exactly $k$ | The feasible region is unchanged; only the objective is rescaled. |
+
+None of the four compares `picked`. A transformation can turn a near-tie into an exact tie, and the contract never
+promised which load wins among equals. [Pseudocode: capacity relation test](#pseudo-capacity-relation-test) writes the
+second relation:
+
+<a id="pseudo-capacity-relation-test"></a>
+
+**Pseudocode: capacity relation test**
+
+```
+// pseudocode: capacity-relation-test
+a = item(name="A", weight=2, volume=1, revenue=10)
+b = item(name="B", weight=1, volume=2, revenue=6)
+c = item(name="C", weight=3, volume=1, revenue=14)
+
+before = solve([a, b, c], weight_capacity=5, volume_capacity=4)
+after  = solve([a, b, c], weight_capacity=8, volume_capacity=4)
+
+expect after.objective_value >= before.objective_value
+```
+
+The optimum of the first instance happens to be 26 (two pallets of A and one of B), but the test never needs to know
+that. The same lines work unchanged on a booking list of four thousand products, which is what makes the unknown oracle
+the part of the suite that scales.
+
+### Check yourself
+
+1. Two loads tie at 5 revenue. Pipeline A returns one of them and pipeline B the other. Which contract test should fail?
+2. An instance has 4,000 products, and its committed pallets weigh 1 tonne more than the aircraft may carry. What status
+   must the result carry, and did you need a solver to know?
+3. A broken pipeline always returns `OPTIMAL` with an empty load worth 0. Which of the four relations does it violate?
+4. Why is the random seed of the differential sweep fixed rather than drawn fresh on every run?
+
+<details>
+<summary>Answers</summary>
+
+1. None. Clause 2 of the contract allows any optimal load, so a contract test asserts only the revenue.
+2. `INFEASIBLE`, known from one sum over the committed pallets, with no solver. That shortcut belongs to this model.
+3. None of them: 0 ≥ 0, 0 ≤ 0 and 0 = k × 0. The load checks catch it when pallets are committed, and otherwise only the
+   known oracle and the pseudo-oracle do.
+4. So that a failure reproduces on the next run and can be investigated.
+
+</details>
+
+### Further reading
+
+- Barr et al., ["The Oracle Problem in Software Testing: A Survey"](https://ieeexplore.ieee.org/document/6963470), IEEE
+  Transactions on Software Engineering, 2015: the survey that names the oracle problem and sorts oracles by mechanism.
+- Maurício Aniche, *Effective Software Testing: A developer's guide*, Manning, 2022: equivalence partitioning and
+  boundary analysis in depth, under the name specification-based testing.
+- T. Y. Chen et al., "Metamorphic Testing: A Review of Challenges and Opportunities," *ACM Computing Surveys*, 2018: a
+  broad review of the technique and where it has been applied.
+- William M. McKeeman, "Differential Testing for Software," *Digital Technical Journal*, 1998: the paper that named the
+  technique.
+
+> **Practice it**
+>
+> - Python: Single-objective MIP with optimality exercise (coming soon)
+> - Java: Single-objective MIP with optimality exercise (coming soon)
+
+---
+
+<a id="ch-multi-optimal"></a>
+
+## Testing a multi-objective mixed-integer program with optimality guaranteed
+
+The contract of [What to test](#model-what-to-test) lets the pipeline return any of several loads that tie for the best
+revenue. For a test that is a convenience. For the airline it is a gap: two loads can carry the same revenue and differ
+in everything else, and the pipeline picks one for reasons nobody chose. Which one should the user receive?
+
+The airline's answer is the lightest, because weight burns fuel. That is the
+[second objective](../appendix/running-example.md#ev-second-objective): among the loads with the best revenue, minimize
+the total weight. Optimizing objectives in a fixed order like this is
+[lexicographic optimization](../appendix/glossary.md#lexicographic-optimization).
+
+### The contract
+
+The `result` keeps its five fields. What they promise changes:
+
+- `OPTIMAL` now means that both levels were proven: no load earns more revenue, and no load with that revenue weighs
+  less.
+- `total_weight` is the second objective: the minimum weight among the loads with the best revenue.
+- Clause 2 narrows: any one of several loads may be returned only when they tie on both revenue and weight.
+
+The oracles of [Testing a single-objective mixed-integer program with optimality guaranteed](#ch-mip-optimal) apply to
+the revenue unchanged, because the first level is that model. What follows is what each one adds for the weight.
+
+### What each oracle adds
+
+**Known oracle.** A tie now has one right answer, so a test can assert which load comes back.
+[Pseudocode: lightest tie test](#pseudo-lightest-tie-test) offers two ways to earn 6: one pallet of A, weighing 3
+tonnes, or two pallets of B, weighing 2.
+
+<a id="pseudo-lightest-tie-test"></a>
+
+**Pseudocode: lightest tie test**
+
+```
+// pseudocode: lightest-tie-test
+a = item(name="A", weight=3, volume=1, revenue=6)
+b = item(name="B", weight=1, volume=2, revenue=3)
+
+result = solve([a, b], weight_capacity=3, volume_capacity=4)
+
+expect result.status == OPTIMAL
+expect result.objective_value == 6
+expect result.total_weight == 2
+expect result.picked["B"] == 2
+```
+
+Three pallets of B would earn 9 but need 6 m³, and A with a pallet of B would weigh 4 tonnes, so 6 is the best revenue.
+Under the single-objective contract, `picked` could not be asserted; here the second objective decides it.
+
+**Pseudo-oracle.** Enumeration compares loads by revenue first and weight second, and the differential sweep adds one
+comparison: `candidate.total_weight == reference.total_weight` whenever the status is `OPTIMAL`.
+
+**Unknown oracle.** The load checks apply unchanged. The relations of the single-objective chapter still hold for the
+revenue, but not all of them say anything about the weight: adding a product can raise the revenue and, with it, the
+weight. Three relations do:
+
+| Relation | Why it holds |
+|---|---|
+| The revenue equals the one of the single-objective pipeline on the same instance | The first level is the single-objective model. |
+| The weight never exceeds that of the single-objective pipeline's load | That load has the best revenue, and the second level picks the lightest among such loads. |
+| Multiplying every revenue by $k > 0$ scales the revenue by $k$ and leaves the weight unchanged | The scaling keeps every tie, so the same loads have the best revenue. |
+
+[Pseudocode: lexicographic relation test](#pseudo-lexicographic-relation-test) checks the first two, where
+`single_objective_solver()` is the pipeline of the single-objective chapter.
+
+<a id="pseudo-lexicographic-relation-test"></a>
+
+**Pseudocode: lexicographic relation test**
+
+```
+// pseudocode: lexicographic-relation-test
+single = single_objective_solver().solve(items, weight_capacity, volume_capacity)
+both   = solve(items, weight_capacity, volume_capacity)
+
+expect both.objective_value == single.objective_value
+expect both.total_weight <= single.total_weight
+```
+
+Like every unknown oracle, it runs on any `items`, whatever their size.
+
+### Check yourself
+
+1. In the lightest tie test, why may the test assert `picked["B"] == 2` when the single-objective tests never assert
+   `picked`?
+2. Adding a product that need not fly never lowers the revenue. Does it ever lower the weight?
+3. A pipeline returns the single-objective load unchanged, ignoring the second objective. Which relation of the table
+   catches it?
+
+<details>
+<summary>Answers</summary>
+
+1. The contract now decides between tied loads: only one load has the best revenue and the lowest weight.
+2. It can. If the new product raises the revenue, the best loads change, and they may weigh less or more.
+3. None of them on every instance: its revenue matches and its weight equals, rather than exceeds, the single-objective
+   weight. The known oracle catches it, as the lightest tie test shows, and so does the pseudo-oracle.
+
+</details>
+
+### Further reading
+
+- Matthias Ehrgott, *Multicriteria Optimization*, 2nd edition, Springer, 2005: lexicographic optimization among the
+  other ways to combine objectives.
+
+> **Practice it**
+>
+> - Python: Multi-objective MIP with optimality exercise (coming soon)
+> - Java: Multi-objective MIP with optimality exercise (coming soon)
+
+---
+
+<a id="ch-mip-no-optimality"></a>
+
+## Testing a single-objective mixed-integer program without optimality guaranteed
+
+A mixed-integer program (MIP) can take hours to solve to proven optimality once its instance grows, and a load planner
+cannot wait hours before the aircraft closes. The pipeline has to answer in time, even when the best load has not been
+proven best yet. It gives the solver a time limit and, when the limit is reached, returns the best load found so far,
+the [incumbent](../appendix/glossary.md#incumbent). A test can no longer ask for the optimum. What can it still ask for?
+
+### The contract
+
+The solver knows more than its incumbent. Branch-and-bound also keeps a
+[dual bound](../appendix/glossary.md#dual-bound): a value proven to be at least the optimal revenue. The contract adds
+it to the `result` as a sixth field, `bound`, and `status` gains a value:
+
+| `status` | `picked`, totals, `objective_value` | `bound` |
+|---|---|---|
+| `OPTIMAL` | A load proven the best | Equals `objective_value` |
+| `FEASIBLE` | A feasible load, perhaps not the best | At least `objective_value` |
+| `INFEASIBLE` | No meaning | No meaning |
+
+`INFEASIBLE` means proven infeasible. The pipeline checks the committed pallets before the solver starts and, when they
+fit, hands them to the solver as its first incumbent: a result is then always either a feasible load or proven
+infeasibility, and no status such as "no load found yet" exists. The distance between the two is the
+[optimality gap](../appendix/glossary.md#optimality-gap), `(bound − objective_value) / bound` for a positive bound.
+
+### What survives
+
+- **Unchanged:** the load checks of the [unknown oracle](#mip-unknown-oracle), which never needed the optimum, and the
+  expected status of the [known oracle](#mip-known-oracle), since the committed pallets decide it at any size.
+- **When `status` is `OPTIMAL`:** every oracle of the single-objective chapter, as before. A test on an instance small
+  enough to finish well inside the time limit may expect `OPTIMAL`.
+- **Otherwise, weakened into bounds:** `objective_value ≤ bound`, and the gap the pipeline reports equals the one
+  computed from those two fields. On small instances, enumeration supplies the optimum between them, as
+  [Figure: an incumbent and its bound](#fig-bounds) shows.
+
+In [Pseudocode: time-limit bound test](#pseudo-time-limit-bound-test), `mip_solver(time_limit=…)` is the pipeline with
+its solver stopped at the given limit.
+
+<a id="fig-bounds"></a>
+
+**Figure: an incumbent and its bound**
+
+<p align="center">
+  <img src="assets/mip-no-optimality-bounds.svg" width="720"
+       alt="A number line of revenue. On the left, the incumbent's objective value, the revenue of the load returned. On
+the right, the proven bound. Between them, the optimum, unknown on a large instance, and the optimality gap spanning the
+distance from incumbent to bound">
+</p>
+
+<a id="pseudo-time-limit-bound-test"></a>
+
+**Pseudocode: time-limit bound test**
+
+```
+// pseudocode: time-limit-bound-test
+reference = enumeration_solver().solve(items, weight_capacity, volume_capacity)
+candidate = mip_solver(time_limit=1 second).solve(items, weight_capacity, volume_capacity)
+
+expect (candidate.status == INFEASIBLE) == (reference.status == INFEASIBLE)
+if reference.status == OPTIMAL:
+    expect candidate.objective_value <= reference.objective_value
+    expect reference.objective_value <= candidate.bound
+```
+
+**The relations do not survive.** Metamorphic relations are theorems about the optimum, and an incumbent is not the
+optimum. A [heuristic](../appendix/glossary.md#heuristic) with no bound at all is the extreme case: take a greedy one
+that sorts products by revenue per tonne and loads each while it fits.
 
 <a id="pseudo-greedy-relation-test"></a>
 
@@ -1456,157 +1626,130 @@ payload capacity of 2, and a hold capacity of 10 that never binds:
 
 ```
 // pseudocode: greedy-relation-test
-a = item(name="A", weight=2, volume=1, revenue=10, max_quantity=1)
-d = item(name="D", weight=1, volume=1, revenue=6,  max_quantity=1)
+a = item(name="A", weight=3, volume=1, revenue=10)
+d = item(name="D", weight=2, volume=1, revenue=7)
 
-before = greedy_solver().solve([a],    weight_capacity=2, volume_capacity=10)   // takes A: 10 revenue
-after  = greedy_solver().solve([a, d], weight_capacity=2, volume_capacity=10)   // takes D first (6 per tonne
-                                                                                # beats 5), then A no longer
-                                                                                # fits: 6
-expect after.total_revenue >= before.total_revenue                              // fails: 6 < 10
+before = greedy_solver().solve([a],    weight_capacity=3, volume_capacity=10)   // loads A: 10
+after  = greedy_solver().solve([a, d], weight_capacity=3, volume_capacity=10)   // loads D first, then nothing fits: 7
+
+expect after.objective_value >= before.objective_value                          // fails: 7 < 10
 ```
 
-The relation "adding an item never decreases the optimum" still holds for the optimum itself, which stays at 10. It is
-the heuristic that dropped to 6, and it did so while behaving exactly as designed. The test that fits its weaker
-contract is a bound against an exact reference:
+D earns 3.5 per tonne and A 3.3, so the greedy method loads D, and the tonne left takes nothing. The optimum with D
+available is still 10, one pallet of A. The heuristic dropped to 7 while behaving exactly as designed, so the failure is
+in the test, which asked an incumbent for a theorem about optima.
 
+### Where this stops working
 
-<a id="pseudo-greedy-bound-test"></a>
+> [!WARNING]
+> A bound test passes whenever the bound is loose, so it shows far less than the optimality tests it replaces.
 
-**Pseudocode: greedy bound test**
-
-```
-// pseudocode: greedy-bound-test
-exact = enumeration_solver().solve([a, d], weight_capacity=2, volume_capacity=10)
-
-expect after.feasible == exact.feasible
-expect after.total_revenue <= exact.total_revenue
-```
-
-- **Bounds are weak tests.** "At most the optimum" is satisfied by returning the empty selection every time. Without an
-  approximation guarantee there is no floor to assert. One practical option is to track solution quality as a
-  benchmark over time — the average gap to the exact reference, say — rather than as a pass/fail test.
-- **An exact reference is still needed** for the weakened differential test, so it remains limited to small instances,
-  as in [Differential testing](#model-differential).
-
-<a id="model-multi-objective"></a>
-
-### Several objectives
-
-Among the loads that carry the most revenue, the airline prefers the lightest, because weight burns fuel: the [second
-objective](../appendix/running-example.md#ev-second-objective) minimizes total weight among the revenue-optimal loads, a
-[lexicographic optimization](../appendix/glossary.md#lexicographic-optimization). This part will show how each level is
-checked. The first level's revenue equals the optimum of the single-objective MIP. Multiplying every revenue by the same
-$k > 0$ multiplies that revenue by $k$ and leaves the minimum weight unchanged, because it keeps every tie between
-loads. On small instances, enumeration checks the second level directly.
-
-<a id="model-multi-no-optimality"></a>
-
-### Several objectives without optimality
-
-When the solver may stop before proving the first level optimal, the second level is chosen among loads whose revenue
-is itself uncertain. This part will set out what a test can still assert about each level in that case, once the
-promise the model makes about its second objective is settled.
+- **A loose or wrong bound passes.** `objective_value ≤ bound` holds for any bound large enough, including a wrong one.
+- **A large instance's bound cannot be checked independently.** Enumeration confirms it only on small instances.
+- **A poor load passes.** The committed pallets alone satisfy every weakened check. Without an approximation guarantee
+  there is no floor to assert, so solution quality is better tracked as a benchmark over time, the average gap on a
+  fixed set of instances, than as a pass/fail test.
 
 ### Check yourself
 
-**Test the contract**
-
-1. Is "the solver finishes in under one second" part of the contract as stated above?
-2. Two selections tie at 5 revenue. Solver A returns one of them and solver B returns the other. Which contract test
-   should fail?
-3. Which assertion is about the contract: (a) `result.total_weight <= weight_capacity`, or (b) "the MIP model has two
-   constraints"?
-
-**A mixed-integer program**
-
-1. For the calculator, what plays the role of the test oracle?
-2. In the two-pallet instance, the payload capacity rises from 2 to 3 and the hold capacity stays at 2. What is
-   the optimal revenue total?
-3. How many candidate selections does an instance with three items and maximum quantities 1, 2, and 4 have?
-
-1. One item with weight 1, a payload capacity of 0, and a hold capacity of 0. Feasible or infeasible?
-2. Which situation would fail for a solver that treats every item as a take-it-or-leave-it (0/1) choice?
-3. Why does situation 11 assert only the revenue total and not the quantities?
-
-1. You double every item's weight. Does the optimal revenue total never decrease, never increase, or neither?
-2. A broken solver always returns a feasible, empty selection worth 0 revenue. Which of the four relations does it
-   violate?
-3. You remove an item from the catalogue. What happens to the optimal revenue total?
-
-1. The candidate selects item E and the reference selects item F. Both are worth 5 revenue. Should the test fail?
-2. Why is the random seed fixed rather than drawn fresh on every run?
-3. Why is enumeration a good reference for 4 items but not for 50?
-
-**When optimality is not guaranteed**
-
-1. A MIP solver reaches its 60-second time limit and returns an incumbent with a 3% gap. Should the exact-value
-   assertion of situation 7 apply to it?
-2. Does situation 2 (must-go cargo exceeds the payload → infeasible) still hold for a heuristic?
-3. On the same instance, a heuristic reports 12 revenue and enumeration reports 10. Is that a bug?
+1. A solver reaches its 60-second limit and returns `FEASIBLE` with a 3% gap. Should the exact-value assertion of
+   situation 6 apply to it?
+2. On the same small instance, the pipeline reports 12 revenue and enumeration reports 10. Is that a bug?
+3. Why does the pipeline hand the committed pallets to the solver before it starts?
 
 <details>
 <summary>Answers</summary>
 
-**Test the contract**
-
-1. No. Running time is an implementation detail here. If users need a time guarantee, it has to be written into the
-   contract explicitly.
-2. None. Clause 2 of the contract allows any optimal selection, so the test should assert only the revenue total.
-3. (a). The number of constraints describes how one solver models the problem, not what `solve` promises.
-
-**A mixed-integer program**
-
-1. Arithmetic you already know: you compute 2 + 3 in your head, independently of the code.
-2. Still 10. Loading both now fits the payload capacity (3 ≤ 3) but uses volume 3 > 2, so item A alone remains
-   best.
-3. $2 \times 3 \times 5 = 30$.
-
-1. Feasible. Nothing must fly, so the committed load is the empty one; it weighs 0, which fits a capacity of 0, and
-   the item cannot be added (situation 4).
-2. Situation 12.
-3. The contract allows any optimal selection when several tie, so the chosen quantities may legitimately differ.
-
-1. Never increases. With non-negative weights, every selection that fits the doubled weights also fits the original
-   ones, so the feasible region can only shrink.
-2. None of them: 0 ≥ 0, 0 = k × 0, and 0 = 0. See the next section.
-3. It never increases — the reverse of adding an item.
-
-1. No. The contract allows any optimal selection when several tie; only feasibility and the revenue total are compared.
-2. So that a failure reproduces on the next run and can be investigated.
-3. The number of selections grows as $\prod_i (u_i - l_i + 1)$ — already about $1.3 \times 10^{30}$ for 50 items with
-   up to 3 units each and nothing committed to fly.
-
-**When optimality is not guaranteed**
-
-1. No. Under a time limit the solver is a heuristic for contract purposes: assert feasibility and a bound, or use
-   instances small enough to guarantee it finishes.
-2. Yes. No feasible selection exists, so any correct solver must report infeasibility.
-3. Yes. No feasible selection can beat the optimum, so either the heuristic's selection is infeasible or its totals are
-   miscomputed.
+1. No. It applies only when the status is `OPTIMAL`; for `FEASIBLE`, assert the load checks and the bounds.
+2. Yes. No feasible load beats the optimum, so either the load is infeasible or its revenue is misreported, and the load
+   checks show which.
+3. So that the solver always has a feasible incumbent when the committed pallets fit: the result is then either a
+   feasible load or proven infeasibility.
 
 </details>
 
 ### Further reading
 
-- Barr et al., ["The Oracle Problem in Software Testing: A Survey"](https://ieeexplore.ieee.org/document/6963470),
-  IEEE Transactions on Software Engineering, 2015: the survey that names the oracle problem and defines specified,
-  derived, pseudo- and implicit oracles.
-- Vladimir Khorikov, *Unit Testing: Principles, Practices and Patterns*, Manning, 2020: the distinction between
-  observable behavior and implementation details that contract tests rest on.
-- Maurício Aniche, *Effective Software Testing: A developer's guide*, Manning, 2022: equivalence partitioning and
-  boundary analysis in depth, under the name specification-based testing.
-- T. Y. Chen et al., "Metamorphic Testing: A Review of Challenges and Opportunities," *ACM Computing Surveys*, 2018: a
-  broad review of the technique and where it has been applied.
-- William M. McKeeman, "Differential Testing for Software," *Digital Technical Journal*, 1998: the paper that named
-  the technique.
+- Laurence A. Wolsey, *Integer Programming*, 2nd edition, Wiley, 2020: primal and dual bounds, and how branch-and-bound
+  closes the gap between them.
 - David P. Williamson and David B. Shmoys, *The Design of Approximation Algorithms*, Cambridge University Press, 2011:
   where approximation guarantees, the floor a heuristic test can assert, come from.
 
 > **Practice it**
 >
-> - Python: [LP testing exercise](https://github.com/sefop/training-testing-python/tree/main/exercises/4-testing-lp-single-objective) (in preparation), [MIP testing exercise](https://github.com/sefop/training-testing-python/blob/main/exercises/5-testing-mip-single-objective/instructions.md)
-> - Java: coming soon
+> - Python: Single-objective MIP without optimality exercise (coming soon)
+> - Java: Single-objective MIP without optimality exercise (coming soon)
+
+---
+
+<a id="ch-multi-no-optimality"></a>
+
+## Testing a multi-objective mixed-integer program without optimality guaranteed
+
+The second objective picks the lightest load among those with the best revenue. Under a time limit, the best revenue
+itself may be unproven, and the second level has to choose from loads whose revenue is only as good as the first level
+managed. Each level can stop early, so each needs its own promise.
+
+### The contract
+
+The `result` of the multi-objective chapter reports each level separately:
+
+- `revenue_status` and `revenue_bound`: whether the revenue was proven the best, and a proven upper bound on it.
+- `weight_status` and `weight_bound`: whether the weight was proven the lowest, and a proven lower bound on it.
+
+`objective_value` and `total_weight` stay the revenue and the weight of the load returned. Internally, the second level
+searches the loads that earn at least the revenue the first level found. The load returned may earn more, and
+`weight_bound` remains valid for it: a bound over a larger set of loads also holds over the smaller one.
+
+### What survives
+
+- **Unchanged:** the load checks and the expected status from the committed pallets.
+- **Always:** `objective_value ≤ revenue_bound` and `total_weight ≥ weight_bound`.
+- **When `revenue_status` is `OPTIMAL`:** the revenue relations and oracles of the single-objective chapter.
+- **Only when both statuses are `OPTIMAL`:** the claim that the load is the lightest among the loads with the best
+  revenue, and with it every oracle of the multi-objective chapter. A proven revenue is not enough: a second level
+  stopped early can return a heavier load than the lightest.
+
+<a id="pseudo-level-bounds-test"></a>
+
+**Pseudocode: level bounds test**
+
+```
+// pseudocode: level-bounds-test
+result = mip_solver(time_limit=1 second).solve(items, weight_capacity, volume_capacity)
+
+expect result.objective_value <= result.revenue_bound
+expect result.total_weight >= result.weight_bound
+if result.revenue_status == OPTIMAL and result.weight_status == OPTIMAL:
+    expect result.objective_value == result.revenue_bound
+    expect result.total_weight == result.weight_bound
+```
+
+The limits of [Where this stops working](#where-this-stops-working) apply to each level: a loose bound passes, and a
+large instance's bounds cannot be checked independently.
+
+### Check yourself
+
+1. `revenue_status` is `OPTIMAL` and `weight_status` is `FEASIBLE`. May a test assert that the revenue equals the
+   single-objective optimum? That the weight is the lowest possible?
+2. Why is `weight_bound` still valid when the load returned earns more than the first level found?
+3. Which assertion of the lightest tie test survives when both levels stop at `FEASIBLE`?
+
+<details>
+<summary>Answers</summary>
+
+1. The revenue, yes: it was proven. The weight, no: assert only `total_weight ≥ weight_bound`.
+2. The bound holds for every load earning at least the first level's revenue, and the loads earning at least the
+   returned revenue are among them.
+3. Only the feasibility half: the load checks and the two bounds. The revenue of 6, the weight of 2 and the two pallets
+   of B all assume proven levels.
+
+</details>
+
+> **Practice it**
+>
+> - Python: Multi-objective MIP without optimality exercise (coming soon)
+> - Java: Multi-objective MIP without optimality exercise (coming soon)
 
 ---
 
@@ -1625,9 +1768,9 @@ data check or a business rule should return before running it. The model is the 
 output is the very thing it exists to compute. The chapter will map each part of the system to the kind of test that
 fits it.
 
-The chapter will also sort the techniques of [Testing an optimization model](#ch-model-testing) by what survives
-behind an interface. The contract, the feasibility check, the oracles written by hand, the metamorphic relations and
-differential testing only need the system's output. Duality and a solver's bounds and gaps need the solver itself.
+The chapter will also sort the oracles of the model chapters by what survives behind an interface. The contract,
+the load checks, the known oracle, the metamorphic relations and differential testing only need the system's output.
+A solver's bounds and gaps need the solver itself.
 
 ---
 
@@ -1635,11 +1778,11 @@ differential testing only need the system's output. Duality and a solver's bound
 
 ## Conclusion
 
-A test is an experiment with an expected answer, and each chapter of this section is a way of obtaining that answer,
-up to the case where the answer is the very thing the model computes.
+A test is an experiment with an expected answer, and each chapter of this section is a way of obtaining that answer, up
+to the case where the answer is the very thing the model computes.
 
-- **Test the promise, not the mechanism** ([Interface vs implementation](#ch-interface)). What a unit does outlives
-  how it does it.
+- **Test the promise, not the mechanism** ([Interface vs implementation](#ch-interface)). What a unit does outlives how
+  it does it.
 - **A unit test is a small experiment** ([Unit testing](#ch-unit-testing)). One behavior, fixed inputs and a stated
   prediction.
 - **Nothing tests the test** ([Writing good tests](#ch-clear-tests)). A test must be obviously correct at a glance.
@@ -1647,12 +1790,24 @@ up to the case where the answer is the very thing the model computes.
   that the code made it pass.
 - **Record the calls you cannot observe** ([Mocks](#ch-mocks)). When a behavior is a call to another system, a mock
   keeps the record the test checks.
-- **Keep what only your program uses real** ([Integration testing](#ch-integration)). Mock what others observe, and
-  let the real files and databases show where units disagree.
-- **Checking is cheaper than solving** ([Testing an optimization model](#ch-model-testing)). Each harder model keeps
-  the cheap checks and weakens the expensive ones into bounds.
-- **Behind an interface, only the output counts** ([Testing a decision-support system](#ch-dss-testing)). The
-  techniques that read the output survive a hidden algorithm; the ones that need the solver do not.
+- **Keep what only your program uses real** ([Integration testing](#ch-integration)). Mock what others observe, and let
+  the real files and databases show where units disagree.
+- **Test the pipeline through its contract** ([Testing an optimization model](#ch-model-testing)). The status, the load
+  and its totals are the promise; the algorithm behind them is not.
+- **Sort the checks by what the test knows**
+  ([Testing a single-objective mixed-integer program with optimality guaranteed](#ch-mip-optimal)). A known answer, a
+  second implementation, or only conditions every answer meets.
+- **A second objective settles ties**
+  ([Testing a multi-objective mixed-integer program with optimality guaranteed](#ch-multi-optimal)). Once the lightest
+  load must win, a test may assert which load comes back.
+- **Without optimality, checking is cheaper than solving**
+  ([Testing a single-objective mixed-integer program without optimality guaranteed](#ch-mip-no-optimality)). The cheap
+  checks survive, and the rest weaken into bounds.
+- **Each level keeps its own promise**
+  ([Testing a multi-objective mixed-integer program without optimality guaranteed](#ch-multi-no-optimality)). A claim
+  about the weight needs both levels proven.
+- **Behind an interface, only the output counts** ([Testing a decision-support system](#ch-dss-testing)). The techniques
+  that read the output survive a hidden algorithm; the ones that need the solver do not.
 
 With the system tested, the next section puts it in front of its users.
 

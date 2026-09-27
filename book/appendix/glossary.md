@@ -143,6 +143,11 @@ outputs. A disagreement means at least one of them is wrong.
 The rule that each piece of knowledge, such as a business rule or an output format, should live in exactly one
 place in the code, so that changing it means one edit. Abbreviated DRY.
 
+## Dual bound
+
+A value proven to be at least the optimal value of a maximization problem (at most, for a minimization), kept by a
+solver while it searches. When it meets the value of the [incumbent](#incumbent), the incumbent is proven optimal.
+
 ## Duality
 
 The pairing of every linear program with a second one, its dual, whose optimal value bounds the first. By strong
@@ -187,13 +192,18 @@ changes.
 
 ## Implicit oracle
 
-A [test oracle](#test-oracle) that catches failures wrong in any program at all — a crash, a hang, a corrupted result —
-without knowing anything about the expected answer. Every test gets one for free.
+A [test oracle](#test-oracle) that catches failures wrong in any program at all, such as a crash, without knowing
+anything about the expected answer. A hang counts once the test sets a time limit that turns it into a failure.
 
 ## Incremental development
 
 Building a system one part at a time, each part finished and released before the next begins: one region
 live before all regions. Contrast with [iterative development](#iterative-development); most teams need both.
+
+## Incumbent
+
+The best feasible solution a solver has found so far. A solver stopped by a time limit returns its incumbent, which
+need not be optimal.
 
 ## Information hiding
 
@@ -215,6 +225,11 @@ depends only on an interface keeps working when the implementation behind it cha
 Building the whole system in a rough form first and improving it on every pass, instead of trying to get it
 right the first time, such as a formulation revised after users react to its first plans. Contrast with
 [incremental development](#incremental-development).
+
+## Known oracle
+
+A [test oracle](#test-oracle) that knows the expected answer before the run, for example an optimal value worked out
+by hand for a small instance. Called a [specified oracle](#specified-oracle) in the testing literature.
 
 ## Legacy system
 
@@ -279,6 +294,11 @@ security, speed, usability, availability, scalability. Contrast with [functional
 
 Organizing a program around objects that hold data together with the operations allowed on it, instead of around
 procedures that pass data between them. Abbreviated OOP.
+
+## Optimality gap
+
+The distance between the value of the [incumbent](#incumbent) and the [dual bound](#dual-bound), usually relative:
+(bound − incumbent) / bound for a positive bound in a maximization. A gap of zero proves the incumbent optimal.
 
 ## Oracle problem
 
@@ -354,8 +374,8 @@ interface segregation and dependency inversion. Each one raises [cohesion](#cohe
 
 ## Specified oracle
 
-A [test oracle](#test-oracle) in which the expected answer is stated in advance — in this book, worked out by hand for a
-small instance.
+A [test oracle](#test-oracle) in which the expected answer is stated in advance. The book calls it a
+[known oracle](#known-oracle).
 
 ## Static analysis
 
@@ -409,6 +429,12 @@ it implements.
 
 A [functional test](#functional-test) that checks one small piece of code, such as a function, in isolation. The
 fastest and cheapest kind of test, so a suite holds many.
+
+## Unknown oracle
+
+A [test oracle](#test-oracle) that knows nothing about the expected answer and checks conditions every correct answer
+must meet instead: that a solution is feasible, that its reported totals match it, or a
+[metamorphic relation](#metamorphic-relation) between two runs.
 
 ## Unmanaged dependency
 

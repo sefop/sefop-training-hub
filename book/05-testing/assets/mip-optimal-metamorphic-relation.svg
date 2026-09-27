@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 310" width="860" height="310" font-family="Helvetica, Arial, sans-serif">
+  <!-- Figure: a metamorphic relation. An instance and a transformed copy (payload capacity raised) both go through
+       the pipeline (orange). Neither optimal revenue is known (grey question marks), yet the relation between them,
+       the second is at least the first, is checked (green). -->
+
+  <!-- Light background baked in, so the figure stays readable on a dark theme. -->
+  <rect width="860" height="310" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#37474f"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Row 1: the original instance ===== -->
+  <g font-size="14" text-anchor="middle">
+    <rect x="20" y="30" width="190" height="60" rx="8" fill="#eceff1" stroke="#455a64" stroke-width="1.5"/>
+    <text x="115" y="56" fill="#263238">Instance</text>
+    <text x="115" y="76" font-size="13" fill="#455a64">payload 5 tonnes</text>
+
+    <rect x="300" y="30" width="160" height="60" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+    <text x="380" y="65" fill="#bf360c">Pipeline</text>
+
+    <rect x="550" y="30" width="160" height="60" rx="8" fill="#fafafa" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="630" y="56" fill="#607d8b">Optimal revenue</text>
+    <text x="630" y="78" font-size="20" font-weight="bold" fill="#607d8b">?</text>
+  </g>
+
+  <!-- ===== Row 2: the transformed instance ===== -->
+  <g font-size="14" text-anchor="middle">
+    <rect x="20" y="220" width="190" height="60" rx="8" fill="#eceff1" stroke="#455a64" stroke-width="1.5"/>
+    <text x="115" y="246" fill="#263238">Transformed instance</text>
+    <text x="115" y="266" font-size="13" fill="#455a64">payload 8 tonnes</text>
+
+    <rect x="300" y="220" width="160" height="60" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+    <text x="380" y="255" fill="#bf360c">Pipeline</text>
+
+    <rect x="550" y="220" width="160" height="60" rx="8" fill="#fafafa" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="630" y="246" fill="#607d8b">Optimal revenue</text>
+    <text x="630" y="268" font-size="20" font-weight="bold" fill="#607d8b">?</text>
+  </g>
+
+  <g fill="none" stroke="#37474f" stroke-width="2" marker-end="url(#arrow)">
+    <line x1="211" y1="60" x2="296" y2="60"/>
+    <line x1="461" y1="60" x2="546" y2="60"/>
+    <line x1="211" y1="250" x2="296" y2="250"/>
+    <line x1="461" y1="250" x2="546" y2="250"/>
+    <line x1="115" y1="92" x2="115" y2="216"/>
+  </g>
+  <text x="127" y="150" font-size="13" font-style="italic" fill="#37474f">raise the</text>
+  <text x="127" y="167" font-size="13" font-style="italic" fill="#37474f">payload capacity</text>
+
+  <!-- ===== The relation, checked ===== -->
+  <line x1="630" y1="92" x2="630" y2="216" stroke="#2e7d32" stroke-width="2" stroke-dasharray="4 3"/>
+  <line x1="630" y1="155" x2="658" y2="155" stroke="#2e7d32" stroke-width="2"/>
+  <rect x="660" y="126" width="190" height="58" rx="10" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+  <text x="755" y="151" text-anchor="middle" font-size="15" font-weight="bold" fill="#1b5e20">second ≥ first</text>
+  <text x="755" y="172" text-anchor="middle" font-size="13" fill="#1b5e20">checked without either value</text>
+</svg>
