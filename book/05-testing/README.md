@@ -1092,8 +1092,7 @@ labeled private implementation details. A Solution leaves at the bottom">
 </p>
 
 So what does this contract offers? There are two types of promises: software promises (derived from the pseudocode) and
-mathematical promises (derived from optimization theory). Mathematical promises might be implicit and not
-necessarily written as comments.
+mathematical promises (derived from optimization theory).
 
 **Software promises**:
 1. There is a single public method called `run` which receives a non-null `Instance` object.
@@ -1103,11 +1102,56 @@ be null, which means a solution could not be found. It its `non-null`, it means 
 
 Mathematical promises varies if the underlying algorithm solving the model guarantees optimality or not. For
 simplicity let's assume optimality, and then we will review which of these are dropped when optimality is not
-guaranteed.
+guaranteed. Mathematical promises usually are implicit and not written as concrete comments in the abstraction.
 
 **Mathematical promises assuming optimality**:
 
+Write a model as $\max \{ f(x) : x \in X \}$, where $f$ is the objective and $X$ the feasible set, and write $z = f(x)$
+for the objective value of a solution $x$. A first run solves $(f', X')$ to optimality and returns $x'$ with $z' = f'
+(x')$; a second run solves $(f'', X'')$ to optimality and returns $x''$ with $z'' = f''(x'')$. Every relation between
+two runs assumes that both returned a solution. In a test, $=$ means equal within the tolerance of
+[Numbers are floating point](#difficulty-floating-point).
 
+1. **Feasibility.** $x' \in X'$.
+   *Cargo model:* all the constraints are respected.
+2. **Consistency.** $z' = f'(x')$.
+   *Cargo model:* `objective_value` equals $\sum_i r_i x'_i$, and the reported totals equal $\sum_i w_i x'_i$ and
+   $\sum_i v_i x'_i$.
+3. **Optimality.** $f'(x) \le z'$ for every $x \in X'$.
+   *Cargo model:* no feasible load earns more revenue.
+4. **No improving neighbor.** $f'(x) \le z'$ for every $x \in N(x') \cap X'$, where $N(x')$ is any set of solutions
+   near $x'$. It follows from optimality, and it can be checked without searching all of $X'$.
+   *Cargo model:* for every product with $r_i > 0$, one more pallet exceeds a capacity:
+   $\sum_j w_j x'_j + w_i > W$ or $\sum_j v_j x'_j + v_i > V$.
+5. **Bounded below by known feasible points.** $z' \ge f'(\hat{x})$ for every $\hat{x} \in X'$ known in advance.
+   *Cargo model:* when the committed pallets fit, they earn $\sum_i r_i l_i \le z'$.
+6. **Bounded above by a relaxation.** If $X' \subseteq X_R$ and $f_R(x) \ge f'(x)$ for every $x \in X'$, then
+   $z' \le z_R$, where $z_R = \max \{ f_R(x) : x \in X_R \}$.
+   *Cargo model:* $z'$ is at most the value of the [linear relaxation](../appendix/glossary.md#linear-relaxation).
+7. **Existence.** A solution is returned if and only if $X' \ne \emptyset$.
+   *Cargo model:* `null` exactly when the committed pallets exceed a capacity: $\sum_i w_i l_i > W$ or
+   $\sum_i v_i l_i > V$.
+8. **Same instance, same value.** If $f'' = f'$ and $X'' = X'$, then $z'' = z'$, even when $x'' \ne x'$. The same
+   holds for any reformulation that leaves $f$ and $X$ unchanged, such as reordering the variables or the constraints.
+   *Cargo model:* two runs on the same instance, or on the same products listed in another order, earn the same
+   revenue.
+9. **Objective changed, feasible set unchanged** ($X'' = X'$).
+   - If $f'' = k f'$ with $k > 0$, then $z'' = k z'$, and $x'$ is optimal for both.
+   - If $f'' = f' + c$, then $z'' = z' + c$.
+   - If $f''(x) \ge f'(x)$ for every $x \in X'$, then $z'' \ge z'$.
+
+   *Cargo model:* multiplying every revenue by $k$ multiplies $z$ by $k$, and raising any revenue never lowers $z$.
+   The cargo objective has no constant term, so the shift has no counterpart in it.
+10. **Feasible set changed, objective unchanged** ($f'' = f'$).
+    - If $X'' \supseteq X'$, then $z'' \ge z'$.
+    - If $X'' \subseteq X'$, then $z'' \le z'$, and $X' = \emptyset$ implies $X'' = \emptyset$.
+    - If $x' \in X'' \subseteq X'$, then $z'' = z'$.
+
+    *Cargo model:* raising a capacity, or adding a product that need not fly, never lowers $z$. Lowering a capacity,
+    or committing more pallets, never raises it. Committing exactly the pallets of $x'$ leaves $z$ unchanged.
+
+Each of these behaviors is checked by at least one test in
+[Testing a single-objective mixed-integer program with optimality guaranteed](#ch-mip-optimal).
 
 <a id="model-what-to-test"></a>
 
@@ -1152,14 +1196,23 @@ all.
 
 ### What the contract implies
 
-The promise of a mixed-integer program (MIP) solved to optimality implies the conditions below, sorted by what the test
-knows:
+The ten behaviors of [The contract](#model-contract) are what the promise implies, and each needs at least one test.
+Each test relies on one kind of oracle, sorted by what the test knows before it runs: the expected answer, worked out
+beforehand, for a [known oracle](../appendix/glossary.md#known-oracle); a second, independent way to compute it, for a
+[pseudo-oracle](../appendix/glossary.md#pseudo-oracle); nothing about the answer, for an
+[unknown oracle](../appendix/glossary.md#unknown-oracle).
 
-| Oracle | What the test knows | Conditions it checks |
+| Behavior | Test | Oracle |
 |---|---|---|
-| [Known oracle](../appendix/glossary.md#known-oracle) | The expected answer, worked out before the run | The objective value of an instance small enough to solve by hand. A `null` for an instance of any size whose committed pallets exceed a capacity. |
-| [Pseudo-oracle](../appendix/glossary.md#pseudo-oracle) | A second, independent way to compute the answer | The objective value agrees with that of enumeration, and both return `null` on the same instances. |
-| [Unknown oracle](../appendix/glossary.md#unknown-oracle) | Nothing about the answer | The load respects both capacities and the committed pallets. The objective value and the totals match `picked`. The objective value is at most that of the [linear relaxation](../appendix/glossary.md#linear-relaxation). [Metamorphic relations](../appendix/glossary.md#metamorphic-relation) between runs hold. |
+| 1 Feasibility, 2 Consistency | [load checks](#pseudo-load-checks) | Unknown |
+| 3 Optimality | [two-pallet test](#pseudo-two-pallet-test), [differential sweep](#pseudo-differential-sweep) | Known, pseudo |
+| 4 No improving neighbor | [no improving pallet test](#pseudo-no-improving-pallet-test) | Unknown |
+| 5 Bounded below by known feasible points | [committed load bound test](#pseudo-committed-load-bound-test) | Unknown |
+| 6 Bounded above by a relaxation | [linear relaxation test](#pseudo-linear-relaxation-test) | Unknown |
+| 7 Existence | [committed mail test](#pseudo-committed-mail-test), [two-pallet test](#pseudo-two-pallet-test) | Known |
+| 8 Same instance, same value | [reordered products test](#pseudo-reordered-products-test) | Unknown |
+| 9 Objective changed | [revenue scaling test](#pseudo-revenue-scaling-test) | Unknown |
+| 10 Feasible set changed | [capacity relation test](#pseudo-capacity-relation-test), [committed picked test](#pseudo-committed-picked-test) | Unknown |
 
 The expected `null` of a large instance is known in advance only because of this model: every pallet weighs something
 and takes room, so the committed pallets alone are the lightest and smallest load allowed, and the instance has no
@@ -1346,11 +1399,12 @@ it. Neither guarantees detection; the difference is how reliably each one finds 
 
 The known oracle and the pseudo-oracle both stop at small instances, and the instances that matter in practice, a real
 booking list on a real aircraft, are far beyond them. For such an instance a test knows nothing about the answer. It
-still knows what every correct answer must satisfy.
+still knows what every correct answer must satisfy: the behaviors of [The contract](#model-contract) that need no
+expected value.
 
 **Checking is cheaper than solving.** Proving a load optimal is expensive; checking that it is feasible and reported
-correctly takes one pass over the products. [Pseudocode: load checks](#pseudo-load-checks) applies to every Solution
-that `run` returns, whatever the instance.
+correctly takes one pass over the products. [Pseudocode: load checks](#pseudo-load-checks) checks feasibility and
+consistency, behaviors 1 and 2, on every Solution that `run` returns, whatever the instance.
 
 <a id="pseudo-load-checks"></a>
 
@@ -1373,24 +1427,75 @@ The helper holds logic, which [No logic in tests](#no-logic-in-tests) warns agai
 repeats the implementation; these sums do not: the optimization phase searches for a load, and the helper only adds one
 up. On its own, it does not certify optimality: a feasible load can leave revenue behind.
 
-**A bound from outside.** Drop the requirement that pallets be whole, and the model becomes its
+**No room left for revenue.** Behavior 4 turns optimality into a check on the load's neighbors. If one more pallet of a
+product with positive revenue still fit, adding it would earn more, and the load would not be optimal.
+[Pseudocode: no improving pallet test](#pseudo-no-improving-pallet-test) checks every such neighbor in one pass:
+
+<a id="pseudo-no-improving-pallet-test"></a>
+
+**Pseudocode: no improving pallet test**
+
+```
+// pseudocode: no-improving-pallet-test
+solution = Optimization().run(instance)
+
+expect_valid_load(instance, solution)
+for each product in instance.products:
+    if product.revenue > 0:
+        expect solution.total_weight + product.weight > instance.weight_capacity
+                   or solution.total_volume + product.volume > instance.volume_capacity,
+               "one more pallet of " + product.name + " fits and earns more"
+```
+
+It catches a phase that stops too early and leaves room in the hold. It cannot catch a load that a swap would improve:
+neighbors one pallet away are only some of the loads that optimality rules out.
+
+**Bounds from both sides.** Behaviors 5 and 6 place the objective value between two numbers that the test computes
+itself. From below, any feasible load the test can build is a floor: when the committed pallets fit, they are such a
+load, as [Pseudocode: committed load bound test](#pseudo-committed-load-bound-test) uses.
+
+<a id="pseudo-committed-load-bound-test"></a>
+
+**Pseudocode: committed load bound test**
+
+```
+// pseudocode: committed-load-bound-test
+committed_revenue = sum of product.revenue × product.committed_quantity for each product in instance.products
+
+solution = Optimization().run(instance)          // an instance whose committed pallets fit
+
+expect solution.objective_value >= committed_revenue
+```
+
+From above, drop the requirement that pallets be whole, and the model becomes its
 [linear relaxation](../appendix/glossary.md#linear-relaxation), a linear program that solves fast even for large
 instances. Every load of whole pallets is also a load of the relaxation, so the best revenue of the relaxation is at
-least the best revenue of the MIP. A test computes it itself, with `lp_relaxation_value(instance)`, a helper that exists
-only in the tests, and asserts `solution.objective_value <= lp_relaxation_value(instance)`. For the example instance the
-relaxation loads two thirds of a pallet of each product, worth $32/3 \approx 10.67$, above the 10 of whole pallets.
+least the best revenue of the MIP. `lp_relaxation_value(instance)` is a helper that exists only in the tests and
+computes it, and [Pseudocode: linear relaxation test](#pseudo-linear-relaxation-test) uses it as a ceiling. For the
+example instance the relaxation loads two thirds of a pallet of each product, worth $32/3 \approx 10.67$, above the 10
+of whole pallets.
 
-**Metamorphic relations.** A [metamorphic relation](../appendix/glossary.md#metamorphic-relation) is a relation that
-must hold between the outputs of two related runs, even when neither output is known. The recipe has three steps:
+<a id="pseudo-linear-relaxation-test"></a>
+
+**Pseudocode: linear relaxation test**
+
+```
+// pseudocode: linear-relaxation-test
+solution = Optimization().run(instance)
+
+expect solution.objective_value <= lp_relaxation_value(instance)
+```
+
+**Metamorphic relations.** Behaviors 8 to 10 relate two runs. A
+[metamorphic relation](../appendix/glossary.md#metamorphic-relation) is a relation that must hold between the outputs
+of two related runs, even when neither output is known. The recipe has three steps:
 
 1. Take an instance, any instance.
 2. Transform it in a way whose effect on the optimum you can prove.
 3. Solve both versions and check that the relation holds.
 
-You already prove relations like these as theorems. Relaxing a constraint cannot make the optimal value worse, the same
-reasoning that makes the linear relaxation a valid bound. A metamorphic relation turns such a theorem into a test, as
-[Figure: a metamorphic relation](#fig-metamorphic-relation) shows. For the cargo model, four hold on every instance with
-a feasible load:
+You already prove relations like these as theorems: behaviors 8 to 10 are such theorems, and a metamorphic relation
+turns each into a test, as [Figure: a metamorphic relation](#fig-metamorphic-relation) shows.
 
 <a id="fig-metamorphic-relation"></a>
 
@@ -1403,16 +1508,41 @@ revenues are unknown, shown as question marks. A green check between them tests 
 first">
 </p>
 
-| Transformation | Relation on the optimal revenue | Why it holds |
-|---|---|---|
-| Add a product that need not fly | Never decreases | Every previous load is still available, with the new product at zero. |
-| Raise the payload or the hold capacity | Never decreases | Relaxing a constraint only enlarges the feasible region. |
-| Commit more pallets of a product | Never increases | Tightening a constraint only shrinks the feasible region. |
-| Multiply every revenue by $k > 0$ | Scales by exactly $k$ | The feasible region is unchanged; only the objective is rescaled. |
+None of the tests below compares `picked`. A transformation can turn a near-tie into an exact tie, and the contract
+never promised which load wins among equals. [Pseudocode: reordered products test](#pseudo-reordered-products-test)
+checks behavior 8: the same instance, run again or with its products in reverse order, earns the same revenue.
 
-None of the four compares `picked`. A transformation can turn a near-tie into an exact tie, and the contract never
-promised which load wins among equals. [Pseudocode: capacity relation test](#pseudo-capacity-relation-test) writes the
-second relation:
+<a id="pseudo-reordered-products-test"></a>
+
+**Pseudocode: reordered products test**
+
+```
+// pseudocode: reordered-products-test
+first    = Optimization().run(instance)
+again    = Optimization().run(instance)
+reversed = Optimization().run(a copy of instance with its products in reverse order)
+
+expect again.objective_value == first.objective_value
+expect reversed.objective_value == first.objective_value
+```
+
+[Pseudocode: revenue scaling test](#pseudo-revenue-scaling-test) checks behavior 9: the feasible set is unchanged, and
+every revenue is multiplied by the same $k > 0$.
+
+<a id="pseudo-revenue-scaling-test"></a>
+
+**Pseudocode: revenue scaling test**
+
+```
+// pseudocode: revenue-scaling-test
+original = Optimization().run(instance)
+rescaled = Optimization().run(a copy of instance with every revenue multiplied by 3)
+
+expect rescaled.objective_value == 3 × original.objective_value
+```
+
+Behavior 10 changes the feasible set. [Pseudocode: capacity relation test](#pseudo-capacity-relation-test) enlarges
+it by raising the payload capacity:
 
 <a id="pseudo-capacity-relation-test"></a>
 
@@ -1431,8 +1561,26 @@ expect after.objective_value >= before.objective_value
 ```
 
 The optimum of the first instance happens to be 26 (two pallets of A and one of B), but the test never needs to know
-that. The same lines work unchanged on a booking list of four thousand products, which is what makes the unknown oracle
-the part of the suite that scales.
+that. [Pseudocode: committed picked test](#pseudo-committed-picked-test) shrinks the feasible set while keeping the
+first load in it: committing exactly the pallets of the first solution leaves that load feasible, so the best revenue
+cannot change.
+
+<a id="pseudo-committed-picked-test"></a>
+
+**Pseudocode: committed picked test**
+
+```
+// pseudocode: committed-picked-test
+first  = Optimization().run(instance)
+second = Optimization().run(a copy of instance in which each product's committed_quantity
+                            is first.picked[product.name])
+
+expect second != null
+expect second.objective_value == first.objective_value
+```
+
+Every test of this subsection works unchanged on a booking list of four thousand products, which is what makes the
+unknown oracle the part of the suite that scales.
 
 ### Check yourself
 
@@ -1440,8 +1588,8 @@ the part of the suite that scales.
    test should fail?
 2. An instance has 4,000 products, and its committed pallets weigh 1 tonne more than the aircraft may carry. What must
    `run` return, and did you need a solver to know?
-3. A broken `Optimization` always returns a Solution with an empty load worth 0. Which of the four relations does it
-   violate?
+3. A broken `Optimization` always returns a Solution with an empty load worth 0. Which behaviors catch it on an
+   instance with nothing committed?
 4. Why is the random seed of the differential sweep fixed rather than drawn fresh on every run?
 
 <details>
@@ -1449,8 +1597,8 @@ the part of the suite that scales.
 
 1. None. The contract promises an optimal load, not a particular one, so a contract test asserts only the revenue.
 2. `null`, known from one sum over the committed pallets, with no solver. That shortcut belongs to this model.
-3. None of them: 0 ≥ 0, 0 ≤ 0 and 0 = k × 0. The load checks catch it when pallets are committed, and otherwise only the
-   known oracle and the pseudo-oracle do.
+3. Behavior 4, whenever a product with positive revenue fits: the no improving pallet test fails. Behaviors 8 to 10
+   all pass, since every value is 0, and so does the linear relaxation bound.
 4. So that a failure reproduces on the next run and can be investigated.
 
 </details>
@@ -1544,12 +1692,12 @@ revenue, but it can change which loads have the best revenue, and those may weig
 levels: multiplying every revenue by $k > 0$ scales the revenue by $k$ and leaves the weight unchanged, because the
 scaling keeps every tie, so the same loads have the best revenue.
 
-<a id="pseudo-revenue-scaling-test"></a>
+<a id="pseudo-lexicographic-scaling-test"></a>
 
-**Pseudocode: revenue scaling test**
+**Pseudocode: lexicographic scaling test**
 
 ```
-// pseudocode: revenue-scaling-test
+// pseudocode: lexicographic-scaling-test
 scaled = a copy of instance with every revenue multiplied by 3
 
 original = Optimization().run(instance)
@@ -1559,8 +1707,8 @@ expect rescaled.objective_value == 3 × original.objective_value
 expect rescaled.total_weight == original.total_weight
 ```
 
-Like every unknown oracle, [Pseudocode: revenue scaling test](#pseudo-revenue-scaling-test) runs on an `instance` of any
-size.
+Like every unknown oracle, [Pseudocode: lexicographic scaling test](#pseudo-lexicographic-scaling-test) runs on an
+`instance` of any size.
 
 ### Check yourself
 
