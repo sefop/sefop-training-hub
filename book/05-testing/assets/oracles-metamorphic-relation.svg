@@ -55,5 +55,5 @@
   <line x1="630" y1="155" x2="658" y2="155" stroke="#2e7d32" stroke-width="2"/>
   <rect x="660" y="126" width="190" height="58" rx="10" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
   <text x="755" y="151" text-anchor="middle" font-size="15" font-weight="bold" fill="#1b5e20">second ≥ first</text>
-  <text x="755" y="172" text-anchor="middle" font-size="13" fill="#1b5e20">checked without either value</text>
+  <text x="755" y="172" text-anchor="middle" font-size="13" fill="#1b5e20">no expected value needed</text>
 </svg>

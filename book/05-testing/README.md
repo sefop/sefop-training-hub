@@ -101,9 +101,10 @@ later chapter tests the promise. [Unit testing](#ch-unit-testing), [Writing good
 [Test-driven development](#ch-tdd) test one unit on its own. [Mocks](#ch-mocks) and
 [Integration testing](#ch-integration) take a test beyond the unit, to the systems it calls and the files it reads.
 [Testing an optimization model](#ch-model-testing) then meets the difficulty specific to decision-support software and
-sets up the contract that the next two chapters test: first with [optimality guaranteed](#ch-mip-optimal), then
-[without it](#ch-mip-no-optimality). [Testing a decision-support system](#ch-dss-testing) applies them to the whole
-system behind its interface. Read them in order: each chapter uses only what the chapters before it defined.
+sets up the contract. [Test oracles](#ch-oracles) shows three ways to decide whether `run` kept it, and
+[Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality) what remains of it when
+optimality is not guaranteed. [Testing a decision-support system](#ch-dss-testing) applies them to the whole system
+behind its interface. Read them in order: each chapter uses only what the chapters before it defined.
 
 <a id="ch-interface"></a>
 
@@ -1118,15 +1119,20 @@ returned a solution. In a test, $=$ means equal within the tolerance of
 
    $x' \in X'$ and $z' = f(x')$: the solution is feasible, and its value is reported correctly.
 
-   *Cargo model example:* all the constraints are respected, `objective_value` equals $\sum_i r_i x'_i$, and the
-   reported totals equal $\sum_i w_i x'_i$ and $\sum_i v_i x'_i$.
+   *Cargo model example tests:*
+   - every product's quantity is a whole number of pallets.
+   - every committed pallet is loaded.
+   - the total weight is at most $W$, and the total volume at most $V$.
+   - `objective_value` equals $\sum_i r_i x'_i$, and the reported totals equal $\sum_i w_i x'_i$ and
+     $\sum_i v_i x'_i$.
 
 2. **No solution from an empty feasible set.**
 
    If $X' = \emptyset$, no solution is returned.
 
-   *Cargo model example:* `null` whenever the committed pallets exceed a capacity: $\sum_i w_i l_i > W$ or
-   $\sum_i v_i l_i > V$.
+   *Cargo model example tests:*
+   - the committed pallets alone weigh more than the payload capacity, $\sum_i w_i l_i > W$, thus the output is `null`.
+   - the committed pallets alone take more room than the hold, $\sum_i v_i l_i > V$:=, thus the output is `null`.
 
 **Mathematical promises with optimality guaranteed**:
 
@@ -1136,33 +1142,57 @@ Every promise below follows from optimality: assume the optimal objective functi
 
    If $X' \ne \emptyset$, then the optimal value returned should be $z^*$.
 
-   *Cargo model example:* given an instance with a single product that respects all capacities, then the optimal
-    solution should load that product.
+   *Cargo model example tests:*
+   - no products at all: an empty load worth zero revenue.
+   - the committed pallets fill one capacity exactly and fit the other: the committed load is the actual solution.
+   - no pallets committed, and every product exceeds a capacity on its own: an empty load worth zero.
+   - one uncommitted product with positive revenue, whose weight and volume allow $m \ge 2$ pallets: exactly
+     $m = \lfloor \min(W / w, V / v) \rfloor$ whole pallets are loaded.
+   - two products, and only one pallet fits in total: the higher-revenue pallet is loaded.
+   - an instance whose unique optimum fills the payload exactly and leaves volume unused: that load.
+   - the mirror case, a unique optimum that fills the hold exactly and leaves payload unused: that load.
+   - a unique optimum that fills both capacities exactly: that load.
+   - two equal-revenue pallets that each fit, but not together: either one, with the same revenue.
+   - an uncommitted product too heavy to fly on its own: left behind, and the rest of the load is unaffected.
 
 4. **Permutation invariance.**
 
    If a second instance is a reordering of the first instance data, then $z' = z'' = z^*$, even when
-   $x'' \ne x'$. It generalizes the commutativity property in addition for an optimization model.
+   $x'' \ne x'$. It generalizes the commutativity property in the addition operation for an optimization model.
 
-   *Cargo model example:* the same products listed in another order yield the same revenue.
+   *Cargo model example tests:*
+   - the products listed in reverse order: the same revenue.
 
 5. **Objective changed, feasible set unchanged**.
-   - Assume $X' = X'''$.
+   - Assume $X'' = X'$.
    - If $f'' = k f'$ with $k > 0$, then $z'' = k z'$.
    - If $f''(x) \ge f'(x)$ for every $x \in X'$, then $z'' \ge z'$.
 
-   *Cargo model example:* multiplying every revenue by $k$ multiplies $z$ by $k$, and raising one revenue never lowers
-   $z$.
+   *Cargo model example tests:*
+   - every revenue multiplied by $k > 0$: the revenue is multiplied by $k$.
+   - one product's revenue raised: the revenue does not fall.
+   - several revenues raised by different amounts: the revenue does not fall.
 
 6. **Feasible set expanded, objective does not worsen**.
    - Assume $X'' \supseteq X'$, then, $z'' \ge z'$.
 
-   *Cargo model example:* raising a capacity never lowers the revenue.
+   *Cargo model example tests:* the revenue does not fall when
+   - the payload capacity is raised.
+   - the hold capacity is raised.
+   - a new, uncommitted product is added.
+   - a committed pallet is released.
 
 7. **Feasible set reduced, objective does not improve**.
    - Assume $X'' \subseteq X'$, then, $z'' \le z'$.
+   - If $x' \in X''$, then $z'' = z'$.
 
-   *Cargo model example:* removing a product from the instance does not improve the revenue.
+   *Cargo model example tests:* the revenue does not rise when
+   - the payload capacity is lowered.
+   - the hold capacity is lowered.
+   - an uncommitted product is removed.
+   - one more pallet is committed.
+
+   It stays the same when exactly the pallets the first run loaded are committed.
 
 
 <a id="model-what-to-test"></a>
@@ -1196,39 +1226,37 @@ slow, and when the solver checks its license against a server outside the progra
 
 ---
 
-<a id="ch-mip-optimal"></a>
+<a id="ch-oracles"></a>
 
-## Testing a mixed-integer program with optimality guaranteed
+## Test oracles
 
-This chapter tests a `run` that guarantees optimality, so all seven behaviors of [the contract](#model-contract) apply.
-[Pseudocode: optimal contract](#pseudo-optimal-contract) states the promise.
+The tests defined before require different levels of knowledge of the expected behavior. The artifact that provides
+values for the expected behavior in each test is known as a [test oracle](../appendix/glossary.md#test-oracle). For
+most behaviors that knowledge is direct and obvious: a load is checked against the constraints by substituting it into
+them to make sure they comply with the constraint. The test oracle is the constraint definition itself, and you can
+derive the expected value by implementing the constraint mathematical definition.
 
-<a id="pseudo-optimal-contract"></a>
+Some behaviors require to know the optimal value of the optimization problem, which is not necessarily known in
+advance for a given instance. Although there is a mathematical definition on the optimal value, computing it
+could be very expensive, particularly in optimization problems. This is known as the [oracle problem](#difficulty-oracle),
+and here we explore 3 mechanisms to circumvent this problem: known-oracle, pseudo-oracle and metamorphic relations.
 
-**Pseudocode: optimal contract**
 
-```
-// pseudocode: optimal-contract
-class Optimization
-    // requires: instance is not null
-    // returns:  an optimal Solution whenever a feasible load exists: no feasible load earns more revenue;
-    //           null if and only if no feasible load exists
-    public run(instance) returns Solution or null
-```
 
-A test needs a way to decide whether `run` kept its promise, a [test oracle](../appendix/glossary.md#test-oracle). For
-most behaviors that way is plain: a load is checked against the constraints by substituting it into them, and a
-relation between two runs needs the value of neither. Behavior 3 is different. It needs the optimal value, and for an
+
+
+
+Behavior 3 is different. It needs the optimal value, and for an
 instance large enough to be interesting, computing it means solving the model again: the
-[oracle problem](#difficulty-oracle). Three kinds of oracle answer it, sorted by what the test knows before it runs: the
+. Three kinds of oracle answer it, sorted by what the test knows before it runs: the
 expected answer, worked out beforehand, for a [known oracle](../appendix/glossary.md#known-oracle); a second,
 independent way to compute it, for a [pseudo-oracle](../appendix/glossary.md#pseudo-oracle); nothing about the answer,
 for an [unknown oracle](../appendix/glossary.md#unknown-oracle).
 
 The literature on the [oracle problem](../appendix/glossary.md#oracle-problem) sorts oracles by mechanism rather than by
 what a test knows, so its terms do not map one to one onto these three: a known oracle is its
-[specified oracle](../appendix/glossary.md#specified-oracle), and it counts both pseudo-oracles and metamorphic
-relations as [derived oracles](../appendix/glossary.md#derived-oracle). It also names an
+[specified oracle](../appendix/glossary.md#specified-oracle), and it counts both pseudo-oracles and relations between
+two runs as [derived oracles](../appendix/glossary.md#derived-oracle). It also names an
 [implicit oracle](../appendix/glossary.md#implicit-oracle), a failure wrong in any program: a crash, and a hang once the
 test sets a time limit that turns it into a failure.
 
@@ -1239,7 +1267,7 @@ test sets a time limit that turns it into a failure.
 **Figure: the reach of each oracle**
 
 <p align="center">
-  <img src="assets/mip-optimal-oracle-classes.svg" width="760"
+  <img src="assets/oracles-classes.svg" width="760"
        alt="A horizontal axis of instance size, from tiny to large, with three bands. Hand-calculated optimal values,
 the known oracle, reach only tiny instances. Enumeration, the pseudo-oracle, reaches small ones. Output relations, the
 unknown oracle, reach every size, but check only conditions a correct output must meet">
@@ -1290,58 +1318,14 @@ $4^{30} \approx 1.2 \times 10^{18}$ for 30 products that each fit up to 3 times.
 teaching scale.
 
 The harder question is *which* instances to write. Small instances picked at random tend to cover whatever comes to mind
-first, which is usually the ordinary case. Bugs, however, cluster at the edges: an empty catalogue, a capacity of
-exactly zero, two products that tie. Two standard techniques find the edges:
+first, which is usually the ordinary case. Bugs, however, cluster at the boundaries where behavior changes, so it is
+important to create instances right at those boundaries. That is why the example tests of behaviors 2 and 3 in
+[The optimization contract](#model-contract) sit on boundaries.
 
-- **[Equivalence partitioning](../appendix/glossary.md#equivalence-partitioning)** splits the input space into classes
-  expected to behave the same way, then tests one instance per class.
-- **[Boundary value analysis](../appendix/glossary.md#boundary-value-analysis)** adds instances exactly on the border
-  between two classes, where behavior changes character.
-
-If you have done sensitivity analysis, you have seen this structure. As you vary a right-hand side, the optimal basis
-stays the same over a range, then changes at a breakpoint. The ranges are equivalence classes; the breakpoints are
-boundary values. You would never probe sensitivity only in the middle of each range, and the same holds for tests.
-Applied to the cargo model, the two techniques produce the situations below, from the simplest to the most involved:
-
-| # | Situation | Expected behavior |
-|:---:|---|---|
-| 1 | No products at all | Nothing to load: a Solution with an empty load worth zero. |
-| 2 | Committed cargo exceeds the payload | The committed pallets alone weigh more than the aircraft may carry: `null`. |
-| 3 | Committed cargo exceeds the hold | The mirror of situation 2, for volume. |
-| 4 | Committed cargo fits exactly | The boundary between 2–3 and the rest: the committed load is the only feasible one. |
-| 5 | Nothing fits on its own | Every product exceeds a capacity on its own; the empty load is still feasible, worth zero. |
-| 6 | Unique optimum | One product dominates the other; the basic case. |
-| 7 | Only the payload capacity binds | The optimum exhausts the payload and leaves volume unused. |
-| 8 | Only the hold capacity binds | The mirror of situation 7. |
-| 9 | Both capacities bind at once | The optimum exhausts both capacities. |
-| 10 | Several optimal loads | Two interchangeable products tie; only the revenue is asserted, never which product was picked. |
-| 11 | Several pallets of one product | The optimum loads a product more than once: quantities are integers, not 0/1 choices. |
-| 12 | One product too heavy to load | A product that exceeds the payload on its own is left behind without disturbing the rest of the load. |
-
-Read situations 2 and 3 against 4 and 5. All four leave the aircraft carrying the committed load and nothing more, and
-only two of them have no feasible load. That distinction is exactly what a boundary is for.
-[Pseudocode: committed mail test](#pseudo-committed-mail-test) writes situation 2: two pallets of mail are committed,
-one tonne each, and the aircraft may carry one tonne.
-
-<a id="pseudo-committed-mail-test"></a>
-
-**Pseudocode: committed mail test**
-
-```
-// pseudocode: committed-mail-test
-m = Product(name="M", weight=1, volume=1, revenue=4, committed_quantity=2)
-instance = Instance(products=[m], weight_capacity=1, volume_capacity=5)
-
-solution = Optimization().run(instance)
-
-expect solution == null
-```
-
-The expected `null` was derived without a solver: the mail weighs 2 tonnes, and the aircraft may carry 1. The same sum
-gives the expected answer for an instance of any size, so for this model the known oracle of feasibility scales, while
-the known oracle of the optimal value stops at teaching scale. That shortcut belongs to this model: every pallet weighs
-something and takes room, so the committed pallets alone are the lightest and smallest load allowed. For a MIP in
-general, deciding feasibility can be as hard as solving it.
+For behavior 2 the known oracle scales: whether the committed pallets alone exceed a capacity is one sum, whatever the
+instance size, while the known oracle of the optimal value stops at teaching scale. That shortcut belongs to this
+model: every pallet weighs something and takes room, so the committed pallets alone are the lightest and smallest load
+allowed. For a MIP in general, deciding feasibility can be as hard as solving it.
 
 <a id="mip-pseudo-oracle"></a>
 
@@ -1367,7 +1351,7 @@ force on a toy case. Three details turn that habit into a reliable test:
    report the instance that failed.
 3. **Compare only what the contract promises.** Whether a Solution came back and its objective value, never `picked`:
    when several loads tie, the contract allows the two implementations to return different ones. An equal value proves
-   the load optimal only together with the [load checks](#pseudo-load-checks): a load that misreports its revenue could
+   the load optimal only together with the checks of behavior 1: a load that misreports its revenue could
    match the optimum by accident.
 
 <a id="pseudo-differential-sweep"></a>
@@ -1396,7 +1380,7 @@ Weights and volumes start at 1, so no product fits more than 8 times, and enumer
 The reference stays cheap.
 
 What does this catch that the known oracle does not? Suppose the code mistakenly uses each product's volume in the
-weight constraint. Some of the twelve situations catch that mistake and some do not, because they were chosen to cover
+weight constraint. Some hand-picked instances catch that mistake and some do not, because they were chosen to cover
 the contract, not this particular error. A sweep over 200 generated instances is far more likely to hit one that exposes
 it. Neither guarantees detection; the difference is how reliably each one finds a mistake nobody anticipated.
 
@@ -1415,88 +1399,38 @@ aircraft, are far beyond them. For such an instance a test knows nothing about t
 correct answer must satisfy: the behaviors of [The optimization contract](#model-contract) that need no expected value.
 
 **Checking is cheaper than solving.** Proving a load optimal is expensive; checking that it is feasible and reported
-correctly takes one pass over the products. [Pseudocode: load checks](#pseudo-load-checks) checks behavior 1, a valid
-solution, on every Solution that `run` returns, whatever the instance.
+correctly takes one pass over the products. Behavior 1 is checked this way on every Solution that `run` returns,
+whatever the instance: a feasible load can still leave revenue behind.
 
-<a id="pseudo-load-checks"></a>
-
-**Pseudocode: load checks**
-
-```
-// pseudocode: load-checks
-private expect_valid_load(instance, solution)
-    for each product in instance.products:
-        expect solution.picked[product.name] is a whole number, "pallet split"
-        expect solution.picked[product.name] >= product.committed_quantity, "committed pallets left behind"
-    expect solution.total_weight == sum of product.weight × solution.picked[product.name], "weight misreported"
-    expect solution.total_volume == sum of product.volume × solution.picked[product.name], "volume misreported"
-    expect solution.objective_value == sum of product.revenue × solution.picked[product.name], "revenue misreported"
-    expect solution.total_weight <= instance.weight_capacity, "payload exceeded"
-    expect solution.total_volume <= instance.volume_capacity, "hold exceeded"
-```
-
-The helper holds logic, which [No logic in tests](#no-logic-in-tests) warns against. The warning is about a test that
-repeats the implementation; these sums do not: the optimization phase searches for a load, and the helper only adds one
-up. On its own, it does not certify optimality: a feasible load can leave revenue behind.
-
-**Metamorphic relations.** Behaviors 4 to 7 relate two runs. A
-[metamorphic relation](../appendix/glossary.md#metamorphic-relation) is a relation that must hold between the outputs of
-two related runs, even when neither output is known. The recipe has three steps:
+**Some relations need no expected value.** A sine routine can be checked at $x = 1.3$ without knowing $\sin(1.3)$:
+whatever its value, $\sin(x + \pi) = -\sin(x)$, so the two calls must return opposite values within numerical
+tolerance. That identity is a [metamorphic relation](../appendix/glossary.md#metamorphic-relation): a relation that
+must hold between the outputs of two related runs, even when neither output is known. Behaviors 4 to 7 are relations
+of this kind between two runs of `run`, and the recipe that turns each into a test has three steps:
 
 1. Take an instance, any instance.
 2. Transform it in a way whose effect on the optimum you can prove.
 3. Solve both versions and check that the relation holds.
 
-You already prove relations like these as theorems: behaviors 4 to 7 are such theorems, and a metamorphic relation turns
-each into a test, as [Figure: a metamorphic relation](#fig-metamorphic-relation) shows.
+Behaviors 4 to 7 are theorems about optimal values, so they hold only when both runs return an optimum. The contract
+of this chapter promises one, which is what lets them serve as tests, as
+[Figure: a metamorphic relation](#fig-metamorphic-relation) shows.
 
 <a id="fig-metamorphic-relation"></a>
 
 **Figure: a metamorphic relation**
 
 <p align="center">
-  <img src="assets/mip-optimal-metamorphic-relation.svg" width="720"
+  <img src="assets/oracles-metamorphic-relation.svg" width="720"
        alt="An instance and a transformed copy with a larger payload capacity. Both go through run, and both optimal
 revenues are unknown, shown as question marks. A green check between them tests only that the second is at least the
 first">
 </p>
 
-None of the tests below compares `picked`. A transformation can turn a near-tie into an exact tie, and the contract
-never promised which load wins among equals. [Pseudocode: reordered products test](#pseudo-reordered-products-test)
-checks behavior 4, permutation invariance: the same products in reverse order earn the same revenue.
-
-<a id="pseudo-reordered-products-test"></a>
-
-**Pseudocode: reordered products test**
-
-```
-// pseudocode: reordered-products-test
-first    = Optimization().run(instance)
-reversed = Optimization().run(a copy of instance with its products in reverse order)
-
-expect reversed.objective_value == first.objective_value
-```
-
-[Pseudocode: objective change test](#pseudo-objective-change-test) checks behavior 5: the feasible set is unchanged, and
-the revenues change. Multiplying every revenue by the same $k > 0$ multiplies the best revenue by $k$; raising one
-revenue never lowers it.
-
-<a id="pseudo-objective-change-test"></a>
-
-**Pseudocode: objective change test**
-
-```
-// pseudocode: objective-change-test
-original = Optimization().run(instance)
-rescaled = Optimization().run(a copy of instance with every revenue multiplied by 3)
-raised   = Optimization().run(a copy of instance with the first product's revenue raised by 1)
-
-expect rescaled.objective_value == 3 × original.objective_value
-expect raised.objective_value >= original.objective_value
-```
-
-Behaviors 6 and 7 change the feasible set. [Pseudocode: capacity relation test](#pseudo-capacity-relation-test) checks
-behavior 6, enlarging the feasible set by raising the payload capacity:
+A relation test compares objective values, never `picked`: a transformation can turn a near-tie into an exact tie,
+and the contract never promised which load wins among equals.
+[Pseudocode: capacity relation test](#pseudo-capacity-relation-test) checks behavior 6, enlarging the feasible set by
+raising the payload capacity:
 
 <a id="pseudo-capacity-relation-test"></a>
 
@@ -1515,80 +1449,29 @@ expect after.objective_value >= before.objective_value
 ```
 
 The optimum of the first instance happens to be 26 (two pallets of A and one of B), but the test never needs to know
-that. [Pseudocode: committed picked test](#pseudo-committed-picked-test) checks behavior 7: it shrinks the feasible set
-while keeping the first load in it. Committing exactly the pallets of the first solution leaves that load feasible, so
-the best revenue cannot change.
+that. Each other example test under behaviors 4 to 7 is written the same way.
 
-<a id="pseudo-committed-picked-test"></a>
-
-**Pseudocode: committed picked test**
-
-```
-// pseudocode: committed-picked-test
-first  = Optimization().run(instance)
-second = Optimization().run(a copy of instance in which each product's committed_quantity
-                            is first.picked[product.name])
-
-expect second != null
-expect second.objective_value == first.objective_value
-```
-
-Every test of this subsection works unchanged on a booking list of four thousand products, which is what makes the
+Every check of this subsection works unchanged on a booking list of four thousand products, which is what makes the
 unknown oracle the part of the suite that scales.
-
-<a id="mip-conditions"></a>
-
-### A test for each behavior
-
-Each of the seven behaviors of [The optimization contract](#model-contract) gets at least one test:
-
-| Behavior | Test | Oracle |
-|---|---|---|
-| 1 Valid solution | [load checks](#pseudo-load-checks) | Unknown |
-| 2 No solution from an empty feasible set | [committed mail test](#pseudo-committed-mail-test) | Known |
-| 3 Existence & optimality | [two-pallet test](#pseudo-two-pallet-test), [differential sweep](#pseudo-differential-sweep) | Known, pseudo |
-| 4 Permutation invariance | [reordered products test](#pseudo-reordered-products-test) | Unknown |
-| 5 Objective changed | [objective change test](#pseudo-objective-change-test) | Unknown |
-| 6 Feasible set expanded | [capacity relation test](#pseudo-capacity-relation-test) | Unknown |
-| 7 Feasible set reduced | [committed picked test](#pseudo-committed-picked-test) | Unknown |
-
-### Check yourself
-
-1. Two loads tie at 5 revenue. Version 1 of `Optimization` returns one of them and version 2 the other. Which contract
-   test should fail?
-2. An instance has 4,000 products, and its committed pallets weigh 1 tonne more than the aircraft may carry. What must
-   `run` return, and did you need a solver to know?
-3. A broken `Optimization` always returns a Solution with an empty load worth 0. Which behaviors catch it on an
-   instance with nothing committed?
-4. Why is the random seed of the differential sweep fixed rather than drawn fresh on every run?
-
-<details>
-<summary>Answers</summary>
-
-1. None. The contract promises an optimal load, not a particular one, so a contract test asserts only the revenue.
-2. `null`, known from one sum over the committed pallets, with no solver. That shortcut belongs to this model.
-3. Behavior 3: the two-pallet test expects 10 and gets 0, and the differential sweep disagrees with enumeration
-   whenever a product with positive revenue fits. Behavior 1 and behaviors 4 to 7 all pass, since the empty load is
-   feasible and every value is 0.
-4. So that a failure reproduces on the next run and can be investigated.
-
-</details>
 
 ### Further reading
 
 - Barr et al., ["The Oracle Problem in Software Testing: A Survey"](https://ieeexplore.ieee.org/document/6963470), IEEE
   Transactions on Software Engineering, 2015: the survey that names the oracle problem and sorts oracles by mechanism.
-- Maurício Aniche, *Effective Software Testing: A developer's guide*, Manning, 2022: equivalence partitioning and
-  boundary analysis in depth, under the name specification-based testing.
+- Maurício Aniche, *Effective Software Testing: A developer's guide*, Manning, 2022: choosing test inputs at the
+  boundaries where behavior changes, in depth, under the name specification-based testing.
 - T. Y. Chen et al., "Metamorphic Testing: A Review of Challenges and Opportunities," *ACM Computing Surveys*, 2018: a
   broad review of the technique and where it has been applied.
 - William M. McKeeman, "Differential Testing for Software," *Digital Technical Journal*, 1998: the paper that named the
   technique.
 
+The exercise implements every example test of [The optimization contract](#model-contract), each with the oracle
+that fits it.
+
 > **Practice it**
 >
-> - Python: MIP with optimality exercise (coming soon)
-> - Java: MIP with optimality exercise (coming soon)
+> - Python: Oracles exercise (coming soon)
+> - Java: Oracles exercise (coming soon)
 
 ---
 
@@ -1622,12 +1505,11 @@ What can a test still ask for?
 A test can only check a promise the contract still makes. Without optimality, that leaves the two behaviors of
 [The optimization contract](#model-contract) that hold for any algorithm:
 
-- **Behavior 1, a valid solution.** [Pseudocode: load checks](#pseudo-load-checks) applies unchanged to every Solution
-  `run` returns: it never needed the optimum.
+- **Behavior 1, a valid solution.** Its checks apply unchanged to every Solution `run` returns: they never needed the
+  optimum.
 - **Behavior 2, no solution from an empty feasible set.** An instance whose committed pallets exceed a capacity has no
-  feasible load, so `run` must return `null`, as in [Pseudocode: committed mail test](#pseudo-committed-mail-test). The
-  converse is gone: a phase stopped early may return `null` on an instance that does have a feasible load, and the
-  contract allows it.
+  feasible load, so `run` must return `null`. The converse is gone: a phase stopped early may return `null` on an
+  instance that does have a feasible load, and the contract allows it.
 
 Behaviors 3 to 7 follow from optimality, so they no longer hold. The relations of behaviors 4 to 7 are theorems about
 the optimum, and an incumbent is not the optimum. A [heuristic](../appendix/glossary.md#heuristic) shows it most
@@ -1717,17 +1599,17 @@ report the average of upper_bound_gaps, the average of exact_gaps, and null_coun
 
 ### Check yourself
 
-1. `run` reaches its time limit and returns a Solution. Should the exact-value assertion of situation 6 apply to it?
+1. `run` reaches its time limit and returns a Solution. Should the two-pallet test's exact-value assertion apply to it?
 2. On the same small instance, `Optimization` reports 12 revenue and `EnumerationSolver` reports 10. Is that a bug?
 3. `run` returns `null` on an instance whose committed pallets fit. Does that break the time-limited contract?
 
 <details>
 <summary>Answers</summary>
 
-1. No. The contract does not promise an optimal load, so assert the load checks, and track the load's quality in the
+1. No. The contract does not promise an optimal load, so check behavior 1, and track the load's quality in the
    benchmark.
-2. Yes. No feasible load beats the optimum, so either the load is infeasible or its revenue is misreported, and the load
-   checks show which.
+2. Yes. No feasible load beats the optimum, so either the load is infeasible or its revenue is misreported, and the
+   checks of behavior 1 show which.
 3. No. `null` means only that the phase could not provide a feasible solution. The contract forces `null` on an instance
    with no feasible load, but it never forces a Solution.
 
@@ -1786,8 +1668,7 @@ to the case where the answer is the very thing the model computes.
   the real files and databases show where units disagree.
 - **Test the pipeline through its contract** ([Testing an optimization model](#ch-model-testing)). `run` and the
   Solution it returns are the promise; the five private steps behind them are not.
-- **Sort the checks by what the test knows**
-  ([Testing a mixed-integer program with optimality guaranteed](#ch-mip-optimal)). A known answer, a second
+- **Sort the checks by what the test knows** ([Test oracles](#ch-oracles)). A known answer, a second
   implementation, or only conditions every answer meets.
 - **Without optimality, test what is still promised**
   ([Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality)). Load validity and `null` on
