@@ -32,6 +32,11 @@ the unit once, and assert that the result meets the expectation.
 A small program that runs your code on a known input and checks the output against an expected answer, without a person
 looking at the result. A collection of them is a [test suite](#test-suite).
 
+## Benchmark
+
+A fixed set of instances run repeatedly to track a measure of quality over time, such as the gap to a bound. A change
+is investigated rather than failed.
+
 ## Boundary value analysis
 
 Choosing test inputs exactly on the border between two [equivalence classes](#equivalence-partitioning), where behavior

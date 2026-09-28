@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 240" width="860" height="240" font-family="Helvetica, Arial, sans-serif">
-  <!-- Figure: an incumbent and its bounds. A number line of revenue. The incumbent's objective value (orange, the load
+  <!-- Figure: the gap a benchmark measures. A number line of revenue. The incumbent's objective value (orange, the load
        returned) sits left of the linear relaxation value (blue), which the test computes. The optimum lies between
-       them, computed by enumeration on small instances only (grey). The gap spans incumbent to relaxation. -->
+       them, computed by enumeration on small instances only (grey). The upper-bound gap spans incumbent to relaxation. -->
 
   <!-- Light background baked in, so the figure stays readable on a dark theme. -->
   <rect width="860" height="240" fill="#ffffff"/>
@@ -36,5 +36,5 @@
 
   <!-- ===== Gap ===== -->
   <path d="M230,182 L230,194 L640,194 L640,182" fill="none" stroke="#37474f" stroke-width="2"/>
-  <text x="435" y="220" text-anchor="middle" font-size="14" font-weight="bold" fill="#37474f">gap to the linear relaxation</text>
+  <text x="435" y="220" text-anchor="middle" font-size="14" font-weight="bold" fill="#37474f">upper-bound gap</text>
 </svg>

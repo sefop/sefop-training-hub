@@ -66,8 +66,9 @@ This section answers two questions:
 - **Log enough to reproduce any run:** the code version, the data snapshot, the solver version, the parameters, the
   time limit, and the random seed. Version control (tracking every change to your files so you can recover any past
   state) covers the code; the data and the solver version need the same care.
-- **Track quality over time as a benchmark,** not only as pass/fail tests. Section 05, chapter 07 suggests tracking the
-  average gap to an exact reference for heuristics; production monitoring extends that idea.
+- **Track quality over time as a benchmark,** not only as pass/fail tests.
+  [Testing a mixed-integer program without optimality guaranteed](../05-testing/README.md#ch-mip-no-optimality) tracks
+  the upper-bound gap of a load as a benchmark; production monitoring extends that idea.
 
 ### Out of scope
 
