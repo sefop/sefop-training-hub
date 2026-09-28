@@ -1231,34 +1231,29 @@ slow, and when the solver checks its license against a server outside the progra
 ## Test oracles
 
 The tests defined before require different levels of knowledge of the expected behavior. The artifact that provides
-values for the expected behavior in each test is known as a [test oracle](../appendix/glossary.md#test-oracle). For
-most behaviors that knowledge is direct and obvious: a load is checked against the constraints by substituting it into
-them to make sure they comply with the constraint. The test oracle is the constraint definition itself, and you can
-derive the expected value by implementing the constraint mathematical definition.
+the expected behavior in a test is known as a [test oracle](../appendix/glossary.md#test-oracle). For a valid solution,
+that knowledge is direct: a load is checked against the constraints by substituting it into them. The test oracle is
+the definition of the constraints itself, and a test derives the expected result by implementing that definition.
 
-Some behaviors require to know the optimal value of the optimization problem, which is not necessarily known in
-advance for a given instance. Although there is a mathematical definition on the optimal value, computing it
-could be very expensive, particularly in optimization problems. This is known as the [oracle problem](#difficulty-oracle),
-and here we explore 3 mechanisms to circumvent this problem: known-oracle, pseudo-oracle and metamorphic relations.
+A direct test of **Existence & optimality** requires the optimal value of the problem, which is not known in advance
+for a given instance. The optimal value has a precise mathematical definition, but computing it can be very expensive:
+for an instance large enough, it means solving the model again. This is the
+[oracle problem](#difficulty-oracle), and this chapter explores three ways around it: the known oracle, the
+pseudo-oracle and metamorphic relations.
 
+A [known oracle](../appendix/glossary.md#known-oracle) is the expected answer, worked out before the test runs. For
+**No solution from an empty feasible set**, it is a capacity sum over the committed pallets, which this model allows at
+any instance size. For **Existence & optimality**, a person can work out the optimum only for tiny instances.
 
+A [pseudo-oracle](../appendix/glossary.md#pseudo-oracle) is an independent method whose steps can be inspected, such as
+enumerating every candidate load. It checks the same two promises on many generated small instances, as long as the
+method can finish.
 
+[Metamorphic relations](../appendix/glossary.md#metamorphic-relation) need no expected answer for either run: they
+check how the outputs of two related runs must compare, which is what **Permutation invariance** and the promises about
+a changed objective or feasible set state. They apply at every instance size.
 
-
-
-Behavior 3 is different. It needs the optimal value, and for an
-instance large enough to be interesting, computing it means solving the model again: the
-. Three kinds of oracle answer it, sorted by what the test knows before it runs: the
-expected answer, worked out beforehand, for a [known oracle](../appendix/glossary.md#known-oracle); a second,
-independent way to compute it, for a [pseudo-oracle](../appendix/glossary.md#pseudo-oracle); nothing about the answer,
-for an [unknown oracle](../appendix/glossary.md#unknown-oracle).
-
-The literature on the [oracle problem](../appendix/glossary.md#oracle-problem) sorts oracles by mechanism rather than by
-what a test knows, so its terms do not map one to one onto these three: a known oracle is its
-[specified oracle](../appendix/glossary.md#specified-oracle), and it counts both pseudo-oracles and relations between
-two runs as [derived oracles](../appendix/glossary.md#derived-oracle). It also names an
-[implicit oracle](../appendix/glossary.md#implicit-oracle), a failure wrong in any program: a crash, and a hang once the
-test sets a time limit that turns it into a failure.
+Checking a valid solution also applies at every size: it takes one pass over the products, even on a large instance.
 
 [Figure: the reach of each oracle](#fig-oracle-classes) shows why a suite needs all three.
 
@@ -1269,19 +1264,19 @@ test sets a time limit that turns it into a failure.
 <p align="center">
   <img src="assets/oracles-classes.svg" width="760"
        alt="A horizontal axis of instance size, from tiny to large, with three bands. Hand-calculated optimal values,
-the known oracle, reach only tiny instances. Enumeration, the pseudo-oracle, reaches small ones. Output relations, the
-unknown oracle, reach every size, but check only conditions a correct output must meet">
+the known oracle, reach only tiny instances. Enumeration, the pseudo-oracle, reaches small ones. Metamorphic relations
+between two runs apply at every size">
 </p>
 
 > [!NOTE]
-> The unknown oracle reaches any size because it never establishes optimality: a load that meets every condition can
-> still leave revenue behind.
+> Metamorphic relations need no separately calculated optimum. Passing them alone does not prove that either returned
+> load is optimal.
 
 <a id="mip-known-oracle"></a>
 
 ### Known oracle
 
-A known oracle tests behaviors 2 and 3. The simplest one is a person. In the
+The simplest known oracle is a person. In the
 [example instance](../appendix/running-example.md#ex-two-pallet) of the appendix, with nothing committed to fly,
 chocolate fits at most once by weight and water at most once by volume, so each $x_i \in \{0, 1\}$ and there are
 $2 \times 2 = 4$ candidate loads, few enough to list:
@@ -1319,20 +1314,18 @@ teaching scale.
 
 The harder question is *which* instances to write. Small instances picked at random tend to cover whatever comes to mind
 first, which is usually the ordinary case. Bugs, however, cluster at the boundaries where behavior changes, so it is
-important to create instances right at those boundaries. That is why the example tests of behaviors 2 and 3 in
-[The optimization contract](#model-contract) sit on boundaries.
+important to create instances right at those boundaries. That is why the example tests for **No solution from an
+empty feasible set** and **Existence & optimality** in [The optimization contract](#model-contract) sit on boundaries.
 
-For behavior 2 the known oracle scales: whether the committed pallets alone exceed a capacity is one sum, whatever the
-instance size, while the known oracle of the optimal value stops at teaching scale. That shortcut belongs to this
-model: every pallet weighs something and takes room, so the committed pallets alone are the lightest and smallest load
-allowed. For a MIP in general, deciding feasibility can be as hard as solving it.
+The capacity-sum shortcut for **No solution from an empty feasible set** belongs to this model: every pallet weighs
+something and takes room, so the committed pallets alone are the lightest and smallest load allowed. For a MIP in
+general, deciding feasibility can be as hard as solving it.
 
 <a id="mip-pseudo-oracle"></a>
 
 ### Pseudo-oracle
 
-A pseudo-oracle tests behaviors 2 and 3. It is a second, independent implementation of the same
-contract.
+Here the pseudo-oracle is a second, independent implementation of the same contract.
 [Differential testing](../appendix/glossary.md#differential-testing) runs both on the same inputs and compares their
 outputs. Here the second implementation is an `EnumerationSolver`: a class that exists only in the tests, has a `run`
 method with the same contract, and tries every candidate load. It is slow, but correct by inspection, and it only makes
@@ -1351,7 +1344,7 @@ force on a toy case. Three details turn that habit into a reliable test:
    report the instance that failed.
 3. **Compare only what the contract promises.** Whether a Solution came back and its objective value, never `picked`:
    when several loads tie, the contract allows the two implementations to return different ones. An equal value proves
-   the load optimal only together with the checks of behavior 1: a load that misreports its revenue could
+   the load optimal only together with the checks of a valid solution: a load that misreports its revenue could
    match the optimum by accident.
 
 <a id="pseudo-differential-sweep"></a>
@@ -1389,31 +1382,26 @@ it. Neither guarantees detection; the difference is how reliably each one finds 
 - **The two implementations must be independent.** If both share the same misunderstanding, say both treat every product
   as a 0/1 choice, they agree with each other and are both wrong.
 
-<a id="mip-unknown-oracle"></a>
+<a id="mip-metamorphic-relations"></a>
 
-### Unknown oracle
+### Metamorphic relations
 
-An unknown oracle tests behavior 1 and behaviors 4 to 7. The known oracle and the
-pseudo-oracle both stop at small instances, and the instances that matter in practice, a real booking list on a real
-aircraft, are far beyond them. For such an instance a test knows nothing about the answer. It still knows what every
-correct answer must satisfy: the behaviors of [The optimization contract](#model-contract) that need no expected value.
-
-**Checking is cheaper than solving.** Proving a load optimal is expensive; checking that it is feasible and reported
-correctly takes one pass over the products. Behavior 1 is checked this way on every Solution that `run` returns,
-whatever the instance: a feasible load can still leave revenue behind.
+The known oracle and the pseudo-oracle both stop at small instances, and the instances that matter in practice, a real
+booking list on a real aircraft, are far beyond them. For such an instance a test knows nothing about the answer.
 
 **Some relations need no expected value.** A sine routine can be checked at $x = 1.3$ without knowing $\sin(1.3)$:
 whatever its value, $\sin(x + \pi) = -\sin(x)$, so the two calls must return opposite values within numerical
 tolerance. That identity is a [metamorphic relation](../appendix/glossary.md#metamorphic-relation): a relation that
-must hold between the outputs of two related runs, even when neither output is known. Behaviors 4 to 7 are relations
-of this kind between two runs of `run`, and the recipe that turns each into a test has three steps:
+must hold between the outputs of two related runs, even when neither output is known.
+**Permutation invariance** and the promises about a changed objective or feasible set are relations of this kind
+between two runs of `run`, and the recipe that turns each into a test has three steps:
 
 1. Take an instance, any instance.
 2. Transform it in a way whose effect on the optimum you can prove.
 3. Solve both versions and check that the relation holds.
 
-Behaviors 4 to 7 are theorems about optimal values, so they hold only when both runs return an optimum. The contract
-of this chapter promises one, which is what lets them serve as tests, as
+These promises are theorems about optimal values, so they hold only when both runs return an optimum. The contract of
+this chapter promises one, which is what lets them serve as tests, as
 [Figure: a metamorphic relation](#fig-metamorphic-relation) shows.
 
 <a id="fig-metamorphic-relation"></a>
@@ -1429,8 +1417,8 @@ first">
 
 A relation test compares objective values, never `picked`: a transformation can turn a near-tie into an exact tie,
 and the contract never promised which load wins among equals.
-[Pseudocode: capacity relation test](#pseudo-capacity-relation-test) checks behavior 6, enlarging the feasible set by
-raising the payload capacity:
+[Pseudocode: capacity relation test](#pseudo-capacity-relation-test) checks
+**Feasible set expanded, objective does not worsen**, enlarging the feasible set by raising the payload capacity:
 
 <a id="pseudo-capacity-relation-test"></a>
 
@@ -1449,10 +1437,7 @@ expect after.objective_value >= before.objective_value
 ```
 
 The optimum of the first instance happens to be 26 (two pallets of A and one of B), but the test never needs to know
-that. Each other example test under behaviors 4 to 7 is written the same way.
-
-Every check of this subsection works unchanged on a booking list of four thousand products, which is what makes the
-unknown oracle the part of the suite that scales.
+that. Each other example test of these promises is written the same way.
 
 ### Further reading
 

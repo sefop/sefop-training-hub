@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" width="900" height="300" font-family="Helvetica, Arial, sans-serif">
   <!-- Figure: the reach of each oracle. Instance size runs left to right. Each band shows how far one oracle reaches:
        hand-calculated optimal values (known oracle) only tiny instances, enumeration (pseudo-oracle) small ones,
-       output relations (unknown oracle) every size. Each class has its own hue. -->
+       metamorphic relations between two runs apply at every size. Each class has its own hue. -->
 
   <!-- Light background baked in, so the figure stays readable on a dark theme. -->
   <rect width="900" height="300" fill="#ffffff"/>
@@ -16,7 +16,7 @@
   <g font-size="15" font-weight="bold" text-anchor="end">
     <text x="190" y="66" fill="#8d6e00">Known oracle</text>
     <text x="190" y="126" fill="#6a1b9a">Pseudo-oracle</text>
-    <text x="190" y="186" fill="#00695c">Unknown oracle</text>
+    <text x="190" y="186" fill="#00695c">Metamorphic relations</text>
   </g>
 
   <!-- ===== Bands ===== -->
@@ -27,7 +27,7 @@
   <text x="510" y="125" font-size="14" fill="#6a1b9a">enumeration</text>
 
   <path d="M210,168 L858,168 L876,180 L858,192 L210,192 Z" fill="#e0f2f1" stroke="#00897b" stroke-width="2" stroke-linejoin="round"/>
-  <text x="226" y="185" font-size="14" fill="#00695c">output relations: feasibility, reported totals, metamorphic relations</text>
+  <text x="226" y="185" font-size="14" fill="#00695c">metamorphic relations between two runs</text>
 
   <!-- ===== Axis ===== -->
   <line x1="210" y1="232" x2="880" y2="232" stroke="#37474f" stroke-width="2" marker-end="url(#arrow)"/>

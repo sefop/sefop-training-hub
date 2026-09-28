@@ -433,12 +433,6 @@ fastest and cheapest kind of test, so a suite holds many. The unit is a unit of 
 or several pieces of code that together keep one promise, as long as the test stays fast and shares nothing with other
 tests.
 
-## Unknown oracle
-
-A [test oracle](#test-oracle) that knows nothing about the expected answer and checks conditions every correct answer
-must meet instead: that a solution is feasible, that its reported totals match it, or a
-[metamorphic relation](#metamorphic-relation) between two runs.
-
 ## Unmanaged dependency
 
 A [dependency](#dependency) outside the program that other people or systems observe, such as a notification
