@@ -1249,8 +1249,10 @@ A [pseudo-oracle](../appendix/glossary.md#pseudo-oracle) is an independent metho
 enumerating every candidate load. It checks the same two promises on many generated small instances, as long as the
 method can finish.
 
-[Metamorphic relations](../appendix/glossary.md#metamorphic-relation) need no expected answer for either run: they
-check how the outputs of two related runs must compare, which is what **Permutation invariance** and the promises about
+[Metamorphic relations](../appendix/glossary.md#metamorphic-relation) need no expected answer for the test: they
+check how the outputs of two related runs compare by exploiting their mathematical properties.
+
+, which is what **Permutation invariance** and the promises about
 a changed objective or feasible set state. They apply at every instance size.
 
 Checking a valid solution also applies at every size: it takes one pass over the products, even on a large instance.
