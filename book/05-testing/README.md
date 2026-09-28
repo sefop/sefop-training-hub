@@ -1019,10 +1019,8 @@ $$
 ### The optimization contract
 
 [Interface vs implementation](#ch-interface) showed that a caller relies on what the abstraction promises, never on
-how it keeps the promise. What, then, does the cargo model promise to its caller? A promise must be written down before
-it can be tested. A [contract](../appendix/glossary.md#contract) is the promise a piece of code makes to its callers: what it
-needs as input and what it guarantees as output, and nothing about how. Everything else, the algorithm, its running
-time, its internal data structures, are [implementation details](../appendix/glossary.md#implementation-detail).
+how it keeps the promise. What, then, does the cargo model promise to its caller? Let's write these promises
+explicitly before testing them.
 
 The cargo model sits behind one class, `Optimization`, with a single public method, `run`. It receives an `Instance`
 object and returns a `Solution` object. [Pseudocode: optimization contract](#pseudo-optimization-contract) defines the
@@ -1057,6 +1055,7 @@ class Optimization
     // requires: instance is not null
     // returns:  a Solution filled with the load found, or null when the optimization phase
     //           could not provide a feasible solution
+    // raises:   an error if instance is null
     public run(instance) returns Solution or null
 ```
 
@@ -1073,7 +1072,10 @@ solution = optimization.run(instance)
 ```
 
 Note that the contract says nothing about the algorithm behind `run`, and nothing about why
-the optimization module could fail to provide one. Behind `run`, five private steps make up the *optimization phase*,
+the optimization module could fail to provide one. This design is deliberate on purpose, we don't want to **leak
+implementation details** to the contract.
+
+Behind `run`, five private steps make up the *optimization phase*,
 as [Figure: the optimization phase](#fig-model-pipeline) shows: receive the instance, build the model, solve it,
 assemble the solution, and return it. They are implementation details: a caller cannot reach them and does not know
 anything about them.
@@ -1090,8 +1092,8 @@ run from top to bottom: receive the instance, build the model, solve, assemble t
 labeled private implementation details. A Solution leaves at the bottom">
 </p>
 
-So what does this contract offers? There are two types of promises: software promises (derived from the pseudocode) and
-mathematical promises (derived from optimization theory).
+So what does this contract offers? There are two types of promises: software promises (derived from the software design)
+and mathematical promises (derived from optimization theory).
 
 **Software promises**:
 1. There is a single public method called `run` which receives a non-null `Instance` object.
@@ -1101,19 +1103,20 @@ be null, which means a solution could not be found. It its `non-null`, it means 
 
 Mathematical promises varies if the underlying algorithm solving the model guarantees optimality or not. The promises
 that hold for any algorithm come first; those that hold only when optimality is guaranteed follow from it. Mathematical
-promises usually are implicit and not written as concrete comments in the abstraction.
+promises usually are implicit and not written as concrete comments in the abstraction, nonetheless, I think it would
+be a good idea to write them as comments in your project.
 
-Write a model as $\max \{ f(x) : x \in X \}$, where $f$ is the objective and $X$ the feasible set, and write $z = f(x)$
-for the objective value of a solution $x$. A first run solves $(f', X')$ and returns $x'$ with $z' = f'(x')$; a second
-run solves $(f'', X'')$ and returns $x''$ with $z'' = f''(x'')$. Every relation between two runs assumes that both
+Assume a model as $\max \{ f(x) : x \in X \}$, where $f$ is the objective and $X$ the feasible set, and let $z = f(x)$
+for the objective value of a solution $x$. A first run solves $(f, X')$ and returns $x'$ with $z' = f(x')$; a second
+run solves $(f, X'')$ and returns $x''$ with $z'' = f(x'')$. Every relation between two runs assumes that both
 returned a solution. In a test, $=$ means equal within the tolerance of
-[Numbers are floating point](#difficulty-floating-point).
+[floating point numbers](#difficulty-floating-point).
 
 **Mathematical promises without optimality guarantees**:
 
 1. **Valid solution.**
 
-   $x' \in X'$ and $z' = f'(x')$: the solution is feasible, and its value is reported correctly.
+   $x' \in X'$ and $z' = f(x')$: the solution is feasible, and its value is reported correctly.
 
    *Cargo model example:* all the constraints are respected, `objective_value` equals $\sum_i r_i x'_i$, and the
    reported totals equal $\sum_i w_i x'_i$ and $\sum_i v_i x'_i$.
@@ -1127,13 +1130,12 @@ returned a solution. In a test, $=$ means equal within the tolerance of
 
 **Mathematical promises with optimality guaranteed**:
 
-Every item below follows from optimality, $f'(x) \le z'$ for every $x \in X'$, and every relation between two runs
+Every item below follows from optimality, $f(x) \le z'$ for every $x \in X'$, and every relation between two runs
 assumes that both were solved to optimality.
 
 3. **Existence.**
 
-   If $X' \ne \emptyset$, a solution is returned: an optimal solution exists whenever the feasible set is not empty.
-   Together with 2, a solution is returned if and only if $X' \ne \emptyset$.
+   If $X' \ne \emptyset$, an optimal solution $x'$ is returned with objective function value $z'=f(x')$.
 
    *Cargo model example:* `null` exactly when the committed pallets exceed a capacity.
 
