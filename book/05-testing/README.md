@@ -1130,50 +1130,39 @@ returned a solution. In a test, $=$ means equal within the tolerance of
 
 **Mathematical promises with optimality guaranteed**:
 
-Every item below follows from optimality, $f(x) \le z'$ for every $x \in X'$, and every relation between two runs
-assumes that both were solved to optimality.
+Every promise below follows from optimality: assume the optimal objective function value is $z^*$.
 
-3. **Existence.**
+3. **Existence & optimality.**
 
-   If $X' \ne \emptyset$, an optimal solution $x'$ is returned with objective function value $z'=f(x')$.
+   If $X' \ne \emptyset$, then the optimal value returned should be $z^*$.
 
-   *Cargo model example:* `null` exactly when the committed pallets exceed a capacity.
+   *Cargo model example:* given an instance with a single product that respects all capacities, then the optimal
+    solution should load that product.
 
-4. **Optimality conditions.**
+4. **Permutation invariance.**
 
-   $f'(x) \le z'$ for every $x \in X'$. Two checks follow from it:
-   - a necessary condition, cheap at any size: $f'(x) \le z'$ for every $x \in N(x') \cap X'$, where $N(x')$ is the set
-     of solutions one step away from $x'$. A solution that fails it is not optimal; one that passes may still not be.
-   - the full condition: $z'$ equals an optimal value known in advance, worked out by hand or by enumeration, which only
-     small instances allow.
+   If a second instance is a reordering of the first instance data, then $z' = z'' = z^*$, even when
+   $x'' \ne x'$. It generalizes the commutativity property in addition for an optimization model.
 
-   Unlike a linear program, whose optimality duality certifies, a mixed-integer program has no cheap certificate of
-   optimality: proving a solution optimal is as hard as solving the model.
+   *Cargo model example:* the same products listed in another order yield the same revenue.
 
-   *Cargo model example:* no product with $r_i > 0$ fits one more pallet, $\sum_j w_j x'_j + w_i > W$ or
-   $\sum_j v_j x'_j + v_i > V$; and on a small instance, $z'$ equals the optimum.
-
-5. **Permutation invariance.**
-
-   If a second instance is a reordering of the first instance, then $z'' = z'$, even when
-   $x'' \ne x'$. It generalizes the commutativity property for an optimization model.
-
-   *Cargo model example:* the same products listed in another order earn the same revenue.
-
-6. **Objective changed, feasible set unchanged** ($X'' = X'$).
+5. **Objective changed, feasible set unchanged**.
+   - Assume $X' = X'''$.
    - If $f'' = k f'$ with $k > 0$, then $z'' = k z'$.
    - If $f''(x) \ge f'(x)$ for every $x \in X'$, then $z'' \ge z'$.
 
    *Cargo model example:* multiplying every revenue by $k$ multiplies $z$ by $k$, and raising one revenue never lowers
    $z$.
 
-7. **Feasible set changed, objective unchanged** ($f'' = f'$).
-   - If $X'' \supseteq X'$, then $z'' \ge z'$.
-   - If $X'' \subseteq X'$, then $z'' \le z'$.
-   - If $x' \in X'' \subseteq X'$, then $z'' = z'$.
+6. **Feasible set expanded, objective does not worsen**.
+   - Assume $X'' \supseteq X'$, then, $z'' \ge z'$.
 
-   *Cargo model example:* raising a capacity never lowers $z$, and committing more pallets never raises it.
-   Committing exactly the pallets of $x'$ leaves $z$ unchanged.
+   *Cargo model example:* raising a capacity never lowers the revenue.
+
+7. **Feasible set reduced, objective does not improve**.
+   - Assume $X'' \subseteq X'$, then, $z'' \le z'$.
+
+   *Cargo model example:* removing a product from the instance does not improve the revenue.
 
 
 <a id="model-what-to-test"></a>
@@ -1193,8 +1182,8 @@ one promise, or two runs checked against a relation between them.
   <img src="assets/model-testing-black-box.svg" width="760"
        alt="Three columns: arrange, act, assert. Top row, one run: an Instance goes into Optimization, drawn as a dark
 black box whose only visible part is its public method run, and the Solution that comes out, or null, is checked
-against one promise, behaviors 1 to 4. Bottom row, two runs: an Instance and a transformed copy each go through run,
-and a relation between the two solutions is checked, behaviors 5 to 7, for example that the second objective value is
+against one promise, behaviors 1 to 3. Bottom row, two runs: an Instance and a transformed copy each go through run,
+and a relation between the two solutions is checked, behaviors 4 to 7, for example that the second objective value is
 at least the first. A note says the test sees only what goes into run and what comes out of it">
 </p>
 
@@ -1229,8 +1218,8 @@ class Optimization
 
 A test needs a way to decide whether `run` kept its promise, a [test oracle](../appendix/glossary.md#test-oracle). For
 most behaviors that way is plain: a load is checked against the constraints by substituting it into them, and a
-relation between two runs needs the value of neither. The full check of behavior 4 is different. It needs the optimal
-value, and for an instance large enough to be interesting, computing it means solving the model again: the
+relation between two runs needs the value of neither. Behavior 3 is different. It needs the optimal value, and for an
+instance large enough to be interesting, computing it means solving the model again: the
 [oracle problem](#difficulty-oracle). Three kinds of oracle answer it, sorted by what the test knows before it runs: the
 expected answer, worked out beforehand, for a [known oracle](../appendix/glossary.md#known-oracle); a second,
 independent way to compute it, for a [pseudo-oracle](../appendix/glossary.md#pseudo-oracle); nothing about the answer,
@@ -1264,7 +1253,7 @@ unknown oracle, reach every size, but check only conditions a correct output mus
 
 ### Known oracle
 
-A known oracle tests behaviors 2, 3 and the full check of 4. The simplest one is a person. In the
+A known oracle tests behaviors 2 and 3. The simplest one is a person. In the
 [example instance](../appendix/running-example.md#ex-two-pallet) of the appendix, with nothing committed to fly,
 chocolate fits at most once by weight and water at most once by volume, so each $x_i \in \{0, 1\}$ and there are
 $2 \times 2 = 4$ candidate loads, few enough to list:
@@ -1358,7 +1347,7 @@ general, deciding feasibility can be as hard as solving it.
 
 ### Pseudo-oracle
 
-A pseudo-oracle tests behaviors 2, 3 and the optimal value of 4. It is a second, independent implementation of the same
+A pseudo-oracle tests behaviors 2 and 3. It is a second, independent implementation of the same
 contract.
 [Differential testing](../appendix/glossary.md#differential-testing) runs both on the same inputs and compares their
 outputs. Here the second implementation is an `EnumerationSolver`: a class that exists only in the tests, has a `run`
@@ -1420,7 +1409,7 @@ it. Neither guarantees detection; the difference is how reliably each one finds 
 
 ### Unknown oracle
 
-An unknown oracle tests behavior 1, the necessary condition of 4, and behaviors 5 to 7. The known oracle and the
+An unknown oracle tests behavior 1 and behaviors 4 to 7. The known oracle and the
 pseudo-oracle both stop at small instances, and the instances that matter in practice, a real booking list on a real
 aircraft, are far beyond them. For such an instance a test knows nothing about the answer. It still knows what every
 correct answer must satisfy: the behaviors of [The optimization contract](#model-contract) that need no expected value.
@@ -1450,30 +1439,7 @@ The helper holds logic, which [No logic in tests](#no-logic-in-tests) warns agai
 repeats the implementation; these sums do not: the optimization phase searches for a load, and the helper only adds one
 up. On its own, it does not certify optimality: a feasible load can leave revenue behind.
 
-**No room left for revenue.** The necessary condition of behavior 4 checks the load's neighbors. If one more pallet of a
-product with positive revenue still fit, adding it would earn more, and the load would not be optimal.
-[Pseudocode: no improving pallet test](#pseudo-no-improving-pallet-test) checks every such neighbor in one pass:
-
-<a id="pseudo-no-improving-pallet-test"></a>
-
-**Pseudocode: no improving pallet test**
-
-```
-// pseudocode: no-improving-pallet-test
-solution = Optimization().run(instance)
-
-expect_valid_load(instance, solution)
-for each product in instance.products:
-    if product.revenue > 0:
-        expect solution.total_weight + product.weight > instance.weight_capacity
-                   or solution.total_volume + product.volume > instance.volume_capacity,
-               "one more pallet of " + product.name + " fits and earns more"
-```
-
-It catches a phase that stops too early and leaves room in the hold. It cannot catch a load that a swap would improve:
-neighbors one pallet away are only some of the loads that optimality rules out.
-
-**Metamorphic relations.** Behaviors 5 to 7 relate two runs. A
+**Metamorphic relations.** Behaviors 4 to 7 relate two runs. A
 [metamorphic relation](../appendix/glossary.md#metamorphic-relation) is a relation that must hold between the outputs of
 two related runs, even when neither output is known. The recipe has three steps:
 
@@ -1481,7 +1447,7 @@ two related runs, even when neither output is known. The recipe has three steps:
 2. Transform it in a way whose effect on the optimum you can prove.
 3. Solve both versions and check that the relation holds.
 
-You already prove relations like these as theorems: behaviors 5 to 7 are such theorems, and a metamorphic relation turns
+You already prove relations like these as theorems: behaviors 4 to 7 are such theorems, and a metamorphic relation turns
 each into a test, as [Figure: a metamorphic relation](#fig-metamorphic-relation) shows.
 
 <a id="fig-metamorphic-relation"></a>
@@ -1497,7 +1463,7 @@ first">
 
 None of the tests below compares `picked`. A transformation can turn a near-tie into an exact tie, and the contract
 never promised which load wins among equals. [Pseudocode: reordered products test](#pseudo-reordered-products-test)
-checks behavior 5, permutation invariance: the same products in reverse order earn the same revenue.
+checks behavior 4, permutation invariance: the same products in reverse order earn the same revenue.
 
 <a id="pseudo-reordered-products-test"></a>
 
@@ -1511,7 +1477,7 @@ reversed = Optimization().run(a copy of instance with its products in reverse or
 expect reversed.objective_value == first.objective_value
 ```
 
-[Pseudocode: objective change test](#pseudo-objective-change-test) checks behavior 6: the feasible set is unchanged, and
+[Pseudocode: objective change test](#pseudo-objective-change-test) checks behavior 5: the feasible set is unchanged, and
 the revenues change. Multiplying every revenue by the same $k > 0$ multiplies the best revenue by $k$; raising one
 revenue never lowers it.
 
@@ -1529,8 +1495,8 @@ expect rescaled.objective_value == 3 × original.objective_value
 expect raised.objective_value >= original.objective_value
 ```
 
-Behavior 7 changes the feasible set. [Pseudocode: capacity relation test](#pseudo-capacity-relation-test) enlarges it by
-raising the payload capacity:
+Behaviors 6 and 7 change the feasible set. [Pseudocode: capacity relation test](#pseudo-capacity-relation-test) checks
+behavior 6, enlarging the feasible set by raising the payload capacity:
 
 <a id="pseudo-capacity-relation-test"></a>
 
@@ -1549,9 +1515,9 @@ expect after.objective_value >= before.objective_value
 ```
 
 The optimum of the first instance happens to be 26 (two pallets of A and one of B), but the test never needs to know
-that. [Pseudocode: committed picked test](#pseudo-committed-picked-test) shrinks the feasible set while keeping the
-first load in it: committing exactly the pallets of the first solution leaves that load feasible, so the best revenue
-cannot change.
+that. [Pseudocode: committed picked test](#pseudo-committed-picked-test) checks behavior 7: it shrinks the feasible set
+while keeping the first load in it. Committing exactly the pallets of the first solution leaves that load feasible, so
+the best revenue cannot change.
 
 <a id="pseudo-committed-picked-test"></a>
 
@@ -1580,11 +1546,11 @@ Each of the seven behaviors of [The optimization contract](#model-contract) gets
 |---|---|---|
 | 1 Valid solution | [load checks](#pseudo-load-checks) | Unknown |
 | 2 No solution from an empty feasible set | [committed mail test](#pseudo-committed-mail-test) | Known |
-| 3 Existence | [two-pallet test](#pseudo-two-pallet-test) | Known |
-| 4 Optimality conditions | Necessary, any size: [no improving pallet test](#pseudo-no-improving-pallet-test). Full, small instances: [two-pallet test](#pseudo-two-pallet-test), [differential sweep](#pseudo-differential-sweep) | Unknown; known, pseudo |
-| 5 Permutation invariance | [reordered products test](#pseudo-reordered-products-test) | Unknown |
-| 6 Objective changed | [objective change test](#pseudo-objective-change-test) | Unknown |
-| 7 Feasible set changed | [capacity relation test](#pseudo-capacity-relation-test), [committed picked test](#pseudo-committed-picked-test) | Unknown |
+| 3 Existence & optimality | [two-pallet test](#pseudo-two-pallet-test), [differential sweep](#pseudo-differential-sweep) | Known, pseudo |
+| 4 Permutation invariance | [reordered products test](#pseudo-reordered-products-test) | Unknown |
+| 5 Objective changed | [objective change test](#pseudo-objective-change-test) | Unknown |
+| 6 Feasible set expanded | [capacity relation test](#pseudo-capacity-relation-test) | Unknown |
+| 7 Feasible set reduced | [committed picked test](#pseudo-committed-picked-test) | Unknown |
 
 ### Check yourself
 
@@ -1601,8 +1567,9 @@ Each of the seven behaviors of [The optimization contract](#model-contract) gets
 
 1. None. The contract promises an optimal load, not a particular one, so a contract test asserts only the revenue.
 2. `null`, known from one sum over the committed pallets, with no solver. That shortcut belongs to this model.
-3. The necessary condition of behavior 4, whenever a product with positive revenue fits: the no improving pallet
-   test fails. Behaviors 5 to 7 all pass, since every value is 0.
+3. Behavior 3: the two-pallet test expects 10 and gets 0, and the differential sweep disagrees with enumeration
+   whenever a product with positive revenue fits. Behavior 1 and behaviors 4 to 7 all pass, since the empty load is
+   feasible and every value is 0.
 4. So that a failure reproduces on the next run and can be investigated.
 
 </details>
@@ -1662,7 +1629,7 @@ A test can only check a promise the contract still makes. Without optimality, th
   converse is gone: a phase stopped early may return `null` on an instance that does have a feasible load, and the
   contract allows it.
 
-Behaviors 3 to 7 follow from optimality, so they no longer hold. The relations of behaviors 5 to 7 are theorems about
+Behaviors 3 to 7 follow from optimality, so they no longer hold. The relations of behaviors 4 to 7 are theorems about
 the optimum, and an incumbent is not the optimum. A [heuristic](../appendix/glossary.md#heuristic) shows it most
 plainly: take a greedy one that sorts products by revenue per tonne and loads each while it fits.
 
