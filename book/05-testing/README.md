@@ -1016,7 +1016,7 @@ $$
 
 <a id="model-contract"></a>
 
-### The contract
+### The optimization contract
 
 [Interface vs implementation](#ch-interface) showed that a caller relies on what the abstraction promises, never on
 how it keeps the promise. What, then, does the cargo model promise to its caller? A promise must be written down before
@@ -1421,7 +1421,7 @@ it. Neither guarantees detection; the difference is how reliably each one finds 
 An unknown oracle tests behavior 1, the necessary condition of 4, and behaviors 5 to 7. The known oracle and the
 pseudo-oracle both stop at small instances, and the instances that matter in practice, a real booking list on a real
 aircraft, are far beyond them. For such an instance a test knows nothing about the answer. It still knows what every
-correct answer must satisfy: the behaviors of [The contract](#model-contract) that need no expected value.
+correct answer must satisfy: the behaviors of [The optimization contract](#model-contract) that need no expected value.
 
 **Checking is cheaper than solving.** Proving a load optimal is expensive; checking that it is feasible and reported
 correctly takes one pass over the products. [Pseudocode: load checks](#pseudo-load-checks) checks behavior 1, a valid
@@ -1572,7 +1572,7 @@ unknown oracle the part of the suite that scales.
 
 ### A test for each behavior
 
-Each of the seven behaviors of [The contract](#model-contract) gets at least one test:
+Each of the seven behaviors of [The optimization contract](#model-contract) gets at least one test:
 
 | Behavior | Test | Oracle |
 |---|---|---|
@@ -1651,7 +1651,7 @@ What can a test still ask for?
 ### What survives
 
 A test can only check a promise the contract still makes. Without optimality, that leaves the two behaviors of
-[The contract](#model-contract) that hold for any algorithm:
+[The optimization contract](#model-contract) that hold for any algorithm:
 
 - **Behavior 1, a valid solution.** [Pseudocode: load checks](#pseudo-load-checks) applies unchanged to every Solution
   `run` returns: it never needed the optimum.
