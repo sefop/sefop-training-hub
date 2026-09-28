@@ -1178,13 +1178,32 @@ assumes that both were solved to optimality.
 
 <a id="model-what-to-test"></a>
 
-### What to test
+### Testing the black box
 
-As we saw previously the best practice is to test the public behaviors of the contract. In this example, that is the
-`run` public method within the `Optimization` module. Because many "units" of code are executed in that function, these
-tests belong to the category of [integration tests](../appendix/glossary.md#integration-test). The solver should be
-truly called, whatever is the algorithm, to make sure these integration tests work in real examples.
+A test builds an `Instance`, calls `run`, and checks one promise of [The contract](#model-contract) on what comes back.
+It runs the real solver: a stand-in that returns a fixed answer could never show whether the answer is right.
+[Figure: testing the black box](#fig-black-box-test) shows the two shapes such a test takes: one run checked against
+one promise, or two runs checked against a relation between them.
 
+<a id="fig-black-box-test"></a>
+
+**Figure: testing the black box**
+
+<p align="center">
+  <img src="assets/model-testing-black-box.svg" width="760"
+       alt="Three columns: arrange, act, assert. Top row, one run: an Instance goes into Optimization, drawn as a dark
+black box whose only visible part is its public method run, and the Solution that comes out, or null, is checked
+against one promise, behaviors 1 to 4. Bottom row, two runs: an Instance and a transformed copy each go through run,
+and a relation between the two solutions is checked, behaviors 5 to 7, for example that the second objective value is
+at least the first. A note says the test sees only what goes into run and what comes out of it">
+</p>
+
+Such a test is a [unit test](../appendix/glossary.md#unit-test), even though five private steps and a solver run behind
+`run`. A unit test checks one unit of behavior, quickly and in isolation from other tests, and one unit of behavior can
+span several pieces of code: here, everything `run` does to keep one promise. The solver could be a library inside the
+program, and each test builds its own model, so no test affects another. The test could become an
+[integration test](../appendix/glossary.md#integration-test) in two cases: when its instance is large enough to make it
+slow, and when the solver checks its license against a server outside the program.
 
 ---
 

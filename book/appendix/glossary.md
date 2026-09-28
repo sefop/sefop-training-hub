@@ -424,7 +424,9 @@ it implements.
 ## Unit test
 
 A [functional test](#functional-test) that checks one small piece of code, such as a function, in isolation. The
-fastest and cheapest kind of test, so a suite holds many.
+fastest and cheapest kind of test, so a suite holds many. The unit is a unit of behavior: it may be a single function,
+or several pieces of code that together keep one promise, as long as the test stays fast and shares nothing with other
+tests.
 
 ## Unknown oracle
 
