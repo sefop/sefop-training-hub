@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480" width="600" height="480" font-family="Helvetica, Arial, sans-serif">
+  <!-- Figure: the sine relation on the unit circle. A right triangle for the angle x (teal) and the same triangle for
+       the angle x + pi (purple), opposite each other through the center. Both have hypotenuse 1 and the same angle x
+       at the center, so their vertical sides have the same length and opposite directions: sin(x + pi) = -sin(x). -->
+
+  <!-- Light background baked in, so the figure stays readable on a dark theme. -->
+  <rect width="600" height="480" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#37474f"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Axes and unit circle ===== -->
+  <g stroke="#37474f" stroke-width="1.5" marker-end="url(#arrow)">
+    <line x1="110" y1="235" x2="495" y2="235"/>
+    <line x1="300" y1="420" x2="300" y2="50"/>
+  </g>
+  <circle cx="300" cy="235" r="160" fill="none" stroke="#90a4ae" stroke-width="2"/>
+  <text x="300" y="42" text-anchor="middle" font-size="13" fill="#37474f">sine</text>
+  <text x="500" y="230" font-size="13" fill="#37474f">cosine</text>
+
+  <!-- ===== Triangle for x (teal) ===== -->
+  <path d="M300,235 L438.56,155 L438.56,235 Z" fill="#e0f2f1" stroke="#00897b" stroke-width="2"/>
+  <path d="M428.56,235 L428.56,225 L438.56,225" fill="none" stroke="#00897b" stroke-width="1.5"/>
+  <line x1="438.56" y1="155" x2="438.56" y2="235" stroke="#00695c" stroke-width="4"/>
+  <path d="M345,235 A45,45 0 0 0 338.97,212.5" fill="none" stroke="#00695c" stroke-width="1.5"/>
+  <text x="350" y="228" font-size="15" font-style="italic" fill="#00695c">x</text>
+  <text x="360" y="186" font-size="14" fill="#00695c">1</text>
+  <circle cx="438.56" cy="155" r="4" fill="#00695c"/>
+  <text x="446" y="146" font-size="13" fill="#00695c">(cos x, sin x)</text>
+  <text x="448" y="200" font-size="15" font-weight="bold" fill="#00695c">sin(x)</text>
+  <!-- equal-length ticks -->
+  <g stroke="#00695c" stroke-width="2">
+    <line x1="432" y1="191" x2="445" y2="191"/>
+    <line x1="432" y1="198" x2="445" y2="198"/>
+  </g>
+
+  <!-- ===== Triangle for x + pi (purple) ===== -->
+  <path d="M300,235 L161.44,315 L161.44,235 Z" fill="#f3e5f5" stroke="#8e24aa" stroke-width="2"/>
+  <path d="M171.44,235 L171.44,245 L161.44,245" fill="none" stroke="#8e24aa" stroke-width="1.5"/>
+  <line x1="161.44" y1="235" x2="161.44" y2="315" stroke="#6a1b9a" stroke-width="4"/>
+  <path d="M255,235 A45,45 0 0 0 261.03,257.5" fill="none" stroke="#6a1b9a" stroke-width="1.5"/>
+  <text x="240" y="256" font-size="15" font-style="italic" fill="#6a1b9a">x</text>
+  <path d="M328,235 A28,28 0 1 0 275.75,249" fill="none" stroke="#6a1b9a" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="268" y="203" text-anchor="end" font-size="14" font-style="italic" fill="#6a1b9a">x + π</text>
+  <text x="232" y="296" font-size="14" fill="#6a1b9a">1</text>
+  <circle cx="161.44" cy="315" r="4" fill="#6a1b9a"/>
+  <text x="154" y="336" text-anchor="end" font-size="13" fill="#6a1b9a">(−cos x, −sin x)</text>
+  <text x="153" y="280" text-anchor="end" font-size="15" font-weight="bold" fill="#6a1b9a">sin(x + π)</text>
+  <!-- equal-length ticks -->
+  <g stroke="#6a1b9a" stroke-width="2">
+    <line x1="155" y1="271" x2="168" y2="271"/>
+    <line x1="155" y1="278" x2="168" y2="278"/>
+  </g>
+
+  <!-- ===== Conclusion ===== -->
+  <text x="300" y="448" text-anchor="middle" font-size="14" fill="#263238">Same triangle turned half a circle: the vertical sides have the same length,</text>
+  <text x="300" y="465" text-anchor="middle" font-size="14" fill="#263238">pointing in opposite directions, so sin(x + π) = −sin(x).</text>
+</svg>

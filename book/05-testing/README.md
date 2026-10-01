@@ -1230,7 +1230,7 @@ slow, and when the solver checks its license against a server outside the progra
 
 ## Test oracles
 
-The tests defined before require different levels of knowledge of the expected behavior. The artifact that provides
+The tests defined before require different levels of reasoning of the expected behavior. The artifact that provides
 the expected behavior in a test is known as a [test oracle](../appendix/glossary.md#test-oracle). For a valid solution,
 that knowledge is direct: a load is checked against the constraints by substituting it into them. The test oracle is
 the definition of the constraints itself, and a test derives the expected result by implementing that definition.
@@ -1241,45 +1241,15 @@ for an instance large enough, it means solving the model again. This is the
 [oracle problem](#difficulty-oracle), and this chapter explores three ways around it: the known oracle, the
 pseudo-oracle and metamorphic relations.
 
-A [known oracle](../appendix/glossary.md#known-oracle) is the expected answer, worked out before the test runs. For
-**No solution from an empty feasible set**, it is a capacity sum over the committed pallets, which this model allows at
-any instance size. For **Existence & optimality**, a person can work out the optimum only for tiny instances.
-
-A [pseudo-oracle](../appendix/glossary.md#pseudo-oracle) is an independent method whose steps can be inspected, such as
-enumerating every candidate load. It checks the same two promises on many generated small instances, as long as the
-method can finish.
-
-[Metamorphic relations](../appendix/glossary.md#metamorphic-relation) need no expected answer for the test: they
-check how the outputs of two related runs compare by exploiting their mathematical properties.
-
-, which is what **Permutation invariance** and the promises about
-a changed objective or feasible set state. They apply at every instance size.
-
-Checking a valid solution also applies at every size: it takes one pass over the products, even on a large instance.
-
-[Figure: the reach of each oracle](#fig-oracle-classes) shows why a suite needs all three.
-
-<a id="fig-oracle-classes"></a>
-
-**Figure: the reach of each oracle**
-
-<p align="center">
-  <img src="assets/oracles-classes.svg" width="760"
-       alt="A horizontal axis of instance size, from tiny to large, with three bands. Hand-calculated optimal values,
-the known oracle, reach only tiny instances. Enumeration, the pseudo-oracle, reaches small ones. Metamorphic relations
-between two runs apply at every size">
-</p>
-
-> [!NOTE]
-> Metamorphic relations need no separately calculated optimum. Passing them alone does not prove that either returned
-> load is optimal.
-
 <a id="mip-known-oracle"></a>
 
 ### Known oracle
 
-The simplest known oracle is a person. In the
-[example instance](../appendix/running-example.md#ex-two-pallet) of the appendix, with nothing committed to fly,
+A [known oracle](../appendix/glossary.md#known-oracle) is the expected answer, worked out before the test runs by a
+method that does not use the code under test: by hand, from a formula, or from a published result. The test compares
+the output with that answer.
+
+In the [example instance](../appendix/running-example.md#ex-two-pallet) of the appendix, with nothing committed to fly,
 chocolate fits at most once by weight and water at most once by volume, so each $x_i \in \{0, 1\}$ and there are
 $2 \times 2 = 4$ candidate loads, few enough to list:
 
@@ -1309,30 +1279,24 @@ expect solution != null
 expect solution.objective_value == 10
 ```
 
-The price of a human oracle grows fast. The capacities allow at most $m_i = \lfloor \min(W / w_i, V / v_i) \rfloor$
-pallets of product $i$, so the candidate loads number $\prod_{i \in I} (m_i - l_i + 1)$: 4 for this instance, but
-$4^{30} \approx 1.2 \times 10^{18}$ for 30 products that each fit up to 3 times. A person can only be the oracle at
-teaching scale.
-
-The harder question is *which* instances to write. Small instances picked at random tend to cover whatever comes to mind
-first, which is usually the ordinary case. Bugs, however, cluster at the boundaries where behavior changes, so it is
-important to create instances right at those boundaries. That is why the example tests for **No solution from an
-empty feasible set** and **Existence & optimality** in [The optimization contract](#model-contract) sit on boundaries.
-
-The capacity-sum shortcut for **No solution from an empty feasible set** belongs to this model: every pallet weighs
-something and takes room, so the committed pallets alone are the lightest and smallest load allowed. For a MIP in
-general, deciding feasibility can be as hard as solving it.
+**No solution from an empty feasible set** has a known oracle too: whether the committed pallets alone exceed a
+capacity is one sum over them. That shortcut belongs to this model: every pallet weighs something and takes room, so
+the committed pallets alone are the lightest and smallest load allowed. For a MIP in general, deciding feasibility can
+be as hard as solving it.
 
 <a id="mip-pseudo-oracle"></a>
 
 ### Pseudo-oracle
 
-Here the pseudo-oracle is a second, independent implementation of the same contract.
-[Differential testing](../appendix/glossary.md#differential-testing) runs both on the same inputs and compares their
-outputs. Here the second implementation is an `EnumerationSolver`: a class that exists only in the tests, has a `run`
-method with the same contract, and tries every candidate load. It is slow, but correct by inspection, and it only makes
-sense for instances small enough to enumerate. A MIP solver such as Gurobi is very unlikely to compute a wrong optimum
-for the model it was given; the realistic risk is that the code builds a different model from the one on paper, and a
+A hand-worked answer covers only a few cases. A [pseudo-oracle](../appendix/glossary.md#pseudo-oracle) checks many
+more: it is a second, independent implementation of the same contract, whose steps can be inspected even if it is
+slow. [Differential testing](../appendix/glossary.md#differential-testing) runs both on the same inputs and compares
+their outputs: a disagreement means one of them is wrong.
+
+Here the second implementation is an `EnumerationSolver`: a class that exists only in the tests, has a `run` method
+with the same contract, and tries every candidate load. It is slow, but correct by inspection, and it only makes sense
+for instances small enough to enumerate. A MIP solver such as Gurobi is very unlikely to compute a wrong optimum for
+the model it was given; the realistic risk is that the code builds a different model from the one on paper, and a
 disagreement with enumeration points at that.
 
 This is the disciplined version of a sanity check most modelers already run by hand, comparing a new model with brute
@@ -1355,7 +1319,7 @@ force on a toy case. Three details turn that habit into a reliable test:
 
 ```
 // pseudocode: differential-sweep
-rng = random_generator(seed=20260908)
+rng = random_generator(seed=42)
 
 repeat 200 times:
     products = a list of rng.integer(1, 4) products, each with
@@ -1379,32 +1343,57 @@ weight constraint. Some hand-picked instances catch that mistake and some do not
 the contract, not this particular error. A sweep over 200 generated instances is far more likely to hit one that exposes
 it. Neither guarantees detection; the difference is how reliably each one finds a mistake nobody anticipated.
 
-- **The reference must stay tractable.** Differential testing against enumeration lives in the same small-instance
-  regime as the known oracle. It broadens coverage within that regime; it does not reach the large instances.
-- **The two implementations must be independent.** If both share the same misunderstanding, say both treat every product
-  as a 0/1 choice, they agree with each other and are both wrong.
+The two implementations must be independent: if both share the same misunderstanding, say both treat every product as
+a 0/1 choice, they agree with each other and are both wrong.
 
 <a id="mip-metamorphic-relations"></a>
 
 ### Metamorphic relations
 
-The known oracle and the pseudo-oracle both stop at small instances, and the instances that matter in practice, a real
-booking list on a real aircraft, are far beyond them. For such an instance a test knows nothing about the answer.
+In instances where using a test oracle is impractical, such as a large MIP, we can exploit mathematical properties
+of related runs to assert some expected behavior. These are called
+[metamorphic relations](../appendix/glossary.md#metamorphic-relation).
 
-**Some relations need no expected value.** A sine routine can be checked at $x = 1.3$ without knowing $\sin(1.3)$:
-whatever its value, $\sin(x + \pi) = -\sin(x)$, so the two calls must return opposite values within numerical
-tolerance. That identity is a [metamorphic relation](../appendix/glossary.md#metamorphic-relation): a relation that
-must hold between the outputs of two related runs, even when neither output is known.
+A classical example is the $sin(x)$ function. We know that for some values like $x=0,30,45,60,90$ computing $sin(x)$
+is easy. For some other values like $x=17$ is not that simple. For cases like these we can exploit a metamorphic
+relation of the sin function: $\sin(x + \pi) = -\sin(x)$, which is easy to verify visually:
+
+<a id="fig-sine-relation"></a>
+
+**Figure: a metamorphic relation of the sin function**
+
+<p align="center">
+  <img src="assets/oracles-sine-relation.svg" width="520"
+       alt="The unit circle with a right triangle for a small angle x: its hypotenuse is a radius of length 1, and its
+vertical side, sin(x), rises from the horizontal axis to the point (cos x, sin x). The same triangle is drawn for the
+angle x + pi, opposite through the center: it has the same hypotenuse and the same angle x at the center, so its
+vertical side, sin(x + pi), has the same length but points down to (-cos x, -sin x). Hence sin(x + pi) = -sin(x)">
+</p>
+
+How to transform this metamorphic relation into a test? Take two related runs an assert the mathematical properties
+of both runs occur. In the case of the example above, it would be:
+
+<a id="pseudo-sine-relation-test"></a>
+
+**Pseudocode: sine relation test**
+
+```
+// pseudocode: sine-relation-test
+x = 17
+
+first  = sin(x)
+second = sin(x + π)
+
+expect second == -first
+```
+
+In the context of a MIP, two consecutive optimal runs share some implicit properties:
+
+
 **Permutation invariance** and the promises about a changed objective or feasible set are relations of this kind
-between two runs of `run`, and the recipe that turns each into a test has three steps:
-
-1. Take an instance, any instance.
-2. Transform it in a way whose effect on the optimum you can prove.
-3. Solve both versions and check that the relation holds.
-
-These promises are theorems about optimal values, so they hold only when both runs return an optimum. The contract of
-this chapter promises one, which is what lets them serve as tests, as
-[Figure: a metamorphic relation](#fig-metamorphic-relation) shows.
+between two runs of `run`. They are theorems about optimal values, so they hold only when both runs return an optimum,
+as the optimality-guaranteed promises of [The optimization contract](#model-contract) require.
+[Figure: a metamorphic relation](#fig-metamorphic-relation) shows one.
 
 <a id="fig-metamorphic-relation"></a>
 
@@ -1440,6 +1429,45 @@ expect after.objective_value >= before.objective_value
 
 The optimum of the first instance happens to be 26 (two pallets of A and one of B), but the test never needs to know
 that. Each other example test of these promises is written the same way.
+
+<a id="mip-oracle-reach"></a>
+
+### When to use each oracle
+
+[Figure: the reach of each oracle](#fig-oracle-classes) places the three oracles along the size of the instance.
+
+<a id="fig-oracle-classes"></a>
+
+**Figure: the reach of each oracle**
+
+<p align="center">
+  <img src="assets/oracles-classes.svg" width="760"
+       alt="A horizontal axis of instance size, from tiny to large, with three bands. Hand-calculated optimal values,
+the known oracle, reach only tiny instances. Enumeration, the pseudo-oracle, reaches small ones. Metamorphic relations
+between two runs apply at every size">
+</p>
+
+- **Known oracle: selected small cases.** The price of a human oracle grows fast. The capacities allow at most
+  $m_i = \lfloor \min(W / w_i, V / v_i) \rfloor$ pallets of product $i$, so the candidate loads number
+  $\prod_{i \in I} (m_i - l_i + 1)$: 4 for the example instance, but $4^{30} \approx 1.2 \times 10^{18}$ for 30
+  products that each fit up to 3 times. A person can only be the oracle at teaching scale. A few handpicked small
+  instances often cover the ordinary case, but bugs cluster at the boundaries where behavior changes, so choose
+  boundary cases deliberately: that is why the example tests for **No solution from an empty feasible set** and
+  **Existence & optimality** in [The optimization contract](#model-contract) sit on boundaries. The empty-feasible-set
+  sum is this model's exception: it holds at any size.
+- **Pseudo-oracle: many small cases.** The reference must stay tractable, so differential testing against enumeration
+  lives in the same small-instance regime as the known oracle. It broadens coverage within that regime but does not
+  reach the large instances.
+- **Metamorphic relations: any size.** The instances that matter in practice, a real booking list on a real aircraft,
+  are beyond both, and for them a test knows nothing about the answer. The relations still hold. Checking a valid
+  solution also applies at every size: it takes one pass over the products.
+
+> [!NOTE]
+> Metamorphic relations need no separately calculated optimum. Passing them alone does not prove that either returned
+> load is optimal.
+
+The three are complementary: known answers check selected cases, enumeration checks many small cases, and
+metamorphic relations check properties at any size.
 
 ### Further reading
 
