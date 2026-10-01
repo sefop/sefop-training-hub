@@ -1525,13 +1525,14 @@ cases, and metamorphic relations check properties at any size.
 - William M. McKeeman, "Differential Testing for Software," *Digital Technical Journal*, 1998: the
   paper that named the technique.
 
-The following exercise implements every example test of
-[The optimization contract](#model-contract), each with the oracle that fits it.
+The exercise has two parts: Part 1 writes one test for every promise of
+[The optimization contract](#model-contract), and Part 2 implements every remaining example test,
+each with the oracle that fits it.
 
 > **Practice it**
 >
-> - Python: Oracles exercise (coming soon)
-> - Java: Oracles exercise (coming soon)
+> - Python: [Oracles exercise](https://github.com/sefop/training-testing-python/tree/main/src/oracles)
+> - Java: [Oracles exercise](https://github.com/sefop/sefop-training-java/tree/main/src/main/java/oracles)
 
 ---
 
