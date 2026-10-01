@@ -1222,13 +1222,12 @@ Every promise below follows from optimality: assume the optimal objective functi
      unaffected.
 
 4. **Permutation invariance.**
-
-If a second instance is a reordering of the first instance data, then $z' = z'' = z^*$, even when
-$x'' \ne x'$. It generalizes the commutativity property in the addition operation for an
-optimization model.
+    - If a second instance is a reordering of the first instance data, then $z' = z'' = z^*$,
+      even when $x'' \ne x'$. It generalizes the commutativity property in the addition operation for an
+    optimization model.
 
    *Cargo model example tests:*
-   - the products listed in reverse order: the same revenue.
+   - the products listed in reverse order: the same revenue in both solutions.
 
 5. **Objective changed, feasible set unchanged**.
    - Assume $X'' = X'$.
@@ -1320,8 +1319,8 @@ A [known oracle](../appendix/glossary.md#known-oracle) is the expected answer, w
 test runs by a method that does not use the code under test: by hand, from a formula, or from a
 published result. The test compares the output with that answer.
 
-In the [example instance](../appendix/running-example.md#ex-two-pallet) of the appendix, with
-nothing committed to fly, chocolate fits at most once by weight and water at most once by volume, so
+In the following example there is nothing commited and chocolate fits at most once by weight and
+water at most once by volume, so
 each $x_i \in \{0, 1\}$ and there are $2 \times 2 = 4$ candidate loads, few enough to list:
 
 | $x_A$ | $x_B$ | Weight (≤ 2) | Volume (≤ 2) | Revenue | Feasible? |
@@ -1353,7 +1352,7 @@ expect solution.objective_value == 10
 **No solution from an empty feasible set** has a known oracle too: whether the committed pallets
 alone exceed a capacity is one sum over them. That shortcut belongs to this model: every pallet
 weighs something and takes room, so the committed pallets alone are the lightest and smallest load
-allowed. For a MIP in general, deciding feasibility can be as hard as solving it.
+allowed.
 
 <a id="mip-pseudo-oracle"></a>
 
@@ -1449,7 +1448,7 @@ length but points down to (-cos x, -sin x). Hence sin(x + pi) = -sin(x)">
 </p>
 
 How to transform this metamorphic relation into a test? Take two related runs an assert the
-mathematical properties of both runs occur. In the case of the example above, it would be:
+mathematical properties of both runs. In the case of the example above, it would be:
 
 <a id="pseudo-sine-relation-test"></a>
 
@@ -1465,49 +1464,14 @@ second = sin(x + π)
 expect second == -first
 ```
 
-In the context of a MIP, two consecutive optimal runs share some implicit properties:
+In the context of a MIP, two consecutive optimal runs share some implicit properties, which are
+the ones listed at the end of the optimization contract:
 
+- Permutation invariance
+- Objective changed, feasible set unchanged
+- Feasible set expanded, objective does not worsen
+- Feasible set reduced, objective does not improve
 
-**Permutation invariance** and the promises about a changed objective or feasible set are relations
-of this kind between two runs of `run`. They are theorems about optimal values, so they hold only
-when both runs return an optimum, as the optimality-guaranteed promises of [The optimization
-contract](#model-contract) require. [Figure: a metamorphic relation](#fig-metamorphic-relation)
-shows one.
-
-<a id="fig-metamorphic-relation"></a>
-
-**Figure: a metamorphic relation**
-
-<p align="center">
-  <img src="assets/oracles-metamorphic-relation.svg" width="720"
-       alt="An instance and a transformed copy with a larger payload capacity. Both go through run,
-and both optimal revenues are unknown, shown as question marks. A green check between them tests
-only that the second is at least the first">
-</p>
-
-A relation test compares objective values, never `picked`: a transformation can turn a near-tie into
-an exact tie, and the contract never promised which load wins among equals. [Pseudocode: capacity
-relation test](#pseudo-capacity-relation-test) checks **Feasible set expanded, objective does not
-worsen**, enlarging the feasible set by raising the payload capacity:
-
-<a id="pseudo-capacity-relation-test"></a>
-
-**Pseudocode: capacity relation test**
-
-```
-// pseudocode: capacity-relation-test
-a = Product(name="A", weight=2, volume=1, revenue=10)
-b = Product(name="B", weight=1, volume=2, revenue=6)
-c = Product(name="C", weight=3, volume=1, revenue=14)
-
-before = Optimization().run(Instance(products=[a, b, c], weight_capacity=5, volume_capacity=4))
-after  = Optimization().run(Instance(products=[a, b, c], weight_capacity=8, volume_capacity=4))
-
-expect after.objective_value >= before.objective_value
-```
-
-The optimum of the first instance happens to be 26 (two pallets of A and one of B), but the test
-never needs to know that. Each other example test of these promises is written the same way.
 
 <a id="mip-oracle-reach"></a>
 
@@ -1544,9 +1508,6 @@ pseudo-oracle, reaches small ones. Metamorphic relations between two runs apply 
   relations still hold. Checking a valid solution also applies at every size: it takes one pass over
   the products.
 
-> [!NOTE]
-> Metamorphic relations need no separately calculated optimum. Passing them alone does not prove
-> that either returned load is optimal.
 
 The three are complementary: known answers check selected cases, enumeration checks many small
 cases, and metamorphic relations check properties at any size.
@@ -1564,8 +1525,8 @@ cases, and metamorphic relations check properties at any size.
 - William M. McKeeman, "Differential Testing for Software," *Digital Technical Journal*, 1998: the
   paper that named the technique.
 
-The exercise implements every example test of [The optimization contract](#model-contract), each
-with the oracle that fits it.
+The following exercise implements every example test of
+[The optimization contract](#model-contract), each with the oracle that fits it.
 
 > **Practice it**
 >
