@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 720" width="480" height="720" font-family="Helvetica, Arial, sans-serif">
   <!-- Figure: the optimization phase. A simplified UML box for the class Optimization, drawn vertically. Its only
        public method, run, is the contract (blue). Below it, the five private steps of the optimization phase run top
-       to bottom (orange, implementation details). An Instance enters at the top and a Solution leaves at the
+       to bottom (orange, implementation details). An Instance enters at the top and a Result leaves at the
        bottom. -->
 
   <!-- Light background baked in, so the figure stays readable on a dark theme. -->
@@ -26,7 +26,7 @@
   <line x1="40" y1="172" x2="440" y2="172" stroke="#37474f" stroke-width="2"/>
   <!-- Public compartment: the contract -->
   <rect x="41" y="173" width="398" height="56" fill="#e3f2fd"/>
-  <text x="240" y="206" text-anchor="middle" font-family="Consolas, Menlo, monospace" font-size="14" fill="#0d47a1">+ run(instance: Instance) -&gt; Solution</text>
+  <text x="240" y="206" text-anchor="middle" font-family="Consolas, Menlo, monospace" font-size="14" fill="#0d47a1">+ run(instance: Instance) -&gt; Result</text>
   <line x1="40" y1="230" x2="440" y2="230" stroke="#37474f" stroke-width="2"/>
   <!-- Private compartment: the five steps -->
   <text x="240" y="254" text-anchor="middle" font-size="13" font-style="italic" fill="#bf360c">private: implementation details</text>
@@ -49,8 +49,8 @@
     <line x1="240" y1="529" x2="240" y2="552"/>
   </g>
 
-  <!-- ===== Solution out ===== -->
+  <!-- ===== Result out ===== -->
   <line x1="240" y1="642" x2="240" y2="656" stroke="#37474f" stroke-width="2" marker-end="url(#arrow)"/>
   <rect x="140" y="660" width="200" height="50" rx="8" fill="#eceff1" stroke="#455a64" stroke-width="1.5"/>
-  <text x="240" y="691" text-anchor="middle" font-size="16" fill="#263238">Solution</text>
+  <text x="240" y="691" text-anchor="middle" font-size="16" fill="#263238">Result</text>
 </svg>

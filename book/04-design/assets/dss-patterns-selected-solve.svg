@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 320" width="860" height="320" font-family="Helvetica, Arial, sans-serif">
+  <title>Figure: selected solve</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
+    <marker id="arrow-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+    <marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#52606d" stroke-width="1.4"/></marker>
+    <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
+  </defs>
+  <rect width="860" height="320" fill="#ffffff"/>
+  <rect x="165" y="50" width="545" height="195" rx="10" fill="none" stroke="#52606d" stroke-width="1.4" stroke-dasharray="6 4"/>
+  <text x="179" y="42" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">what the caller sees: one solve(instance) returns Result</text>
+  <rect x="25" y="130" width="110" height="34" rx="17" fill="#d9f0e1" stroke="#2f855a" stroke-width="1.5"/>
+  <text x="80.0" y="151.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Instance</text>
+  <path d="M250,113 L305,147 L250,181 L195,147 Z" fill="none" stroke="#52606d" stroke-width="1.5"/>
+  <text x="250" y="151" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">choose</text>
+  <line x1="137" y1="147" x2="193" y2="147" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="430" y="68" width="240" height="56" rx="6" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="550.0" y="93.0" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">MipProviderGurobi</text>
+  <text x="550.0" y="110.0" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">exact provider</text>
+  <rect x="430" y="172" width="240" height="56" rx="6" fill="#fde2d0" stroke="#c2410c" stroke-width="1.5"/>
+  <text x="550.0" y="197.0" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">GreedyHeuristicProvider</text>
+  <text x="550.0" y="214.0" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">heuristic provider</text>
+  <path d="M285,134 L428,98" fill="none" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M285,160 L428,198" fill="none" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="330" y="98" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">can finish in time</text>
+  <text x="330" y="204" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">otherwise</text>
+  <rect x="740" y="130" width="100" height="34" rx="17" fill="#d9f0e1" stroke="#2f855a" stroke-width="1.5"/>
+  <text x="790.0" y="151.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Result</text>
+  <path d="M672,96 L738,138" fill="none" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M672,200 L738,156" fill="none" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="437" y="262" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">the status is whatever the chosen provider established</text>
+  <rect x="30" y="285" width="16" height="14" rx="3" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="1.2"/>
+  <text x="52" y="296" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">exact provider</text>
+  <rect x="155" y="285" width="16" height="14" rx="3" fill="#fde2d0" stroke="#c2410c" stroke-width="1.2"/>
+  <text x="177" y="296" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">heuristic provider</text>
+  <rect x="300" y="285" width="16" height="14" rx="7" fill="#d9f0e1" stroke="#2f855a" stroke-width="1.2"/>
+  <text x="322" y="296" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">record</text>
+</svg>

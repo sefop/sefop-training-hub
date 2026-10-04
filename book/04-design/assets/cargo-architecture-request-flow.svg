@@ -1,52 +1,48 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 250" width="900" height="250" font-family="Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" width="860" height="400" font-family="Helvetica, Arial, sans-serif">
   <title>Figure: request flow</title>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
+    <marker id="arrow-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
     <marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#52606d" stroke-width="1.4"/></marker>
     <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
   </defs>
-  <rect width="900" height="250" fill="#ffffff"/>
-  <rect x="20" y="90" width="84" height="60" rx="6" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="2"/>
-  <text x="62.0" y="116.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">booking</text>
-  <text x="62.0" y="132.6" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">file</text>
-  <text x="62.0" y="172" text-anchor="middle" font-size="12" fill="#2f6f9f" font-weight="normal" xml:space="preserve">frameworks</text>
-  <rect x="118" y="90" width="84" height="60" rx="6" fill="#d9f0e1" stroke="#2f855a" stroke-width="2"/>
-  <text x="160.0" y="116.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">CsvBooking</text>
-  <text x="160.0" y="132.6" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Reader</text>
-  <text x="160.0" y="172" text-anchor="middle" font-size="12" fill="#2f855a" font-weight="normal" xml:space="preserve">adapters</text>
-  <line x1="105" y1="120" x2="115" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <rect x="216" y="90" width="84" height="60" rx="6" fill="#e6defa" stroke="#6b46c1" stroke-width="2"/>
-  <text x="258.0" y="116.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">BookingList</text>
-  <text x="258.0" y="132.6" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Aircraft</text>
-  <text x="258.0" y="172" text-anchor="middle" font-size="12" fill="#6b46c1" font-weight="normal" xml:space="preserve">entities</text>
-  <line x1="203" y1="120" x2="213" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <rect x="314" y="90" width="84" height="60" rx="6" fill="#fcefc7" stroke="#b7791f" stroke-width="2"/>
-  <text x="356.0" y="124.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">preprocess</text>
-  <text x="356.0" y="172" text-anchor="middle" font-size="12" fill="#b7791f" font-weight="normal" xml:space="preserve">use case</text>
-  <line x1="301" y1="120" x2="311" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <rect x="412" y="90" width="84" height="60" rx="6" fill="#fcefc7" stroke="#b7791f" stroke-width="2"/>
-  <text x="454.0" y="124.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">optimize</text>
-  <text x="454.0" y="172" text-anchor="middle" font-size="12" fill="#b7791f" font-weight="normal" xml:space="preserve">use case</text>
-  <line x1="399" y1="120" x2="409" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <rect x="510" y="90" width="84" height="60" rx="6" fill="#fcefc7" stroke="#b7791f" stroke-width="2"/>
-  <text x="552.0" y="124.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">postprocess</text>
-  <text x="552.0" y="172" text-anchor="middle" font-size="12" fill="#b7791f" font-weight="normal" xml:space="preserve">use case</text>
-  <line x1="497" y1="120" x2="507" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <rect x="608" y="90" width="84" height="60" rx="6" fill="#e6defa" stroke="#6b46c1" stroke-width="2"/>
-  <text x="650.0" y="124.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">LoadPlan</text>
-  <text x="650.0" y="172" text-anchor="middle" font-size="12" fill="#6b46c1" font-weight="normal" xml:space="preserve">entities</text>
-  <line x1="595" y1="120" x2="605" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <rect x="706" y="90" width="84" height="60" rx="6" fill="#d9f0e1" stroke="#2f855a" stroke-width="2"/>
-  <text x="748.0" y="116.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">CsvPlan</text>
-  <text x="748.0" y="132.6" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Writer</text>
-  <text x="748.0" y="172" text-anchor="middle" font-size="12" fill="#2f855a" font-weight="normal" xml:space="preserve">adapters</text>
-  <line x1="693" y1="120" x2="703" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <rect x="804" y="90" width="84" height="60" rx="6" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="2"/>
-  <text x="846.0" y="116.5" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">plan</text>
-  <text x="846.0" y="132.6" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">file</text>
-  <text x="846.0" y="172" text-anchor="middle" font-size="12" fill="#2f6f9f" font-weight="normal" xml:space="preserve">frameworks</text>
-  <line x1="791" y1="120" x2="801" y2="120" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <rect x="308" y="70" width="292" height="92" rx="8" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-dasharray="5 3"/>
-  <text x="454.0" y="62" text-anchor="middle" font-size="14" fill="#9a3412" font-weight="bold" xml:space="preserve">PlanFlightLoad</text>
-  <text x="450.0" y="215" text-anchor="middle" font-size="13" fill="#52606d" font-weight="normal" xml:space="preserve">The request crosses inward to the use case and back out.</text>
+  <rect width="860" height="400" fill="#ffffff"/>
+  <rect x="30" y="30" width="130" height="40" rx="6" fill="#f5f7fa" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="95.0" y="54.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">booking file</text>
+  <rect x="215" y="30" width="170" height="40" rx="6" fill="#ffffff" stroke="#2f855a" stroke-width="1.5"/>
+  <text x="300.0" y="54.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">CsvBookingReader</text>
+  <rect x="440" y="30" width="210" height="40" rx="6" fill="#ffffff" stroke="#6b46c1" stroke-width="1.5"/>
+  <text x="545.0" y="54.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">BookingList, Aircraft</text>
+  <line x1="162" y1="50" x2="213" y2="50" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="387" y1="50" x2="438" y2="50" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="665" y="54" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">business records</text>
+  <rect x="30" y="130" width="800" height="150" rx="12" fill="#fcefc7" stroke="#b7791f" stroke-width="2"/>
+  <text x="814" y="152" text-anchor="end" font-size="14" fill="#b7791f" font-weight="bold" xml:space="preserve">PlanFlightLoad</text>
+  <rect x="50" y="175" width="125" height="42" rx="6" fill="#ffffff" stroke="#b7791f" stroke-width="1.5"/>
+  <text x="112.5" y="200.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">preprocess</text>
+  <rect x="215" y="179" width="100" height="34" rx="17" fill="#ffffff" stroke="#b7791f" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="265.0" y="200.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Instance</text>
+  <rect x="355" y="175" width="135" height="42" rx="6" fill="#ffffff" stroke="#b7791f" stroke-width="1.5"/>
+  <text x="422.5" y="200.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">optimization</text>
+  <rect x="530" y="179" width="90" height="34" rx="17" fill="#ffffff" stroke="#b7791f" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="575.0" y="200.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Result</text>
+  <rect x="660" y="175" width="135" height="42" rx="6" fill="#ffffff" stroke="#b7791f" stroke-width="1.5"/>
+  <text x="727.5" y="200.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">postprocess</text>
+  <line x1="177" y1="196" x2="213" y2="196" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="317" y1="196" x2="353" y2="196" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="492" y1="196" x2="528" y2="196" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="622" y1="196" x2="658" y2="196" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="215" y1="236" x2="620" y2="236" stroke="#52606d" stroke-width="1"/>
+  <text x="417" y="254" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">the optimization contract</text>
+  <path d="M545,72 V100 H112 V173" fill="none" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M727,219 V305 H135 V328" fill="none" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="30" y="330" width="210" height="40" rx="6" fill="#ffffff" stroke="#6b46c1" stroke-width="1.5"/>
+  <text x="135.0" y="354.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">LoadPlan or NoPlan</text>
+  <rect x="295" y="330" width="170" height="40" rx="6" fill="#ffffff" stroke="#2f855a" stroke-width="1.5"/>
+  <text x="380.0" y="354.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">CsvPlanWriter</text>
+  <rect x="520" y="330" width="130" height="40" rx="6" fill="#f5f7fa" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="585.0" y="354.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">plan file</text>
+  <line x1="242" y1="350" x2="293" y2="350" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="467" y1="350" x2="518" y2="350" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="665" y="354" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">business records</text>
 </svg>

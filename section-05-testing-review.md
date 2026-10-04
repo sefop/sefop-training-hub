@@ -156,7 +156,7 @@ as proof of infeasibility, and a feasible incumbent must not be described as pro
 
 ## 5. Strengthen the time-limited contract
 
-Under the [time-limited contract](book/05-testing/README.md#pseudo-time-limited-contract), an implementation that
+Under the [time-limited contract](book/05-testing/README.md#ch-mip-no-optimality), an implementation that
 returns `null` for every instance is correct. This follows from allowing `null` on feasible instances while only
 checking returned solutions for validity.
 
