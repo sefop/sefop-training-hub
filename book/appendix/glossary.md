@@ -8,7 +8,7 @@ they use a term.
 ## Abstraction
 
 A named interface that hides how something is done behind what it does. A cargo loading solver
-abstraction exposes one method, `solve`, and several implementations — enumeration, a MIP solver —
+abstraction exposes one method, `solve`, and several implementations — a MIP solver, a heuristic —
 can stand behind it. It is what lets you swap solvers without rewriting the code that calls them.
 
 ## Adapter pattern
@@ -83,8 +83,10 @@ only code that knows which concrete classes were chosen.
 
 ## Contract
 
-The promise a piece of code makes to its callers: what it needs as input and what it guarantees as
-output, and nothing about how it gets there. Contrast with
+The promise a piece of code makes to its callers: what it requires as input, what it returns and
+what the caller may conclude from each result, and which errors it raises. It says nothing about how
+the code gets there. The cargo optimization contract returns one of four statuses: `optimal`,
+`feasible`, `infeasible` and `not_found`. Contrast with
 [implementation detail](#implementation-detail).
 
 ## Continuous delivery
@@ -157,6 +159,13 @@ comparing their outputs. A disagreement means at least one of them is wrong.
 The rule that each piece of knowledge, such as a business rule or an output format, should live in
 exactly one place in the code, so that changing it means one edit. Abbreviated DRY.
 
+## DSS pattern
+
+A named, recurring way to arrange the algorithms of the optimization step of a
+[decision-support system](#decision-support-system), by analogy with a
+[design pattern](#design-pattern). This book names four: [single solve](#single-solve),
+[staged solve](#staged-solve), [seeded solve](#seeded-solve) and [selected solve](#selected-solve).
+
 ## Duality
 
 The pairing of every linear program with a second one, its dual, whose optimal value bounds the
@@ -193,13 +202,14 @@ nothing going wrong.
 
 A method that gives up the guarantee of an optimal answer on purpose, in exchange for speed. An
 exact MIP solver stopped by a time limit behaves like one from the point of view of its
-[contract](#contract).
+[contract](#contract): both return a load with the status `feasible`, never `optimal`.
 
 ## Implementation detail
 
 Anything about how code produces its result that is not part of its [contract](#contract): the
 algorithm, running time, internal data structures. Tests that assert on implementation details break
-when the implementation legitimately changes.
+when the implementation legitimately changes. A fact the caller acts on, such as whether a load is
+proven optimal, is not an implementation detail and belongs in the contract.
 
 ## Implicit oracle
 
@@ -232,7 +242,9 @@ together, for example that one unit reads data in the shape the next one expects
 ## Interface
 
 The set of operations a part of a system offers to the rest, without saying how they are carried
-out. Code that depends only on an interface keeps working when the implementation behind it changes.
+out. The name, inputs and output of one operation are its signature; the signature together with its
+promises is its [contract](#contract). Code that depends only on an interface keeps working when the
+implementation behind it changes.
 
 ## Iterative development
 
@@ -269,6 +281,13 @@ The [linear program](#linear-program) obtained from a
 integer values. Every integer solution is also a solution of the relaxation, so its optimal value
 bounds the optimal value of the mixed-integer program: from above for a maximization.
 
+## Liskov substitution principle
+
+The rule that any implementation of an interface must be usable wherever the interface is expected:
+it accepts everything the [contract](#contract) accepts and keeps everything the contract promises.
+A heuristic that labels its load `optimal` has the right signature and breaks the principle. The L
+in [SOLID](#solid).
+
 ## Managed dependency
 
 A [dependency](#dependency) outside the program that only the program itself uses, such as its own
@@ -291,6 +310,12 @@ removes the certificate of optimality that duality gives a linear program.
 A stand-in for a [dependency](#dependency), created by a test, that records the calls it receives
 from the unit under test so the test can check them. Used when the behavior under test is a call to
 another system, such as sending a message. One kind of [test double](#test-double).
+
+## Modelling layer
+
+A solver-independent library in which a formulation is written once and translated for whichever
+solver is configured. It turns the solver into a setting, at the price of one more layer to learn
+and maintain, and of access only to the solver features the layer exposes.
 
 ## Modularity
 
@@ -370,6 +395,17 @@ cheaper. The [test suite](#test-suite) is what tells you the behavior did not mo
 A behavior that used to work and no longer does, usually introduced by a later change. Catching
 regressions early is the main job of an automated test suite.
 
+## Seeded solve
+
+A [DSS pattern](#dss-pattern) in which a [heuristic](#heuristic) finds a first solution and an exact
+method starts its search from it, both on the same problem. Also called a warm start.
+
+## Selected solve
+
+A [DSS pattern](#dss-pattern) in which one of several [solution providers](#solution-provider) is
+chosen for each instance. It is the [strategy pattern](#strategy-pattern) applied to the
+optimization step. Also called algorithm selection.
+
 ## Shrinking
 
 Automatically reducing a failing generated input to the smallest input that still fails, so that a
@@ -381,6 +417,11 @@ libraries.
 The rule that a part of a system should have only one reason to change. A responsibility is an axis
 of change, such as the input format or the formulation, not a task the code performs. The S in
 [SOLID](#solid).
+
+## Single solve
+
+A [DSS pattern](#dss-pattern) in which one [solution provider](#solution-provider), exact or
+heuristic, handles every instance.
 
 ## Software architecture
 
@@ -398,10 +439,22 @@ Five design principles collected by Robert C. Martin: single responsibility, ope
 substitution, interface segregation and dependency inversion. Each one raises [cohesion](#cohesion),
 lowers [coupling](#coupling), or both.
 
+## Solution provider
+
+A part that takes an instance and returns a result under the optimization [contract](#contract). An
+exact provider can prove optimality or infeasibility; a heuristic provider searches without proving,
+so it never returns `optimal`.
+
 ## Specified oracle
 
 A [test oracle](#test-oracle) in which the expected answer is stated in advance. The book calls it a
 [known oracle](#known-oracle).
+
+## Staged solve
+
+A [DSS pattern](#dss-pattern) in which several [solution providers](#solution-provider) run in a
+row, the answer of one becoming part of the input of the next, so that each solves a different
+problem. Two optimal stages do not make an optimal whole. Also called decomposition.
 
 ## Static analysis
 
@@ -411,8 +464,8 @@ that a class of mistakes is caught before the program runs at all.
 ## Strategy pattern
 
 A [design pattern](#design-pattern) that puts a family of interchangeable algorithms behind one
-interface, so the code using them can choose one at run time, such as enumeration, a MIP solver or a
-heuristic chosen by instance size.
+interface, so the code using them can choose one at run time, such as a MIP solver or a heuristic
+chosen for each instance.
 
 ## Technical debt
 

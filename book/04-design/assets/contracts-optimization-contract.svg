@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 400" width="880" height="400" font-family="Helvetica, Arial, sans-serif">
+  <title>Figure: optimization contract</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
+    <marker id="arrow-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+    <marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#52606d" stroke-width="1.4"/></marker>
+    <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
+  </defs>
+  <rect width="880" height="400" fill="#ffffff"/>
+  <rect x="30" y="95" width="190" height="104" rx="4" fill="#d9f0e1" stroke="#2f855a" stroke-width="1.5"/>
+  <text x="125" y="115" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold" xml:space="preserve">Instance</text>
+  <line x1="30" y1="125" x2="220" y2="125" stroke="#2f855a" stroke-width="1"/>
+  <text x="40" y="145" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">products</text>
+  <text x="40" y="163" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">weight_capacity</text>
+  <text x="40" y="181" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">volume_capacity</text>
+  <rect x="280" y="115" width="240" height="58" rx="4" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="400.0" y="135" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold" xml:space="preserve">Optimization</text>
+  <line x1="280" y1="145" x2="520" y2="145" stroke="#2f6f9f" stroke-width="1"/>
+  <text x="290" y="165" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ run(instance): Result</text>
+  <line x1="222" y1="147" x2="278" y2="147" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="700" y="24" text-anchor="middle" font-size="12" fill="#2f855a" font-weight="bold" xml:space="preserve">Result, with a Solution</text>
+  <text x="700" y="172" text-anchor="middle" font-size="12" fill="#52606d" font-weight="bold" xml:space="preserve">Result, without a Solution</text>
+  <rect x="580" y="32" width="270" height="50" rx="6" fill="#d9f0e1" stroke="#2f855a" stroke-width="1.5"/>
+  <text x="594" y="53" text-anchor="start" font-size="13" fill="#1f2933" font-weight="bold" font-family="Consolas, Menlo, monospace" xml:space="preserve">optimal</text>
+  <text x="594" y="72" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">no feasible load earns more</text>
+  <line x1="522" y1="147" x2="578" y2="57" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="580" y="92" width="270" height="50" rx="6" fill="#d9f0e1" stroke="#2f855a" stroke-width="1.5"/>
+  <text x="594" y="113" text-anchor="start" font-size="13" fill="#1f2933" font-weight="bold" font-family="Consolas, Menlo, monospace" xml:space="preserve">feasible</text>
+  <text x="594" y="132" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">a better load may exist</text>
+  <line x1="522" y1="147" x2="578" y2="117" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="580" y="180" width="270" height="50" rx="6" fill="#f5f7fa" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="594" y="201" text-anchor="start" font-size="13" fill="#1f2933" font-weight="bold" font-family="Consolas, Menlo, monospace" xml:space="preserve">infeasible</text>
+  <text x="594" y="220" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">no feasible load exists</text>
+  <line x1="522" y1="147" x2="578" y2="205" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="580" y="240" width="270" height="50" rx="6" fill="#f5f7fa" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="594" y="261" text-anchor="start" font-size="13" fill="#1f2933" font-weight="bold" font-family="Consolas, Menlo, monospace" xml:space="preserve">not_found</text>
+  <text x="594" y="280" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">search stopped, nothing proven</text>
+  <line x1="522" y1="147" x2="578" y2="265" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="580" y="318" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">optimal, infeasible: facts about the instance</text>
+  <text x="580" y="336" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">feasible, not_found: facts about the search</text>
+  <rect x="280" y="290" width="240" height="50" rx="6" fill="#fde2d0" stroke="#c2410c" stroke-width="1.5"/>
+  <text x="400" y="311" text-anchor="middle" font-size="13" fill="#9a3412" font-weight="bold" font-family="Consolas, Menlo, monospace" xml:space="preserve">raises InvalidInstance</text>
+  <text x="400" y="329" text-anchor="middle" font-size="12" fill="#9a3412" font-weight="normal" xml:space="preserve">an error, not a Result</text>
+  <line x1="400" y1="175" x2="400" y2="288" stroke="#c2410c" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#arrow-o)"/>
+  <text x="410" y="238" text-anchor="start" font-size="12" fill="#9a3412" font-weight="normal" xml:space="preserve">malformed instance</text>
+  <text x="30" y="380" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ public    - private</text>
+</svg>

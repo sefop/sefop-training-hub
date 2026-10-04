@@ -109,22 +109,26 @@ promise, and every later chapter tests the promise. [Unit testing](#ch-unit-test
 [Writing good tests](#ch-clear-tests) and [Test-driven development](#ch-tdd) test one unit on its
 own. [Mocks](#ch-mocks) and [Integration testing](#ch-integration) take a test beyond the unit, to
 the systems it calls and the files it reads. [Testing an optimization model](#ch-model-testing) then
-meets the difficulty specific to decision-support software and sets up the contract.
-[Test oracles](#ch-oracles) shows three ways to decide whether `run` kept it, and
-[Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality) what remains
-of it when optimality is not guaranteed. [Testing a decision-support system](#ch-dss-testing)
-applies them to the whole system behind its interface. Read them in order: each chapter uses only
-what the chapters before it defined.
+meets the difficulty specific to decision-support software and takes up the contract that the design
+section wrote for the cargo model. [Test oracles](#ch-oracles) shows three ways to decide whether
+`run` kept it, and
+[Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality) what a test
+can still check when optimality is not guaranteed.
+[Testing a decision-support system](#ch-dss-testing) applies them to the whole system behind its
+interface. Read them in order: each chapter uses only what the chapters before it defined.
 
 <a id="ch-interface"></a>
 
 ## 1. Interface vs implementation
 
+[Contracts](../04-design/README.md#ch-contracts), in the design section, separated what a unit of
+code promises from how it keeps the promise. This chapter recalls that split on the smallest example
+of this section, a calculator, because every later chapter tests the promise and nothing else.
+
 Every unit of code has two parts. Its [interface](../appendix/glossary.md#interface) says what the
-unit does: its name, the inputs it accepts, and the outputs and errors it returns. Programmers also
-call it the signature, the application programming interface (API), the
-[contract](../appendix/glossary.md#contract), or the
-[abstraction](../appendix/glossary.md#abstraction). Its implementation is how the unit does it, and
+unit does: its name, the inputs it accepts, and the outputs and errors it returns. Together with the
+promises written in its comments, the interface is the unit's
+[contract](../appendix/glossary.md#contract). Its implementation is how the unit does it, and
 everything in it is an [implementation detail](../appendix/glossary.md#implementation-detail). Any
 code that calls the unit is one of its _clients_. Implementation details include any
 [private](../appendix/glossary.md#public-and-private) method the unit calls, such as `is_finite` in
@@ -149,10 +153,9 @@ interface. The third brace, in orange, marks the private method is_finite(x), la
 implementation detail, clients cannot call it">
 </p>
 
-Two design practices follow from the split. The interface states what the unit does and never how,
-and the comments that state its promises belong to it as much as its first line does. The
-implementation stays hidden from the clients, so it can change, or give way to a different
-implementation, without any client noticing.
+The implementation stays hidden from the clients, so it can change, or give way to a different
+implementation, without any client noticing. A test is one more client: it checks what the interface
+promises and never how the promise is kept.
 
 A wall socket shows the same split. [Figure: socket](#fig-socket) draws it: the socket is the
 interface, a fixed shape that delivers a fixed voltage. Behind the wall, the power may come from a
@@ -1053,9 +1056,10 @@ not use leaked information from the algorithm to assert correctness.
 
 For the next parts of the section we are going to use this example. The full definition of the cargo
 loading system is written in
-[the appendix](../appendix/cargo_model_example.md#an-optimization-model-for-this-problem). for one cargo
-flight, the question is what cargo to load to maximize revenue and respect operational constraints.
-The model is is a [mixed-integer program](../appendix/glossary.md#mixed-integer-program) (MIP).
+[the appendix](../appendix/cargo_model_example.md#an-optimization-model-for-this-problem). for one
+cargo flight, the question is what cargo to load to maximize revenue and respect operational
+constraints. The model is is a
+[mixed-integer program](../appendix/glossary.md#mixed-integer-program) (MIP).
 
 The symbols are defined in the following table:
 
@@ -1087,45 +1091,22 @@ $$
 
 [Interface vs implementation](#ch-interface) showed that a caller relies on what the abstraction
 promises, never on how it keeps the promise. What, then, does the cargo model promise to its caller?
-Let's write these promises explicitly before testing them.
+The design section wrote that promise down, in
+[Pseudocode: optimization contract](../04-design/README.md#pseudo-optimization-contract), and this
+section tests it as written.
 
-The cargo model sits behind one class, `Optimization`, with a single public method, `run`. It
-receives an `Instance` object and returns a `Solution` object.
-[Pseudocode: optimization contract](#pseudo-optimization-contract) defines the three classes and the
-method. A comment starting with `requires` states what the caller must provide, and one starting
-with `returns` what the method guarantees; `or null` means the method may return no object at all.
+In short: the cargo model sits behind one class, `Optimization`, with a single public method, `run`.
+It receives an `Instance` (a list of `Product` records and the two capacities) and returns a
+`Result`. A `Result` has a `status`, and it carries a `Solution` when there is a load to return. The
+`Solution` holds `picked` (the pallets loaded of each product), `objective_value`, `total_weight`
+and `total_volume`.
 
-<a id="pseudo-optimization-contract"></a>
-
-**Pseudocode: optimization contract**
-
-```
-// pseudocode: optimization-contract
-class Product
-    public name
-    public weight                        // per pallet
-    public volume                        // per pallet
-    public revenue                       // per pallet
-    public committed_quantity            // pallets that must fly, 0 by default
-
-class Instance
-    public products                      // list of Product
-    public weight_capacity
-    public volume_capacity
-
-class Solution
-    public picked                        // product name -> whole number of pallets, 0 when left behind
-    public objective_value               // revenue of the load
-    public total_weight                  // weight of the load
-    public total_volume                  // volume of the load
-
-class Optimization
-    // requires: instance is not null
-    // returns:  a Solution filled with the load found, or null when the optimization phase
-    //           could not provide a feasible solution
-    // raises:   an error if instance is null
-    public run(instance) returns Solution or null
-```
+|    Status    | `Solution` | What `run` promises                                              |
+| :----------: | :--------: | ---------------------------------------------------------------- |
+|  `optimal`   |  present   | the solution is a feasible load, and no feasible load earns more |
+|  `feasible`  |  present   | the solution is a feasible load; a better one may exist          |
+| `infeasible` |   absent   | no feasible load exists for this instance                        |
+| `not_found`  |   absent   | the search stopped with no load and no proof that none exists    |
 
 A caller writes two lines, as shown in [Pseudocode: optimization usage](#pseudo-optimization-usage):
 
@@ -1136,12 +1117,13 @@ A caller writes two lines, as shown in [Pseudocode: optimization usage](#pseudo-
 ```
 // pseudocode: optimization-usage
 optimization = Optimization()
-solution = optimization.run(instance)
+result = optimization.run(instance)
 ```
 
-Note that the contract says nothing about the algorithm behind `run`, and nothing about why the
-optimization module could fail to provide one. This design is deliberate on purpose, we don't want
-to **leak implementation details** to the contract.
+Note that the contract says nothing about the algorithm behind `run`. This is deliberate: we do not
+want to **leak implementation details** into the contract. It does say whether a load is proven to
+be the best one and whether no load exists, because a caller acts differently on each, so those are
+not implementation details.
 
 Behind `run`, five private steps make up the _optimization phase_, as
 [Figure: the optimization phase](#fig-model-pipeline) shows: receive the instance, build the model,
@@ -1155,40 +1137,41 @@ reach them and does not know anything about them.
 <p align="center">
   <img src="assets/model-testing-pipeline.svg" width="420"
        alt="A vertical diagram. An Instance at the top enters the class Optimization through its
-only public method, run, shown in blue: run takes an Instance and returns a Solution. Inside the
-class, five private steps in orange run from top to bottom: receive the instance, build the model,
-solve, assemble the solution, return the solution, labeled private implementation details. A
-Solution leaves at the bottom">
+only public method, run, shown in blue: run takes an Instance and returns a Result. Inside the class,
+five private steps in orange run from top to bottom: receive the instance, build the model, solve,
+assemble the solution, return the result, labeled private implementation details. A Result leaves at
+the bottom">
 </p>
 
-So what does this contract offers? There are two types of promises: software promises (derived from
+So what does this contract offer? There are two types of promises: software promises (derived from
 the software design) and mathematical promises (derived from optimization theory).
 
 **Software promises**:
 
-1. There is a single public method called `run` which receives a non-null `Instance` object.
-2. If the provided `Instance` is null, then an error is going to be thrown by the program.
-3. If the provided `Instance` is not null, this method returns an `Solution` object. The `Solution`
-   object could be null, which means a solution could not be found. It its `non-null`, it means a
-   feasible solution was found.
+1. There is a single public method called `run`, which receives an `Instance`.
+2. If the `Instance` is malformed, for example a product with a negative weight, `run` raises an
+   error. [This section does not test that case](#out-of-scope).
+3. Otherwise `run` returns a `Result` whose `status` is one of `optimal`, `feasible`, `infeasible`
+   and `not_found`, and which carries a `Solution` exactly when the status is `optimal` or
+   `feasible`.
 
-Mathematical promises varies if the underlying algorithm solving the model guarantees optimality or
-not. The promises that hold for any algorithm come first; those that hold only when optimality is
-guaranteed follow from it. Mathematical promises usually are implicit and not written as concrete
-comments in the abstraction, nonetheless, I think it would be a good idea to write them as comments
-in your project.
+The mathematical promises depend on the status. The promises that hold whenever a `Solution` is
+returned come first; those that hold only when the status is `optimal` follow. The contract states
+them in one line each, and it is a good idea to write them out in your project as they are written
+here.
 
 Assume a model as $\max \{ f(x) : x \in X \}$, where $f$ is the objective and $X$ the feasible set,
 and let $z = f(x)$ for the objective value of a solution $x$. A first run solves $(f, X')$ and
 returns $x'$ with $z' = f(x')$; a second run solves $(f, X'')$ and returns $x''$ with $z'' =
-f(x'')$. Every relation between two runs assumes that both returned a solution. In a test, $=$ means
-equal within the tolerance of [floating point numbers](#difficulty-floating-point).
+f(x'')$. Every relation between two runs assumes that both returned the status `optimal`. In a test,
+$=$ means equal within the tolerance of [floating point numbers](#difficulty-floating-point).
 
-**Mathematical promises without optimality guarantees**:
+**Mathematical promises of every status**:
 
 1. **Valid solution.**
 
-   $x' \in X'$ and $z' = f(x')$: the solution is feasible, and its value is reported correctly.
+   Whenever a `Solution` is returned, $x' \in X'$ and $z' = f(x')$: the solution is feasible, and
+   its value is reported correctly.
 
    _Cargo model example tests:_
    - every product's quantity is a whole number of pallets.
@@ -1199,21 +1182,24 @@ equal within the tolerance of [floating point numbers](#difficulty-floating-poin
 
 2. **No solution from an empty feasible set.**
 
-   If $X' = \emptyset$, no solution is returned.
+   If $X' = \emptyset$, no `Solution` is returned: the status is `infeasible` or `not_found`, never
+   `optimal` or `feasible`. And the status `infeasible` is returned only if $X' = \emptyset$.
 
    _Cargo model example tests:_
-   - the committed pallets alone weigh more than the payload capacity, $\sum_i w_i l_i > W$, thus
-     the output is `null`.
-   - the committed pallets alone take more room than the hold, $\sum_i v_i l_i > V$:=, thus the
-     output is `null`.
+   - the committed pallets alone weigh more than the payload capacity, $\sum_i w_i l_i > W$, thus no
+     `Solution` is returned, and an algorithm that guarantees optimality returns `infeasible`.
+   - the committed pallets alone take more room than the hold, $\sum_i v_i l_i > V$, thus no
+     `Solution` is returned, and an algorithm that guarantees optimality returns `infeasible`.
 
-**Mathematical promises with optimality guaranteed**:
+**Mathematical promises of the status `optimal`**:
 
 Every promise below follows from optimality: assume the optimal objective function value is $z^*$.
+An algorithm that guarantees optimality returns `optimal` on every instance with a feasible load, so
+for such an algorithm each of them can be tested on any instance.
 
 3. **Existence & optimality.**
 
-   If $X' \ne \emptyset$, then the optimal value returned should be $z^*$.
+   If $X' \ne \emptyset$ and the status is `optimal`, then the value returned is $z^*$.
 
    _Cargo model example tests:_
    - no products at all: an empty load worth zero revenue.
@@ -1289,9 +1275,9 @@ relation between them.
   <img src="assets/model-testing-black-box.svg" width="760"
        alt="Three columns: arrange, act, assert. Top row, one run: an Instance goes into
 Optimization, drawn as a dark black box whose only visible part is its public method run, and the
-Solution that comes out, or null, is checked against one promise, behaviors 1 to 3. Bottom row, two
-runs: an Instance and a transformed copy each go through run, and a relation between the two
-solutions is checked, behaviors 4 to 7, for example that the second objective value is at least the
+Result that comes out, a status and a Solution when there is one, is checked against one promise,
+behaviors 1 to 3. Bottom row, two runs: an Instance and a transformed copy each go through run, and
+a relation between the two results is checked, behaviors 4 to 7, for example that the second objective value is at least the
 first. A note says the test sees only what goes into run and what comes out of it">
 </p>
 
@@ -1355,10 +1341,10 @@ a = Product(name="A", weight=2, volume=1, revenue=10)
 b = Product(name="B", weight=1, volume=2, revenue=6)
 instance = Instance(products=[a, b], weight_capacity=2, volume_capacity=2)
 
-solution = Optimization().run(instance)
+result = Optimization().run(instance)
 
-expect solution != null
-expect solution.objective_value == 10
+expect result.status == optimal
+expect result.solution.objective_value == 10
 ```
 
 **No solution from an empty feasible set** has a known oracle too: whether the committed pallets
@@ -1377,11 +1363,11 @@ implementation of the same contract, whose steps can be inspected even if it is 
 and compares their outputs: a disagreement means one of them is wrong.
 
 Here the second implementation is an `EnumerationSolver`: a class that exists only in the tests, has
-a `run` method with the same contract, and tries every candidate load. It is slow, but correct by
-inspection, and it only makes sense for instances small enough to enumerate. A MIP solver such as
-Gurobi is very unlikely to compute a wrong optimum for the model it was given; the realistic risk is
-that the code builds a different model from the one on paper, and a disagreement with enumeration
-points at that.
+a `run` method with the same contract, and tries every candidate load, so it returns `optimal` or
+`infeasible` and nothing else. It is slow, but correct by inspection, and it only makes sense for
+instances small enough to enumerate. A MIP solver such as Gurobi is very unlikely to compute a wrong
+optimum for the model it was given; the realistic risk is that the code builds a different model
+from the one on paper, and a disagreement with enumeration points at that.
 
 This is the disciplined version of a sanity check most modelers already run by hand, comparing a new
 model with brute force on a toy case. Three details turn that habit into a reliable test:
@@ -1392,10 +1378,10 @@ model with brute force on a toy case. Three details turn that habit into a relia
 2. **Fix the [random seed](../appendix/glossary.md#random-seed).** The same inputs must always
    produce the same outputs, as in a controlled experiment. A failure that vanishes on the retry
    cannot be investigated, so the test must also report the instance that failed.
-3. **Compare only what the contract promises.** Whether a Solution came back and its objective
-   value, never `picked`: when several loads tie, the contract allows the two implementations to
-   return different ones. An equal value proves the load optimal only together with the checks of a
-   valid solution: a load that misreports its revenue could match the optimum by accident.
+3. **Compare only what the contract promises.** The status and the objective value, never `picked`:
+   when several loads tie, the contract allows the two implementations to return different ones. An
+   equal value proves the load optimal only together with the checks of a valid solution: a load
+   that misreports its revenue could match the optimum by accident.
 
 <a id="pseudo-differential-sweep"></a>
 
@@ -1416,9 +1402,9 @@ repeat 200 times:
     reference = EnumerationSolver().run(instance)
     candidate = Optimization().run(instance)
 
-    expect (candidate == null) == (reference == null)
-    if reference != null:
-        expect candidate.objective_value == reference.objective_value
+    expect candidate.status == reference.status
+    if reference.status == optimal:
+        expect candidate.solution.objective_value == reference.solution.objective_value
 ```
 
 Weights and volumes start at 1, so no product fits more than 8 times, and enumeration checks at most
@@ -1557,38 +1543,32 @@ A mixed-integer program (MIP) can take hours to solve to proven optimality once 
 and a load planner cannot wait hours before the aircraft closes. The optimization phase has to
 answer in time, even when the best load has not been proven best yet: its solver stops at a time
 limit and returns the best load found so far, the [incumbent](../appendix/glossary.md#incumbent).
-The contract can then no longer promise the optimum, and
-[Pseudocode: time-limited contract](#pseudo-time-limited-contract) says so.
 
-<a id="pseudo-time-limited-contract"></a>
-
-**Pseudocode: time-limited contract**
-
-```
-// pseudocode: time-limited-contract
-class Optimization
-    // requires: instance is not null
-    // returns:  a Solution, which is feasible but may not be optimal,
-    //           or null when the optimization phase could not provide a feasible solution
-    public run(instance) returns Solution or null
-```
+The contract does not change. [The optimization contract](#model-contract) already has a word for
+that outcome, the status `feasible`, and one for a search that stops with nothing, `not_found`. What
+changes is which statuses a test will meet. An `Optimization` that stops at a time limit, or that
+uses a heuristic, may return `feasible` where an exact run to the end would return `optimal`, and
+`not_found` where it would return `optimal` or `infeasible`. The design section calls the
+arrangements that behave this way by name in [DSS patterns](../04-design/README.md#ch-dss-patterns).
 
 What can a test still ask for?
 
 ### What survives
 
-A test can only check a promise the contract still makes. Without optimality, that leaves the two
-behaviors of [The optimization contract](#model-contract) that hold for any algorithm:
+A test can only check a promise that the returned status makes. Without optimality, that leaves the
+two behaviors of [The optimization contract](#model-contract) that hold for every status:
 
-- **Behavior 1, a valid solution.** Its checks apply unchanged to every Solution `run` returns: they
-  never needed the optimum.
+- **Behavior 1, a valid solution.** Its checks apply unchanged to every `Solution` that `run`
+  returns, `optimal` or `feasible`: they never needed the optimum.
 - **Behavior 2, no solution from an empty feasible set.** An instance whose committed pallets exceed
-  a capacity has no feasible load, so `run` must return `null`. The converse is gone: a phase
-  stopped early may return `null` on an instance that does have a feasible load, and the contract
-  allows it.
+  a capacity has no feasible load, so `run` must not return a `Solution`: the status is `infeasible`
+  or `not_found`. The converse is gone: a phase stopped early may return `not_found` on an instance
+  that does have a feasible load, and the contract allows it. What it never allows is `infeasible`
+  on such an instance.
 
-Behaviors 3 to 7 follow from optimality, so they no longer hold. The relations of behaviors 4 to 7
-are theorems about the optimum, and an incumbent is not the optimum. A
+Behaviors 3 to 7 are promises of the status `optimal`, so they apply only to a result that carries
+it, and a test must check the status before it asks for them. The relations of behaviors 4 to 7 are
+theorems about the optimum, and an incumbent is not the optimum. A
 [heuristic](../appendix/glossary.md#heuristic) shows it most plainly: take a greedy one that sorts
 products by revenue per tonne and loads each while it fits.
 
@@ -1604,14 +1584,15 @@ d = Product(name="D", weight=2, volume=1, revenue=7)
 before = GreedyOptimization().run(Instance(products=[a],    weight_capacity=3, volume_capacity=10))   // loads A: 10
 after  = GreedyOptimization().run(Instance(products=[a, d], weight_capacity=3, volume_capacity=10))   // loads D: 7
 
-expect after.objective_value >= before.objective_value                                                // fails: 7 < 10
+expect after.solution.objective_value >= before.solution.objective_value                              // fails: 7 < 10
 ```
 
-`GreedyOptimization` keeps the time-limited contract: its loads are feasible and may not be optimal.
-D earns 3.5 per tonne and A 3.3, so it loads D, and the tonne left takes nothing. The optimum with D
+`GreedyOptimization` is an `Optimization` whose only provider is the greedy heuristic. It keeps the
+contract: its loads are feasible, and it says so with the status `feasible`, never `optimal`. D
+earns 3.5 per tonne and A 3.3, so it loads D, and the tonne left takes nothing. The optimum with D
 available is still 10, one pallet of A. The heuristic dropped to 7 while behaving exactly as
-designed, so the failure is in the test, which asked a load that may not be optimal for a theorem
-about optima.
+designed, so the failure is in the test, which asked two `feasible` results for a theorem about
+`optimal` ones.
 
 ### Measuring quality instead
 
@@ -1628,8 +1609,9 @@ even for large instances; its best revenue is at least the best revenue of whole
 `lp_relaxation_value(instance)` is a helper that exists only in the tests and computes it. The
 _upper-bound gap_ of a load is then $(z_{\text{LP}} - z) / z_{\text{LP}}$, where $z$ is the load's
 revenue and $z_{\text{LP}}$ the value of the relaxation. On an instance small enough to enumerate,
-`EnumerationSolver` gives the optimum $z^_$, and the *exact gap* $(z^_ - z) / z^*$ can be measured
-as well. [Figure: the gap a benchmark measures](#fig-bounds) places the three values on one line.
+`EnumerationSolver` gives the optimum $z^\ast$, and the _exact gap_ $(z^\ast - z) / z^\ast$ can be
+measured as well. [Figure: the gap a benchmark measures](#fig-bounds) places the three values on one
+line.
 
 <a id="fig-bounds"></a>
 
@@ -1644,8 +1626,8 @@ upper-bound gap spans the distance from the incumbent to the relaxation">
 </p>
 
 [Pseudocode: quality benchmark](#pseudo-quality-benchmark) keeps the two gaps apart, since they
-measure different things, and counts the `null` returns separately, since the contract allows them
-and they have no gap. It holds no `expect`: it reports, and a person reads the report.
+measure different things, and counts the `not_found` returns separately, since the contract allows
+them and they have no gap. It holds no `expect`: it reports, and a person reads the report.
 
 <a id="pseudo-quality-benchmark"></a>
 
@@ -1655,20 +1637,21 @@ and they have no gap. It holds no `expect`: it reports, and a person reads the r
 // pseudocode: quality-benchmark
 upper_bound_gaps = empty list
 exact_gaps       = empty list
-null_count       = 0
+not_found_count  = 0
 
-for each instance in the fixed benchmark instances:
-    solution = Optimization().run(instance)
-    if solution == null:
-        null_count = null_count + 1
+for each instance in the fixed benchmark instances:      // every one has a feasible load
+    result = Optimization().run(instance)
+    if result.status == not_found:
+        not_found_count = not_found_count + 1
     else:
+        value = result.solution.objective_value
         bound = lp_relaxation_value(instance)
-        add (bound − solution.objective_value) / bound to upper_bound_gaps
+        add (bound − value) / bound to upper_bound_gaps
         if the instance is small enough to enumerate:
-            optimum = EnumerationSolver().run(instance).objective_value
-            add (optimum − solution.objective_value) / optimum to exact_gaps
+            optimum = EnumerationSolver().run(instance).solution.objective_value
+            add (optimum − value) / optimum to exact_gaps
 
-report the average of upper_bound_gaps, the average of exact_gaps, and null_count
+report the average of upper_bound_gaps, the average of exact_gaps, and not_found_count
 ```
 
 ### Where this stops working
@@ -1680,22 +1663,23 @@ report the average of upper_bound_gaps, the average of exact_gaps, and null_coun
 
 ### Check yourself
 
-1. `run` reaches its time limit and returns a Solution. Should the two-pallet test's exact-value
-   assertion apply to it?
+1. `run` reaches its time limit and returns the status `feasible`. Should the two-pallet test's
+   exact-value assertion apply to it?
 2. On the same small instance, `Optimization` reports 12 revenue and `EnumerationSolver` reports 10.
    Is that a bug?
-3. `run` returns `null` on an instance whose committed pallets fit. Does that break the time-limited
+3. `run` returns `not_found` on an instance whose committed pallets fit. Does that break the
    contract?
 
 <details>
 <summary>Answers</summary>
 
-1. No. The contract does not promise an optimal load, so check behavior 1, and track the load's
-   quality in the benchmark.
+1. No. The status `feasible` does not promise an optimal load, so check behavior 1, and track the
+   load's quality in the benchmark.
 2. Yes. No feasible load beats the optimum, so either the load is infeasible or its revenue is
    misreported, and the checks of behavior 1 show which.
-3. No. `null` means only that the phase could not provide a feasible solution. The contract forces
-   `null` on an instance with no feasible load, but it never forces a Solution.
+3. No. `not_found` means only that the search stopped with no load and no proof. The contract
+   forbids a `Solution` on an instance with no feasible load, but it never forces one. Had `run`
+   returned `infeasible`, the contract would be broken.
 
 </details>
 
@@ -1755,13 +1739,13 @@ obtaining that answer, up to the case where the answer is the very thing the mod
 - **Keep what only your program uses real** ([Integration testing](#ch-integration)). Mock what
   others observe, and let the real files and databases show where units disagree.
 - **Test the pipeline through its contract** ([Testing an optimization model](#ch-model-testing)).
-  `run` and the Solution it returns are the promise; the five private steps behind them are not.
+  `run` and the Result it returns are the promise; the five private steps behind them are not.
 - **Sort the checks by what the test knows** ([Test oracles](#ch-oracles)). A known answer, a second
   implementation, or only conditions every answer meets.
 - **Without optimality, test what is still promised**
   ([Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality)). Load
-  validity and `null` on an impossible instance remain tests; solution quality is tracked over time
-  as a benchmark.
+  validity and no `Solution` on an impossible instance remain tests; solution quality is tracked
+  over time as a benchmark.
 - **Behind an interface, only the output counts**
   ([Testing a decision-support system](#ch-dss-testing)). The techniques that read the output
   survive a hidden algorithm; the ones that need the solver do not.

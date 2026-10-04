@@ -158,8 +158,8 @@ built for it, and the exercises that go with these chapters are listed in the
    learns quickly and adapts quickly, and what changes in each lifecycle phase when the software
    produces decisions. It is the map for the sections that follow.
 4. **[04 — Designing decision-support software](../04-design/README.md)** — how coupling and
-   cohesion, a few principles and patterns, and a clean architecture keep a decision-support system
-   easy to change.
+   cohesion, a few principles, contracts and patterns, and a clean architecture keep a
+   decision-support system easy to change, with a vocabulary of patterns for its optimization step.
 5. **[05 — Testing decision-support software](../05-testing/README.md)** — how to test a
    decision-support system.
 6. **[06 — Deploying decision-support software](../06-deployment/README.md)** — challenges of
@@ -177,8 +177,8 @@ Four references sit outside the sections and are meant to be used rather than re
 - [Learning roadmap](../appendix/learning-roadmap.md): a suggested order for learning software
   engineering for a scientist
 - [Practice repositories](../appendix/practice-repositories.md):where the runnable exercises live
-- [The cargo model example](../appendix/cargo_model_example.md): an example optimization model that will be
-  used an example throughout the book.
+- [The cargo model example](../appendix/cargo_model_example.md): an example optimization model that
+  will be used an example throughout the book.
 
 ---
 

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" width="980" height="560" font-family="Helvetica, Arial, sans-serif">
   <!-- Figure: testing the black box. Columns follow the arrange, act, assert pattern. Top row: one run, an Instance
-       goes into Optimization through run, and one promise is checked on the Solution. Bottom row: two runs, an
+       goes into Optimization through run, and one promise is checked on the Result. Bottom row: two runs, an
        instance and a transformed copy each go through run, and a relation between the two solutions is checked.
        Optimization is a dark black box with only its public method, run, visible (blue). Data is grey; the test's
        checks are green. -->
@@ -32,13 +32,13 @@
   <rect x="296" y="96" width="288" height="84" rx="6" fill="#37474f"/>
   <rect x="296" y="96" width="288" height="30" rx="6" fill="#1565c0"/>
   <rect x="296" y="116" width="288" height="10" fill="#1565c0"/>
-  <text x="440" y="116" text-anchor="middle" font-family="Consolas, Menlo, monospace" font-size="12.5" fill="#ffffff">+ run(instance: Instance) -&gt; Solution</text>
+  <text x="440" y="116" text-anchor="middle" font-family="Consolas, Menlo, monospace" font-size="12.5" fill="#ffffff">+ run(instance: Instance) -&gt; Result</text>
   <text x="440" y="152" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">Optimization</text>
   <text x="440" y="170" text-anchor="middle" font-size="12" font-style="italic" fill="#cfd8dc">black box</text>
   <g font-size="15" text-anchor="middle" fill="#263238">
     <rect x="630" y="110" width="120" height="56" rx="8" fill="#eceff1" stroke="#455a64" stroke-width="1.5"/>
-    <text x="690" y="136">Solution</text>
-    <text x="690" y="155" font-size="12" fill="#607d8b">or null</text>
+    <text x="690" y="136">Result</text>
+    <text x="690" y="155" font-size="12" fill="#607d8b">status, Solution</text>
   </g>
   <rect x="790" y="104" width="170" height="68" rx="10" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
   <text x="875" y="132" text-anchor="middle" font-size="15" font-weight="bold" fill="#1b5e20">check one promise</text>
@@ -79,9 +79,9 @@
   </g>
   <g font-size="15" text-anchor="middle" fill="#263238">
     <rect x="630" y="268" width="120" height="56" rx="8" fill="#eceff1" stroke="#455a64" stroke-width="1.5"/>
-    <text x="690" y="301">Solution′</text>
+    <text x="690" y="301">Result′</text>
     <rect x="630" y="388" width="120" height="56" rx="8" fill="#eceff1" stroke="#455a64" stroke-width="1.5"/>
-    <text x="690" y="421">Solution″</text>
+    <text x="690" y="421">Result″</text>
   </g>
   <rect x="790" y="316" width="170" height="80" rx="10" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
   <text x="875" y="342" text-anchor="middle" font-size="15" font-weight="bold" fill="#1b5e20">check a relation</text>

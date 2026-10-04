@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 430" width="900" height="430" font-family="Helvetica, Arial, sans-serif">
+  <title>Figure: formulation placement</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
+    <marker id="arrow-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+    <marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#52606d" stroke-width="1.4"/></marker>
+    <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
+  </defs>
+  <rect width="900" height="430" fill="#ffffff"/>
+  <text x="155" y="26" text-anchor="middle" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">In the provider,</text>
+  <text x="155" y="45" text-anchor="middle" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">inside the use case</text>
+  <rect x="15" y="62" width="280" height="150" rx="10" fill="#fcefc7" stroke="#b7791f" stroke-width="2"/>
+  <text x="27" y="82" text-anchor="start" font-size="13" fill="#b7791f" font-weight="bold" xml:space="preserve">Use cases</text>
+  <rect x="15" y="226" width="280" height="170" rx="10" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="2"/>
+  <text x="27" y="246" text-anchor="start" font-size="13" fill="#2f6f9f" font-weight="bold" xml:space="preserve">Outer ring</text>
+  <text x="450" y="26" text-anchor="middle" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">In the provider,</text>
+  <text x="450" y="45" text-anchor="middle" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">outside the use case</text>
+  <rect x="310" y="62" width="280" height="150" rx="10" fill="#fcefc7" stroke="#b7791f" stroke-width="2"/>
+  <text x="322" y="82" text-anchor="start" font-size="13" fill="#b7791f" font-weight="bold" xml:space="preserve">Use cases</text>
+  <rect x="310" y="226" width="280" height="170" rx="10" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="2"/>
+  <text x="322" y="246" text-anchor="start" font-size="13" fill="#2f6f9f" font-weight="bold" xml:space="preserve">Outer ring</text>
+  <text x="745" y="26" text-anchor="middle" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">In a modelling layer</text>
+  <rect x="605" y="62" width="280" height="150" rx="10" fill="#fcefc7" stroke="#b7791f" stroke-width="2"/>
+  <text x="617" y="82" text-anchor="start" font-size="13" fill="#b7791f" font-weight="bold" xml:space="preserve">Use cases</text>
+  <rect x="605" y="226" width="280" height="170" rx="10" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="2"/>
+  <text x="617" y="246" text-anchor="start" font-size="13" fill="#2f6f9f" font-weight="bold" xml:space="preserve">Outer ring</text>
+  <rect x="50" y="110" width="210" height="56" rx="6" fill="#ffffff" stroke="#b7791f" stroke-width="1.5"/>
+  <text x="155.0" y="135.0" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">MipProviderGurobi</text>
+  <text x="155.0" y="152.0" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">formulation + solver calls</text>
+  <rect x="70" y="320" width="170" height="38" rx="6" fill="#ffffff" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="155.0" y="343.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Gurobi library</text>
+  <line x1="155" y1="166" x2="155" y2="318" stroke="#c2410c" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow-o)"/>
+  <text x="165" y="276" text-anchor="start" font-size="12" fill="#9a3412" font-weight="normal" xml:space="preserve">exception to the</text>
+  <text x="165" y="292" text-anchor="start" font-size="12" fill="#9a3412" font-weight="normal" xml:space="preserve">dependency rule</text>
+  <rect x="355" y="120" width="190" height="44" rx="4" fill="#ffffff" stroke="#b7791f" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="450" y="138" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">«interface»</text>
+  <text x="450" y="156" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">SolutionProvider</text>
+  <rect x="345" y="256" width="210" height="56" rx="6" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="450.0" y="281.0" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">MipProviderGurobi</text>
+  <text x="450.0" y="298.0" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">formulation + solver calls</text>
+  <line x1="450" y1="256" x2="450" y2="166" stroke="#52606d" stroke-width="1.6" marker-end="url(#hollow)"/>
+  <text x="460" y="200" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">implements</text>
+  <rect x="365" y="348" width="170" height="34" rx="6" fill="#ffffff" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="450.0" y="369.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Gurobi library</text>
+  <line x1="450" y1="312" x2="450" y2="346" stroke="#52606d" stroke-width="1.6" marker-end="url(#open)"/>
+  <rect x="640" y="110" width="210" height="56" rx="6" fill="#ffffff" stroke="#b7791f" stroke-width="1.5"/>
+  <text x="745.0" y="135.0" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">MipProvider</text>
+  <text x="745.0" y="152.0" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">formulation, in the layer's terms</text>
+  <rect x="660" y="262" width="170" height="40" rx="6" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="745.0" y="286.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">Modelling layer</text>
+  <line x1="745" y1="166" x2="745" y2="260" stroke="#c2410c" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow-o)"/>
+  <text x="755" y="198" text-anchor="start" font-size="12" fill="#9a3412" font-weight="normal" xml:space="preserve">depends on the layer</text>
+  <rect x="623" y="348" width="118" height="34" rx="6" fill="#ffffff" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="682.0" y="369.32" text-anchor="middle" font-size="12" fill="#1f2933" font-weight="normal" xml:space="preserve">Gurobi library</text>
+  <rect x="751" y="348" width="118" height="34" rx="6" fill="#ffffff" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="810.0" y="369.32" text-anchor="middle" font-size="12" fill="#1f2933" font-weight="normal" xml:space="preserve">another solver</text>
+  <line x1="720" y1="302" x2="687" y2="346" stroke="#52606d" stroke-width="1.6" marker-end="url(#open)"/>
+  <line x1="770" y1="302" x2="805" y2="346" stroke="#52606d" stroke-width="1.6" marker-end="url(#open)"/>
+  <text x="745" y="328" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">translates</text>
+  <text x="450" y="420" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">dashed orange: the use-case ring mentions something outside it</text>
+</svg>

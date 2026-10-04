@@ -1,35 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 440" width="860" height="440" font-family="Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 890 440" width="890" height="440" font-family="Helvetica, Arial, sans-serif">
   <title>Figure: dependency inversion</title>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
     <marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#52606d" stroke-width="1.4"/></marker>
     <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
   </defs>
-  <rect width="860" height="440" fill="#ffffff"/>
+  <rect width="890" height="440" fill="#ffffff"/>
   <line x1="370" y1="20" x2="370" y2="420" stroke="#e4e7eb" stroke-width="2"/>
   <text x="185" y="36" text-anchor="middle" font-size="17" fill="#1f2933" font-weight="bold" xml:space="preserve">Before</text>
   <text x="615" y="36" text-anchor="middle" font-size="17" fill="#1f2933" font-weight="bold" xml:space="preserve">After</text>
   <rect x="30" y="70" width="310" height="58" rx="4" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
-  <text x="185.0" y="90" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold" xml:space="preserve">Optimize</text>
+  <text x="185.0" y="90" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold" xml:space="preserve">Optimization</text>
   <line x1="30" y1="100" x2="340" y2="100" stroke="#2f6f9f" stroke-width="1"/>
-  <text x="40" y="120" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ run(products, capacity): LoadPlan</text>
+  <text x="40" y="120" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ run(products, capacity): Solution</text>
   <rect x="85" y="290" width="200" height="44" rx="6" fill="#f5f7fa" stroke="#9aa5b1" stroke-width="1.5"/>
   <text x="185.0" y="316.9" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="normal" xml:space="preserve">Gurobi library</text>
   <line x1="185" y1="128" x2="185" y2="288" stroke="#52606d" stroke-width="1.6" marker-end="url(#open)"/>
   <text x="195" y="200" text-anchor="start" font-size="13" fill="#52606d" font-weight="normal" xml:space="preserve">uses</text>
   <rect x="460" y="60" width="310" height="58" rx="4" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
-  <text x="615.0" y="80" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold" xml:space="preserve">Optimize</text>
+  <text x="615.0" y="80" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold" xml:space="preserve">Optimization</text>
   <line x1="460" y1="90" x2="770" y2="90" stroke="#2f6f9f" stroke-width="1"/>
-  <text x="470" y="110" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ run(products, capacity): LoadPlan</text>
+  <text x="470" y="110" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ run(products, capacity): Solution</text>
   <rect x="440" y="150" width="350" height="72" rx="4" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5" stroke-dasharray="5 3"/>
   <text x="615.0" y="167" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">«interface»</text>
   <text x="615.0" y="185" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold" xml:space="preserve">SolutionProvider</text>
   <line x1="440" y1="194" x2="790" y2="194" stroke="#2f6f9f" stroke-width="1"/>
-  <text x="450" y="214" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ solve(products, capacity): LoadPlan</text>
+  <text x="450" y="214" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ solve(products, capacity): Solution</text>
   <rect x="460" y="265" width="310" height="58" rx="4" fill="#ffffff" stroke="#2f6f9f" stroke-width="1.5"/>
   <text x="615.0" y="285" text-anchor="middle" font-size="14" fill="#1f2933" font-weight="bold" xml:space="preserve">MipProviderGurobi</text>
   <line x1="460" y1="295" x2="770" y2="295" stroke="#2f6f9f" stroke-width="1"/>
-  <text x="470" y="315" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ solve(products, capacity): LoadPlan</text>
+  <text x="470" y="315" text-anchor="start" font-size="12" fill="#1f2933" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ solve(products, capacity): Solution</text>
   <rect x="515" y="372" width="200" height="34" rx="6" fill="#f5f7fa" stroke="#9aa5b1" stroke-width="1.5"/>
   <text x="615.0" y="393.6" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Gurobi library</text>
   <line x1="615" y1="118" x2="615" y2="148" stroke="#52606d" stroke-width="1.6" marker-end="url(#open)"/>
@@ -38,6 +38,6 @@
   <text x="625" y="252" text-anchor="start" font-size="13" fill="#52606d" font-weight="normal" xml:space="preserve">implements</text>
   <line x1="615" y1="323" x2="615" y2="370" stroke="#52606d" stroke-width="1.6" marker-end="url(#open)"/>
   <text x="798" y="186" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">owned by</text>
-  <text x="798" y="202" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">Optimize</text>
+  <text x="798" y="202" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">Optimization</text>
   <text x="30" y="424" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-family="Consolas, Menlo, monospace" xml:space="preserve">+ public    - private</text>
 </svg>
