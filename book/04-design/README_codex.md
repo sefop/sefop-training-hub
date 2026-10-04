@@ -49,7 +49,7 @@ architecture makes their dependency direction explicit. The revised
 
 ## The running example
 
-The [cargo loading system](../appendix/running-example.md) recommends pallet quantities for one
+The [cargo loading system](../appendix/cargo_model_example.md) recommends pallet quantities for one
 flight. Its inputs are a booking list, a product catalogue, and aircraft capacity. Its fixed model
 maximizes revenue while respecting weight and volume limits, tendered quantities, committed
 quantities, and whole-pallet decisions. The load planner remains responsible for the operational
@@ -57,7 +57,7 @@ loading decision.
 
 This section retains the base model, including the tender limit. The revised testing section
 explicitly uses the
-[unlimited-tender evolution](../appendix/running-example.md#ev-unlimited-tender). That evolution
+[unlimited-tender evolution](../appendix/cargo_model_example.md). That evolution
 changes the instance requirements and feasibility rules; it does not erase the need for the
 boundaries developed here. Providers must agree on the chosen model variant before they can be
 substituted for one another.
@@ -948,7 +948,7 @@ no-plan or failure notices can be reported after the deadline, but they are not 
 
 ### Follow one recommendation through the boundaries
 
-Use the [two-product example](../appendix/running-example.md#ex-two-pallet): flight `F-101` has room
+Use the [two-product example](../appendix/cargo_model_example.md#ex-two-pallet): flight `F-101` has room
 for 2 tonnes and 2 cubic meters. One pallet of each product is tendered and none is committed. A
 earns more than B, and the capacities prevent taking both. The unique optimum is one A and zero B.
 

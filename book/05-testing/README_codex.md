@@ -692,7 +692,7 @@ and validating operational suitability are separate activities.
 
 ### The cargo instance
 
-We use the [unlimited-tender evolution](../appendix/running-example.md#ev-unlimited-tender) of the
+We use the [unlimited-tender evolution](../appendix/cargo_model_example.md) of the
 shared cargo example throughout this section, including the complete workflow. Supply imposes no
 upper bound on a product's quantity; capacities still do. This is an explicit variant, not an
 accidental omission of the base model's tender constraint. Each pallet has strictly positive weight
@@ -998,7 +998,7 @@ difficulty manageable on selected cases.
 ### Known answers and boundary cases
 
 A [known oracle](../appendix/glossary.md#known-oracle) uses an answer established independently
-before the test. For the [cargo example](../appendix/running-example.md#ex-two-pallet), A weighs 2
+before the test. For the [cargo example](../appendix/cargo_model_example.md#ex-two-pallet), A weighs 2
 tonnes, occupies 1 cubic meter, and earns 10 thousand dollars; B weighs 1 tonne, occupies 2 cubic
 meters, and earns 6. Capacities are 2 tonnes and 2 cubic meters, with no commitments. These
 capacities limit each product to one pallet even under unlimited tender.
@@ -1336,7 +1336,7 @@ mathematical assertions through a different interface.
 ### The system's promise
 
 For this worked example, retain the
-[unlimited-tender variant](../appendix/running-example.md#ev-unlimited-tender). The source booking
+[unlimited-tender variant](../appendix/cargo_model_example.md). The source booking
 records identify participating products and committed quantities; they impose no tender upper bound.
 A different tender policy would be a different model contract.
 
