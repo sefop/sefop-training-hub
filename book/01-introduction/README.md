@@ -177,7 +177,7 @@ Four references sit outside the sections and are meant to be used rather than re
 - [Learning roadmap](../appendix/learning-roadmap.md): a suggested order for learning software
   engineering for a scientist
 - [Practice repositories](../appendix/practice-repositories.md):where the runnable exercises live
-- [The running example](../appendix/running-example.md): an example optimization model that will be
+- [The cargo model example](../appendix/cargo_model_example.md): an example optimization model that will be
   used an example throughout the book.
 
 ---

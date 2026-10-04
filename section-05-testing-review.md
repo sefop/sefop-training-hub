@@ -361,7 +361,7 @@ broader view.
 ## 12. Example and editorial consistency
 
 - In the cargo model introduction, explicitly identify and link the sanctioned
-  [unlimited-tender variant](book/appendix/running-example.md#ev-unlimited-tender). The text currently links the base
+  [unlimited-tender variant](book/appendix/cargo_model_example.md). The text currently links the base
   model while silently omitting its tender constraint.
 - State valid-instance assumptions in the contract: positive weights and volumes, valid committed quantities, and a
   policy for product identities. “Instance is not null” is insufficient.

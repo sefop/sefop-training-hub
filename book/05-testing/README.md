@@ -1053,7 +1053,7 @@ not use leaked information from the algorithm to assert correctness.
 
 For the next parts of the section we are going to use this example. The full definition of the cargo
 loading system is written in
-[the appendix](../appendix/running-example.md#an-optimization-model-for-this-problem). for one cargo
+[the appendix](../appendix/cargo_model_example.md#an-optimization-model-for-this-problem). for one cargo
 flight, the question is what cargo to load to maximize revenue and respect operational constraints.
 The model is is a [mixed-integer program](../appendix/glossary.md#mixed-integer-program) (MIP).
 
@@ -1772,8 +1772,7 @@ With the system tested, the next section puts it in front of its users.
 
 ## Ideas to develop
 
-- Testing models with a [second objective](../appendix/running-example.md#ev-second-objective), with
-  and without optimality.
+- Testing models with a second objective, with and without optimality.
 
 ---
 

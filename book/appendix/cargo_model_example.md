@@ -1,0 +1,175 @@
+# The cargo model example
+
+A cargo airline flies freighters on scheduled departures. Shippers want to send pallets of goods,
+such as boxed chocolate, bottled water or cartons of laptops, and a departure can rarely carry
+everything they want to send. A load planner decides how many pallets of each product go on the
+aircraft.
+
+> [!NOTE] This is a simplified example on purpose. A real freighter operation might also consider
+> how the load is balanced, which pallets may be stacked on which, and how dangerous goods are kept
+> apart. The subject of this book is the engineering around a model rather than the model itself.
+
+---
+
+## The business problem
+
+### The decision
+
+Given a cargo flight, how many pallets of each product to load, so that the revenue the aircraft
+carries is as large as possible, without exceeding what it can lift or what fits in the hold.
+
+What is _not_ decided here: which aircraft flies, where it flies, what a shipper is charged, and the
+order in which pallets are physically placed.
+
+<p align="center">
+  <img src="assets/optimization_engine_cargo_flight_selection.png" width="640"
+       alt="A load planner facing pallets of chocolate, water, laptops and apparel beside a freighter, under the goal
+            of maximizing revenue within the aircraft's weight and volume capacity">
+</p>
+
+### Who is our client
+
+The load planner works once the booking list for a departure closes. They receive a load list, and
+they are accountable for the operational decision of how to load the flight. They use this system as
+a guideline.
+
+### The inputs
+
+| Input             | Description                                                                   |
+| ----------------- | ----------------------------------------------------------------------------- |
+| Booking list      | The products offered on this departure, and how many pallets of each must fly |
+| Product catalogue | Weight, volume and revenue for one pallet of each product                     |
+| Aircraft capacity | The maximum weight this aircraft may carry, and the volume of its hold        |
+
+### The rules a proposal must respect
+
+- A pallet is loaded whole. There is no such thing as loading part of one.
+- A load may exceed neither the weight the aircraft may carry nor the volume of its hold.
+- Revenue counts only for pallets actually loaded. A pallet left behind earns nothing.
+- Some shipments are committed beforehand and must fly on this departure.
+
+---
+
+## An optimization model for this problem
+
+This problem can be formulated as a classical knapsack problem. Given a booking list, a catalogue
+and the two capacities, the system returns either a loadable selection of pallets that maximizes
+revenue, or the statement that no selection is loadable. A selection is loadable when it respects
+all business constraints.
+
+### Sets
+
+- $I$: the products on the booking list for this departure. The index $i$ runs over it.
+
+### Parameters
+
+Assume all these are deterministic.
+
+For each product $i \in I$:
+
+- $r_i \ge 0$: the revenue of one pallet, in thousands of USD.
+- $w_i > 0$: the weight of one pallet, in tonnes.
+- $v_i > 0$: the volume of one pallet, in m³.
+- $l_i$: the number of pallets that must fly, a non-negative integer.
+
+For the aircraft:
+
+- $W \ge 0$: the maximum weight the aircraft may carry, in tonnes.
+- $V \ge 0$: the volume of its hold, in m³.
+
+### Variables
+
+- $x_i \in \mathbb{Z}_{\ge 0}$: the number of pallets of product $i$ loaded, for each $i \in I$.
+
+### Objective function
+
+Maximize revenue:
+
+$$
+\max_{x} \quad \sum_{i \in I} r_i x_i
+$$
+
+### Constraints
+
+**(C1) Weight capacity.** The loaded pallets weigh no more than the aircraft may carry.
+
+$$
+\sum_{i \in I} w_i x_i \le W
+$$
+
+**(C2) Hold capacity.** The loaded pallets fit in the hold.
+
+$$
+\sum_{i \in I} v_i x_i \le V
+$$
+
+**(C3) Committed freight.** Every pallet that must fly is loaded.
+
+$$
+x_i \ge l_i \qquad \forall i \in I
+$$
+
+**(C4) Whole pallets.**
+
+$$
+x_i \in \mathbb{Z} \qquad \forall i \in I
+$$
+
+Put together, the complete model reads:
+
+$$
+\begin{aligned}
+\max_{x} \quad & \sum_{i \in I} r_i x_i \\
+\text{s.t.} \quad & \sum_{i \in I} w_i x_i \le W & \text{(C1) weight capacity} \\
+& \sum_{i \in I} v_i x_i \le V & \text{(C2) hold capacity} \\
+& x_i \ge l_i \quad \forall i \in I & \text{(C3) committed freight} \\
+& x_i \in \mathbb{Z} \quad \forall i \in I & \text{(C4) whole pallets}
+\end{aligned}
+$$
+
+Note the feasible region could be empty if the committed freight exceeds either the weight or volume
+capacity.
+
+### Notation
+
+| Symbol | Type      | Meaning                               | Unit             | Domain                                    |
+| :----: | --------- | ------------------------------------- | ---------------- | ----------------------------------------- |
+|  $I$   | set       | products on the booking list          | —                | finite set                                |
+|  $i$   | index     | one product                           | —                | $i \in I$                                 |
+| $r_i$  | parameter | revenue of one pallet of product $i$  | thousands of USD | $r_i \ge 0$                               |
+| $w_i$  | parameter | weight of one pallet of product $i$   | tonnes           | $w_i > 0$                                 |
+| $v_i$  | parameter | volume of one pallet of product $i$   | m³               | $v_i > 0$                                 |
+| $l_i$  | parameter | pallets of product $i$ that must fly  | pallets          | $l_i \in \mathbb{Z}_{\ge 0}$              |
+|  $W$   | parameter | maximum weight the aircraft may carry | tonnes           | $W \ge 0$                                 |
+|  $V$   | parameter | volume of the hold                    | m³               | $V \ge 0$                                 |
+| $x_i$  | variable  | pallets of product $i$ loaded         | pallets          | $x_i \in \mathbb{Z}_{\ge 0}$, $x_i \ge l_i$ |
+
+<a id="ex-two-pallet"></a>
+
+### An example instance
+
+| Product            | Weight $w_i$ | Volume $v_i$ | Revenue $r_i$ | Must fly $l_i$ |
+| ------------------ | :----------: | :----------: | :-----------: | :------------: |
+| A: boxed chocolate |      2       |      1       |      10       |       0        |
+| B: bottled water   |      1       |      2       |       6       |       0        |
+
+with $W = 2$ tonnes and $V = 2$ m³, and nothing committed to fly:
+
+$$
+\begin{aligned}
+\max_{x} \quad & 10 x_A + 6 x_B \\
+\text{s.t.} \quad & 2 x_A + x_B \le 2 \\
+& x_A + 2 x_B \le 2 \\
+& x_A, x_B \in \mathbb{Z}_{\ge 0}
+\end{aligned}
+$$
+
+Chocolate fits at most once by weight and water at most once by volume. Loading one pallet of each
+weighs 3 tonnes, over the 2 the aircraft may carry, so at most one pallet flies, and chocolate earns
+more than water. The optimal solution is $x_A = 1$, $x_B = 0$:
+
+| Value        | Computed as              |     Result      |
+| ------------ | ------------------------ | :-------------: |
+| Revenue      | $10 \cdot 1 + 6 \cdot 0$ | 10 thousand USD |
+| Payload used | $2 \cdot 1 + 1 \cdot 0$  |  2 of 2 tonnes  |
+| Hold used    | $1 \cdot 1 + 2 \cdot 0$  |    1 of 2 m³    |

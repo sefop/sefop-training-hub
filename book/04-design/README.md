@@ -35,13 +35,13 @@ and [A clean architecture for the cargo loading system](#ch-cargo-architecture) 
 line of the tangled script ends up. Read them in order: each chapter uses only what the chapters
 before it defined.
 
-## The running example
+## The cargo model example
 
 Every chapter designs the cargo loading system defined in
-[the appendix](../appendix/running-example.md): for one departure, how many pallets of each tendered
+[the appendix](../appendix/cargo_model_example.md): for one departure, how many pallets of each
 product to load, so that the revenue carried is as large as possible without exceeding the
-aircraft's maximum weight or the capacity of its hold. The inputs are a booking list (pallets
-tendered and pallets that must fly, per product), a product catalogue (weight, volume and revenue
+aircraft's maximum weight or the capacity of its hold. The inputs are a booking list (the products
+offered and the pallets of each that must fly), a product catalogue (weight, volume and revenue
 per pallet) and the aircraft's two capacities. This section holds the model fixed: the formulation
 never changes, only the code around it.
 
@@ -660,12 +660,11 @@ essential can be tested without the incidental.
 
 ## 6. A clean architecture for the cargo loading system
 
-The problem, from [the appendix](../appendix/running-example.md): a load planner receives a booking
-list for one departure, and the system proposes how many pallets of each product to load, maximizing
-revenue within the aircraft's weight and hold capacities, loading no more than was tendered and at
-least what must fly. This chapter places every line of
-[Pseudocode: tangled script](#pseudo-tangled-script) in the four rings of **Figure: clean
-architecture**.
+The problem, from [the appendix](../appendix/cargo_model_example.md): a load planner receives a
+booking list for one departure, and the system proposes how many pallets of each product to load,
+maximizing revenue within the aircraft's weight and hold capacities and loading at least what must
+fly. This chapter places every line of [Pseudocode: tangled script](#pseudo-tangled-script) in the
+four rings of **Figure: clean architecture**.
 
 <a id="fig-cargo-architecture"></a>
 
@@ -678,10 +677,9 @@ architecture**.
 
 ### The rings, from the inside out
 
-**Entities.** `Product`, `BookingList` (the products tendered for one departure), `Aircraft` (with
+**Entities.** `Product`, `BookingList` (the products offered for one departure), `Aircraft` (with
 its weight and volume capacity) and `LoadPlan`, together with the rules that hold for them in any
-application: a pallet count is a whole number, a plan never loads more than was tendered. They
-depend on nothing.
+application: a pallet count is a whole number, never negative. They depend on nothing.
 
 **Use case.** `PlanFlightLoad` receives the data as entities and returns a `LoadPlan`, in three
 steps.
