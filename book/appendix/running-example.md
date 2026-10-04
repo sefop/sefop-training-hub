@@ -1,13 +1,12 @@
 # The running example
 
-A cargo airline flies freighters on scheduled departures. Shippers want to send pallets of goods — boxed chocolate,
-bottled water, cartons of laptops — and a departure can rarely carry everything that was tendered. A load planner
-decides how many pallets of each product go on the aircraft.
+A cargo airline flies freighters on scheduled departures. Shippers want to send pallets of goods —
+boxed chocolate, bottled water, cartons of laptops — and a departure can rarely carry everything
+that was tendered. A load planner decides how many pallets of each product go on the aircraft.
 
-> [!NOTE]
-> This is a simplified example on purpose. A real freighter operation might also consider how the load is balanced,
-> which pallets may be stacked on which, and how dangerous goods are kept apart. The subject of this book is the
-> engineering around a model rather than the model itself.
+> [!NOTE] This is a simplified example on purpose. A real freighter operation might also consider
+> how the load is balanced, which pallets may be stacked on which, and how dangerous goods are kept
+> apart. The subject of this book is the engineering around a model rather than the model itself.
 
 ---
 
@@ -15,11 +14,12 @@ decides how many pallets of each product go on the aircraft.
 
 ### The decision
 
-Given a cargo flight, how many pallets of each tendered product to load, so that the revenue the aircraft carries is
-as large as possible, without exceeding what it can lift or what fits in the hold.
+Given a cargo flight, how many pallets of each tendered product to load, so that the revenue the
+aircraft carries is as large as possible, without exceeding what it can lift or what fits in the
+hold.
 
-What is *not* decided here: which aircraft flies, where it flies, what a shipper is charged, and the order in which
-pallets are physically placed.
+What is _not_ decided here: which aircraft flies, where it flies, what a shipper is charged, and the
+order in which pallets are physically placed.
 
 <p align="center">
   <img src="assets/optimization_engine_cargo_flight_selection.png" width="640"
@@ -29,13 +29,14 @@ pallets are physically placed.
 
 ### Who is our client
 
-The load planner works once the booking list for a departure closes. They receive a load list, and they are
-accountable for the operational decision of how to load the flight. They use this system as a guideline.
+The load planner works once the booking list for a departure closes. They receive a load list, and
+they are accountable for the operational decision of how to load the flight. They use this system as
+a guideline.
 
 ### The inputs
 
 | Input             | Description                                                                    |
-|-------------------|--------------------------------------------------------------------------------|
+| ----------------- | ------------------------------------------------------------------------------ |
 | Booking list      | How many pallets of each product were tendered, and how many of those must fly |
 | Product catalogue | Weight, volume and revenue for one pallet of each product                      |
 | Aircraft capacity | The maximum weight this aircraft may carry, and the volume of its hold         |
@@ -52,9 +53,10 @@ accountable for the operational decision of how to load the flight. They use thi
 
 ## An optimization model for this problem
 
-This problem can be formulated as a classical knapsack problem. Given a booking list, a catalogue and the two
-capacities, the system returns either a loadable selection of pallets that maximizes revenue, or the statement that
-no selection is loadable. A selection is loadable when it respects all business constraints.
+This problem can be formulated as a classical knapsack problem. Given a booking list, a catalogue
+and the two capacities, the system returns either a loadable selection of pallets that maximizes
+revenue, or the statement that no selection is loadable. A selection is loadable when it respects
+all business constraints.
 
 ### Sets
 
@@ -134,31 +136,32 @@ $$
 \end{aligned}
 $$
 
-Note the feasible region could be empty if the commited freight exceeds either the weight or volume capacity.
+Note the feasible region could be empty if the commited freight exceeds either the weight or volume
+capacity.
 
 ### Notation
 
-| Symbol | Type | Meaning | Unit | Domain |
-|:---:|---|---|---|---|
-| $I$ | set | products on the booking list | — | finite set |
-| $i$ | index | one product | — | $i \in I$ |
-| $r_i$ | parameter | revenue of one pallet of product $i$ | thousands of USD | $r_i \ge 0$ |
-| $w_i$ | parameter | weight of one pallet of product $i$ | tonnes | $w_i \ge 0$ |
-| $v_i$ | parameter | volume of one pallet of product $i$ | m³ | $v_i \ge 0$ |
-| $u_i$ | parameter | pallets of product $i$ tendered | pallets | $u_i \in \mathbb{Z}_{\ge 0}$ |
-| $l_i$ | parameter | pallets of product $i$ that must fly | pallets | $l_i \in \mathbb{Z}$, $0 \le l_i \le u_i$ |
-| $W$ | parameter | maximum weight the aircraft may carry | tonnes | $W \ge 0$ |
-| $V$ | parameter | volume of the hold | m³ | $V \ge 0$ |
-| $x_i$ | variable | pallets of product $i$ loaded | pallets | $x_i \in \mathbb{Z}_{\ge 0}$, $l_i \le x_i \le u_i$ |
+| Symbol | Type      | Meaning                               | Unit             | Domain                                              |
+| :----: | --------- | ------------------------------------- | ---------------- | --------------------------------------------------- |
+|  $I$   | set       | products on the booking list          | —                | finite set                                          |
+|  $i$   | index     | one product                           | —                | $i \in I$                                           |
+| $r_i$  | parameter | revenue of one pallet of product $i$  | thousands of USD | $r_i \ge 0$                                         |
+| $w_i$  | parameter | weight of one pallet of product $i$   | tonnes           | $w_i \ge 0$                                         |
+| $v_i$  | parameter | volume of one pallet of product $i$   | m³               | $v_i \ge 0$                                         |
+| $u_i$  | parameter | pallets of product $i$ tendered       | pallets          | $u_i \in \mathbb{Z}_{\ge 0}$                        |
+| $l_i$  | parameter | pallets of product $i$ that must fly  | pallets          | $l_i \in \mathbb{Z}$, $0 \le l_i \le u_i$           |
+|  $W$   | parameter | maximum weight the aircraft may carry | tonnes           | $W \ge 0$                                           |
+|  $V$   | parameter | volume of the hold                    | m³               | $V \ge 0$                                           |
+| $x_i$  | variable  | pallets of product $i$ loaded         | pallets          | $x_i \in \mathbb{Z}_{\ge 0}$, $l_i \le x_i \le u_i$ |
 
 <a id="ex-two-pallet"></a>
 
 ### An example instance
 
-| Product | Weight $w_i$ | Volume $v_i$ | Revenue $r_i$ | Must fly $l_i$ | Tendered $u_i$ |
-|---|:---:|:---:|:---:|:---:|:---:|
-| A — boxed chocolate | 2 | 1 | 10 | 0 | 1 |
-| B — bottled water | 1 | 2 | 6 | 0 | 1 |
+| Product             | Weight $w_i$ | Volume $v_i$ | Revenue $r_i$ | Must fly $l_i$ | Tendered $u_i$ |
+| ------------------- | :----------: | :----------: | :-----------: | :------------: | :------------: |
+| A — boxed chocolate |      2       |      1       |      10       |       0        |       1        |
+| B — bottled water   |      1       |      2       |       6       |       0        |       1        |
 
 with $W = 2$ tonnes and $V = 2$ m³, and nothing committed to fly:
 
@@ -171,52 +174,54 @@ $$
 \end{aligned}
 $$
 
-Loading both pallets weighs 3 tonnes, over the 2 the aircraft may carry, so at most one pallet flies, and chocolate
-earns more than water. The optimal solution is $x_A = 1$, $x_B = 0$:
+Loading both pallets weighs 3 tonnes, over the 2 the aircraft may carry, so at most one pallet
+flies, and chocolate earns more than water. The optimal solution is $x_A = 1$, $x_B = 0$:
 
-| Value | Computed as | Result |
-|---|---|:---:|
-| Revenue | $10 \cdot 1 + 6 \cdot 0$ | 10 thousand USD |
-| Payload used | $2 \cdot 1 + 1 \cdot 0$ | 2 of 2 tonnes |
-| Hold used | $1 \cdot 1 + 2 \cdot 0$ | 1 of 2 m³ |
+| Value        | Computed as              |     Result      |
+| ------------ | ------------------------ | :-------------: |
+| Revenue      | $10 \cdot 1 + 6 \cdot 0$ | 10 thousand USD |
+| Payload used | $2 \cdot 1 + 1 \cdot 0$  |  2 of 2 tonnes  |
+| Hold used    | $1 \cdot 1 + 2 \cdot 0$  |    1 of 2 m³    |
 
 ## Evolutions of the model
 
-The model above is held fixed across the book. The evolutions below are the only changes to it, each a change in the
-business, not a side effect of a chapter.
+The model above is held fixed across the book. The evolutions below are the only changes to it, each
+a change in the business, not a side effect of a chapter.
 
 <a id="ev-unlimited-tender"></a>
 
 ### Unlimited tender
 
-The shipper will tender as many pallets of each product as the aircraft takes, so the booking list no longer limits a
-product. Constraint (C3) and the parameter $u_i$ disappear, and the committed freight of (C4) stays. Every pallet must
-now weigh something and take some room, $w_i > 0$ and $v_i > 0$: a pallet with neither weight nor volume and a
-positive revenue could be loaded without limit, and the revenue would grow without bound. The capacities alone then
-limit each product to at most $\min(W / w_i, V / v_i)$ pallets.
+The shipper will tender as many pallets of each product as the aircraft takes, so the booking list
+no longer limits a product. Constraint (C3) and the parameter $u_i$ disappear, and the committed
+freight of (C4) stays. Every pallet must now weigh something and take some room, $w_i > 0$ and
+$v_i > 0$: a pallet with neither weight nor volume and a positive revenue could be loaded without
+limit, and the revenue would grow without bound. The capacities alone then limit each product to at
+most $\min(W / w_i, V / v_i)$ pallets.
 
-[The example instance](#ex-two-pallet) keeps its optimal solution: chocolate fits at most once by weight and water at
-most once by volume, the same limits the tender set.
+[The example instance](#ex-two-pallet) keeps its optimal solution: chocolate fits at most once by
+weight and water at most once by volume, the same limits the tender set.
 
 <a id="ev-bulk"></a>
 
 ### Bulk variant: a linear program
 
-Before the business moves to pallets, products are loaded in bulk, by the tonne. Each quantity $x_i$ becomes a real
-number with $l_i \le x_i \le u_i$, measured in the unit the product is sold in, and every other element of the model
-stays the same. With continuous variables, the model is a linear program.
+Before the business moves to pallets, products are loaded in bulk, by the tonne. Each quantity $x_i$
+becomes a real number with $l_i \le x_i \le u_i$, measured in the unit the product is sold in, and
+every other element of the model stays the same. With continuous variables, the model is a linear
+program.
 
 <a id="ev-second-objective"></a>
 
 ### A second objective: minimum weight
 
-Among the loads that carry the most revenue, the airline prefers the lightest, because weight burns fuel. The model
-becomes lexicographic: first maximize revenue, then, among the loads that keep revenue at its maximum, minimize the
-total weight
+Among the loads that carry the most revenue, the airline prefers the lightest, because weight burns
+fuel. The model becomes lexicographic: first maximize revenue, then, among the loads that keep
+revenue at its maximum, minimize the total weight
 
 $$
 \min_{x} \quad \sum_{i \in I} w_i x_i .
 $$
 
-The second objective combines with [unlimited tender](#ev-unlimited-tender): the two evolutions change different parts
-of the model.
+The second objective combines with [unlimited tender](#ev-unlimited-tender): the two evolutions
+change different parts of the model.
