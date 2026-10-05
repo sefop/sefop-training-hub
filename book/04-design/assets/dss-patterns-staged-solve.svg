@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 300" width="860" height="300" font-family="Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 300" width="920" height="300" font-family="Helvetica, Arial, sans-serif">
   <title>Figure: staged solve</title>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52606d"/></marker>
@@ -6,29 +6,35 @@
     <marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#52606d" stroke-width="1.4"/></marker>
     <marker id="hollow" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#52606d" stroke-width="1.2"/></marker>
   </defs>
-  <rect width="860" height="300" fill="#ffffff"/>
-  <rect x="165" y="50" width="545" height="170" rx="10" fill="none" stroke="#52606d" stroke-width="1.4" stroke-dasharray="6 4"/>
-  <text x="179" y="42" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">what the caller sees: one solve(instance) returns Result</text>
-  <rect x="25" y="98" width="110" height="34" rx="17" fill="#d9f0e1" stroke="#2f855a" stroke-width="1.5"/>
-  <text x="80.0" y="119.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Instance</text>
-  <rect x="185" y="85" width="165" height="60" rx="6" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="1.5"/>
-  <text x="267.5" y="112.0" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">Stage 1</text>
-  <text x="267.5" y="129.0" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">choose the pallets</text>
-  <rect x="375" y="98" width="130" height="34" rx="17" fill="#d9f0e1" stroke="#2f855a" stroke-width="1.5"/>
-  <text x="440.0" y="119.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">pallets chosen</text>
-  <rect x="530" y="85" width="165" height="60" rx="6" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="1.5" stroke-dasharray="5 3"/>
-  <text x="612.5" y="112.0" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">Stage 2</text>
-  <text x="612.5" y="129.0" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">assign hold positions</text>
-  <rect x="740" y="98" width="100" height="34" rx="17" fill="#d9f0e1" stroke="#2f855a" stroke-width="1.5"/>
-  <text x="790.0" y="119.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Result</text>
-  <line x1="137" y1="115" x2="183" y2="115" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <line x1="352" y1="115" x2="373" y2="115" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <line x1="507" y1="115" x2="528" y2="115" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <line x1="697" y1="115" x2="738" y2="115" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <text x="612" y="166" text-anchor="middle" font-size="11" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">an illustration, not part of</text>
-  <text x="612" y="180" text-anchor="middle" font-size="11" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">the cargo system of this book</text>
-  <text x="267" y="172" text-anchor="middle" font-size="11" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">the model of the appendix</text>
-  <text x="437" y="205" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">each stage solves a different problem</text>
+  <rect width="920" height="300" fill="#ffffff"/>
+  <rect x="135" y="50" width="662" height="170" rx="10" fill="none" stroke="#52606d" stroke-width="1.4" stroke-dasharray="6 4"/>
+  <text x="149" y="42" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">what the caller sees: one solve(instance) returns Result</text>
+  <rect x="20" y="98" width="96" height="34" rx="17" fill="#d9f0e1" stroke="#2f855a" stroke-width="1.5"/>
+  <text x="68" y="119.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Instance</text>
+  <rect x="150" y="85" width="140" height="60" rx="6" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="1.5"/>
+  <text x="220" y="112.0" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">Stage 1</text>
+  <text x="220" y="129.0" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">choose the pallets</text>
+  <rect x="310" y="98" width="116" height="34" rx="17" fill="#d9f0e1" stroke="#2f855a" stroke-width="1.5"/>
+  <text x="368" y="119.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">pallets chosen</text>
+  <rect x="446" y="85" width="140" height="60" rx="6" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="516" y="112.0" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">Stage 2</text>
+  <text x="516" y="129.0" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">assign hold positions</text>
+  <text x="630" y="121" text-anchor="middle" font-size="22" fill="#52606d" font-weight="bold" xml:space="preserve">…</text>
+  <rect x="674" y="85" width="110" height="60" rx="6" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="729" y="112.0" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">Stage N</text>
+  <text x="729" y="129.0" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">a later decision</text>
+  <rect x="814" y="98" width="86" height="34" rx="17" fill="#d9f0e1" stroke="#2f855a" stroke-width="1.5"/>
+  <text x="857" y="119.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="normal" xml:space="preserve">Result</text>
+  <line x1="118" y1="115" x2="148" y2="115" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="292" y1="115" x2="308" y2="115" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="428" y1="115" x2="444" y2="115" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="588" y1="115" x2="612" y2="115" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="648" y1="115" x2="672" y2="115" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="786" y1="115" x2="812" y2="115" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="220" y="172" text-anchor="middle" font-size="11" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">the model of the appendix</text>
+  <text x="615" y="166" text-anchor="middle" font-size="11" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">illustrations, not part of</text>
+  <text x="615" y="180" text-anchor="middle" font-size="11" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">the cargo system of this book</text>
+  <text x="466" y="205" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">two or more stages in sequence, each solving a different problem</text>
   <rect x="30" y="261" width="16" height="14" rx="3" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="1.2"/>
   <text x="52" y="272" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">exact provider</text>
   <rect x="155" y="261" width="16" height="14" rx="3" fill="#fde2d0" stroke="#c2410c" stroke-width="1.2"/>

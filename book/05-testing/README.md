@@ -112,8 +112,10 @@ interface. Read them in order: each chapter uses only what the chapters before i
 ## 2. Interface vs implementation
 
 [5. Contracts](../04-design/README.md#ch-contracts), in the design section, separated what a unit of
-code promises from how it keeps the promise. This chapter recalls that split on the smallest example
-of this section, a calculator, because every later chapter tests the promise and nothing else.
+code promises from how it keeps the promise, and drew the split as a wall socket
+([Figure: socket](../04-design/README.md#fig-socket)). This chapter recalls that split on the
+smallest example of this section, a calculator, because every later chapter tests the promise and
+nothing else.
 
 Every unit of code has two parts. Its [interface](../appendix/glossary.md#interface), also called
 its [contract](../appendix/glossary.md#contract), says what the unit does: its name, the inputs it
@@ -146,25 +148,6 @@ implementation detail, clients cannot call it">
 The implementation stays hidden from the clients, so it can change, or give way to a different
 implementation, without any client noticing. A test is one more client: it checks what the interface
 promises and never how the promise is kept.
-
-A wall socket shows the same split. [Figure: socket](#fig-socket) draws it: the socket is the
-interface, a fixed shape that delivers a fixed voltage. Behind the wall, the power may come from a
-gas plant, a wind farm or solar panels; that is the implementation, and the utility can change it at
-any time. The lamp, the laptop and the phone are the clients, and they rely on the socket alone.
-Telling the interface from the implementation is foundational knowledge, in
-[design](../04-design/README.md) as much as in [testing](#ch-unit-testing).
-
-<a id="fig-socket"></a>
-
-**Figure: socket**
-
-<p align="center">
-  <img src="assets/interface-socket.svg" width="780"
-       alt="The electricity service in three zones. Left, in orange, the implementation hidden
-behind the wall: a gas plant, a wind farm and solar panels wired to one line. Middle, in blue, the
-interface: a socket on the wall. Right, in green, the clients: a lamp, a laptop and a phone plugged
-into the socket">
-</p>
 
 <a id="ch-unit-testing"></a>
 

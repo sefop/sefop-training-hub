@@ -469,11 +469,11 @@ result cannot answer that, and the sixth change request from
 [2. What design is for](#ch-design-purpose) asks exactly that question. A boundary without a stated
 promise only moves the uncertainty from inside a function to the line between two.
 
-### Several names for the same thing
+### Definition
 
-The [interface](../appendix/glossary.md#interface) of a module is everything it offers to
-the code that calls it. The same thing goes by other names, and this book uses them interchangeably:
-[contract](../appendix/glossary.md#contract), signature and
+The [contract](../appendix/glossary.md#contract) of a module is everything it offers to the code
+that calls it. The same thing goes by other names, and this book uses them interchangeably:
+[interface](../appendix/glossary.md#interface), signature or
 [abstraction](../appendix/glossary.md#abstraction). For each function it states:
 
 - its name, its inputs and its output,
@@ -481,17 +481,59 @@ the code that calls it. The same thing goes by other names, and this book uses t
 - what it **returns**, and what the caller may conclude from each possible result,
 - which errors it **raises**, and when.
 
-The first item is the first line of the function. The other three are promises, written as comments
-above it, and they belong to the interface as much as the first line does. On its own,
-`run(instance) returns Result` does not say whether the load it returns respects the capacities, or
-whether a better one exists.
+A wall socket shows the idea. [Figure: socket](#fig-socket) draws it: the socket is the interface, a
+fixed shape that delivers a fixed voltage. The shape plays the role of the first line and the
+voltage is the promise: a plug that fits is of no use to a lamp if the voltage is wrong. Everything
+behind the wall is the implementation, and it is far larger than the socket: power plants,
+high-voltage lines, transformers, the wiring of the building, and the engineering that keeps supply
+and demand in balance from one second to the next. The socket hides all of it, with two
+consequences. Nobody needs to know any electrical engineering to plug in a lamp. And the utility can
+replace a gas plant with a wind farm without telling anyone. The lamp, the laptop and the phone are
+the clients, the code that calls the module, and they rely on the socket alone.
+
+<a id="fig-socket"></a>
+
+**Figure: socket**
+
+<p align="center">
+  <img src="assets/contracts-socket.svg" width="780"
+       alt="The electricity service in three zones. Left, in orange, the implementation hidden
+behind the wall, labeled complex and replaceable: a gas plant, a wind farm and solar panels feed one
+line that passes high-voltage lines, transformers and the building wiring before it reaches the back
+of the socket, under the note supply and demand balanced every second. Middle, in blue, the
+interface: a socket on the wall. Right, in green, the clients: a lamp, a laptop and a phone plugged
+into the socket">
+</p>
+
+[Pseudocode: socket](#pseudo-socket) writes the same socket the way this book writes every contract:
+the first line of the function, and above it one comment for each promise.
+
+<a id="pseudo-socket"></a>
+
+**Pseudocode: socket**
+
+```
+// pseudocode: socket
+interface Socket
+    // requires: a plug that fits the socket and draws at most 16 amperes
+    // returns:  alternating current at 230 volts
+    // raises:   Overload when the plug draws more than 16 amperes
+    public connect(plug) returns Current
+```
+
+The first line gives the name, the input and the output: the first item of the list. The comments
+are the other three, and they belong to the contract as much as the first line does. On its own,
+`connect(plug) returns Current` does not say what voltage arrives, or what happens to a plug that
+draws too much.
 
 [Information hiding](../appendix/glossary.md#information-hiding) and the contract are two halves of
-one decision. Hiding says what the caller must not rely on: the algorithm, the solver, the model
-object. The contract says what the caller may rely on. Hiding too little leaks the mechanism. Hiding
-too much is the opposite mistake: whether a load is proven to be the best one is not an
-implementation detail if the caller's next step depends on it, and neither is the difference between
-"no load exists" and "no load was found".
+one decision. Hiding says what stays behind the wall, and it gives the caller the two things the
+socket gives a lamp: the caller does not have to understand the algorithm, the solver or the model
+object, and it keeps working when any of them changes. The contract says what the caller may rely
+on. Hiding too little leaks the mechanism. Hiding too much is the opposite mistake, a socket that
+does not state its voltage: whether a load is proven to be the best one is not an implementation
+detail if the caller's next step depends on it, and neither is the difference between "no load
+exists" and "no load was found".
 
 ### The cargo optimization contract
 
@@ -578,15 +620,16 @@ A contract is as useful for what it does not promise as for what it does.
 - **The algorithm.** Nothing says how the load is found. A solver, a heuristic and a search over all
   loads can all stand behind `run`.
 - **The choice among ties.** When two loads earn the same revenue, either may be returned. Replacing
-  the algorithm can change which one comes back, and that is not a change of behaviour, because no
+  the algorithm can change which one comes back, and that is not a change of behavior, because no
   promise was made about it.
 - **How long it takes.** The contract says what each status means, not how quickly it arrives. A
   time limit is a setting of the module that searches, and it shows up in the contract only through
   the status it leads to.
 
-Whatever is left free can change without telling the callers. Whatever is promised cannot. One
-promise needs care in a numerical program: a solver works with rounded numbers, so "whole pallets"
-and "within capacity" must be read with a stated tolerance, which
+Whatever is left free can change without telling the callers, who never had to understand it in the
+first place. Whatever is promised cannot. One promise needs care in a numerical program: a solver
+works with rounded numbers, so "whole pallets" and "within capacity" must be read with a stated
+tolerance, which
 [the testing section](../05-testing/README.md#difficulty-floating-point) takes up.
 
 ### Every implementation keeps the promise
@@ -975,11 +1018,13 @@ pattern with a different kind of provider.
 **Problem.** The decision is too large or too mixed for one model, and it splits into decisions that
 can be taken one after another.
 
-**Structure.** Two or more providers in a row. The answer of one stage becomes part of the input of
+**Structure.** A list of providers that run in sequence: two at the least, and as many as the
+decision has steps, written here as N stages. The answer of one stage becomes part of the input of
 the next, so the stages solve different problems. As an illustration, suppose the cargo system also
 had to place each pallet in the hold so that the aircraft stays balanced. That is not part of the
 cargo system in this book. A staged solve would first choose the pallets, with the model of the
-appendix, and then assign the chosen pallets to positions with a second model.
+appendix, and then assign the chosen pallets to positions with a second model. Further stages
+can follow in the same way.
 
 <a id="fig-staged-solve"></a>
 
@@ -987,7 +1032,7 @@ appendix, and then assign the chosen pallets to positions with a second model.
 
 <p align="center">
   <img src="assets/dss-patterns-staged-solve.svg" width="780"
-       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, stage 1, an exact provider, chooses the pallets. Its answer, the pallets chosen, becomes the input of stage 2, an exact provider that assigns hold positions and is marked as an illustration outside the cargo system of this book. A Result leaves the outline. A note says that each stage solves a different problem">
+       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, stage 1, an exact provider, chooses the pallets. Its answer, the pallets chosen, becomes the input of stage 2, an exact provider that assigns hold positions. An ellipsis then leads to stage N, a later decision, to show that any number of stages can follow. Stages 2 and N are marked as illustrations outside the cargo system of this book. A Result leaves the outline. A note says two or more stages in sequence, each solving a different problem"
 </p>
 
 **Consequences.**
@@ -1023,7 +1068,10 @@ search of the exact provider.
 
 <p align="center">
   <img src="assets/dss-patterns-seeded-solve.svg" width="780"
-       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, the Instance goes to GreedyHeuristicProvider, a heuristic provider, and also to MipProviderGurobi, an exact provider. The heuristic's load is passed to the exact provider as a starting load. A Result leaves the outline. A note says that both providers solve the same problem">
+       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, the
+Instance goes to GreedyHeuristicProvider, a heuristic provider, and also to MipProviderGurobi, an
+exact provider. The heuristic's load is passed to the exact provider as a starting load. A Result
+leaves the outline. A note says that both providers solve the same problem">
 </p>
 
 **Consequences.**
