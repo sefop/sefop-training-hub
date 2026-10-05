@@ -4,13 +4,13 @@
 
 ## 1. Introduction
 
-A decision-support system is built from parts that change at different speeds. The data changes
-every run, business rules change every few months, the formulation changes as the team learns the
-problem, and the solver may change once in the system's life. **The difference this section
-addresses:** when those parts are tangled in one script, every change to one of them risks breaking
-the others, and none of them can be checked on its own. Design is the practice of drawing boundaries
-between them and stating what each part promises across its boundary, so that each change stays
-where it belongs and each part can be tested alone.
+A decision-support system rests on several separate decisions: where the data comes from, which
+business rules apply, how the problem is formulated, which algorithm solves it and how the plan is
+delivered. Each of them can change while the others stay as they are. **The difference this section
+addresses:** in the script a model usually starts as, those decisions are tangled together, so a
+change to one of them risks breaking the others, and none of them can be checked on its own. Design
+is the practice of drawing boundaries between them and stating what each part promises across its
+boundary, so that each change stays where it belongs and each part can be tested alone.
 
 The section argues from the general to the particular. It starts with what design is for and the two
 forces every design balances, derives the principles that follow from those forces, and states what
@@ -82,26 +82,20 @@ something new. Two properties make change cheap, and a good design has both:
 The two support each other. A part with a clear boundary is easy to test in isolation, and a part
 that is hard to test is usually a sign that its boundary is in the wrong place.
 
-### Parts that change at different speeds
+### The decisions behind a decision-support system
 
-What a decision-support system has to absorb is not one kind of change but several, each on its own
-clock.
+A change is cheap when it touches one decision and only the code that holds that decision. A
+decision-support system rests on five of them, and any one can change while the others stay:
 
-<a id="fig-change-speeds"></a>
+- **The data source**: where the inputs come from, and in what format.
+- **The business rules**: the conditions the business sets on a plan.
+- **The formulation**: the variables, constraints and objective that state the problem.
+- **The solving algorithm**: the solver or method that searches for the answer.
+- **The output**: how the plan reaches the people who act on it.
 
-**Figure: change speeds**
-
-<p align="center">
-  <img src="assets/design-purpose-change-speeds.svg" width="720"
-       alt="Four timelines over one year: data changes on every run, business rules a few times a year, the formulation whenever the team learns something, and the solver once in several years">
-</p>
-
-> [!NOTE] The ticks in **Figure: change speeds** are illustrative, not measured: the point is the
-> difference in rhythm, not the exact dates.
-
-A design that serves a decision-support system keeps these clocks apart. A new data file should not
-touch the formulation, a new solver should not touch the way the plan is written, and when a change
-does have to cross several parts, the design should make it plain which ones.
+A design that serves a decision-support system keeps these decisions apart. A new data file should
+not touch the formulation, a new solver should not touch the way the plan is written, and when a
+change does have to cross several parts, the design should make it plain which ones.
 
 ### A function that plans a flight's load
 
@@ -1399,7 +1393,7 @@ The requests from [2. What design is for](#ch-design-purpose) now land as follow
 ## 10. Conclusion
 
 Design exists to keep change cheap, through modularity and testability, and a decision-support
-system has to absorb changes that arrive on very different clocks.
+system rests on several decisions, each of which can change on its own.
 
 - **Design is for change** ([2. What design is for](#ch-design-purpose)). A good design keeps each
   change inside as few parts as possible, shows which ones, and lets each part be tested on its own.

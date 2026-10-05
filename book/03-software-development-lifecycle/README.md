@@ -299,7 +299,7 @@ the subsections below expand every row except Planning.
 | ----------- | ---------------------------------------------------------------------------------------------------------------- |
 | Elicitation | Users cannot state what they want as a model; requirements surface as reactions to plans                         |
 | Planning    | None: estimation, backlog management and iterations work as they do for any software                             |
-| Design      | The parts change at very different speeds: data every run, the formulation as the team learns, the solver rarely |
+| Design      | Data, business rules, formulation and solver are separate decisions, and each can change on its own              |
 | Testing     | The expected answer is the very thing the model exists to compute                                                |
 | Deployment  | What ships is code together with a model, a solver and a solver license                                          |
 | Operation   | A run that finishes is not the same as a run that produced a good decision                                       |
@@ -343,12 +343,12 @@ way a first model becomes infeasible on real data.
 
 ### Design
 
-A decision-support system mixes parts that change at different speeds: the data changes on every
-run, business rules every few months, the formulation whenever the team learns something about the
-problem, and the solver perhaps once in the system's life. Good design keeps each of those changes
-inside one part, which is the modularity of [4. Adapting quickly](#ch-adapting) applied to
-optimization. Staying solver-agnostic, supporting more than one solution algorithm, and deciding
-where a new constraint belongs are the questions of [the design section](../04-design/README.md).
+A decision-support system rests on separate decisions: the data source, the business rules, the
+formulation and the solver. Each can change while the others stay as they are. Good design keeps
+each of those changes inside one part, which is the modularity of
+[4. Adapting quickly](#ch-adapting) applied to optimization. Staying solver-agnostic, supporting
+more than one solution algorithm, and deciding where a new constraint belongs are the questions of
+[the design section](../04-design/README.md).
 
 ### Testing
 
