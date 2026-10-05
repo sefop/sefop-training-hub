@@ -1014,14 +1014,21 @@ wait.
   change, and a design that put the algorithm behind `SolutionProvider` can change it without
   touching its callers.
 
-**Examples.** Brahimi, Khalaf, Larbi and Al-Hammadi (chapter 17 of _Optimization Essentials_, listed
-under Further reading) schedule the casting of aluminum billets for a producer: one MIP, handed to a
-commercial solver, answers within a few seconds. Yadav and Chakroborty (chapter 25) decide which
-streets of a city become one-way. The travel time of a street plan comes out of a traffic procedure
-and its connectivity out of a graph algorithm, and neither can be written as the constraints of a
-model, so one genetic algorithm, a metaheuristic, searches the plans and calls both procedures on
-every plan it tries. The two examples are the same pattern with a different kind of provider. In the
-second, the procedures work inside one search, and its caller still sees one `solve`.
+**Example 1 - One mixed-integer program:**
+
+Brahimi, Khalaf, Larbi and Al-Hammadi (chapter 17 of _Optimization Essentials_, listed under Further
+reading) schedule the casting of aluminum billets for a producer: one MIP, handed to a commercial
+solver, answers within a few seconds.
+
+**Example 2 - One genetic algorithm:**
+
+Yadav and Chakroborty (chapter 25 of _Optimization Essentials_) decide which streets of a city
+become one-way. The travel time of a street plan comes out of a traffic procedure and its
+connectivity out of a graph algorithm, and neither can be written as the constraints of a model, so
+one genetic algorithm, a metaheuristic, searches the plans and calls both procedures on every plan
+it tries. The procedures work inside one search, and its caller still sees one `solve`.
+
+The two examples are the same pattern with a different kind of provider.
 
 ### Staged solve
 
@@ -1055,15 +1062,23 @@ the next, so the stages solve different problems.
 - The stages are coupled through the record that passes between them. That record is an interface
   and deserves a contract of its own.
 
-**Examples.** Baytur, Özceylan, Koç and Erdoğan (chapter 22 of _Optimization Essentials_) plan the
-deliveries of a distributor with 3 depots and 502 customers. A first model assigns every customer to
-a depot, and a second step builds the routes of each depot from its own customers alone. Nothing
-guarantees that these are the best routes for the distributor as a whole, because the customers were
-assigned before any route existed. Bhatnagar and Bolia (chapter 18) decide which small schools of a
+**Example 1 - Cluster first, route second:**
+
+Baytur, Özceylan, Koç and Erdoğan (chapter 22 of _Optimization Essentials_) plan the deliveries of a
+distributor with 3 depots and 502 customers. A first model assigns every customer to a depot, and a
+second step builds the routes of each depot from its own customers alone. Nothing guarantees that
+these are the best routes for the distributor as a whole, because the customers were assigned before
+any route existed.
+
+**Example 2 - Ranked objectives, one at a time:**
+
+Bhatnagar and Bolia (chapter 18 of _Optimization Essentials_) decide which small schools of a
 district to merge. A first model finds the smallest number of schools that can stay in operation,
 and a second, keeping to that number, disturbs as few students as possible. Here the stages do add
 up: the two objectives are ranked, so the best answer of the second stage is the best answer to the
-ranked problem. **Also called** hierarchical or multi-stage planning.
+ranked problem.
+
+**Also called** hierarchical or multi-stage planning.
 
 ### Iterated solve
 
@@ -1109,19 +1124,27 @@ In **Figure: iterated solve** the evaluator is yellow.
 - The pattern names a loop the team writes and maintains itself. When a solver runs such a loop
   inside one call, the team has a single solve.
 
-**Examples.** Dalal and Hamid (chapter 8 of _Optimization Essentials_) design a network that carries
-food donations from schools to slums for a nonprofit organization. A first model decides which
-warehouses to open and which school supplies which slum. A second model works out the donations that
-can then flow in each scenario of supply and demand, which completes the answer, and returns a
-constraint that tells the first model what its choice costs. The loop stops when the gap between the
-best plan found and a bound on the best possible one is small enough, or after a set number of
-rounds. Stopped at a gap of zero it holds a proof; stopped earlier, its answer is `feasible`. In a
-railway, a timetable is planned with the nominal running time of every train and then run through a
-simulation of days with random delays. A valid timetable is accepted when, over a fixed set of
-simulated days, the share of trains arriving on time reaches a stated target. Otherwise buffer time
-is added where the delays spread, and the timetable is planned again. Benders decomposition, the
-method of the first example, column generation and cutting planes are algorithms that can be
-arranged this way.
+**Example 1 - Benders decomposition:**
+
+Dalal and Hamid (chapter 8 of _Optimization Essentials_) design a network that carries food
+donations from schools to slums for a nonprofit organization. A first model decides which warehouses
+to open and which school supplies which slum. A second model works out the donations that can then
+flow in each scenario of supply and demand, which completes the answer, and returns a constraint
+that tells the first model what its choice costs. The loop stops when the gap between the best plan
+found and a bound on the best possible one is small enough, or after a set number of rounds. Stopped
+at a gap of zero it holds a proof; stopped earlier, its answer is `feasible`.
+
+**Example 2 - A model and a heuristic in alternation:**
+
+Wolsey (section 13.5 of _Integer Programming_) describes a company that plans what to produce and
+which clients each vehicle visits in each period. A first model drops the routes and charges a fixed
+cost for every visit, which usually makes it small enough to solve to optimality. A routing
+heuristic then builds the routes for the visits that model chose, and the cost of inserting each
+client into a route replaces the fixed cost. The two alternate until the visiting costs are a good
+approximation of the routing costs. Here the feedback is a corrected value and proves nothing, so
+the answer is `feasible`.
+
+Column generation and cutting planes are other algorithms that can be arranged this way.
 
 ### Selected solve
 
@@ -1147,12 +1170,19 @@ of [6. Design patterns](#ch-patterns) applied to the optimization step.
   on one solver version or one machine is wrong on the next.
 - Every provider must keep the same contract. Selection is only safe because of Liskov substitution.
 
-**Examples.** The cargo system of [6. Design patterns](#ch-patterns) chooses by the time available:
-`Optimization` sends an instance to `MipProviderGurobi` when it can finish in time, and to
-`GreedyHeuristicProvider` otherwise. A knapsack like the cargo model whose instances vary widely in
-size can choose among three providers: a search over all loads for an instance with a handful of
-products, a MIP for a medium one, and a heuristic for a large one. **Also called** algorithm
-selection, or an algorithm portfolio.
+**Example 1 - Exact or greedy, by the time available:**
+
+The cargo system of [6. Design patterns](#ch-patterns) holds two providers: `Optimization` sends an
+instance to `MipProviderGurobi` when it can finish in time, and to `GreedyHeuristicProvider`
+otherwise.
+
+**Example 2 - Enumeration, MIP or heuristic, by size:**
+
+A knapsack like the cargo model whose instances vary widely in size can choose among three
+providers: a search over all loads for an instance with a handful of products, a MIP for a medium
+one, and a heuristic for a large one.
+
+**Also called** algorithm selection, or an algorithm portfolio.
 
 ### The four patterns side by side
 
@@ -1199,6 +1229,9 @@ names make such a design sayable in one sentence.
 - Faiz Hamid (ed.), _Optimization Essentials: Theory, Tools, and Applications_, Springer, 2024: the
   source of most examples in this chapter, each told there in full, with its model, its algorithm
   and its results.
+- Laurence A. Wolsey, _Integer Programming_, 2nd edition, Wiley, 2021: chapters 10 to 13 give the
+  algorithms behind the iterated solve, and section 13.5 the heuristics a team builds around a
+  solver.
 
 ---
 
