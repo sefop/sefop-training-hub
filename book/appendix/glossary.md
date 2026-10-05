@@ -160,14 +160,6 @@ comparing their outputs. A disagreement means at least one of them is wrong.
 The rule that each piece of knowledge, such as a business rule or an output format, should live in
 exactly one place in the code, so that changing it means one edit. Abbreviated DRY.
 
-## DSS pattern
-
-A named, recurring way to arrange the algorithms of the optimization step of a
-[decision-support system](#decision-support-system), by analogy with a
-[design pattern](#design-pattern). This book names four: [single solve](#single-solve),
-[staged solve](#staged-solve), [iterated solve](#iterated-solve) and
-[selected solve](#selected-solve).
-
 ## Duality
 
 The pairing of every linear program with a second one, its dual, whose optimal value bounds the
@@ -263,10 +255,10 @@ The I in [SOLID](#solid).
 
 ## Iterated solve
 
-A [DSS pattern](#dss-pattern) in which a [solution provider](#solution-provider) and an
-[evaluator](#evaluator) run in a loop: the provider answers, the evaluator judges the answer and
-sends feedback, and the provider answers again. It returns `optimal` or `infeasible` only when the
-loop holds a proof about the original instance.
+An [optimization pattern](#optimization-pattern) in which a [solution provider](#solution-provider)
+and an [evaluator](#evaluator) run in a loop: the provider answers, the evaluator judges the answer
+and sends feedback, and the provider answers again. It returns `optimal` or `infeasible` only when
+the loop holds a proof about the original instance.
 
 ## Iterative development
 
@@ -380,6 +372,14 @@ behavior is added by adding code, not by editing code that works. A new heuristi
 class behind the solution-provider interface, and the existing solver class is not touched. The O in
 [SOLID](#solid).
 
+## Optimization pattern
+
+A named, recurring way to arrange the algorithms of the optimization step of a
+[decision-support system](#decision-support-system), by analogy with a
+[design pattern](#design-pattern). This book names four: [single solve](#single-solve),
+[staged solve](#staged-solve), [iterated solve](#iterated-solve) and
+[selected solve](#selected-solve).
+
 ## Oracle problem
 
 The difficulty of building a [test oracle](#test-oracle) when the correct output is expensive, or
@@ -432,9 +432,10 @@ regressions early is the main job of an automated test suite.
 
 ## Selected solve
 
-A [DSS pattern](#dss-pattern) in which one of several [solution providers](#solution-provider) is
-chosen for each instance. It is the [strategy pattern](#strategy-pattern) applied to the
-optimization step. Also called algorithm selection.
+An [optimization pattern](#optimization-pattern) in which one of several
+[solution providers](#solution-provider) is chosen for each instance. It is the
+[strategy pattern](#strategy-pattern) applied to the optimization step. Also called algorithm
+selection.
 
 ## Shrinking
 
@@ -454,8 +455,8 @@ axis of change, such as the input format or the formulation, not a task the code
 
 ## Single solve
 
-A [DSS pattern](#dss-pattern) in which one [solution provider](#solution-provider), exact or
-heuristic, handles every instance.
+An [optimization pattern](#optimization-pattern) in which one
+[solution provider](#solution-provider), exact or heuristic, handles every instance.
 
 ## Software architecture
 
@@ -489,10 +490,10 @@ A [test oracle](#test-oracle) in which the expected answer is stated in advance.
 
 ## Staged solve
 
-A [DSS pattern](#dss-pattern) in which several [solution providers](#solution-provider) run in a
-row, the answer of one becoming part of the input of the next, so that each solves a different
-problem. The whole is not guaranteed to be optimal, even when every stage is. Also called
-hierarchical planning.
+An [optimization pattern](#optimization-pattern) in which several
+[solution providers](#solution-provider) run in a row, the answer of one becoming part of the input
+of the next, so that each solves a different problem. The whole is not guaranteed to be optimal,
+even when every stage is. Also called hierarchical planning.
 
 ## Static analysis
 

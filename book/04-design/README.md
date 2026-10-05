@@ -26,14 +26,13 @@ function that does the work of a whole system, and six requests to change it.
 [5. Contracts](#ch-contracts) says what a module promises once it has a boundary, and writes the
 promise of the optimization step. [6. Design patterns](#ch-patterns) shows the reusable solutions
 that apply the principles. [7. From design to architecture](#ch-architecture) lifts the same ideas
-to the scale of a whole system, and [8. DSS patterns](#ch-dss-patterns) does for the optimization
-step what design patterns do for classes: it names the arrangements that recur.
+to the scale of a whole system, and [8. Optimization patterns](#ch-optimization-patterns) does for
+the optimization step what design patterns do for classes: it names the arrangements that recur.
 [9. Where the formulation lives](#ch-formulation-placement) gives the formulation a place in that
-architecture.
-[10. A clean architecture for the cargo loading system](#ch-cargo-architecture) shows where every
-line of the tangled script ends up and what each module promises to the tests of the next section.
-Read them in order: each chapter uses only what the chapters before it defined. The system they
-design is defined in [The cargo model example](#the-cargo-model-example), next.
+architecture. [10. A clean architecture for the cargo loading system](#ch-cargo-architecture) shows
+where every line of the tangled script ends up and what each module promises to the tests of the
+next section. Read them in order: each chapter uses only what the chapters before it defined. The
+system they design is defined in [The cargo model example](#the-cargo-model-example), next.
 
 ### The cargo model example
 
@@ -940,18 +939,18 @@ concrete class, because assembling them is its job.
 
 ---
 
-<a id="ch-dss-patterns"></a>
+<a id="ch-optimization-patterns"></a>
 
-## 8. DSS patterns
+## 8. Optimization patterns
 
 [6. Design patterns](#ch-patterns) name arrangements of classes that recur in any software. The
-optimization step of a decision-support system (DSS) has recurring arrangements of its own, of
-models and algorithms. Operations research has names for the algorithms. It has no settled names for
-the ways the software around them is arranged, so teams describe the same arrangement in different
-words and rediscover its consequences each time. This chapter proposes four names, each a
-[DSS pattern](../appendix/glossary.md#dss-pattern), in the same form as a design pattern: the
-problem it answers, its structure, and its consequences. As with design patterns, the gain is a
-vocabulary.
+optimization step of a decision-support system has recurring arrangements of its own, of models and
+algorithms. Operations research has names for the algorithms. It has no settled names for the ways
+the software around them is arranged, so teams describe the same arrangement in different words and
+rediscover its consequences each time. This chapter proposes four names, each an
+[optimization pattern](../appendix/glossary.md#optimization-pattern), in the same form as a design
+pattern: the problem it answers, its structure, and its consequences. As with design patterns, the
+gain is a vocabulary.
 
 ### The building block: a provider
 
@@ -975,16 +974,16 @@ about how the optimization step produces its `Result`, and about nothing else. W
 chosen, the callers of `Optimization.run` see the same contract, and the use cases, the records and
 the rings of [7. From design to architecture](#ch-architecture) stay as they are.
 
-**Figure: DSS patterns** shows the four together. In every figure of this chapter an exact provider
-is blue, a heuristic provider is orange, a provider of either kind is white, a record is green, and
-a dashed outline marks what the caller sees as one provider.
+**Figure: optimization patterns** shows the four together. In every figure of this chapter an exact
+provider is blue, a heuristic provider is orange, a provider of either kind is white, a record is
+green, and a dashed outline marks what the caller sees as one provider.
 
-<a id="fig-dss-patterns"></a>
+<a id="fig-optimization-patterns"></a>
 
-**Figure: DSS patterns**
+**Figure: optimization patterns**
 
 <p align="center">
-  <img src="assets/dss-patterns-overview.svg" width="780"
+  <img src="assets/optimization-patterns-overview.svg" width="780"
        alt="Four small diagrams. Single solve: one provider. Staged solve: two providers in a row, the answer of the first becoming part of the input of the second, each solving a different problem. Iterated solve: a provider whose answer goes to an evaluator, which sends feedback back to the provider, in a loop. Selected solve: a choice that sends the instance to one of two providers">
 </p>
 
@@ -1000,7 +999,7 @@ wait.
 **Figure: single solve**
 
 <p align="center">
-  <img src="assets/dss-patterns-single-solve.svg" width="760"
+  <img src="assets/optimization-patterns-single-solve.svg" width="760"
        alt="Two rows. Top: an Instance goes into MipProviderGurobi, an exact provider, which returns a Result that may be optimal, feasible, infeasible or not found. Bottom: an Instance goes into LocalSearchProvider, a heuristic provider, which returns a Result that may be feasible or not found, and infeasible only where it has a proof">
 </p>
 
@@ -1044,7 +1043,7 @@ the next, so the stages solve different problems.
 **Figure: staged solve**
 
 <p align="center">
-  <img src="assets/dss-patterns-staged-solve.svg" width="780"
+  <img src="assets/optimization-patterns-staged-solve.svg" width="780"
        alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, stage 1 takes a first decision. Its answer becomes part of the input of stage 2, which takes the next decision. An ellipsis then leads to stage N, a later decision, to show that any number of stages can follow. A Result leaves the outline. A note says two or more stages in sequence, each solving a different problem">
 </p>
 
@@ -1102,7 +1101,7 @@ In **Figure: iterated solve** the evaluator is yellow.
 **Figure: iterated solve**
 
 <p align="center">
-  <img src="assets/dss-patterns-iterated-solve.svg" width="780"
+  <img src="assets/optimization-patterns-iterated-solve.svg" width="780"
        alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, a provider of either kind sends its answer to an evaluator, which may be a model, a simulation or a check of rules. The evaluator sends feedback back to the provider, closing a loop, and a Result leaves the outline. A note says that the loop keeps the best acceptable answer and stops on a proof, on no more feedback, or at a round limit">
 </p>
 
@@ -1158,7 +1157,7 @@ of [6. Design patterns](#ch-patterns) applied to the optimization step.
 **Figure: selected solve**
 
 <p align="center">
-  <img src="assets/dss-patterns-selected-solve.svg" width="780"
+  <img src="assets/optimization-patterns-selected-solve.svg" width="780"
        alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, a choice looks at the instance and sends it either to MipProviderGurobi, an exact provider, when it can finish in time, or to GreedyHeuristicProvider, a heuristic provider, otherwise. A Result leaves the outline. A note says that the status is whatever the chosen provider established">
 </p>
 
@@ -1243,8 +1242,8 @@ The dependency rule of [7. From design to architecture](#ch-architecture) lets s
 only its own ring or a ring further in. [4. Principles](#ch-principles) left one module with two
 reasons to change, because it holds both the formulation and the calls to the solver library. The
 two meet in an exact provider: its formulation has to be written with some library, and that library
-sits in a ring. The patterns of [8. DSS patterns](#ch-dss-patterns) leave the rings as they are.
-This choice does not, since it decides which ring holds a
+sits in a ring. The patterns of [8. Optimization patterns](#ch-optimization-patterns) leave the
+rings as they are. This choice does not, since it decides which ring holds a
 [solution provider](../appendix/glossary.md#solution-provider) and which ring mentions the solver.
 There are three placements, drawn in **Figure: formulation placement**.
 
@@ -1307,10 +1306,10 @@ another:
 The problem, from [the appendix](../appendix/cargo_model_example.md): a load planner receives a
 booking list for one departure, and the system proposes how many pallets of each product to load,
 maximizing revenue within the aircraft's weight and hold capacities and loading at least what must
-fly. This chapter chooses a pattern from [8. DSS patterns](#ch-dss-patterns) and a placement from
-[9. Where the formulation lives](#ch-formulation-placement) for that system, places every line of
-[Pseudocode: tangled script](#pseudo-tangled-script) in the four rings of **Figure: clean
-architecture**, and lists what each module promises.
+fly. This chapter chooses a pattern from [8. Optimization patterns](#ch-optimization-patterns) and a
+placement from [9. Where the formulation lives](#ch-formulation-placement) for that system, places
+every line of [Pseudocode: tangled script](#pseudo-tangled-script) in the four rings of **Figure:
+clean architecture**, and lists what each module promises.
 
 ### The two choices
 
@@ -1557,8 +1556,9 @@ system rests on several decisions, each of which can change on its own.
 - **Architecture is design at the scale of a system**
   ([7. From design to architecture](#ch-architecture)). In clean architecture, dependencies point
   inward, toward what the system is for, even when the calls go outward.
-- **The optimization step has patterns of its own** ([8. DSS patterns](#ch-dss-patterns)). Single,
-  staged, iterated and selected solve each say which statuses they can honestly return.
+- **The optimization step has patterns of its own**
+  ([8. Optimization patterns](#ch-optimization-patterns)). Single, staged, iterated and selected
+  solve each say which statuses they can honestly return.
 - **The formulation needs a place** ([9. Where the formulation lives](#ch-formulation-placement)).
   In the provider or in a modelling layer, with the use cases or outside them: each placement has
   its own price.
