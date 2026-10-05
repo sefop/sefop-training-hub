@@ -1086,7 +1086,7 @@ leaves the outline. A note says that both providers solve the same problem">
 - There are two algorithms to maintain for one problem, and a change to the rules reaches both.
 
 **Commonly seen in** scheduling and routing models where a construction heuristic starts a MIP.
-**Also called** a warm start, and one member of the family known as matheuristics.
+**Also called** a warm start, and one member of the family known as metaheuristics.
 
 ### Selected solve
 
