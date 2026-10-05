@@ -1,27 +1,21 @@
 # Section 07 — Working with legacy decision-support software
 
-## Introduction
+<a id="ch-introduction"></a>
+
+## 1. Introduction
 
 Most projects do not start from an empty repository. The code was inherited, or the project started
 before anyone thought about tests. This section covers how to change such code safely: modernizing a
 system that is hard to modify, and fixing a bug so it stays fixed.
 
-### Out of scope
-
-- **Rewriting a system from scratch.** The chapters assume you keep the system and improve it in
-  place; designing a new one is
-  [Section 04 — Designing decision-support software](../04-design/README.md).
-- **How to write the tests that make a change safe.** That is
-  [Section 05 — Testing decision-support software](../05-testing/README.md); this section assumes
-  you can already write them.
-
-## Chapters
+### Chapters
 
 |  #  | Chapter                                   | After it you can…                                                                                                   | Status |
 | :-: | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------ |
-|  1  | [Brownfield adoption](#ch-brownfield)     | Add safety nets to a legacy system and improve it incrementally                                                     | Draft  |
-|  2  | [Protocol to fix a bug](#ch-bug-protocol) | Decide whether a bug is worth fixing, fix it at its root cause, and keep it from coming back with an automated test | Draft  |
-|  3  | [Conclusion](#ch-conclusion)              | Recall in one page how to change inherited code safely, and what makes a fix hold                                   | Ready  |
+|  1  | [Introduction](#ch-introduction)          | Say what the section covers and what it assumes you can already do                                                  | Ready  |
+|  2  | [Brownfield adoption](#ch-brownfield)     | Add safety nets to a legacy system and improve it incrementally                                                     | Draft  |
+|  3  | [Protocol to fix a bug](#ch-bug-protocol) | Decide whether a bug is worth fixing, fix it at its root cause, and keep it from coming back with an automated test | Draft  |
+|  4  | [Conclusion](#ch-conclusion)              | Recall in one page how to change inherited code safely, and what makes a fix hold                                   | Ready  |
 
 Both chapters assume you can write an automated test. If not, start with
 [Section 05 — Testing decision-support software](../05-testing/README.md).
@@ -30,7 +24,7 @@ Both chapters assume you can write an automated test. If not, start with
 
 <a id="ch-brownfield"></a>
 
-## 1. Brownfield adoption
+## 2. Brownfield adoption
 
 ### Introduction
 
@@ -136,7 +130,7 @@ Change Is Hard" by Chip Heath and Dan Heath.
 
 <a id="ch-bug-protocol"></a>
 
-## 2. Protocol to fix a bug
+## 3. Protocol to fix a bug
 
 Fixing a bug seems like an easy or obvious task. Nonetheless, this process actually hides several
 dimensions that are worth mentioning explicitly. In order to properly fix a bug, let's define
@@ -201,19 +195,21 @@ makes this test fail, it will be a reminder that they can't do that because this
 
 <a id="ch-conclusion"></a>
 
-## 3. Conclusion
+## 4. Conclusion
 
 A legacy system is one you cannot change safely. Both chapters work in the same order, and it is the
 opposite of the tempting one: build the safety net first, then change the code.
 
-- **The diagnosis is testability, not age** ([chapter 01](#ch-brownfield)). Characterization tests
-  capture what the code does today, and a seam lets you isolate the part that has to change.
-- **Adoption is a change-management problem, not a software one** ([chapter 01](#ch-brownfield)).
-  Make the cost visible through a tool rather than through a person, make the good path the easy
-  path, let the team own the credit, and check you have support before you start.
-- **A bug is fixed only when it cannot return** ([chapter 02](#ch-bug-protocol)). Triage it,
-  reproduce it, fix the root cause rather than the symptom, and leave behind a test that fails
-  without the fix.
+- **The diagnosis is testability, not age** ([2. Brownfield adoption](#ch-brownfield)).
+  Characterization tests capture what the code does today, and a seam lets you isolate the part that
+  has to change.
+- **Adoption is a change-management problem, not a software one**
+  ([2. Brownfield adoption](#ch-brownfield)). Make the cost visible through a tool rather than
+  through a person, make the good path the easy path, let the team own the credit, and check you
+  have support before you start.
+- **A bug is fixed only when it cannot return** ([3. Protocol to fix a bug](#ch-bug-protocol)).
+  Triage it, reproduce it, fix the root cause rather than the symptom, and leave behind a test that
+  fails without the fix.
 
 Both chapters assume you can already write those tests. Where that assumption does not hold yet, the
 safety net is [Section 05 — Testing decision-support software](../05-testing/README.md), not this

@@ -1,6 +1,8 @@
 # Section 08 — Leading the team
 
-## Introduction
+<a id="ch-introduction"></a>
+
+## 1. Introduction
 
 Section 02 decides whether a company needs an operations research team. This section covers leading
 one once it exists. **The difference this section addresses:** a team building decision-support
@@ -13,41 +15,37 @@ job, without losing the scientific strength that made it valuable.
 - **Why practitioners resist, and what changes their behavior.** Build on the DSI 2026 paper _Why
   software engineering practices are slow to spread among operations research practitioners and what
   changes that behavior_, and on the change-management half of
-  [Brownfield adoption](../07-working-with-legacy-dss/README.md#ch-brownfield), which is planned to
-  move here. Its four themes: make the problem visible, make change the easy path, make it theirs,
-  and know your terrain.
+  [2. Brownfield adoption](../07-working-with-legacy-dss/README.md#ch-brownfield), which is planned
+  to move here. Its four themes: make the problem visible, make change the easy path, make it
+  theirs, and know your terrain.
 - **Report quality and throughput together.** Showing that delivery speed did not drop is what
   defuses the belief that good practice and delivery pace trade off against each other.
 - **Training as a lever.** The [Learning Roadmap](../appendix/learning-roadmap.md) and the
   [practice repositories](../appendix/practice-repositories.md) are the starting material for
-  chapter 04.
+  [5. Training scientists in software engineering](#ch-training).
 
-### Out of scope
-
-- **General people management** — hiring processes, performance reviews, compensation — except where
-  decision-support software changes the answer.
-- **Whether the team should exist, and where it sits.** That is
-  [Section 02](../02-do-you-need-dss/README.md).
-
-## Chapters
+### Chapters
 
 |  #  | Chapter                                                                                    | After it you can…                                                                                    | Status      |
 | :-: | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- | ----------- |
-|  1  | [How to staff your team](#ch-staffing)                                                     | Name the kinds of contributor your team needs, and decide which expertise to own and which to borrow | Ready       |
-|  2  | [From science to software: the mindset change](#ch-mindset)                                | Explain what changes when scientists start shipping production software                              | Coming soon |
-|  3  | [Introducing engineering practices to a team that resists them](#ch-introducing-practices) | Plan a change in practice that lasts beyond your own involvement                                     | Coming soon |
-|  4  | [Training scientists in software engineering](#ch-training)                                | Plan training for your team, and choose what to learn first                                          | Coming soon |
-|  5  | [Conclusion](#ch-conclusion)                                                               | Recall in one page which expertise the team owns, and what it takes to change how it works           | Ready       |
+|  1  | [Introduction](#ch-introduction)                                                           | Say what the section covers and how its chapters build on each other                                 | Ready       |
+|  2  | [How to staff your team](#ch-staffing)                                                     | Name the kinds of contributor your team needs, and decide which expertise to own and which to borrow | Ready       |
+|  3  | [From science to software: the mindset change](#ch-mindset)                                | Explain what changes when scientists start shipping production software                              | Coming soon |
+|  4  | [Introducing engineering practices to a team that resists them](#ch-introducing-practices) | Plan a change in practice that lasts beyond your own involvement                                     | Coming soon |
+|  5  | [Training scientists in software engineering](#ch-training)                                | Plan training for your team, and choose what to learn first                                          | Coming soon |
+|  6  | [Conclusion](#ch-conclusion)                                                               | Recall in one page which expertise the team owns, and what it takes to change how it works           | Ready       |
 
-Chapter 01 decides who is on the team. Chapters 02–04 are about what happens next: what the work
-feels like from the inside, how to change practice in a team that did not ask for it, and what to
-train first.
+[2. How to staff your team](#ch-staffing) decides who is on the team. The next three chapters,
+from [3. From science to software: the mindset change](#ch-mindset) to
+[5. Training scientists in software engineering](#ch-training), are about what happens next: what
+the work feels like from the inside, how to change practice in a team that did not ask for it, and
+what to train first.
 
 ---
 
 <a id="ch-staffing"></a>
 
-## 1. How to staff your team
+## 2. How to staff your team
 
 Suppose you accept the diagnosis of [Section 01](../01-introduction/README.md#ch-what-goes-wrong):
 your team's mathematics is strong and the software around it is weak. The obvious fix is to hire
@@ -140,7 +138,8 @@ expertise from your organization, and keep product ownership.
   team with a choice between owning that work and accepting the risk knowingly. Both are defensible;
   drifting into the second without saying so is not.
 - **OR engineers are hard to hire.** The overlap is thin in the market, and most teams grow their
-  own from scientists who take to the engineering side. Chapter 04 is about that path.
+  own from scientists who take to the engineering side.
+  [5. Training scientists in software engineering](#ch-training) is about that path.
 - **A bought system changes the answer.** If a vendor owns the formulation, the team is not staffing
   a product; it is managing a supplier, which is [Section 02](../02-do-you-need-dss/README.md).
 
@@ -148,7 +147,7 @@ expertise from your organization, and keep product ownership.
 
 <a id="ch-mindset"></a>
 
-## 2. From science to software: the mindset change
+## 3. From science to software: the mindset change
 
 A model written for a study is judged by what it shows. The same model inside a decision-support
 system is judged by what it keeps doing: whether it runs on somebody else's machine, whether a
@@ -161,7 +160,7 @@ about what the change costs the individual scientist in the short term.
 
 <a id="ch-introducing-practices"></a>
 
-## 3. Introducing engineering practices to a team that resists them
+## 4. Introducing engineering practices to a team that resists them
 
 Resistance to engineering practice is usually rational from where the team stands: the practices
 cost time now and pay later, and nobody is measured on later. The chapter will treat adoption as a
@@ -174,11 +173,11 @@ change-management material currently in
 
 <a id="ch-training"></a>
 
-## 4. Training scientists in software engineering
+## 5. Training scientists in software engineering
 
-Chapter 01 claims scientists need a bounded subset of software engineering. This chapter will say
-which subset, in what order, and how to tell whether the training took. It will build the sequence
-on the [Learning Roadmap](../appendix/learning-roadmap.md) and the
+[2. How to staff your team](#ch-staffing) claims scientists need a bounded subset of software
+engineering. This chapter will say which subset, in what order, and how to tell whether the training
+took. It will build the sequence on the [Learning Roadmap](../appendix/learning-roadmap.md) and the
 [practice repositories](../appendix/practice-repositories.md), and will cover the part managers
 usually skip: giving the team work where the new practice is the only way through, so the training
 does not evaporate on contact with the next deadline.
@@ -187,24 +186,27 @@ does not evaporate on contact with the next deadline.
 
 <a id="ch-conclusion"></a>
 
-## 5. Conclusion
+## 6. Conclusion
 
 A team of scientists does not become a software team by hiring a software engineer. The formulation
 is where correctness is hardest to establish, and it stays with the scientists — so the engineering
 has to reach them rather than sit beside them.
 
-- **Software engineering is several skills, not one** ([chapter 01](#ch-staffing)). Developers take
-  what is unrelated to the mathematics, OR engineers live in the overlap, and scientists learn a
-  bounded subset of the rest.
-- **Own the product, borrow the platform** ([chapter 01](#ch-staffing)). Business interaction,
-  product behavior, software quality and the path to production stay with the team; infrastructure,
-  security, reliability and design come from elsewhere in the company.
-- **The job changes, not only the toolkit** ([chapter 02](#ch-mindset)). A model written for a study
-  is judged by what it shows; the same model inside a system is judged by what it keeps doing.
-- **Resistance is rational from where the team stands** ([chapter 03](#ch-introducing-practices)).
+- **Software engineering is several skills, not one** ([2. How to staff your team](#ch-staffing)).
+  Developers take what is unrelated to the mathematics, OR engineers live in the overlap, and
+  scientists learn a bounded subset of the rest.
+- **Own the product, borrow the platform** ([2. How to staff your team](#ch-staffing)). Business
+  interaction, product behavior, software quality and the path to production stay with the team;
+  infrastructure, security, reliability and design come from elsewhere in the company.
+- **The job changes, not only the toolkit**
+  ([3. From science to software: the mindset change](#ch-mindset)). A model written for a study is
+  judged by what it shows; the same model inside a system is judged by what it keeps doing.
+- **Resistance is rational from where the team stands**
+  ([4. Introducing engineering practices to a team that resists them](#ch-introducing-practices)).
   The practices cost time now and pay later, and nobody is measured on later.
-- **Training is the lever a manager actually controls** ([chapter 04](#ch-training)). Choose a
-  bounded curriculum, then give the team work where the new practice is the only way through.
+- **Training is the lever a manager actually controls**
+  ([5. Training scientists in software engineering](#ch-training)). Choose a bounded curriculum,
+  then give the team work where the new practice is the only way through.
 
 The thread is the same one the section opened with: keep the scientific strength that made the team
 valuable, and change what it treats as part of the job.

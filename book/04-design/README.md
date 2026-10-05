@@ -1,6 +1,8 @@
 # Section 04: Designing decision-support software
 
-## Introduction
+<a id="ch-introduction"></a>
+
+## 1. Introduction
 
 A decision-support system is built from parts that change at different speeds. The data changes
 every run, business rules change every few months, the formulation changes as the team learns the
@@ -14,35 +16,23 @@ The section argues from the general to the particular. It starts with what desig
 forces every design balances, derives the principles that follow from those forces, and states what
 a boundary promises. It then names the patterns that put the principles to work, first for software
 in general and then for the optimization step of a decision-support system, and ends with an
-architecture for the cargo loading system that uses all of them.
+architecture for one complete system that uses all of them.
 
-### Out of scope
+[2. What design is for](#ch-design-purpose) introduces **Pseudocode: tangled script**, a single
+function that does the work of a whole system, and six requests to change it.
+[3. Forces: coupling and cohesion](#ch-forces) diagnoses what is wrong with it, and
+[4. Principles](#ch-principles) states the rules that follow from the diagnosis.
+[5. Contracts](#ch-contracts) says what a part promises once it has a boundary, and writes the
+promise of the optimization step. [6. Design patterns](#ch-patterns) shows the reusable solutions
+that apply the principles. [7. From design to architecture](#ch-architecture) lifts the same ideas
+to the scale of a whole system, and [8. DSS patterns](#ch-dss-patterns) does for the optimization
+step what design patterns do for classes: it names the arrangements that recur.
+[9. A clean architecture for the cargo loading system](#ch-cargo-architecture) shows where every
+line of the tangled script ends up and what each part promises to the tests of the next section.
+Read them in order: each chapter uses only what the chapters before it defined. The system they
+design is defined in [The cargo model example](#the-cargo-model-example), next.
 
-- **How to write the tests.** Design states what each part promises; the tests that check those
-  promises are in [the testing section](../05-testing/README.md).
-- **Deployment and infrastructure.** Servers, containers and solver licenses are in
-  [the deployment section](../06-deployment/README.md).
-- **User-interface design** and **enterprise architecture** beyond a single decision-support system.
-  Neither is covered in this book.
-- **A catalogue of patterns.** The patterns here are a small subset chosen for decision-support
-  software; the further reading of [Design patterns](#ch-patterns) points to complete catalogues.
-- **Choosing the formulation or the algorithm.** [DSS patterns](#ch-dss-patterns) names ways to
-  arrange the algorithms a team already has. It does not say which algorithm solves a problem best.
-
-[What design is for](#ch-design-purpose) introduces **Pseudocode: tangled script**, a single
-function that plans a flight's load, and six requests to change it.
-[Forces: coupling and cohesion](#ch-forces) diagnoses what is wrong with it, and
-[Principles](#ch-principles) states the rules that follow from the diagnosis.
-[Contracts](#ch-contracts) says what a part promises once it has a boundary, and writes the promise
-of the optimization step. [Design patterns](#ch-patterns) shows the reusable solutions that apply
-the principles. [From design to architecture](#ch-architecture) lifts the same ideas to the scale of
-a whole system, and [DSS patterns](#ch-dss-patterns) does for the optimization step what design
-patterns do for classes: it names the arrangements that recur.
-[A clean architecture for the cargo loading system](#ch-cargo-architecture) shows where every line
-of the tangled script ends up and what each part promises to the tests of the next section. Read
-them in order: each chapter uses only what the chapters before it defined.
-
-## The cargo model example
+### The cargo model example
 
 Every chapter designs the cargo loading system defined in
 [the appendix](../appendix/cargo_model_example.md): for one departure, how many pallets of each
@@ -66,13 +56,13 @@ difference between the two is central to this section, so no function is left un
 keywords appear: `class` groups data with the functions that use it, `interface` lists public
 functions without implementing them, `implements` says that a class provides everything an interface
 lists, and `record` is a plain group of named values. A comment that starts with `requires`,
-`returns` or `raises` states a promise, and [Contracts](#ch-contracts) explains how to read it.
+`returns` or `raises` states a promise, and [5. Contracts](#ch-contracts) explains how to read it.
 
 ---
 
 <a id="ch-design-purpose"></a>
 
-## 1. What design is for
+## 2. What design is for
 
 Software design is the set of decisions about how code is divided into parts and how those parts are
 connected. It is not about how the code looks, and it is not a phase that ends before programming
@@ -161,17 +151,24 @@ sixth has no answer at all. The script writes whatever the model holds when the 
 same format as a proven optimum, and if the solver found no load in time, the line that asks the
 model for values fails.
 
+The fifth request shows something that holds for every program. A test runs one part alone: it
+hands the part an input and compares what comes back with what was expected. Whether that is
+possible is decided when the code is written, not when the test is. **Pseudocode: tangled script**
+has no part to run alone, takes nothing but files and gives back nothing but a file, so no amount
+of effort from the person testing can check the rule on its own. Design is therefore a prerequisite
+for testing: a team can only test what its design lets a test reach.
+
 The rest of this section is about why that happens and how to design it away. One caution before
 starting: a good design does not make every change small. The second request is a new constraint on
 the load itself, and no arrangement of the code can keep that inside one part. What a good design
 does is show exactly which parts such a change reaches, and
-[A clean architecture for the cargo loading system](#ch-cargo-architecture) returns to it.
+[9. A clean architecture for the cargo loading system](#ch-cargo-architecture) returns to it.
 
 ---
 
 <a id="ch-forces"></a>
 
-## 2. Forces: coupling and cohesion
+## 3. Forces: coupling and cohesion
 
 Two forces decide how hard a design is to change. They were named in the 1970s, before most of
 today's languages existed, and they still explain most of what goes wrong.
@@ -254,7 +251,7 @@ that get there.
 
 <a id="ch-principles"></a>
 
-## 3. Principles
+## 4. Principles
 
 The forces say what a good design looks like; the principles say how to get there. Each principle
 below is a rule of thumb that raises cohesion, lowers coupling, or both, and each one fixes one
@@ -293,7 +290,7 @@ private optimize(products, capacity) returns Solution
 
 Writing the plan now depends on `Solution` alone. The solver can change and the plan is written
 exactly as before. What `optimize` should return when it has no load to offer is a question this
-record does not answer yet; [Contracts](#ch-contracts) does.
+record does not answer yet; [5. Contracts](#ch-contracts) does.
 
 ### Single responsibility and don't repeat yourself
 
@@ -341,14 +338,14 @@ private write_plan(solution, plan_file)
 
 `optimize` now reports that it has no load instead of writing a file, so `write_plan` is the only
 place that knows the output format. And the fifth change request from
-[What design is for](#ch-design-purpose) becomes possible: `drop_unfit_products` takes products and
-a capacity and returns products, so it can be tested with a handful of values and no files or
+[2. What design is for](#ch-design-purpose) becomes possible: `drop_unfit_products` takes products
+and a capacity and returns products, so it can be tested with a handful of values and no files or
 solver.
 
 One part still has two reasons to change: `optimize` holds both the formulation and the calls to the
-solver library. [DSS patterns](#ch-dss-patterns) lays out the ways to arrange that pair, and
-[A clean architecture for the cargo loading system](#ch-cargo-architecture) explains why this system
-keeps them together.
+solver library. [8. DSS patterns](#ch-dss-patterns) lays out the ways to arrange that pair, and
+[9. A clean architecture for the cargo loading system](#ch-cargo-architecture) explains why this
+system keeps them together.
 
 ### Dependency inversion
 
@@ -413,7 +410,7 @@ forces:
 
 The fifth, [Liskov substitution](../appendix/glossary.md#liskov-substitution-principle), says that
 every implementation of an interface must behave as the interface promises. It cannot be stated
-before the idea of a promise, so it waits for [Contracts](#ch-contracts).
+before the idea of a promise, so it waits for [5. Contracts](#ch-contracts).
 
 ### When splitting stops helping
 
@@ -467,29 +464,31 @@ not because four is a good number.
 
 <a id="ch-contracts"></a>
 
-## 4. Contracts
+## 5. Contracts
 
 Splitting two parts creates an obligation to say how they cooperate. The split of the last chapter
 left one question open: what does `optimize` give back when it has no load, or when it has one it
 could not prove to be the best? A caller that only knows the name of a function and the shape of its
 result cannot answer that, and the sixth change request from
-[What design is for](#ch-design-purpose) asks exactly that question. A boundary without a stated
+[2. What design is for](#ch-design-purpose) asks exactly that question. A boundary without a stated
 promise only moves the uncertainty from inside a function to the line between two.
 
 ### Interface and contract
 
-An [interface](../appendix/glossary.md#interface) lists the functions a part offers. The first line
-of each one, its name, inputs and output, is its _signature_. A
-[contract](../appendix/glossary.md#contract) is the signature together with the promises that go
-with it:
+The [interface](../appendix/glossary.md#interface) of a part is everything it offers to the code
+that calls it. The same thing goes by other names, and this book uses them interchangeably:
+[contract](../appendix/glossary.md#contract), signature and
+[abstraction](../appendix/glossary.md#abstraction). For each function it states:
 
+- its name, its inputs and its output,
 - what the function **requires** of its caller,
 - what it **returns**, and what the caller may conclude from each possible result,
 - which errors it **raises**, and when.
 
-The promises are written as comments above the function, and they belong to the interface as much as
-the signature does. `run(instance) returns Result` is a signature. It does not say whether the load
-it returns respects the capacities, or whether a better one exists.
+The first item is the first line of the function. The other three are promises, written as comments
+above it, and they belong to the interface as much as the first line does. On its own,
+`run(instance) returns Result` does not say whether the load it returns respects the capacities, or
+whether a better one exists.
 
 [Information hiding](../appendix/glossary.md#information-hiding) and the contract are two halves of
 one decision. Hiding says what the caller must not rely on: the algorithm, the solver, the model
@@ -601,13 +600,14 @@ substitution** says that any implementation of an interface must be usable where
 expected, without the caller noticing: it must accept everything the contract accepts and keep
 everything the contract promises.
 
-`SolutionProvider` from [Principles](#ch-principles) takes the same contract as `Optimization`:
+`SolutionProvider` from [4. Principles](#ch-principles) takes the same contract as `Optimization`:
 `solve(instance) returns Result`, with the same four statuses. A heuristic can implement it
 honestly, because the contract has a status for a load that may not be the best one. What it may not
 do is claim more than it knows. A heuristic that labels its load `optimal` breaks the contract, and
 so does one that returns an overweight load when it runs out of time, or one that answers
-`infeasible` whenever it finds nothing. Each of them has the right signature and the wrong
-behaviour, and every part that trusts a `Result` breaks with it.
+`infeasible` whenever it finds nothing. Each of them takes an `Instance` and returns a `Result`, as
+the interface asks, and still breaks its promises. Every part that trusts a `Result` breaks with
+it.
 
 ### From the contract to the tests
 
@@ -652,7 +652,7 @@ value is the very thing the model exists to compute.
 
 <a id="ch-patterns"></a>
 
-## 5. Design patterns
+## 6. Design patterns
 
 A principle says what a good design achieves; a pattern says how a recurring problem is usually
 solved. A [design pattern](../appendix/glossary.md#design-pattern) is a named, reusable solution to
@@ -662,9 +662,9 @@ vocabulary: saying "the solver is a strategy" tells another engineer a whole des
 
 Three patterns carry the cargo design. They are a small subset of the many that exist; the further
 reading below points to the full catalogues. Each is drawn in the simplified Unified Modeling
-Language (UML) introduced in [Principles](#ch-principles): interfaces on top, the classes that
+Language (UML) introduced in [4. Principles](#ch-principles): interfaces on top, the classes that
 implement them below, `+` for public and `-` for private. From here on, every provider takes an
-`Instance` and returns a `Result`, as [Contracts](#ch-contracts) defined them.
+`Instance` and returns a `Result`, as [5. Contracts](#ch-contracts) defined them.
 
 ### Dependency injection
 
@@ -768,9 +768,10 @@ returns because every provider keeps the same contract.
 
 The [adapter pattern](../appendix/glossary.md#adapter-pattern) translates between an interface the
 system expects and one it is given. The cargo system expects two business records, a `BookingList`
-and an `Aircraft`, which [A clean architecture for the cargo loading system](#ch-cargo-architecture)
-defines. The outside world supplies a CSV file, a JSON document from a web service, or a request
-from a web page. Each source gets an adapter that turns it into the same records.
+and an `Aircraft`, which
+[9. A clean architecture for the cargo loading system](#ch-cargo-architecture) defines. The outside
+world supplies a CSV file, a JSON document from a web service, or a request from a web page. Each
+source gets an adapter that turns it into the same records.
 
 <a id="pseudo-booking-readers"></a>
 
@@ -806,7 +807,7 @@ class JsonBookingReader implements BookingReader
 An adapter translates the form of the data and keeps its meaning. If one source reports weights in
 kilograms and the model works in tonnes, the conversion belongs in that source's adapter, in one
 named place, so that no other part ever sees a kilogram. The first change request from
-[What design is for](#ch-design-purpose), bookings arriving as JSON, is now one new class and one
+[2. What design is for](#ch-design-purpose), bookings arriving as JSON, is now one new class and one
 line in [Pseudocode: composition root](#pseudo-composition-root).
 
 ### Further reading
@@ -823,7 +824,7 @@ line in [Pseudocode: composition root](#pseudo-composition-root).
 
 <a id="ch-architecture"></a>
 
-## 6. From design to architecture
+## 7. From design to architecture
 
 Design happens at every level of a program: a function, a class, a package, a whole program, a set
 of programs across a company. The principles and patterns so far apply from a function up to a
@@ -886,10 +887,10 @@ not about what happens while the program runs, and the two can point in opposite
 At run time, `Optimization` calls a provider and the provider calls a library: the calls go outward.
 In the source code, `Optimization` mentions only `SolutionProvider`, an interface it owns, and the
 provider is the one that mentions the interface. This is dependency inversion from
-[Principles](#ch-principles) at the scale of a system. Whenever an inner ring needs something from
-an outer one, it defines an interface with a [contract](../appendix/glossary.md#contract) and lets
-the outer ring implement it. The composition root is the one place allowed to know every concrete
-class, because assembling them is its job.
+[4. Principles](#ch-principles) at the scale of a system. Whenever an inner ring needs something
+from an outer one, it defines an interface with a [contract](../appendix/glossary.md#contract) and
+lets the outer ring implement it. The composition root is the one place allowed to know every
+concrete class, because assembling them is its job.
 
 ### Further reading
 
@@ -900,9 +901,9 @@ class, because assembling them is its job.
 
 <a id="ch-dss-patterns"></a>
 
-## 7. DSS patterns
+## 8. DSS patterns
 
-[Design patterns](#ch-patterns) name arrangements of classes that recur in any software. The
+[6. Design patterns](#ch-patterns) name arrangements of classes that recur in any software. The
 optimization step of a decision-support system (DSS) has recurring arrangements of its own, of
 models and algorithms. Operations research has names for the algorithms. It has no settled names for
 the ways the software around them is arranged, so teams describe the same arrangement in different
@@ -915,8 +916,8 @@ vocabulary.
 
 Every pattern is built from one piece, the `SolutionProvider` of the earlier chapters, a
 [solution provider](../appendix/glossary.md#solution-provider): it takes an `Instance` and returns a
-`Result` under the contract of [Contracts](#ch-contracts). Providers come in two kinds, told apart
-by what they can establish.
+`Result` under the contract of [5. Contracts](#ch-contracts). Providers come in two kinds, told
+apart by what they can establish.
 
 - An **exact provider** can prove things about the instance. It may return any of the four statuses.
   A mixed-integer programming (MIP) solver run on a formulation is the usual one.
@@ -1046,7 +1047,7 @@ search of the exact provider.
 **Problem.** Instances differ so much that no single algorithm suits them all.
 
 **Structure.** Several providers, and one is chosen for each instance. This is the strategy pattern
-of [Design patterns](#ch-patterns) applied to the optimization step.
+of [6. Design patterns](#ch-patterns) applied to the optimization step.
 
 <a id="fig-selected-solve"></a>
 
@@ -1087,7 +1088,7 @@ selected solve between a single exact solve and a single heuristic solve.
 
 A second choice is independent of the first. Every exact provider holds a formulation, and that
 formulation has to be written in something. There are three placements, drawn in **Figure:
-formulation placement** against the rings of [From design to architecture](#ch-architecture).
+formulation placement** against the rings of [7. From design to architecture](#ch-architecture).
 
 <a id="fig-formulation-placement"></a>
 
@@ -1164,14 +1165,14 @@ another:
 
 <a id="ch-cargo-architecture"></a>
 
-## 8. A clean architecture for the cargo loading system
+## 9. A clean architecture for the cargo loading system
 
 The problem, from [the appendix](../appendix/cargo_model_example.md): a load planner receives a
 booking list for one departure, and the system proposes how many pallets of each product to load,
 maximizing revenue within the aircraft's weight and hold capacities and loading at least what must
-fly. This chapter makes the two choices of [DSS patterns](#ch-dss-patterns) for that system, places
-every line of [Pseudocode: tangled script](#pseudo-tangled-script) in the four rings of **Figure:
-clean architecture**, and lists what each part promises.
+fly. This chapter makes the two choices of [8. DSS patterns](#ch-dss-patterns) for that system,
+places every line of [Pseudocode: tangled script](#pseudo-tangled-script) in the four rings of
+**Figure: clean architecture**, and lists what each part promises.
 
 ### The two choices
 
@@ -1294,7 +1295,7 @@ composition root that builds everything.
 
 `MipProviderGurobi` mentions the Gurobi library, and the dependency rule says the use-case ring
 should not mention outer tools. The cargo design keeps it there anyway. The reason is cost, weighed
-over the three placements of [DSS patterns](#ch-dss-patterns).
+over the three placements of [8. DSS patterns](#ch-dss-patterns).
 
 - **A modelling layer** would turn the solver into a setting. The cargo system has one small model,
   one solver, and no plan to change it. The layer would be one more thing to learn and upgrade for a
@@ -1324,14 +1325,14 @@ tests of the next section check them one by one.
 
 | Part               | Receives                         | Promises                                                                                                                      | Checked in the testing section by                                                                                                                                                                                |
 | ------------------ | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BookingReader`    | A source                         | The business records the source describes, or an error for a source it cannot read                                            | [Integration testing](../05-testing/README.md#ch-integration), on real files                                                                                                                                     |
-| Preprocess         | `BookingList`, `Aircraft`        | A well-formed `Instance` without the products that can never fit, or an error for records that make no sense                  | [Unit testing](../05-testing/README.md#ch-unit-testing), with a handful of values and no solver                                                                                                                  |
-| `Optimization`     | `Instance`                       | A `Result` under [Pseudocode: optimization contract](#pseudo-optimization-contract)                                           | [Testing an optimization model](../05-testing/README.md#ch-model-testing), [Test oracles](../05-testing/README.md#ch-oracles) and [the chapter without optimality](../05-testing/README.md#ch-mip-no-optimality) |
+| `BookingReader`    | A source                         | The business records the source describes, or an error for a source it cannot read                                            | [7. Integration testing](../05-testing/README.md#ch-integration), on real files                                                                                                                                     |
+| Preprocess         | `BookingList`, `Aircraft`        | A well-formed `Instance` without the products that can never fit, or an error for records that make no sense                  | [3. Unit testing](../05-testing/README.md#ch-unit-testing), with a handful of values and no solver                                                                                                                  |
+| `Optimization`     | `Instance`                       | A `Result` under [Pseudocode: optimization contract](#pseudo-optimization-contract)                                           | [8. Testing an optimization model](../05-testing/README.md#ch-model-testing), [9. Test oracles](../05-testing/README.md#ch-oracles) and [10. Testing a mixed-integer program without optimality guaranteed](../05-testing/README.md#ch-mip-no-optimality) |
 | `SolutionProvider` | `Instance`                       | The same contract, whichever provider stands behind it                                                                        | The same tests, run on each provider                                                                                                                                                                             |
-| Postprocess        | `Result`, `BookingList`          | A `LoadPlan` listing every product, with `proven_best` true only for `optimal`, or a `NoPlan` whose reason matches the status | [Unit testing](../05-testing/README.md#ch-unit-testing), on `Result` records built by hand                                                                                                                       |
-| `PlanFlightLoad`   | `BookingList`, `Aircraft`        | The three steps in order, passing on whatever `Optimization` established                                                      | [Mocks](../05-testing/README.md#ch-mocks), with a stand-in for `Optimization`                                                                                                                                    |
-| `CsvPlanWriter`    | `LoadPlan` or `NoPlan`           | A complete plan file that says what the record says                                                                           | [Integration testing](../05-testing/README.md#ch-integration), on real files                                                                                                                                     |
-| The whole system   | A booking file, an aircraft file | A plan file the planner can act on                                                                                            | [Testing a decision-support system](../05-testing/README.md#ch-dss-testing)                                                                                                                                      |
+| Postprocess        | `Result`, `BookingList`          | A `LoadPlan` listing every product, with `proven_best` true only for `optimal`, or a `NoPlan` whose reason matches the status | [3. Unit testing](../05-testing/README.md#ch-unit-testing), on `Result` records built by hand                                                                                                                       |
+| `PlanFlightLoad`   | `BookingList`, `Aircraft`        | The three steps in order, passing on whatever `Optimization` established                                                      | [6. Mocks](../05-testing/README.md#ch-mocks), with a stand-in for `Optimization`                                                                                                                                    |
+| `CsvPlanWriter`    | `LoadPlan` or `NoPlan`           | A complete plan file that says what the record says                                                                           | [7. Integration testing](../05-testing/README.md#ch-integration), on real files                                                                                                                                     |
+| The whole system   | A booking file, an aircraft file | A plan file the planner can act on                                                                                            | [11. Testing a decision-support system](../05-testing/README.md#ch-dss-testing)                                                                                                                                      |
 
 Only one row is hard to test, and the design has made it small: `Optimization` is the one part whose
 expected answer is the very thing it exists to compute. Every other row has an answer that can be
@@ -1352,7 +1353,7 @@ written down before the code runs.
 
 ### The six change requests, answered
 
-The requests from [What design is for](#ch-design-purpose) now land as follows.
+The requests from [2. What design is for](#ch-design-purpose) now land as follows.
 
 1. **Bookings as JSON.** One new adapter, `JsonBookingReader`, and one line in the composition root.
 2. **Dangerous goods limited to a quarter of the hold.** This one does not stay in one part, and no
@@ -1395,34 +1396,34 @@ The requests from [What design is for](#ch-design-purpose) now land as follows.
 
 <a id="ch-conclusion"></a>
 
-## 9. Conclusion
+## 10. Conclusion
 
 Design exists to keep change cheap, through modularity and testability, and a decision-support
 system has to absorb changes that arrive on very different clocks.
 
-- **Design is for change** ([What design is for](#ch-design-purpose)). A good design keeps each
+- **Design is for change** ([2. What design is for](#ch-design-purpose)). A good design keeps each
   change inside as few parts as possible, shows which ones, and lets each part be tested on its own.
-- **Two forces decide it** ([Forces: coupling and cohesion](#ch-forces)). Aim for high cohesion and
-  low coupling.
-- **Principles turn the forces into rules** ([Principles](#ch-principles)). Hide details behind
+- **Two forces decide it** ([3. Forces: coupling and cohesion](#ch-forces)). Aim for high cohesion
+  and low coupling.
+- **Principles turn the forces into rules** ([4. Principles](#ch-principles)). Hide details behind
   interfaces, give each part one reason to change, and make policy depend on abstractions rather
   than on solvers. Stop splitting when it stops helping.
-- **A boundary needs a promise** ([Contracts](#ch-contracts)). State what a part requires, returns
-  and raises. For the optimization step, say whether a load is proven best, and never report "none
-  found" as "none exists".
-- **Design patterns apply the principles** ([Design patterns](#ch-patterns)). Inject dependencies
+- **A boundary needs a promise** ([5. Contracts](#ch-contracts)). State what a part requires,
+  returns and raises. For the optimization step, say whether a load is proven best, and never report
+  "none found" as "none exists".
+- **Design patterns apply the principles** ([6. Design patterns](#ch-patterns)). Inject dependencies
   from one composition root, put algorithms behind a strategy, and adapt each outside source to the
   same records.
 - **Architecture is design at the scale of a system**
-  ([From design to architecture](#ch-architecture)). In clean architecture, dependencies point
+  ([7. From design to architecture](#ch-architecture)). In clean architecture, dependencies point
   inward, toward what the system is for, even when the calls go outward.
-- **The optimization step has patterns of its own** ([DSS patterns](#ch-dss-patterns)). Single,
+- **The optimization step has patterns of its own** ([8. DSS patterns](#ch-dss-patterns)). Single,
   staged, seeded and selected solve each say which statuses they can honestly return, and where the
   formulation lives is a separate choice with its own price.
 - **The cargo system makes its choices in the open**
-  ([A clean architecture for the cargo loading system](#ch-cargo-architecture)). A selected solve, a
-  formulation kept with its solver for a stated reason, two vocabularies, and a promise at every
-  boundary.
+  ([9. A clean architecture for the cargo loading system](#ch-cargo-architecture)). A selected
+  solve, a formulation kept with its solver for a stated reason, two vocabularies, and a promise at
+  every boundary.
 
 A design is only as safe to change as the tests that check its promises, which is where the book
 goes next: [the testing section](../05-testing/README.md) takes the contract of this section and

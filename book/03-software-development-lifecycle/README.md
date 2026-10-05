@@ -1,6 +1,8 @@
 # Section 03: The lifecycle of decision-support software
 
-## Introduction
+<a id="ch-introduction"></a>
+
+## 1. Introduction
 
 Every piece of software moves through the same phases: someone works out what is needed, the team
 plans and designs it, builds and tests it, releases it, runs it, and changes it for as long as it
@@ -16,35 +18,20 @@ any other software, but several of those phases are harder to learn from and har
 the software produces decisions. The section builds the general case first and then names, phase by
 phase, where the difference bites.
 
-### Out of scope
-
-- **Design principles and the parts of a system.** Coupling, cohesion, single responsibility,
-  information hiding and where the boundaries of a system go are in
-  [the design section](../04-design/README.md). This section claims only that a team needs
-  modularity, never how to get it.
-- **How to test any of it.** Every oracle, technique and test-design idea is in
-  [the testing section](../05-testing/README.md).
-- **Tool tutorials.** Version control mechanics, continuous-integration configuration and
-  environment management are in the [learning roadmap](../appendix/learning-roadmap.md).
-- **What weak practice costs, and the failures that show it.** That case is made in
-  [the introduction](../01-introduction/README.md).
-- **Project-management frameworks.** Estimation techniques, backlog tools and the ceremonies of a
-  named framework are not covered in this book.
-
 The chapters argue from the general to the particular.
-[A different type of engineering](#ch-different-engineering) names the two characteristics that set
-software apart: it is built on imperfect information, and it is highly sensitive to tiny errors.
-Together they demand two abilities. [Learning quickly](#ch-learning) shows how a team learns: agile
-development gives it short feedback loops, and the scientific method draws sound conclusions from
-each loop. [Adapting quickly](#ch-adapting) shows what lets a team act on those conclusions without
-breaking what works. [Decision-support software across the lifecycle](#ch-phases) applies all of it
-to decision-support software, one phase at a time. Read them in order.
+[2. A different type of engineering](#ch-different-engineering) names the two characteristics that
+set software apart: it is built on imperfect information, and it is highly sensitive to tiny errors.
+Together they demand two abilities. [3. Learning quickly](#ch-learning) shows how a team learns:
+agile development gives it short feedback loops, and the scientific method draws sound conclusions
+from each loop. [4. Adapting quickly](#ch-adapting) shows what lets a team act on those conclusions
+without breaking what works. [5. Decision-support software across the lifecycle](#ch-phases) applies
+all of it to decision-support software, one phase at a time. Read them in order.
 
 ---
 
 <a id="ch-different-engineering"></a>
 
-## 1. A different type of engineering
+## 2. A different type of engineering
 
 A civil engineer designing a bridge works with two advantages. The requirements are known reasonably
 well before anything is built: the span, the load, the soil. And the structure is robust to small
@@ -114,7 +101,7 @@ The rest of this section is about those two abilities: [how a team learns](#ch-l
 
 <a id="ch-learning"></a>
 
-## 2. Learning quickly
+## 3. Learning quickly
 
 Learning quickly takes two things: evidence that arrives often, and a sound way to draw conclusions
 from it. Agile development supplies the first, and the scientific method supplies the second.
@@ -260,7 +247,7 @@ on real teams: name the principle each one breaks.
 
 <a id="ch-adapting"></a>
 
-## 3. Adapting quickly
+## 4. Adapting quickly
 
 Learning tells a team what to change. Adapting is making the change, and in software that means
 changing code that already works. Because a program is sensitive to tiny errors, every such change
@@ -291,7 +278,7 @@ A safety mechanism tells the team, quickly and without a person checking by hand
 broke something. The main one is an [automated test suite](../appendix/glossary.md#test-suite): a
 scalable, objective and reproducible experiment that checks, on every change, that everything that
 worked before still works. Without it, every change is a gamble on the sensitivity described in
-[A different type of engineering](#ch-different-engineering), and people stop making changes.
+[2. A different type of engineering](#ch-different-engineering), and people stop making changes.
 
 The claim of this chapter is narrow. A team without these three properties cannot absorb change at
 the rate the business asks for it, whatever process it follows: short loops deliver feedback that
@@ -302,7 +289,7 @@ the tests are large subjects of their own, and this section does not teach them.
 
 <a id="ch-phases"></a>
 
-## 4. Decision-support software across the lifecycle
+## 5. Decision-support software across the lifecycle
 
 Decision-support software goes through the same phases as any other software. What changes is how
 hard it is to learn and to adapt in each of them. The table names that difference for every phase;
@@ -337,8 +324,8 @@ for directly.
 **Use a first model as a probe.** A deliberately simple model, run on real data, is the best
 elicitation tool the team has. Show its plans to the planners and record every "no, because…": each
 one is a candidate rule, a missing constraint or a weight in the objective. This is the short loop
-of [Learning quickly](#ch-learning) applied to requirements, and it works because planners can judge
-a plan far better than they can describe one.
+of [3. Learning quickly](#ch-learning) applied to requirements, and it works because planners can
+judge a plan far better than they can describe one.
 
 **Keep a trace.** Write down, for every rule in the model, where it came from: the conversation, the
 person, the plan they rejected. That record is _traceability_. When a rule later looks wrong, the
@@ -359,7 +346,7 @@ way a first model becomes infeasible on real data.
 A decision-support system mixes parts that change at different speeds: the data changes on every
 run, business rules every few months, the formulation whenever the team learns something about the
 problem, and the solver perhaps once in the system's life. Good design keeps each of those changes
-inside one part, which is the modularity of [Adapting quickly](#ch-adapting) applied to
+inside one part, which is the modularity of [4. Adapting quickly](#ch-adapting) applied to
 optimization. Staying solver-agnostic, supporting more than one solution algorithm, and deciding
 where a new constraint belongs are the questions of [the design section](../04-design/README.md).
 
@@ -438,21 +425,22 @@ you inherited without breaking what already works is the subject of
 
 <a id="ch-conclusion"></a>
 
-## 5. Conclusion
+## 6. Conclusion
 
 Software is built on imperfect information and is highly sensitive to tiny errors, so a team
 succeeds by learning quickly and adapting quickly.
 
 - **Software is a different type of engineering**
-  ([A different type of engineering](#ch-different-engineering)). Requirements are discovered by
+  ([2. A different type of engineering](#ch-different-engineering)). Requirements are discovered by
   building, and one wrong character can change what a program does.
-- **Learning takes short loops and the scientific method** ([Learning quickly](#ch-learning)). Agile
-  supplies evidence often; the scientific method turns it into sound conclusions about whether the
-  code works.
+- **Learning takes short loops and the scientific method** ([3. Learning quickly](#ch-learning)).
+  Agile supplies evidence often; the scientific method turns it into sound conclusions about whether
+  the code works.
 - **Adapting takes low complexity, modularity and safety mechanisms**
-  ([Adapting quickly](#ch-adapting)). Without them, feedback arrives that nobody can safely act on.
+  ([4. Adapting quickly](#ch-adapting)). Without them, feedback arrives that nobody can safely act
+  on.
 - **The phases do not change; their difficulty does**
-  ([Decision-support software across the lifecycle](#ch-phases)). Elicitation, design, testing,
+  ([5. Decision-support software across the lifecycle](#ch-phases)). Elicitation, design, testing,
   deployment, operation and evolution each take a turn of their own when the software produces
   decisions.
 

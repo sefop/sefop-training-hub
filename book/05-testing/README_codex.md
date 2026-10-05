@@ -1,6 +1,8 @@
 # Section 05: Testing decision-support software
 
-## Introduction
+<a id="ch-introduction"></a>
+
+## 1. Introduction
 
 Decision-support software must recommend an action even when the best action is expensive to
 determine. A test may be able to check that a load fits without knowing whether it earns the most
@@ -13,45 +15,31 @@ promise is made, and choose evidence capable of detecting its violation. Small e
 software changes easier to assess. Their value depends on what they observe and check, not merely on
 how many of them pass.
 
-### Out of scope
-
-- **Detailed performance engineering:** solver tuning, capacity planning, and statistical runtime
-  comparisons need a separate treatment; deadline responses and comparable quality measurements
-  belong here.
-- **Reviewing the mathematical formulation:** the cargo rules are taken as specified; reviewing
-  whether those rules represent the intended decision is a separate activity.
-- **Operational validation methods:** user studies and field evaluation are outside this section;
-  the distinction between satisfying a specification and meeting an operational need remains
-  essential.
-- **Multiple objectives:** the appendix defines a second-objective evolution, but this section tests
-  one objective.
-- **Language and test-tool setup:** runnable examples and setup instructions belong in the practice
-  repositories.
-
 Read the chapters in order. The calculator establishes how to test a promise, the linear expression
 shows how tests can guide development, and the nightly planner introduces dependencies and real
 connections. The cargo chapters then distinguish solution validity, optimality evidence, and
 best-effort guarantees before testing a complete recommendation. Test-driven development is a
 development workflow; the remaining chapters also apply to tests written after implementation.
 
-## Chapters
+### Chapters
 
 | #   | Chapter                                                                       | After it you can…                                                |
 | --- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| 1   | [What a test establishes](#ch-interface)                                      | State the promise, observation, and limits of a test.            |
-| 2   | [Unit testing](#ch-unit-testing)                                              | Turn one component's promises into repeatable experiments.       |
-| 3   | [Writing trustworthy tests](#ch-clear-tests)                                  | Make expectations understandable and failures informative.       |
-| 4   | [Test-driven development](#ch-tdd)                                            | Develop one behavior through a failing test and a small change.  |
-| 5   | [Controlling dependencies with test doubles](#ch-mocks)                       | Supply difficult outcomes and observe outgoing actions.          |
-| 6   | [Integration testing](#ch-integration)                                        | Check real connections where components can disagree.            |
-| 7   | [Defining the optimization component contract](#ch-model-testing)             | Specify valid inputs, outcome meanings, and solution guarantees. |
-| 8   | [Checking solution validity and numerical correctness](#ch-solution-validity) | Independently check a candidate and its numerical conversion.    |
-| 9   | [Testing optimality when the answer is hard to know](#ch-oracles)             | Combine known answers, enumeration, relationships, and bounds.   |
-| 10  | [Testing without an optimality guarantee](#ch-mip-no-optimality)              | Specify and assess useful best-effort behavior.                  |
-| 11  | [Testing the complete decision-support workflow](#ch-dss-testing)             | Check a recommendation from source records through delivery.     |
-| 12  | [Conclusion](#ch-conclusion)                                                  | Assemble complementary evidence around the promises that matter. |
+| 1   | [Introduction](#ch-introduction)                                              | Say what the section covers and the order its chapters build in. |
+| 2   | [What a test establishes](#ch-interface)                                      | State the promise, observation, and limits of a test.            |
+| 3   | [Unit testing](#ch-unit-testing)                                              | Turn one component's promises into repeatable experiments.       |
+| 4   | [Writing trustworthy tests](#ch-clear-tests)                                  | Make expectations understandable and failures informative.       |
+| 5   | [Test-driven development](#ch-tdd)                                            | Develop one behavior through a failing test and a small change.  |
+| 6   | [Controlling dependencies with test doubles](#ch-mocks)                       | Supply difficult outcomes and observe outgoing actions.          |
+| 7   | [Integration testing](#ch-integration)                                        | Check real connections where components can disagree.            |
+| 8   | [Defining the optimization component contract](#ch-model-testing)             | Specify valid inputs, outcome meanings, and solution guarantees. |
+| 9   | [Checking solution validity and numerical correctness](#ch-solution-validity) | Independently check a candidate and its numerical conversion.    |
+| 10  | [Testing optimality when the answer is hard to know](#ch-oracles)             | Combine known answers, enumeration, relationships, and bounds.   |
+| 11  | [Testing without an optimality guarantee](#ch-mip-no-optimality)              | Specify and assess useful best-effort behavior.                  |
+| 12  | [Testing the complete decision-support workflow](#ch-dss-testing)             | Check a recommendation from source records through delivery.     |
+| 13  | [Conclusion](#ch-conclusion)                                                  | Assemble complementary evidence around the promises that matter. |
 
-## How to read the pseudocode
+### How to read the pseudocode
 
 Pseudocode is structured English rather than a particular programming language. `public` marks an
 operation callers may use; `private` marks state or an operation kept inside a component. These are
@@ -64,7 +52,7 @@ reports the message. The message is optional. `expect calling operation raises e
 specified error outcome. Test support operations described in prose stand for small helpers whose
 implementation belongs in the practice repositories.
 
-## Practice and editorial notes
+### Practice and editorial notes
 
 This is an alternate draft. Its numbered headings follow the requested review format; its topic
 anchors preserve existing chapter links wherever the subject survives. The published section and its
@@ -92,7 +80,7 @@ colors when producing them.
 
 <a id="ch-interface"></a>
 
-## 1. What a test establishes
+## 2. What a test establishes
 
 An experiment is useful only when we know which claim it challenges. A program producing a number
 tells us little until we state what that number should mean. A test makes the claim and the
@@ -175,7 +163,7 @@ resource constraints.
 
 <a id="ch-unit-testing"></a>
 
-## 2. Unit testing
+## 3. Unit testing
 
 A promise usually contains more than one way to be wrong. Addition can return the wrong sum,
 mishandle zero, or accept an input that should be rejected. A
@@ -267,7 +255,7 @@ numeric ranges across Python and Java.
 
 <a id="ch-clear-tests"></a>
 
-## 3. Writing trustworthy tests
+## 4. Writing trustworthy tests
 
 A failed experiment is useful when another person can see what it measured and why its expectation
 is justified. Test code needs that same scrutiny. A complicated expectation can conceal a mistake as
@@ -340,7 +328,7 @@ expected defect and detecting test explicit.
 
 <a id="ch-tdd"></a>
 
-## 4. Test-driven development
+## 5. Test-driven development
 
 A requirement is easier to discuss when it has a concrete example. Writing that example as a failing
 test before implementing the behavior makes the expectation visible while the design is still taking
@@ -457,7 +445,7 @@ proves causality or guarantees complete coverage.
 
 <a id="ch-mocks"></a>
 
-## 5. Controlling dependencies with test doubles
+## 6. Controlling dependencies with test doubles
 
 Some behavior is visible only through another component. A nightly planner asks a notifier to send a
 message; checking the planner's return value alone cannot establish that it requested the right
@@ -582,7 +570,7 @@ hand-written double visible before introducing tooling.
 
 <a id="ch-integration"></a>
 
-## 6. Integration testing
+## 7. Integration testing
 
 Two components may each behave correctly against their own expectations and still disagree when
 connected. A writer may produce `infeasible` while a reader expects a different spelling. An
@@ -668,7 +656,7 @@ exercise and which assertions detect it.
 
 <a id="ch-model-testing"></a>
 
-## 7. Defining the optimization component contract
+## 8. Defining the optimization component contract
 
 For a calculator, the expected result is cheap to establish independently. For an optimization
 problem, finding the best objective value may require substantial computation. Before deciding how
@@ -824,7 +812,7 @@ nightly planner's result types consistently.
 
 <a id="ch-solution-validity"></a>
 
-## 8. Checking solution validity and numerical correctness
+## 9. Checking solution validity and numerical correctness
 
 A claimed revenue is useful only when it belongs to an admissible load. An impossible load can
 advertise the right optimal value by accident. Begin with the candidate itself: check its quantities
@@ -987,7 +975,7 @@ the solver's numeric settings.
 
 <a id="ch-oracles"></a>
 
-## 9. Testing optimality when the answer is hard to know
+## 10. Testing optimality when the answer is hard to know
 
 Checking a load's constraints is cheaper than finding the best load. Once a candidate passes those
 checks, what evidence can establish that its value is optimal? The
@@ -1043,7 +1031,7 @@ infallible verdict.
 
 [Pseudocode: checked differential sweep](#pseudo-checked-differential-sweep) combines comparison
 with independent validity checks. The generated cases use integer coefficients, so the checker from
-[Checking solution validity and numerical correctness](#ch-solution-validity) applies exactly.
+[9. Checking solution validity and numerical correctness](#ch-solution-validity) applies exactly.
 
 <a id="pseudo-checked-differential-sweep"></a>
 
@@ -1175,7 +1163,7 @@ not silently skip unresolved runs.
 
 <a id="ch-mip-no-optimality"></a>
 
-## 10. Testing without an optimality guarantee
+## 11. Testing without an optimality guarantee
 
 A planner may need an answer before the search can prove it is best. The best feasible solution
 found so far, the [incumbent](../appendix/glossary.md#incumbent), can still be useful. Its tests
@@ -1313,7 +1301,7 @@ tests.
 
 <a id="ch-dss-testing"></a>
 
-## 11. Testing the complete decision-support workflow
+## 12. Testing the complete decision-support workflow
 
 A mathematical solution is useful only if it answers the user's actual question. A valid, optimal
 load for the wrong data can still produce a wrong recommendation. The system therefore owes its
@@ -1344,7 +1332,7 @@ Define the following application policy for the example. A request identifies on
 fixed snapshot of bookings, product records, and aircraft capacity. The reader selects that flight,
 rejects missing or ambiguous records, and preserves product identifiers. Preprocessing converts the
 units declared in those records. The optimizer returns the outcome vocabulary from
-[Defining the optimization component contract](#ch-model-testing). Postprocessing accepts only a
+[8. Defining the optimization component contract](#ch-model-testing). Postprocessing accepts only a
 valid whole-pallet load, and the writer produces a flight-specific load list with quantities,
 totals, units, and outcome wording.
 
@@ -1523,29 +1511,32 @@ real-solver example separate from tests using a stand-in provider.
 
 <a id="ch-conclusion"></a>
 
-## 12. Conclusion
+## 13. Conclusion
 
 Confidence in a recommendation rests on complementary evidence about the promises that connect its
 inputs to its delivered meaning.
 
-- [What a test establishes](#ch-interface): state the claim, observation, and limits of the
+- [2. What a test establishes](#ch-interface): state the claim, observation, and limits of the
   evidence.
-- [Unit testing](#ch-unit-testing): turn each selected behavior into a repeatable experiment.
-- [Writing trustworthy tests](#ch-clear-tests): keep expectations auditable and investigate the
+- [3. Unit testing](#ch-unit-testing): turn each selected behavior into a repeatable experiment.
+- [4. Writing trustworthy tests](#ch-clear-tests): keep expectations auditable and investigate the
   tests themselves.
-- [Test-driven development](#ch-tdd): use intended failures to guide small implementation changes.
-- [Controlling dependencies with test doubles](#ch-mocks): supply difficult conditions and observe
-  outgoing actions.
-- [Integration testing](#ch-integration): exercise real connections where components can disagree.
-- [Defining the optimization component contract](#ch-model-testing): distinguish assumptions,
+- [5. Test-driven development](#ch-tdd): use intended failures to guide small implementation
+  changes.
+- [6. Controlling dependencies with test doubles](#ch-mocks): supply difficult conditions and
+  observe outgoing actions.
+- [7. Integration testing](#ch-integration): exercise real connections where components can
+  disagree.
+- [8. Defining the optimization component contract](#ch-model-testing): distinguish assumptions,
   outcomes, and guarantees.
-- [Checking solution validity and numerical correctness](#ch-solution-validity): check admissibility
-  and accounting.
-- [Testing optimality when the answer is hard to know](#ch-oracles): combine evidence with explicit
-  limits.
-- [Testing without an optimality guarantee](#ch-mip-no-optimality): require fallbacks and assess
+- [9. Checking solution validity and numerical correctness](#ch-solution-validity): check
+  admissibility and accounting.
+- [10. Testing optimality when the answer is hard to know](#ch-oracles): combine evidence with
+  explicit limits.
+- [11. Testing without an optimality guarantee](#ch-mip-no-optimality): require fallbacks and assess
   quality promises.
-- [Testing the complete decision-support workflow](#ch-dss-testing): check meaning through delivery.
+- [12. Testing the complete decision-support workflow](#ch-dss-testing): check meaning through
+  delivery.
 
 With these checks in place, the next section considers how to put the system in front of its users.
 

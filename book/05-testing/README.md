@@ -1,6 +1,8 @@
 # Section 05 — Testing decision-support software
 
-## Introduction
+<a id="ch-introduction"></a>
+
+## 1. Introduction
 
 Testing matters in the
 [software development lifecycle](../appendix/glossary.md#software-development-lifecycle) because it
@@ -92,45 +94,33 @@ As [Figure: test pyramid](#fig-test-pyramid) shows, each step up runs more of th
 test costs more to write and runs slower. A healthy suite holds many unit tests, fewer integration
 tests and a handful of end-to-end tests.
 
-### Out of scope
-
-- **Performance and scale.** No chapter tests how fast a solver is or how large an instance it
-  handles.
-- **Input validation.** Items are never checked for nonsense values such as a negative weight: every
-  infeasible instance in this section comes from the capacities, never from a malformed item.
-- **Several objectives.** Models with more than one objective are not covered yet.
-- **Validation.** Whether a model captures the right decision is a business question, not covered in
-  this book.
-- **Reviewing a formulation.** Checking the mathematics of a model on paper is not covered: the
-  tests here check the output of solving it.
-
-[Interface vs implementation](#ch-interface) separates what a unit promises from how it keeps the
-promise, and every later chapter tests the promise. [Unit testing](#ch-unit-testing),
-[Writing good tests](#ch-clear-tests) and [Test-driven development](#ch-tdd) test one unit on its
-own. [Mocks](#ch-mocks) and [Integration testing](#ch-integration) take a test beyond the unit, to
-the systems it calls and the files it reads. [Testing an optimization model](#ch-model-testing) then
-meets the difficulty specific to decision-support software and takes up the contract that the design
-section wrote for the cargo model. [Test oracles](#ch-oracles) shows three ways to decide whether
-`run` kept it, and
-[Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality) what a test
-can still check when optimality is not guaranteed.
-[Testing a decision-support system](#ch-dss-testing) applies them to the whole system behind its
+[2. Interface vs implementation](#ch-interface) separates what a unit promises from how it keeps the
+promise, and every later chapter tests the promise. [3. Unit testing](#ch-unit-testing),
+[4. Writing good tests](#ch-clear-tests) and [5. Test-driven development](#ch-tdd) test one unit on
+its own. [6. Mocks](#ch-mocks) and [7. Integration testing](#ch-integration) take a test beyond the
+unit, to the systems it calls and the files it reads.
+[8. Testing an optimization model](#ch-model-testing) then meets the difficulty specific to
+decision-support software and takes up the contract that the design section wrote for the cargo
+model. [9. Test oracles](#ch-oracles) shows three ways to decide whether `run` kept it, and
+[10. Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality) what a
+test can still check when optimality is not guaranteed.
+[11. Testing a decision-support system](#ch-dss-testing) applies them to the whole system behind its
 interface. Read them in order: each chapter uses only what the chapters before it defined.
 
 <a id="ch-interface"></a>
 
-## 1. Interface vs implementation
+## 2. Interface vs implementation
 
-[Contracts](../04-design/README.md#ch-contracts), in the design section, separated what a unit of
+[5. Contracts](../04-design/README.md#ch-contracts), in the design section, separated what a unit of
 code promises from how it keeps the promise. This chapter recalls that split on the smallest example
 of this section, a calculator, because every later chapter tests the promise and nothing else.
 
-Every unit of code has two parts. Its [interface](../appendix/glossary.md#interface) says what the
-unit does: its name, the inputs it accepts, and the outputs and errors it returns. Together with the
-promises written in its comments, the interface is the unit's
-[contract](../appendix/glossary.md#contract). Its implementation is how the unit does it, and
-everything in it is an [implementation detail](../appendix/glossary.md#implementation-detail). Any
-code that calls the unit is one of its _clients_. Implementation details include any
+Every unit of code has two parts. Its [interface](../appendix/glossary.md#interface), also called
+its [contract](../appendix/glossary.md#contract), says what the unit does: its name, the inputs it
+accepts, the outputs and errors it returns, and the promises written in its comments. Its
+implementation is how the unit does it, and everything in it is an
+[implementation detail](../appendix/glossary.md#implementation-detail). Any code that calls the unit
+is one of its _clients_. Implementation details include any
 [private](../appendix/glossary.md#public-and-private) method the unit calls, such as `is_finite` in
 the figure: no client can call it, so it can change freely.
 [Figure: interface and implementation](#fig-interface-implementation) marks the parts on the
@@ -178,7 +168,7 @@ into the socket">
 
 <a id="ch-unit-testing"></a>
 
-## 2. Unit testing
+## 3. Unit testing
 
 A unit test sits at the base of the pyramid: it checks one unit of code, such as a function, on its
 own, and runs in milliseconds.
@@ -313,10 +303,10 @@ tested `add`.
 
 <a id="ch-clear-tests"></a>
 
-## 3. Writing good tests
+## 4. Writing good tests
 
-[Unit testing](#ch-unit-testing) gave a test its structure and its name; the practices below tell a
-good test from a bad one.
+[3. Unit testing](#ch-unit-testing) gave a test its structure and its name; the practices below tell
+a good test from a bad one.
 
 ### Complete and concise
 
@@ -495,12 +485,12 @@ numbers in every test, and each test reads on its own.
 
 <a id="ch-tdd"></a>
 
-## 4. Test-driven development
+## 5. Test-driven development
 
 [Test-driven development (TDD)](../appendix/glossary.md#test-driven-development) writes each test
 before the code it checks. In the terms of the scientific experiment in
-[Unit testing](#ch-unit-testing), it states the hypothesis before it builds the experiment: the test
-says what the code must do while that code does not exist yet.
+[3. Unit testing](#ch-unit-testing), it states the hypothesis before it builds the experiment: the
+test says what the code must do while that code does not exist yet.
 
 ### The cycle: red, green, refactor
 
@@ -541,7 +531,7 @@ anyway.
 because a test demanded it, so no line goes untested and no behavior is built that nobody asked for.
 
 **Refactor is safe because the tests check the interface.** The tests pin down what the code does,
-never how, as [Interface vs implementation](#ch-interface) set out. The code can change shape
+never how, as [2. Interface vs implementation](#ch-interface) set out. The code can change shape
 underneath them, and a test that turns red means a promise broke, not that the code merely moved.
 
 ### A linear expression example
@@ -680,7 +670,7 @@ variables and their coefficients, one cycle at a time.
 
 <a id="ch-mocks"></a>
 
-## 5. Mocks
+## 6. Mocks
 
 A unit test checks the behaviors a unit promises through its
 [interface](../appendix/glossary.md#interface). A unit rarely works alone: it calls another unit,
@@ -840,7 +830,7 @@ that work is reorganized, even though no promise changed.
 
 <a id="ch-integration"></a>
 
-## 6. Integration testing
+## 7. Integration testing
 
 The [integration test](../appendix/glossary.md#integration-test) is the middle level of
 [Figure: test pyramid](#fig-test-pyramid). A program's units do not only call each other: they also
@@ -858,7 +848,7 @@ Not every dependency should be real in an integration test. The rule depends on 
   such as its own files or its own database. It stays real: how the program uses it is an
   implementation detail, and only the real one shows whether that detail works.
 - An [unmanaged dependency](../appendix/glossary.md#unmanaged-dependency) is observed by other
-  people or systems, such as the notifier. It stays a mock, as in [Mocks](#ch-mocks): a test must
+  people or systems, such as the notifier. It stays a mock, as in [6. Mocks](#ch-mocks): a test must
   not wake a real person, and the call itself is the behavior to check.
 
 [Figure: real and mocked dependencies](#fig-integration-dependencies) applies the rule to the
@@ -957,7 +947,7 @@ its own idea of the format. Only this test, which joins the two, fails.
 
 <a id="ch-model-testing"></a>
 
-## 7. Testing an optimization model
+## 8. Testing an optimization model
 
 Every test so far compared an output with an expected value that someone could work out before
 running the code: `add(2, 3)` is 5, and a notification carries a known message. An optimization
@@ -1089,7 +1079,7 @@ $$
 
 ### The optimization contract
 
-[Interface vs implementation](#ch-interface) showed that a caller relies on what the abstraction
+[2. Interface vs implementation](#ch-interface) showed that a caller relies on what the abstraction
 promises, never on how it keeps the promise. What, then, does the cargo model promise to its caller?
 The design section wrote that promise down, in
 [Pseudocode: optimization contract](../04-design/README.md#pseudo-optimization-contract), and this
@@ -1150,7 +1140,7 @@ the software design) and mathematical promises (derived from optimization theory
 
 1. There is a single public method called `run`, which receives an `Instance`.
 2. If the `Instance` is malformed, for example a product with a negative weight, `run` raises an
-   error. [This section does not test that case](#out-of-scope).
+   error. This section does not test that case.
 3. Otherwise `run` returns a `Result` whose `status` is one of `optimal`, `feasible`, `infeasible`
    and `not_found`, and which carries a `Solution` exactly when the status is `optimal` or
    `feasible`.
@@ -1294,7 +1284,7 @@ program.
 
 <a id="ch-oracles"></a>
 
-## 8. Test oracles
+## 9. Test oracles
 
 The tests defined before require different levels of reasoning of the expected behavior. The
 artifact that provides the expected behavior in a test is known as a
@@ -1537,7 +1527,7 @@ each with the oracle that fits it.
 
 <a id="ch-mip-no-optimality"></a>
 
-## 9. Testing a mixed-integer program without optimality guaranteed
+## 10. Testing a mixed-integer program without optimality guaranteed
 
 A mixed-integer program (MIP) can take hours to solve to proven optimality once its instance grows,
 and a load planner cannot wait hours before the aircraft closes. The optimization phase has to
@@ -1549,7 +1539,8 @@ that outcome, the status `feasible`, and one for a search that stops with nothin
 changes is which statuses a test will meet. An `Optimization` that stops at a time limit, or that
 uses a heuristic, may return `feasible` where an exact run to the end would return `optimal`, and
 `not_found` where it would return `optimal` or `infeasible`. The design section calls the
-arrangements that behave this way by name in [DSS patterns](../04-design/README.md#ch-dss-patterns).
+arrangements that behave this way by name in
+[8. DSS patterns](../04-design/README.md#ch-dss-patterns).
 
 What can a test still ask for?
 
@@ -1700,7 +1691,7 @@ report the average of upper_bound_gaps, the average of exact_gaps, and not_found
 
 <a id="ch-dss-testing"></a>
 
-## 10. Testing a decision-support system
+## 11. Testing a decision-support system
 
 A decision-support system promises its users a decision, not an algorithm: behind its
 [interface](#ch-interface), the load may come from enumeration, a heuristic or a solver, and the
@@ -1721,33 +1712,34 @@ returns.
 
 <a id="ch-conclusion"></a>
 
-## 11. Conclusion
+## 12. Conclusion
 
 A test is an experiment with an expected answer, and each chapter of this section is a way of
 obtaining that answer, up to the case where the answer is the very thing the model computes.
 
-- **Test the promise, not the mechanism** ([Interface vs implementation](#ch-interface)). What a
+- **Test the promise, not the mechanism** ([2. Interface vs implementation](#ch-interface)). What a
   unit does outlives how it does it.
-- **A unit test is a small experiment** ([Unit testing](#ch-unit-testing)). One behavior, fixed
+- **A unit test is a small experiment** ([3. Unit testing](#ch-unit-testing)). One behavior, fixed
   inputs and a stated prediction.
-- **Nothing tests the test** ([Writing good tests](#ch-clear-tests)). A test must be obviously
+- **Nothing tests the test** ([4. Writing good tests](#ch-clear-tests)). A test must be obviously
   correct at a glance.
-- **Red first shows the cause** ([Test-driven development](#ch-tdd)). A test that failed before the
-  code existed shows that the code made it pass.
-- **Record the calls you cannot observe** ([Mocks](#ch-mocks)). When a behavior is a call to another
-  system, a mock keeps the record the test checks.
-- **Keep what only your program uses real** ([Integration testing](#ch-integration)). Mock what
+- **Red first shows the cause** ([5. Test-driven development](#ch-tdd)). A test that failed before
+  the code existed shows that the code made it pass.
+- **Record the calls you cannot observe** ([6. Mocks](#ch-mocks)). When a behavior is a call to
+  another system, a mock keeps the record the test checks.
+- **Keep what only your program uses real** ([7. Integration testing](#ch-integration)). Mock what
   others observe, and let the real files and databases show where units disagree.
-- **Test the pipeline through its contract** ([Testing an optimization model](#ch-model-testing)).
-  `run` and the Result it returns are the promise; the five private steps behind them are not.
-- **Sort the checks by what the test knows** ([Test oracles](#ch-oracles)). A known answer, a second
-  implementation, or only conditions every answer meets.
+- **Test the pipeline through its contract**
+  ([8. Testing an optimization model](#ch-model-testing)). `run` and the Result it returns are the
+  promise; the five private steps behind them are not.
+- **Sort the checks by what the test knows** ([9. Test oracles](#ch-oracles)). A known answer, a
+  second implementation, or only conditions every answer meets.
 - **Without optimality, test what is still promised**
-  ([Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality)). Load
+  ([10. Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality)). Load
   validity and no `Solution` on an impossible instance remain tests; solution quality is tracked
   over time as a benchmark.
 - **Behind an interface, only the output counts**
-  ([Testing a decision-support system](#ch-dss-testing)). The techniques that read the output
+  ([11. Testing a decision-support system](#ch-dss-testing)). The techniques that read the output
   survive a hidden algorithm; the ones that need the solver do not.
 
 With the system tested, the next section puts it in front of its users.

@@ -7,9 +7,10 @@ they use a term.
 
 ## Abstraction
 
-A named interface that hides how something is done behind what it does. A cargo loading solver
-abstraction exposes one method, `solve`, and several implementations — a MIP solver, a heuristic —
-can stand behind it. It is what lets you swap solvers without rewriting the code that calls them.
+Another name for [interface](#interface), used when the stress is on what it hides: how something
+is done stays behind what it does. A cargo loading solver abstraction exposes one method, `solve`,
+and several implementations, a MIP solver or a heuristic, can stand behind it. It is what lets you
+swap solvers without rewriting the code that calls them.
 
 ## Adapter pattern
 
@@ -83,11 +84,11 @@ only code that knows which concrete classes were chosen.
 
 ## Contract
 
-The promise a piece of code makes to its callers: what it requires as input, what it returns and
-what the caller may conclude from each result, and which errors it raises. It says nothing about how
-the code gets there. The cargo optimization contract returns one of four statuses: `optimal`,
-`feasible`, `infeasible` and `not_found`. Contrast with
-[implementation detail](#implementation-detail).
+Another name for [interface](#interface), used when the stress is on the promise a piece of code
+makes to its callers: what it requires as input, what it returns and what the caller may conclude
+from each result, and which errors it raises. It says nothing about how the code gets there. The
+cargo optimization contract returns one of four statuses: `optimal`, `feasible`, `infeasible` and
+`not_found`. Contrast with [implementation detail](#implementation-detail).
 
 ## Continuous delivery
 
@@ -241,10 +242,10 @@ together, for example that one unit reads data in the shape the next one expects
 
 ## Interface
 
-The set of operations a part of a system offers to the rest, without saying how they are carried
-out. The name, inputs and output of one operation are its signature; the signature together with its
-promises is its [contract](#contract). Code that depends only on an interface keeps working when the
-implementation behind it changes.
+Everything a part of a system offers to the code that calls it, without saying how it is carried
+out: for each operation, its name, inputs and output, and the promises that go with them. Also
+called [contract](#contract), signature or [abstraction](#abstraction). Code that depends only on an
+interface keeps working when the implementation behind it changes.
 
 ## Iterative development
 
@@ -285,8 +286,8 @@ bounds the optimal value of the mixed-integer program: from above for a maximiza
 
 The rule that any implementation of an interface must be usable wherever the interface is expected:
 it accepts everything the [contract](#contract) accepts and keeps everything the contract promises.
-A heuristic that labels its load `optimal` has the right signature and breaks the principle. The L
-in [SOLID](#solid).
+A heuristic that labels its load `optimal` takes the right input, returns the right record and
+breaks the principle. The L in [SOLID](#solid).
 
 ## Managed dependency
 
@@ -411,6 +412,10 @@ optimization step. Also called algorithm selection.
 Automatically reducing a failing generated input to the smallest input that still fails, so that a
 person can understand the failure. A feature of [property-based testing](#property-based-testing)
 libraries.
+
+## Signature
+
+Another name for [interface](#interface).
 
 ## Single responsibility principle
 
