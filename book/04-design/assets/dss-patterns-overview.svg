@@ -14,8 +14,8 @@
   <text x="456" y="46" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">Staged solve</text>
   <text x="640" y="184" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">different problems, one after another</text>
   <rect x="20" y="220" width="400" height="180" rx="10" fill="#ffffff" stroke="#e4e7eb" stroke-width="2"/>
-  <text x="36" y="246" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">Seeded solve</text>
-  <text x="220" y="384" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">the same problem, twice</text>
+  <text x="36" y="246" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">Iterated solve</text>
+  <text x="220" y="384" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">a provider and an evaluator, in a loop</text>
   <rect x="440" y="220" width="400" height="180" rx="10" fill="#ffffff" stroke="#e4e7eb" stroke-width="2"/>
   <text x="456" y="246" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">Selected solve</text>
   <text x="640" y="384" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">one provider for each instance</text>
@@ -31,14 +31,16 @@
   <line x1="610" y1="102" x2="688" y2="102" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
   <text x="649" y="94" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">answer</text>
   <line x1="800" y1="102" x2="832" y2="102" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <rect x="70" y="275" width="120" height="44" rx="6" fill="#fde2d0" stroke="#c2410c" stroke-width="1.5"/>
-  <text x="130.0" y="301.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">heuristic</text>
-  <rect x="260" y="275" width="110" height="44" rx="6" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="1.5"/>
-  <text x="315.0" y="301.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">exact</text>
-  <line x1="34" y1="297" x2="68" y2="297" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <line x1="190" y1="297" x2="258" y2="297" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
-  <text x="224" y="289" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">seed</text>
-  <line x1="370" y1="297" x2="408" y2="297" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="60" y="270" width="120" height="44" rx="6" fill="#ffffff" stroke="#9aa5b1" stroke-width="1.5"/>
+  <text x="120.0" y="296.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">provider</text>
+  <rect x="260" y="270" width="110" height="44" rx="6" fill="#fdf3c4" stroke="#b7791f" stroke-width="1.5"/>
+  <text x="315.0" y="296.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">evaluator</text>
+  <line x1="30" y1="292" x2="58" y2="292" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="180" y1="292" x2="258" y2="292" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="219" y="284" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">answer</text>
+  <line x1="370" y1="292" x2="408" y2="292" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M315,316 V344 H120 V316" fill="none" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="217" y="360" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">feedback</text>
   <path d="M505,275 L545,297 L505,319 L465,297 Z" fill="none" stroke="#52606d" stroke-width="1.5"/>
   <text x="505" y="301" text-anchor="middle" font-size="12" fill="#1f2933" font-weight="normal" xml:space="preserve">choose</text>
   <rect x="640" y="258" width="110" height="34" rx="6" fill="#d6e6f5" stroke="#2f6f9f" stroke-width="1.5"/>
@@ -56,4 +58,6 @@
   <text x="177" y="432" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">heuristic provider</text>
   <rect x="300" y="421" width="16" height="14" rx="3" fill="#ffffff" stroke="#9aa5b1" stroke-width="1.2"/>
   <text x="322" y="432" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">either kind</text>
+  <rect x="420" y="421" width="16" height="14" rx="3" fill="#fdf3c4" stroke="#b7791f" stroke-width="1.2"/>
+  <text x="442" y="432" text-anchor="start" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">evaluator</text>
 </svg>

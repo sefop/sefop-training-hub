@@ -28,7 +28,9 @@ promise of the optimization step. [6. Design patterns](#ch-patterns) shows the r
 that apply the principles. [7. From design to architecture](#ch-architecture) lifts the same ideas
 to the scale of a whole system, and [8. DSS patterns](#ch-dss-patterns) does for the optimization
 step what design patterns do for classes: it names the arrangements that recur.
-[9. A clean architecture for the cargo loading system](#ch-cargo-architecture) shows where every
+[9. Where the formulation lives](#ch-formulation-placement) gives the formulation a place in that
+architecture.
+[10. A clean architecture for the cargo loading system](#ch-cargo-architecture) shows where every
 line of the tangled script ends up and what each module promises to the tests of the next section.
 Read them in order: each chapter uses only what the chapters before it defined. The system they
 design is defined in [The cargo model example](#the-cargo-model-example), next.
@@ -158,7 +160,7 @@ The rest of this section is about why that happens and how to design it away. On
 starting: a good design does not make every change small. The second request is a new constraint on
 the load itself, and no arrangement of the code can keep that inside one module. What a good design
 does is show exactly which modules such a change reaches, and
-[9. A clean architecture for the cargo loading system](#ch-cargo-architecture) returns to it.
+[10. A clean architecture for the cargo loading system](#ch-cargo-architecture) returns to it.
 
 ---
 
@@ -339,9 +341,7 @@ and a capacity and returns products, so it can be tested with a handful of value
 solver.
 
 One module still has two reasons to change: `optimize` holds both the formulation and the calls to
-the solver library. [8. DSS patterns](#ch-dss-patterns) lays out the ways to arrange that pair, and
-[9. A clean architecture for the cargo loading system](#ch-cargo-architecture) explains why this
-system keeps them together.
+the solver library.
 
 ### Dependency inversion
 
@@ -808,7 +808,7 @@ returns because every provider keeps the same contract.
 The [adapter pattern](../appendix/glossary.md#adapter-pattern) translates between an interface the
 system expects and one it is given. The cargo system expects two business records, a `BookingList`
 and an `Aircraft`, which
-[9. A clean architecture for the cargo loading system](#ch-cargo-architecture) defines. The outside
+[10. A clean architecture for the cargo loading system](#ch-cargo-architecture) defines. The outside
 world supplies a CSV file, a JSON document from a web service, or a request from a web page. Each
 source gets an adapter that turns it into the same records.
 
@@ -955,9 +955,9 @@ vocabulary.
 
 ### The building block: a provider
 
-Every pattern is built from one piece, the `SolutionProvider` of the earlier chapters, a
-[solution provider](../appendix/glossary.md#solution-provider): it takes an `Instance` and returns a
-`Result` under the contract of [5. Contracts](#ch-contracts). Providers come in two kinds, told
+Every pattern is built from providers. A provider is the `SolutionProvider` of the earlier chapters,
+a [solution provider](../appendix/glossary.md#solution-provider): it takes an `Instance` and returns
+a `Result` under the contract of [5. Contracts](#ch-contracts). Providers come in two kinds, told
 apart by what they can establish.
 
 - An **exact provider** can prove things about the instance. It may return any of the four statuses.
@@ -970,9 +970,14 @@ apart by what they can establish.
 
 Each pattern below is a way of arranging providers, and each arrangement is, seen from outside, one
 provider again: its caller calls one `solve` and reads one `Result`. That is what lets the patterns
-be swapped and nested without the rest of the system noticing. **Figure: DSS patterns** shows the
-four together. In every figure of this chapter an exact provider is blue, a heuristic provider is
-orange, a record is green, and a dashed outline marks what the caller sees as one provider.
+be swapped and nested without the rest of the system noticing. A pattern is therefore a decision
+about how the optimization step produces its `Result`, and about nothing else. Whichever pattern is
+chosen, the callers of `Optimization.run` see the same contract, and the use cases, the records and
+the rings of [7. From design to architecture](#ch-architecture) stay as they are.
+
+**Figure: DSS patterns** shows the four together. In every figure of this chapter an exact provider
+is blue, a heuristic provider is orange, a provider of either kind is white, a record is green, and
+a dashed outline marks what the caller sees as one provider.
 
 <a id="fig-dss-patterns"></a>
 
@@ -980,7 +985,7 @@ orange, a record is green, and a dashed outline marks what the caller sees as on
 
 <p align="center">
   <img src="assets/dss-patterns-overview.svg" width="780"
-       alt="Four small diagrams. Single solve: one provider. Staged solve: two providers in a row, the answer of the first becoming part of the input of the second, each solving a different problem. Seeded solve: a heuristic provider whose load starts the search of an exact provider on the same problem. Selected solve: a choice that sends the instance to one of two providers">
+       alt="Four small diagrams. Single solve: one provider. Staged solve: two providers in a row, the answer of the first becoming part of the input of the second, each solving a different problem. Iterated solve: a provider whose answer goes to an evaluator, which sends feedback back to the provider, in a loop. Selected solve: a choice that sends the instance to one of two providers">
 </p>
 
 ### Single solve
@@ -1009,9 +1014,14 @@ wait.
   change, and a design that put the algorithm behind `SolutionProvider` can change it without
   touching its callers.
 
-**Commonly seen in** blending and product-mix models, small assignment problems, and vehicle routing
-solved by one metaheuristic. A small MIP solved directly and a lone metaheuristic are the same
-pattern with a different kind of provider.
+**Examples.** Brahimi, Khalaf, Larbi and Al-Hammadi (chapter 17 of _Optimization Essentials_, listed
+under Further reading) schedule the casting of aluminum billets for a producer: one MIP, handed to a
+commercial solver, answers within a few seconds. Yadav and Chakroborty (chapter 25) decide which
+streets of a city become one-way. The travel time of a street plan comes out of a traffic procedure
+and its connectivity out of a graph algorithm, and neither can be written as the constraints of a
+model, so one genetic algorithm, a metaheuristic, searches the plans and calls both procedures on
+every plan it tries. The two examples are the same pattern with a different kind of provider. In the
+second, the procedures work inside one search, and its caller still sees one `solve`.
 
 ### Staged solve
 
@@ -1020,11 +1030,7 @@ can be taken one after another.
 
 **Structure.** A list of providers that run in sequence: two at the least, and as many as the
 decision has steps, written here as N stages. The answer of one stage becomes part of the input of
-the next, so the stages solve different problems. As an illustration, suppose the cargo system also
-had to place each pallet in the hold so that the aircraft stays balanced. That is not part of the
-cargo system in this book. A staged solve would first choose the pallets, with the model of the
-appendix, and then assign the chosen pallets to positions with a second model. Further stages
-can follow in the same way.
+the next, so the stages solve different problems.
 
 <a id="fig-staged-solve"></a>
 
@@ -1032,61 +1038,90 @@ can follow in the same way.
 
 <p align="center">
   <img src="assets/dss-patterns-staged-solve.svg" width="780"
-       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, stage 1, an exact provider, chooses the pallets. Its answer, the pallets chosen, becomes the input of stage 2, an exact provider that assigns hold positions. An ellipsis then leads to stage N, a later decision, to show that any number of stages can follow. Stages 2 and N are marked as illustrations outside the cargo system of this book. A Result leaves the outline. A note says two or more stages in sequence, each solving a different problem"
+       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, stage 1 takes a first decision. Its answer becomes part of the input of stage 2, which takes the next decision. An ellipsis then leads to stage N, a later decision, to show that any number of stages can follow. A Result leaves the outline. A note says two or more stages in sequence, each solving a different problem">
 </p>
 
 **Consequences.**
 
 - Each stage is small enough to solve, and can be built and tested on its own, with its own
   contract.
-- Two optimal stages do not make an optimal whole. The first stage decides without knowing what its
-  choice costs the second. The honest status for the whole is `feasible`, unless the team can show
-  that the stages add up to an optimum.
-- A later stage can fail on an instance that has an answer: the first stage may pick pallets that
-  cannot be balanced when another choice could. The status is then `not_found`, not `infeasible`.
-  Sending the failure back to the first stage to choose again is possible, and it is a larger
-  design.
+- The whole is not guaranteed to be optimal, even when every stage is. An earlier stage decides
+  without knowing what its choice costs the later ones. The honest status for the whole is
+  `feasible`, unless the team can show that the stages add up to an optimum.
+- A later stage can fail on an instance that has an answer: an earlier stage may fix a choice that
+  the later one cannot complete, when another choice could have been completed. The status is then
+  `not_found`, not `infeasible`. Sending the failure back to the first stage to choose again is
+  possible, and it is a larger design.
 - The stages are coupled through the record that passes between them. That record is an interface
   and deserves a contract of its own.
 
-**Commonly seen in** airline planning, where fleet assignment, aircraft routing and crew pairing are
-solved in that order; in production planning, where lot sizes are set before the schedule; and in
-models with ranked objectives solved one objective at a time. **Also called** decomposition, or
-hierarchical or multi-stage planning.
+**Examples.** Baytur, Özceylan, Koç and Erdoğan (chapter 22 of _Optimization Essentials_) plan the
+deliveries of a distributor with 3 depots and 502 customers. A first model assigns every customer to
+a depot, and a second step builds the routes of each depot from its own customers alone. Nothing
+guarantees that these are the best routes for the distributor as a whole, because the customers were
+assigned before any route existed. Bhatnagar and Bolia (chapter 18) decide which small schools of a
+district to merge. A first model finds the smallest number of schools that can stay in operation,
+and a second, keeping to that number, disturbs as few students as possible. Here the stages do add
+up: the two objectives are ranked, so the best answer of the second stage is the best answer to the
+ranked problem. **Also called** hierarchical or multi-stage planning.
 
-### Seeded solve
+### Iterated solve
 
-**Problem.** An exact method is too slow to find a first good load, and a heuristic finds one
-quickly but cannot prove anything about it.
+**Problem.** A model of the whole decision is too large to solve, or cannot be written at all, while
+a given answer is easy to check.
 
-**Structure.** Two providers on the same instance. The heuristic runs first, and its load starts the
-search of the exact provider.
+**Structure.** A provider and an [evaluator](../appendix/glossary.md#evaluator) in a loop. The
+provider answers a problem that leaves something out. The evaluator, a second building block,
+receives that answer and returns two things: whether the answer is acceptable as a complete, final
+answer to the original instance, and feedback for the next round. The feedback is whatever the
+provider should take into account next time, such as a constraint that rules the answer out, or a
+corrected value. An answer can be acceptable and still draw feedback. An evaluator can be a second
+optimization model, a simulation or a check of rules. The loop keeps the best acceptable answer it
+has seen, measured by the objective of the original instance, and stops when the evaluator has no
+more feedback, when a proof closes the search, or at a limit on the number of rounds. The original
+instance never changes: what passes between the rounds stays behind the one `solve` the caller sees.
+In **Figure: iterated solve** the evaluator is yellow.
 
-<a id="fig-seeded-solve"></a>
+<a id="fig-iterated-solve"></a>
 
-**Figure: seeded solve**
+**Figure: iterated solve**
 
 <p align="center">
-  <img src="assets/dss-patterns-seeded-solve.svg" width="780"
-       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, the
-Instance goes to GreedyHeuristicProvider, a heuristic provider, and also to MipProviderGurobi, an
-exact provider. The heuristic's load is passed to the exact provider as a starting load. A Result
-leaves the outline. A note says that both providers solve the same problem">
+  <img src="assets/dss-patterns-iterated-solve.svg" width="780"
+       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, a provider of either kind sends its answer to an evaluator, which may be a model, a simulation or a check of rules. The evaluator sends feedback back to the provider, closing a loop, and a Result leaves the outline. A note says that the loop keeps the best acceptable answer and stops on a proof, on no more feedback, or at a round limit">
 </p>
 
 **Consequences.**
 
-- The result is never worse than the seed, and if time runs out there is still a load to return, so
-  `not_found` becomes rare.
-- Unlike a lone heuristic, the arrangement can still prove the best load, so all four statuses
-  remain possible.
-- The seed must be feasible for the exact provider's model. If the two disagree on one constraint,
-  the solver discards the seed without complaint and the benefit is lost silently, which makes the
-  agreement worth a test.
-- There are two algorithms to maintain for one problem, and a change to the rules reaches both.
+- The status depends on what the loop can prove. `optimal` and `infeasible` are facts about the
+  original instance, so the loop may return them only when it holds a proof about that instance.
+  Without one, it returns `feasible` if it holds an acceptable answer and `not_found` if it holds
+  none.
+- A simulation that accepts an answer proves nothing about the best one. A loop whose evaluator only
+  judges returns `feasible` or `not_found`, unless it holds a proof of its own.
+- The stopping rule is a design choice with a price. Nothing guarantees that the rounds settle, so
+  the loop needs a limit, and its running time is that of one solve multiplied by the number of
+  rounds.
+- The provider and the evaluator must agree on the data they share, which makes that agreement worth
+  a test. An evaluator that draws random numbers also needs a fixed
+  [random seed](../appendix/glossary.md#random-seed), or the same instance returns different answers
+  on different runs.
+- The pattern names a loop the team writes and maintains itself. When a solver runs such a loop
+  inside one call, the team has a single solve.
 
-**Commonly seen in** scheduling and routing models where a construction heuristic starts a MIP.
-**Also called** a warm start, and one member of the family known as metaheuristics.
+**Examples.** Dalal and Hamid (chapter 8 of _Optimization Essentials_) design a network that carries
+food donations from schools to slums for a nonprofit organization. A first model decides which
+warehouses to open and which school supplies which slum. A second model works out the donations that
+can then flow in each scenario of supply and demand, which completes the answer, and returns a
+constraint that tells the first model what its choice costs. The loop stops when the gap between the
+best plan found and a bound on the best possible one is small enough, or after a set number of
+rounds. Stopped at a gap of zero it holds a proof; stopped earlier, its answer is `feasible`. In a
+railway, a timetable is planned with the nominal running time of every train and then run through a
+simulation of days with random delays. A valid timetable is accepted when, over a fixed set of
+simulated days, the share of trains arriving on time reaches a stated target. Otherwise buffer time
+is added where the delays spread, and the timetable is planned again. Benders decomposition, the
+method of the first example, column generation and cutting planes are algorithms that can be
+arranged this way.
 
 ### Selected solve
 
@@ -1112,36 +1147,80 @@ of [6. Design patterns](#ch-patterns) applied to the optimization step.
   on one solver version or one machine is wrong on the next.
 - Every provider must keep the same contract. Selection is only safe because of Liskov substitution.
 
-**Commonly seen in** systems that serve both a quick re-plan during operations and a long overnight
-plan, and in systems whose instances range from a handful of items to thousands. **Also called**
-algorithm selection, or an algorithm portfolio.
+**Examples.** The cargo system of [6. Design patterns](#ch-patterns) chooses by the time available:
+`Optimization` sends an instance to `MipProviderGurobi` when it can finish in time, and to
+`GreedyHeuristicProvider` otherwise. A knapsack like the cargo model whose instances vary widely in
+size can choose among three providers: a search over all loads for an instance with a handful of
+products, a MIP for a medium one, and a heuristic for a large one. **Also called** algorithm
+selection, or an algorithm portfolio.
 
 ### The four patterns side by side
 
-| Pattern        | Structure                                        | Statuses it can honestly return                          | Main cost                                       |
-| -------------- | ------------------------------------------------ | -------------------------------------------------------- | ----------------------------------------------- |
-| Single solve   | One provider                                     | All four if exact; never `optimal` if heuristic          | Rests on one algorithm keeping up               |
-| Staged solve   | Providers in a row, each on a different problem  | Usually `feasible`; `not_found` when a later stage fails | The whole is not optimal; stages share a record |
-| Seeded solve   | A heuristic starts an exact search, same problem | All four                                                 | Two algorithms that must agree on one model     |
-| Selected solve | One provider chosen per instance                 | Whatever the chosen provider established                 | A choosing rule to tune; guarantees vary by run |
+| Pattern        | Structure                                       | Statuses it can honestly return                                           | Main cost                                                  |
+| -------------- | ----------------------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Single solve   | One provider                                    | All four if exact; never `optimal` if heuristic                           | Rests on one algorithm keeping up                          |
+| Staged solve   | Providers in a row, each on a different problem | Usually `feasible`; `not_found` when a later stage fails                  | The whole is not guaranteed optimal; stages share a record |
+| Iterated solve | A provider and an evaluator in a loop           | All four when the loop holds a proof; otherwise `feasible` or `not_found` | A stopping rule to set; running time multiplies            |
+| Selected solve | One provider chosen per instance                | Whatever the chosen provider established                                  | A choosing rule to tune; guarantees vary by run            |
 
-Because each pattern looks like one provider from outside, they nest. A selected solve can send its
-large instances to a seeded solve, and a staged solve can use a selected solve as its first stage.
-The names make such a design sayable in one sentence: the cargo system of the next chapter is a
-selected solve between a single exact solve and a single heuristic solve.
+Because each pattern looks like one provider from outside, they nest. A staged solve can use a
+selected solve as its first stage, and an iterated solve can use a staged solve as its provider. The
+names make such a design sayable in one sentence.
 
-### Where the formulation lives
+### Check yourself
 
-A second choice is independent of the first. Every exact provider holds a formulation, and that
-formulation has to be written in something. There are three placements, drawn in **Figure:
-formulation placement** against the rings of [7. From design to architecture](#ch-architecture).
+1. A system solves one MIP to decide which aircraft type flies each route, then a second MIP to
+   assign crews to the result. Each MIP is solved to proven optimality. Which pattern is it, and
+   which status should the whole return?
+2. A team plans a week of deliveries with a MIP, runs the plan through a simulation of traffic,
+   lengthens the travel times the simulation found too short, and solves again. Every round, the MIP
+   is solved to proven optimality, and after five rounds the simulation accepts the plan. Which
+   pattern is it, and which status should it return?
+
+<details>
+<summary>Answers</summary>
+
+1. A staged solve. The whole should return `feasible`: the first model chose aircraft without
+   knowing what its choice costs in crews, so two optimal stages do not prove the best combined
+   plan.
+2. An iterated solve, with the simulation as its evaluator. It should return `feasible`: each round
+   proved the best plan for travel times that were then corrected, and a simulation that accepts a
+   plan says nothing about whether a better one exists.
+
+</details>
+
+### Further reading
+
+- John R. Rice, "The Algorithm Selection Problem", _Advances in Computers_ 15, 1976: the paper that
+  framed choosing an algorithm from the features of an instance as a problem of its own.
+- Cynthia Barnhart, Peter Belobaba and Amedeo R. Odoni, "Applications of Operations Research in the
+  Air Transport Industry", _Transportation Science_ 37 (4), 2003: a survey of an industry that plans
+  in stages, and of what solving the stages separately costs.
+- Faiz Hamid (ed.), _Optimization Essentials: Theory, Tools, and Applications_, Springer, 2024: the
+  source of most examples in this chapter, each told there in full, with its model, its algorithm
+  and its results.
+
+---
+
+<a id="ch-formulation-placement"></a>
+
+## 9. Where the formulation lives
+
+The dependency rule of [7. From design to architecture](#ch-architecture) lets source code mention
+only its own ring or a ring further in. [4. Principles](#ch-principles) left one module with two
+reasons to change, because it holds both the formulation and the calls to the solver library. The
+two meet in an exact provider: its formulation has to be written with some library, and that library
+sits in a ring. The patterns of [8. DSS patterns](#ch-dss-patterns) leave the rings as they are.
+This choice does not, since it decides which ring holds a
+[solution provider](../appendix/glossary.md#solution-provider) and which ring mentions the solver.
+There are three placements, drawn in **Figure: formulation placement**.
 
 <a id="fig-formulation-placement"></a>
 
 **Figure: formulation placement**
 
 <p align="center">
-  <img src="assets/dss-patterns-formulation-placement.svg" width="800"
+  <img src="assets/formulation-placement-rings.svg" width="800"
        alt="Three panels, each with a use-case ring above and an outer ring below. Left, in the provider inside the use case: MipProviderGurobi, holding the formulation and the solver calls, sits in the use-case ring and mentions the Gurobi library in the outer ring, an arrow marked as an exception to the dependency rule. Middle, in the provider outside the use case: the use-case ring holds only the SolutionProvider interface, and MipProviderGurobi sits in the outer ring with the Gurobi library. Right, in a modelling layer: a provider in the use-case ring writes the formulation in the modelling layer, which sits in the outer ring and translates it for the Gurobi library or another solver library">
 </p>
 
@@ -1165,60 +1244,40 @@ one with another, and the new one sits between the team and every solver feature
 The placement interacts with the pattern, and a layer that suits one pattern can work against
 another:
 
-| Pattern                 | In the provider, inside or outside the use case                                 | In a modelling layer                                                                                                                 |
-| ----------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Single solve, exact     | Simplest when one solver is settled                                             | Fits well: one model, built once, and solver independence is the whole gain                                                          |
-| Single solve, heuristic | No formulation to place                                                         | No formulation to place                                                                                                              |
-| Staged solve            | Each stage keeps its model and can change it and solve it again                 | Fits badly: each stage is translated again, and handing a model or its answer to the next stage is limited to what the layer exposes |
-| Seeded solve            | The seed is handed to the solver through the solver's own starting-load feature | Works only if the layer exposes starting loads for the chosen solver                                                                 |
-| Selected solve          | Each exact provider decides for itself                                          | Helps only the exact providers; the heuristic ones never use it                                                                      |
+| Pattern                 | In the provider, inside or outside the use case                                                             | In a modelling layer                                                                                                                 |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Single solve, exact     | Simplest when one solver is settled                                                                         | Fits well: one model, built once, and solver independence is the whole gain                                                          |
+| Single solve, heuristic | No formulation to place                                                                                     | No formulation to place                                                                                                              |
+| Staged solve            | Each stage keeps its model and can change it and solve it again                                             | Fits badly: each stage is translated again, and handing a model or its answer to the next stage is limited to what the layer exposes |
+| Iterated solve          | The provider changes its model between rounds and solves it again, with every feature of the solver at hand | Works when the layer lets a model be changed and solved again; otherwise each round builds the model anew                            |
+| Selected solve          | Each exact provider decides for itself                                                                      | Helps only the exact providers; the heuristic ones never use it                                                                      |
 
 ### Check yourself
 
-1. A system solves one MIP to decide which aircraft type flies each route, then a second MIP to
-   assign crews to the result. Each MIP is solved to proven optimality. Which pattern is it, and
-   which status should the whole return?
-2. A team says "our heuristic gives the solver a head start". Which pattern is that, and can it
-   return `optimal`?
-3. A team adopts a modelling layer so that it no longer depends on an outside library. What is wrong
+1. A team adopts a modelling layer so that it no longer depends on an outside library. What is wrong
    with that reasoning?
 
 <details>
 <summary>Answers</summary>
 
-1. A staged solve. The whole should return `feasible`: the first model chose aircraft without
-   knowing what its choice costs in crews, so two optimal stages do not prove the best combined
-   plan.
-2. A seeded solve. Yes: the exact provider can still prove that its final load is the best one,
-   starting from the seed.
-3. The layer is itself an outside library. The system depends on it instead of on the solver, which
+1. The layer is itself an outside library. The system depends on it instead of on the solver, which
    is a real gain only if changing or mixing solvers is worth more than the layer costs.
 
 </details>
-
-### Further reading
-
-- John R. Rice, "The Algorithm Selection Problem", _Advances in Computers_ 15, 1976: the paper that
-  framed choosing an algorithm from the features of an instance as a problem of its own.
-- Vittorio Maniezzo, Marco Antonio Boschetti and Thomas Stützle, _Matheuristics: Algorithms and
-  Implementations_, Springer, 2021: combinations of heuristics and exact methods, of which the
-  seeded solve is the simplest.
-- Cynthia Barnhart, Peter Belobaba and Amedeo R. Odoni, "Applications of Operations Research in the
-  Air Transport Industry", _Transportation Science_ 37 (4), 2003: a survey of an industry that plans
-  in stages, and of what solving the stages separately costs.
 
 ---
 
 <a id="ch-cargo-architecture"></a>
 
-## 9. A clean architecture for the cargo loading system
+## 10. A clean architecture for the cargo loading system
 
 The problem, from [the appendix](../appendix/cargo_model_example.md): a load planner receives a
 booking list for one departure, and the system proposes how many pallets of each product to load,
 maximizing revenue within the aircraft's weight and hold capacities and loading at least what must
-fly. This chapter makes the two choices of [8. DSS patterns](#ch-dss-patterns) for that system,
-places every line of [Pseudocode: tangled script](#pseudo-tangled-script) in the four rings of
-**Figure: clean architecture**, and lists what each module promises.
+fly. This chapter chooses a pattern from [8. DSS patterns](#ch-dss-patterns) and a placement from
+[9. Where the formulation lives](#ch-formulation-placement) for that system, places every line of
+[Pseudocode: tangled script](#pseudo-tangled-script) in the four rings of **Figure: clean
+architecture**, and lists what each module promises.
 
 ### The two choices
 
@@ -1341,7 +1400,8 @@ composition root that builds everything.
 
 `MipProviderGurobi` mentions the Gurobi library, and the dependency rule says the use-case ring
 should not mention outer tools. The cargo design keeps it there anyway. The reason is cost, weighed
-over the three placements of [8. DSS patterns](#ch-dss-patterns).
+over the three placements of
+[9. Where the formulation lives](#ch-formulation-placement).
 
 - **A modelling layer** would turn the solver into a setting. The cargo system has one small model,
   one solver, and no plan to change it. The layer would be one more thing to learn and upgrade for a
@@ -1442,7 +1502,7 @@ The requests from [2. What design is for](#ch-design-purpose) now land as follow
 
 <a id="ch-conclusion"></a>
 
-## 10. Conclusion
+## 11. Conclusion
 
 Design exists to keep change cheap, through modularity and testability, and a decision-support
 system rests on several decisions, each of which can change on its own.
@@ -1465,10 +1525,12 @@ system rests on several decisions, each of which can change on its own.
   ([7. From design to architecture](#ch-architecture)). In clean architecture, dependencies point
   inward, toward what the system is for, even when the calls go outward.
 - **The optimization step has patterns of its own** ([8. DSS patterns](#ch-dss-patterns)). Single,
-  staged, seeded and selected solve each say which statuses they can honestly return, and where the
-  formulation lives is a separate choice with its own price.
+  staged, iterated and selected solve each say which statuses they can honestly return.
+- **The formulation needs a place** ([9. Where the formulation lives](#ch-formulation-placement)).
+  In the provider or in a modelling layer, with the use cases or outside them: each placement has
+  its own price.
 - **The cargo system makes its choices in the open**
-  ([9. A clean architecture for the cargo loading system](#ch-cargo-architecture)). A selected
+  ([10. A clean architecture for the cargo loading system](#ch-cargo-architecture)). A selected
   solve, a formulation kept with its solver for a stated reason, two vocabularies, and a promise at
   every boundary.
 

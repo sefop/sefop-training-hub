@@ -165,7 +165,8 @@ exactly one place in the code, so that changing it means one edit. Abbreviated D
 A named, recurring way to arrange the algorithms of the optimization step of a
 [decision-support system](#decision-support-system), by analogy with a
 [design pattern](#design-pattern). This book names four: [single solve](#single-solve),
-[staged solve](#staged-solve), [seeded solve](#seeded-solve) and [selected solve](#selected-solve).
+[staged solve](#staged-solve), [iterated solve](#iterated-solve) and
+[selected solve](#selected-solve).
 
 ## Duality
 
@@ -182,6 +183,13 @@ way its users would. The slowest and costliest kind of test, so a suite holds on
 
 Splitting the space of possible inputs into classes that are expected to behave the same way, then
 testing one input per class instead of many redundant ones.
+
+## Evaluator
+
+The module of an [iterated solve](#iterated-solve) that receives the answer of a
+[solution provider](#solution-provider) and returns two things: whether that answer is acceptable
+as a complete, final answer to the original instance, and feedback for the next round. It can be a
+second optimization model, a simulation or a check of rules.
 
 ## Flaky test
 
@@ -252,6 +260,13 @@ interface keeps working when the implementation behind it changes.
 The rule that no module of a system should depend on functions it does not use. A module that writes
 the plan needs the load, so it should not depend on an interface that also exposes the solver's log.
 The I in [SOLID](#solid).
+
+## Iterated solve
+
+A [DSS pattern](#dss-pattern) in which a [solution provider](#solution-provider) and an
+[evaluator](#evaluator) run in a loop: the provider answers, the evaluator judges the answer and
+sends feedback, and the provider answers again. It returns `optimal` or `infeasible` only when the
+loop holds a proof about the original instance.
 
 ## Iterative development
 
@@ -415,11 +430,6 @@ cheaper. The [test suite](#test-suite) is what tells you the behavior did not mo
 A behavior that used to work and no longer does, usually introduced by a later change. Catching
 regressions early is the main job of an automated test suite.
 
-## Seeded solve
-
-A [DSS pattern](#dss-pattern) in which a [heuristic](#heuristic) finds a first solution and an exact
-method starts its search from it, both on the same problem. Also called a warm start.
-
 ## Selected solve
 
 A [DSS pattern](#dss-pattern) in which one of several [solution providers](#solution-provider) is
@@ -481,7 +491,8 @@ A [test oracle](#test-oracle) in which the expected answer is stated in advance.
 
 A [DSS pattern](#dss-pattern) in which several [solution providers](#solution-provider) run in a
 row, the answer of one becoming part of the input of the next, so that each solves a different
-problem. Two optimal stages do not make an optimal whole. Also called decomposition.
+problem. The whole is not guaranteed to be optimal, even when every stage is. Also called
+hierarchical planning.
 
 ## Static analysis
 
