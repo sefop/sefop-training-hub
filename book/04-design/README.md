@@ -391,20 +391,21 @@ The detail now depends on the policy, not the other way around.
 ### The rest of SOLID
 
 Single responsibility and dependency inversion are two of five principles known together as
-[SOLID](../appendix/glossary.md#solid), an acronym of their initials. Two more follow from the same
-forces:
+[SOLID](../appendix/glossary.md#solid), an acronym of their initials. Three more follow from the
+same forces:
 
-- **Open-closed.** A part should be open for extension and closed for modification: new behaviour is
-  added by adding code, not by editing code that works. Adding a heuristic means writing one new
-  class that implements `SolutionProvider`; `MipProviderGurobi` is not touched. The new class still
-  has to be shown to work, and the code that chooses between providers still changes.
-- **Interface segregation.** No part should depend on functions it does not use. Writing the plan
-  needs the load; it should not depend on an interface that also exposes the solver's gap, node
-  count and log. Keep those in a separate record for the parts that want them.
-
-The fifth, [Liskov substitution](../appendix/glossary.md#liskov-substitution-principle), says that
-every implementation of an interface must behave as the interface promises. It cannot be stated
-before the idea of a promise, so it waits for [5. Contracts](#ch-contracts).
+- **[Open-closed](../appendix/glossary.md#open-closed-principle).** A part should be open for
+  extension and closed for modification: new behavior is added by adding code, not by editing code
+  that works. Adding a heuristic means writing one new class that implements `SolutionProvider`;
+  `MipProviderGurobi` is not touched. The new class still has to be shown to work, and the code
+  that chooses between providers still changes.
+- **[Interface segregation](../appendix/glossary.md#interface-segregation-principle).** No part
+  should depend on functions it does not use. Writing the plan needs the load; it should not depend
+  on an interface that also exposes the solver's gap, node count and log. Keep those in a separate
+  record for the parts that want them.
+- **[Liskov substitution](../appendix/glossary.md#liskov-substitution-principle).** Every
+  implementation of an interface must behave as the interface promises. It cannot be stated before
+  the idea of a promise, so it waits for [5. Contracts](#ch-contracts).
 
 ### When splitting stops helping
 

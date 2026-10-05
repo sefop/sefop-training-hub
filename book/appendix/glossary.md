@@ -247,6 +247,12 @@ out: for each operation, its name, inputs and output, and the promises that go w
 called [contract](#contract), signature or [abstraction](#abstraction). Code that depends only on an
 interface keeps working when the implementation behind it changes.
 
+## Interface segregation principle
+
+The rule that no part of a system should depend on functions it does not use. A part that writes the
+plan needs the load, so it should not depend on an interface that also exposes the solver's log. The
+I in [SOLID](#solid).
+
 ## Iterative development
 
 Building the whole system in a rough form first and improving it on every pass, instead of trying to
@@ -346,6 +352,13 @@ correctly: security, speed, usability, availability, scalability. Contrast with
 Organizing a program around objects that hold data together with the operations allowed on it,
 instead of around procedures that pass data between them. Abbreviated OOP.
 
+## Open-closed principle
+
+The rule that a part of a system should be open for extension and closed for modification: new
+behavior is added by adding code, not by editing code that works. A new heuristic arrives as a new
+class behind the solution-provider interface, and the existing solver class is not touched. The O in
+[SOLID](#solid).
+
 ## Oracle problem
 
 The difficulty of building a [test oracle](#test-oracle) when the correct output is expensive, or
@@ -440,8 +453,11 @@ design, building, testing, deployment, operation and evolution. Abbreviated SDLC
 
 ## SOLID
 
-Five design principles collected by Robert C. Martin: single responsibility, open-closed, Liskov
-substitution, interface segregation and dependency inversion. Each one raises [cohesion](#cohesion),
+Five design principles collected by Robert C. Martin:
+[single responsibility](#single-responsibility-principle), [open-closed](#open-closed-principle),
+[Liskov substitution](#liskov-substitution-principle),
+[interface segregation](#interface-segregation-principle) and
+[dependency inversion](#dependency-inversion-principle). Each one raises [cohesion](#cohesion),
 lowers [coupling](#coupling), or both.
 
 ## Solution provider
