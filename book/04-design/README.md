@@ -9,8 +9,9 @@ business rules apply, how the problem is formulated, which algorithm solves it a
 delivered. Each of them can change while the others stay as they are. **The difference this section
 addresses:** in the script a model usually starts as, those decisions are tangled together, so a
 change to one of them risks breaking the others, and none of them can be checked on its own. Design
-is the practice of drawing boundaries between them and stating what each part promises across its
-boundary, so that each change stays where it belongs and each part can be tested alone.
+is the practice of drawing boundaries between them, which divides the code into
+[modules](../appendix/glossary.md#module), and stating what each module promises across its
+boundary, so that each change stays where it belongs and each module can be tested alone.
 
 The section argues from the general to the particular. It starts with what design is for and the two
 forces every design balances, derives the principles that follow from those forces, and states what
@@ -22,13 +23,13 @@ architecture for one complete system that uses all of them.
 function that does the work of a whole system, and six requests to change it.
 [3. Forces: coupling and cohesion](#ch-forces) diagnoses what is wrong with it, and
 [4. Principles](#ch-principles) states the rules that follow from the diagnosis.
-[5. Contracts](#ch-contracts) says what a part promises once it has a boundary, and writes the
+[5. Contracts](#ch-contracts) says what a module promises once it has a boundary, and writes the
 promise of the optimization step. [6. Design patterns](#ch-patterns) shows the reusable solutions
 that apply the principles. [7. From design to architecture](#ch-architecture) lifts the same ideas
 to the scale of a whole system, and [8. DSS patterns](#ch-dss-patterns) does for the optimization
 step what design patterns do for classes: it names the arrangements that recur.
 [9. A clean architecture for the cargo loading system](#ch-cargo-architecture) shows where every
-line of the tangled script ends up and what each part promises to the tests of the next section.
+line of the tangled script ends up and what each module promises to the tests of the next section.
 Read them in order: each chapter uses only what the chapters before it defined. The system they
 design is defined in [The cargo model example](#the-cargo-model-example), next.
 
@@ -64,23 +65,24 @@ lists, and `record` is a plain group of named values. A comment that starts with
 
 ## 2. What design is for
 
-Software design is the set of decisions about how code is divided into parts and how those parts are
-connected. It is not about how the code looks, and it is not a phase that ends before programming
-starts. Every function a team writes is a design decision, whether anyone thinks of it that way or
-not.
+Software design is the set of decisions about how code is divided into modules and how those modules
+are connected. A [module](../appendix/glossary.md#module) is any piece of code with a boundary
+around it: a function, a class, or a group of them. Design is not about how the code looks, and it
+is not a phase that ends before programming starts. Every function a team writes is a design
+decision, whether anyone thinks of it that way or not.
 
 The purpose of those decisions is to keep future change cheap. A program that runs correctly today
 has done half its job; the other half is being changeable tomorrow, when the business asks for
 something new. Two properties make change cheap, and a good design has both:
 
-- **[Modularity](../appendix/glossary.md#modularity).** The system is built from parts with clear
-  boundaries, so a change stays inside one part.
-- **[Testability](../appendix/glossary.md#testability).** Each part can be checked on its own,
+- **[Modularity](../appendix/glossary.md#modularity).** The system is built from modules with clear
+  boundaries, so a change stays inside one module.
+- **[Testability](../appendix/glossary.md#testability).** Each module can be checked on its own,
   quickly, without running the others. A change is only cheap if the team can confirm, in minutes,
   that it broke nothing.
 
-The two support each other. A part with a clear boundary is easy to test in isolation, and a part
-that is hard to test is usually a sign that its boundary is in the wrong place.
+The two support each other. A module with a clear boundary is easy to test in isolation, and a
+module that is hard to test is usually a sign that its boundary is in the wrong place.
 
 ### The decisions behind a decision-support system
 
@@ -95,7 +97,7 @@ decision-support system rests on five of them, and any one can change while the 
 
 A design that serves a decision-support system keeps these decisions apart. A new data file should
 not touch the formulation, a new solver should not touch the way the plan is written, and when a
-change does have to cross several parts, the design should make it plain which ones.
+change does have to cross several modules, the design should make it plain which ones.
 
 ### A function that plans a flight's load
 
@@ -145,17 +147,17 @@ sixth has no answer at all. The script writes whatever the model holds when the 
 same format as a proven optimum, and if the solver found no load in time, the line that asks the
 model for values fails.
 
-The fifth request shows something that holds for every program. A test runs one part alone: it
-hands the part an input and compares what comes back with what was expected. Whether that is
+The fifth request shows something that holds for every program. A test runs one module alone: it
+hands the module an input and compares what comes back with what was expected. Whether that is
 possible is decided when the code is written, not when the test is. **Pseudocode: tangled script**
-has no part to run alone, takes nothing but files and gives back nothing but a file, so no amount
+has no module to run alone, takes nothing but files and gives back nothing but a file, so no amount
 of effort from the person testing can check the rule on its own. Design is therefore a prerequisite
 for testing: a team can only test what its design lets a test reach.
 
 The rest of this section is about why that happens and how to design it away. One caution before
 starting: a good design does not make every change small. The second request is a new constraint on
-the load itself, and no arrangement of the code can keep that inside one part. What a good design
-does is show exactly which parts such a change reaches, and
+the load itself, and no arrangement of the code can keep that inside one module. What a good design
+does is show exactly which modules such a change reaches, and
 [9. A clean architecture for the cargo loading system](#ch-cargo-architecture) returns to it.
 
 ---
@@ -167,17 +169,17 @@ does is show exactly which parts such a change reaches, and
 Two forces decide how hard a design is to change. They were named in the 1970s, before most of
 today's languages existed, and they still explain most of what goes wrong.
 
-[Coupling](../appendix/glossary.md#coupling) is how much one part of a system depends on another.
-Two parts are tightly coupled when a change to one forces a change to the other.
-[Cohesion](../appendix/glossary.md#cohesion) is how closely the elements inside one part belong
-together. A part is cohesive when everything in it serves one purpose, so that a single kind of
+[Coupling](../appendix/glossary.md#coupling) is how much one module of a system depends on another.
+Two modules are tightly coupled when a change to one forces a change to the other.
+[Cohesion](../appendix/glossary.md#cohesion) is how closely the elements inside one module belong
+together. A module is cohesive when everything in it serves one purpose, so that a single kind of
 change touches it and nothing else does.
 
-A good design has **high cohesion and low coupling**: each part does one job completely, and the
-parts know as little about each other as possible. Low coupling lets a change stay inside one part;
-high cohesion makes sure the change has only one part to go to. **Figure: tangled and grouped**
-shows the difference on the pieces of [Pseudocode: tangled script](#pseudo-tangled-script), each dot
-coloured by the job it does.
+A good design has **high cohesion and low coupling**: each module does one job completely, and the
+modules know as little about each other as possible. Low coupling lets a change stay inside one
+module; high cohesion makes sure the change has only one module to go to. **Figure: tangled and
+grouped** shows the difference on the pieces of
+[Pseudocode: tangled script](#pseudo-tangled-script), each dot coloured by the job it does.
 
 <a id="fig-tangled-and-grouped"></a>
 
@@ -188,9 +190,9 @@ coloured by the job it does.
        alt="Left: twelve pieces of the cargo function, coloured by purpose, joined by a web of crossing links. Right: the same pieces grouped into five boxes, input, rules, preprocess, optimize and output, with links mostly inside the boxes and a few arrows between them">
 </p>
 
-Low coupling does not mean no coupling. The part that writes the plan must depend on what a load is:
-which products, how many pallets, what revenue. It does not need to depend on which library computed
-the load. Lowering coupling means keeping the first dependence and removing the second.
+Low coupling does not mean no coupling. The module that writes the plan must depend on what a load
+is: which products, how many pallets, what revenue. It does not need to depend on which library
+computed the load. Lowering coupling means keeping the first dependence and removing the second.
 
 ### Diagnosing the tangled script
 
@@ -209,12 +211,12 @@ ripple** marks the lines of [Pseudocode: tangled script](#pseudo-tangled-script)
 
 <p align="center">
   <img src="assets/forces-change-ripple.svg" width="780"
-       alt="Left: the tangled script with two lines highlighted, the INFEASIBLE message near the top and the CSV write at the bottom. Right: five parts, input, rules, preprocess, optimize and output, with only output highlighted">
+       alt="Left: the tangled script with two lines highlighted, the INFEASIBLE message near the top and the CSV write at the bottom. Right: five modules, input, rules, preprocess, optimize and output, with only output highlighted">
 </p>
 
 The two lines are far apart, and nothing in the function says they belong together; a developer who
 changes one can easily miss the other. In a design with high cohesion and low coupling, the same
-change stays inside one part, the one that writes the plan. The next chapter states the principles
+change stays inside one module, the one that writes the plan. The next chapter states the principles
 that get there.
 
 ### Check yourself
@@ -254,10 +256,10 @@ summarizes which force each principle moves.
 
 ### Information hiding
 
-[Information hiding](../appendix/glossary.md#information-hiding) means that each part of a system
+[Information hiding](../appendix/glossary.md#information-hiding) means that each module of a system
 hides its [implementation details](../appendix/glossary.md#implementation-detail) behind an
 [interface](../appendix/glossary.md#interface): the set of public functions the rest of the system
-is allowed to use. Clients know _what_ a part does, never _how_. David Parnas stated the principle
+is allowed to use. Clients know _what_ a module does, never _how_. David Parnas stated the principle
 in 1972, and most of what follows builds on it.
 
 [Pseudocode: tangled script](#pseudo-tangled-script) leaks its how: the plan is assembled by asking
@@ -289,7 +291,7 @@ record does not answer yet; [5. Contracts](#ch-contracts) does.
 ### Single responsibility and don't repeat yourself
 
 The [single responsibility principle](../appendix/glossary.md#single-responsibility-principle) (SRP)
-says that a part should have only one reason to change. A responsibility is not "a thing the code
+says that a module should have only one reason to change. A responsibility is not "a thing the code
 does" but an axis of change: a source of requests that could force an edit. **Figure: reasons to
 change** shades each line of [Pseudocode: tangled script](#pseudo-tangled-script) by the reason it
 would change, and six responsibilities become visible in one function.
@@ -336,8 +338,8 @@ place that knows the output format. And the fifth change request from
 and a capacity and returns products, so it can be tested with a handful of values and no files or
 solver.
 
-One part still has two reasons to change: `optimize` holds both the formulation and the calls to the
-solver library. [8. DSS patterns](#ch-dss-patterns) lays out the ways to arrange that pair, and
+One module still has two reasons to change: `optimize` holds both the formulation and the calls to
+the solver library. [8. DSS patterns](#ch-dss-patterns) lays out the ways to arrange that pair, and
 [9. A clean architecture for the cargo loading system](#ch-cargo-architecture) explains why this
 system keeps them together.
 
@@ -394,26 +396,25 @@ Single responsibility and dependency inversion are two of five principles known 
 [SOLID](../appendix/glossary.md#solid), an acronym of their initials. Three more follow from the
 same forces:
 
-- **[Open-closed](../appendix/glossary.md#open-closed-principle).** A part should be open for
+- **[Open-closed](../appendix/glossary.md#open-closed-principle).** A module should be open for
   extension and closed for modification: new behavior is added by adding code, not by editing code
   that works. Adding a heuristic means writing one new class that implements `SolutionProvider`;
   `MipProviderGurobi` is not touched. The new class still has to be shown to work, and the code
   that chooses between providers still changes.
-- **[Interface segregation](../appendix/glossary.md#interface-segregation-principle).** No part
+- **[Interface segregation](../appendix/glossary.md#interface-segregation-principle).** No module
   should depend on functions it does not use. Writing the plan needs the load; it should not depend
   on an interface that also exposes the solver's gap, node count and log. Keep those in a separate
-  record for the parts that want them.
+  record for the modules that want them.
 - **[Liskov substitution](../appendix/glossary.md#liskov-substitution-principle).** Every
-  implementation of an interface must behave as the interface promises. It cannot be stated before
-  the idea of a promise, so it waits for [5. Contracts](#ch-contracts).
+  implementation of an interface must behave as the interface promises.
 
 ### When splitting stops helping
 
 Every boundary has a cost: another name to learn, a record to agree on, a connection to maintain.
-Split a part when it owns knowledge the rest should not need, when it offers something useful on its
-own, or when it isolates a likely source of change. A one-line helper can make code easier to read,
-but it does not deserve a public interface, and a design with an interface for every function is as
-hard to change as the tangled script, for the opposite reason. The split above stops at four
+Split a module when it owns knowledge the rest should not need, when it offers something useful on
+its own, or when it isolates a likely source of change. A one-line helper can make code easier to
+read, but it does not deserve a public interface, and a design with an interface for every function
+is as hard to change as the tangled script, for the opposite reason. The split above stops at four
 functions because the script has that many independent reasons to change outside the optimize step,
 not because four is a good number.
 
@@ -421,11 +422,11 @@ not because four is a good number.
 
 | Principle             | Coupling | Cohesion | Why                                                                                   |
 | --------------------- | :------: | :------: | ------------------------------------------------------------------------------------- |
-| Information hiding    |  lowers  |          | Clients depend on what a part does, not on how it does it                             |
-| Single responsibility |          |  raises  | Each part gathers the code for one reason to change                                   |
-| Don't repeat yourself |  lowers  |  raises  | One decision lives in one place, so fewer parts depend on it                          |
+| Information hiding    |  lowers  |          | Clients depend on what a module does, not on how it does it                           |
+| Single responsibility |          |  raises  | Each module gathers the code for one reason to change                                 |
+| Don't repeat yourself |  lowers  |  raises  | One decision lives in one place, so fewer modules depend on it                        |
 | Dependency inversion  |  lowers  |          | Policy depends on an interface, not on a particular algorithm or library              |
-| Open-closed           |  lowers  |          | New behaviour arrives as new code, so working parts need no edit                      |
+| Open-closed           |  lowers  |          | New behaviour arrives as new code, so working modules need no edit                    |
 | Interface segregation |  lowers  |  raises  | Clients see only the functions they use, and each interface serves one kind of client |
 | Liskov substitution   |  lowers  |          | Clients can rely on the interface alone, whatever stands behind it                    |
 
@@ -461,17 +462,17 @@ not because four is a good number.
 
 ## 5. Contracts
 
-Splitting two parts creates an obligation to say how they cooperate. The split of the last chapter
+Splitting two modules creates an obligation to say how they cooperate. The split of the last chapter
 left one question open: what does `optimize` give back when it has no load, or when it has one it
 could not prove to be the best? A caller that only knows the name of a function and the shape of its
 result cannot answer that, and the sixth change request from
 [2. What design is for](#ch-design-purpose) asks exactly that question. A boundary without a stated
 promise only moves the uncertainty from inside a function to the line between two.
 
-### Interface and contract
+### Several names for the same thing
 
-The [interface](../appendix/glossary.md#interface) of a part is everything it offers to the code
-that calls it. The same thing goes by other names, and this book uses them interchangeably:
+The [interface](../appendix/glossary.md#interface) of a module is everything it offers to
+the code that calls it. The same thing goes by other names, and this book uses them interchangeably:
 [contract](../appendix/glossary.md#contract), signature and
 [abstraction](../appendix/glossary.md#abstraction). For each function it states:
 
@@ -580,7 +581,7 @@ A contract is as useful for what it does not promise as for what it does.
   the algorithm can change which one comes back, and that is not a change of behaviour, because no
   promise was made about it.
 - **How long it takes.** The contract says what each status means, not how quickly it arrives. A
-  time limit is a setting of the part that searches, and it shows up in the contract only through
+  time limit is a setting of the module that searches, and it shows up in the contract only through
   the status it leads to.
 
 Whatever is left free can change without telling the callers. Whatever is promised cannot. One
@@ -601,7 +602,7 @@ honestly, because the contract has a status for a load that may not be the best 
 do is claim more than it knows. A heuristic that labels its load `optimal` breaks the contract, and
 so does one that returns an overweight load when it runs out of time, or one that answers
 `infeasible` whenever it finds nothing. Each of them takes an `Instance` and returns a `Result`, as
-the interface asks, and still breaks its promises. Every part that trusts a `Result` breaks with
+the interface asks, and still breaks its promises. Every module that trusts a `Result` breaks with
 it.
 
 ### From the contract to the tests
@@ -663,8 +664,8 @@ implement them below, `+` for public and `-` for private. From here on, every pr
 
 ### Dependency injection
 
-[Dependency injection](../appendix/glossary.md#dependency-injection) means that a part receives the
-parts it depends on from outside, instead of creating them itself. It is the pattern that puts
+[Dependency injection](../appendix/glossary.md#dependency-injection) means that a module receives
+the modules it depends on from outside, instead of creating them itself. It is the pattern that puts
 dependency inversion to work: once `Optimization` depends on `SolutionProvider`, something has to
 decide which providers it gets, and dependency injection says that decision is made outside
 `Optimization`.
@@ -681,9 +682,9 @@ class Optimization
         keep providers                           // receives its providers; never builds one
 ```
 
-If every part receives what it needs, some part of the program has to build the concrete pieces and
-pass them in. Where that happens is a detail; what matters is that it happens outside the parts that
-use them. This book calls that place the
+If every module receives what it needs, some part of the program has to build the concrete pieces
+and pass them in. Where that happens is a detail; what matters is that it happens outside the
+modules that use them. This book calls that place the
 [composition root](../appendix/glossary.md#composition-root).
 
 <a id="pseudo-composition-root"></a>
@@ -713,7 +714,7 @@ public start_program(settings)
 
 The payoff is twofold. Changing a solver's time limit, or swapping the comma-separated values (CSV)
 reader for a JSON (JavaScript Object Notation) one, is a one-line edit in
-[Pseudocode: composition root](#pseudo-composition-root); nothing else knows which concrete parts
+[Pseudocode: composition root](#pseudo-composition-root); nothing else knows which concrete modules
 were chosen. And a test can hand `Optimization` a stand-in provider that returns a fixed `Result`,
 so the code around the solver can be tested without a solver. The testing section calls such a
 stand-in a [test double](../appendix/glossary.md#test-double).
@@ -801,7 +802,7 @@ class JsonBookingReader implements BookingReader
 
 An adapter translates the form of the data and keeps its meaning. If one source reports weights in
 kilograms and the model works in tonnes, the conversion belongs in that source's adapter, in one
-named place, so that no other part ever sees a kilogram. The first change request from
+named place, so that no other module ever sees a kilogram. The first change request from
 [2. What design is for](#ch-design-purpose), bookings arriving as JSON, is now one new class and one
 line in [Pseudocode: composition root](#pseudo-composition-root).
 
@@ -825,11 +826,12 @@ Design happens at every level of a program: a function, a class, a package, a wh
 of programs across a company. The principles and patterns so far apply from a function up to a
 program. Near the top of that range, design gets a different name:
 [software architecture](../appendix/glossary.md#software-architecture) is the design of a whole
-system, meaning the few large decisions about its parts and their boundaries that are expensive to
+system, meaning the few large decisions about its modules and their boundaries that are expensive to
 reverse later.
 
-An architecture is the principles of the earlier chapters applied to the largest parts of a system.
-Many architectures exist; this chapter describes one that fits decision-support software well.
+An architecture is the principles of the earlier chapters applied to the largest modules of a
+system. Many architectures exist; this chapter describes one that fits decision-support software
+well.
 
 ### Clean architecture
 
@@ -867,8 +869,9 @@ essential can be tested without the incidental.
 ### Calls go outward, dependencies point inward
 
 The dependency rule seems to forbid something every program does: a use case has to read a file and
-call a solver, and both live further out. The rule is about what the source code of a part mentions,
-not about what happens while the program runs, and the two can point in opposite directions.
+call a solver, and both live further out. The rule is about what the source code of a module
+mentions, not about what happens while the program runs, and the two can point in opposite
+directions.
 
 <a id="fig-flow-and-dependency"></a>
 
@@ -876,7 +879,7 @@ not about what happens while the program runs, and the two can point in opposite
 
 <p align="center">
   <img src="assets/architecture-flow-vs-dependency.svg" width="780"
-       alt="Two panels with the same three parts. Left, at run time: Optimization calls MipProviderGurobi, which calls the Gurobi library, so the calls go outward. Right, in the source code: Optimization mentions only the SolutionProvider interface, which it owns; MipProviderGurobi implements that interface, an arrow that points inward, and is the only part that mentions the Gurobi library">
+       alt="Two panels with the same three modules. Left, at run time: Optimization calls MipProviderGurobi, which calls the Gurobi library, so the calls go outward. Right, in the source code: Optimization mentions only the SolutionProvider interface, which it owns; MipProviderGurobi implements that interface, an arrow that points inward, and is the only module that mentions the Gurobi library">
 </p>
 
 At run time, `Optimization` calls a provider and the provider calls a library: the calls go outward.
@@ -1167,7 +1170,7 @@ booking list for one departure, and the system proposes how many pallets of each
 maximizing revenue within the aircraft's weight and hold capacities and loading at least what must
 fly. This chapter makes the two choices of [8. DSS patterns](#ch-dss-patterns) for that system,
 places every line of [Pseudocode: tangled script](#pseudo-tangled-script) in the four rings of
-**Figure: clean architecture**, and lists what each part promises.
+**Figure: clean architecture**, and lists what each module promises.
 
 ### The two choices
 
@@ -1303,8 +1306,8 @@ over the three placements of [8. DSS patterns](#ch-dss-patterns).
   through `SolutionProvider`.
 
 The choice has a price, and it should be stated with it. The use-case ring cannot be built or run
-without the Gurobi library, except for the parts tested with a stand-in provider. And replacing the
-solver means writing a new provider, formulation included, and changing one line in
+without the Gurobi library, except for the modules tested with a stand-in provider. And replacing
+the solver means writing a new provider, formulation included, and changing one line in
 [Pseudocode: composition root](#pseudo-composition-root). That is contained work. It is not a
 one-line change.
 
@@ -1318,7 +1321,7 @@ here, lets the next team tell whether it still holds.
 Every arrow that crosses a boundary in **Figure: cargo architecture** carries a promise, and the
 tests of the next section check them one by one.
 
-| Part               | Receives                         | Promises                                                                                                                      | Checked in the testing section by                                                                                                                                                                                |
+| Module             | Receives                         | Promises                                                                                                                      | Checked in the testing section by                                                                                                                                                                                |
 | ------------------ | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `BookingReader`    | A source                         | The business records the source describes, or an error for a source it cannot read                                            | [7. Integration testing](../05-testing/README.md#ch-integration), on real files                                                                                                                                     |
 | Preprocess         | `BookingList`, `Aircraft`        | A well-formed `Instance` without the products that can never fit, or an error for records that make no sense                  | [3. Unit testing](../05-testing/README.md#ch-unit-testing), with a handful of values and no solver                                                                                                                  |
@@ -1329,9 +1332,9 @@ tests of the next section check them one by one.
 | `CsvPlanWriter`    | `LoadPlan` or `NoPlan`           | A complete plan file that says what the record says                                                                           | [7. Integration testing](../05-testing/README.md#ch-integration), on real files                                                                                                                                     |
 | The whole system   | A booking file, an aircraft file | A plan file the planner can act on                                                                                            | [11. Testing a decision-support system](../05-testing/README.md#ch-dss-testing)                                                                                                                                      |
 
-Only one row is hard to test, and the design has made it small: `Optimization` is the one part whose
-expected answer is the very thing it exists to compute. Every other row has an answer that can be
-written down before the code runs.
+Only one row is hard to test, and the design has made it small: `Optimization` is the one module
+whose expected answer is the very thing it exists to compute. Every other row has an answer that can
+be written down before the code runs.
 
 ### Where the tangled script went
 
@@ -1351,9 +1354,9 @@ written down before the code runs.
 The requests from [2. What design is for](#ch-design-purpose) now land as follows.
 
 1. **Bookings as JSON.** One new adapter, `JsonBookingReader`, and one line in the composition root.
-2. **Dangerous goods limited to a quarter of the hold.** This one does not stay in one part, and no
-   design could make it. It is a new constraint on the load, so it changes what "feasible" means: a
-   `Booking` and a `Product` gain a field, the readers fill it, the contract's definition of a
+2. **Dangerous goods limited to a quarter of the hold.** This one does not stay in one module, and
+   no design could make it. It is a new constraint on the load, so it changes what "feasible" means:
+   a `Booking` and a `Product` gain a field, the readers fill it, the contract's definition of a
    feasible load gains a rule, and each provider must respect it, the formulation in
    `MipProviderGurobi` and the greedy rule alike. What the design gives is the list. Postprocess,
    the writer, `PlanFlightLoad` and the composition root are untouched, and the tests of the
@@ -1397,13 +1400,14 @@ Design exists to keep change cheap, through modularity and testability, and a de
 system rests on several decisions, each of which can change on its own.
 
 - **Design is for change** ([2. What design is for](#ch-design-purpose)). A good design keeps each
-  change inside as few parts as possible, shows which ones, and lets each part be tested on its own.
+  change inside as few modules as possible, shows which ones, and lets each module be tested on its
+  own.
 - **Two forces decide it** ([3. Forces: coupling and cohesion](#ch-forces)). Aim for high cohesion
   and low coupling.
 - **Principles turn the forces into rules** ([4. Principles](#ch-principles)). Hide details behind
-  interfaces, give each part one reason to change, and make policy depend on abstractions rather
+  interfaces, give each module one reason to change, and make policy depend on abstractions rather
   than on solvers. Stop splitting when it stops helping.
-- **A boundary needs a promise** ([5. Contracts](#ch-contracts)). State what a part requires,
+- **A boundary needs a promise** ([5. Contracts](#ch-contracts)). State what a module requires,
   returns and raises. For the optimization step, say whether a load is proven best, and never report
   "none found" as "none exists".
 - **Design patterns apply the principles** ([6. Design patterns](#ch-patterns)). Inject dependencies

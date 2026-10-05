@@ -72,14 +72,14 @@ is right.
 
 ## Cohesion
 
-How closely the elements inside one part of a system belong together. A cohesive part serves one
+How closely the elements inside one module of a system belong together. A cohesive module serves one
 purpose, so a single kind of change touches it and nothing else. Aim for high cohesion; contrast
 with [coupling](#coupling).
 
 ## Composition root
 
-The one place in a program, usually its entry point, where every concrete part is built and
-connected to the parts that use it. With [dependency injection](#dependency-injection), it is the
+The one place in a program, usually its entry point, where every concrete module is built and
+connected to the modules that use it. With [dependency injection](#dependency-injection), it is the
 only code that knows which concrete classes were chosen.
 
 ## Contract
@@ -103,8 +103,8 @@ breaks something is found in minutes instead of at the next release. Abbreviated
 
 ## Coupling
 
-How much one part of a system depends on another. Two parts are tightly coupled when a change to one
-forces a change to the other. Aim for low coupling; contrast with [cohesion](#cohesion).
+How much one module of a system depends on another. Two modules are tightly coupled when a change to
+one forces a change to the other. Aim for low coupling; contrast with [cohesion](#cohesion).
 
 ## Decision-support system
 
@@ -120,7 +120,7 @@ through a notifier depends on the notifier.
 
 ## Dependency injection
 
-Passing a part the parts it depends on from outside, instead of letting it create them itself. A
+Passing a module the modules it depends on from outside, instead of letting it create them itself. A
 class that receives its solver can be given a different one, or a fake one in a test, without
 editing the class. See [composition root](#composition-root).
 
@@ -231,8 +231,8 @@ incumbent, which need not be optimal.
 
 ## Information hiding
 
-Keeping each part's [implementation details](#implementation-detail) behind an
-[interface](#interface), so that the rest of the system knows what the part does but never how.
+Keeping each module's [implementation details](#implementation-detail) behind an
+[interface](#interface), so that the rest of the system knows what the module does but never how.
 Introduced by David Parnas in 1972.
 
 ## Integration test
@@ -242,16 +242,16 @@ together, for example that one unit reads data in the shape the next one expects
 
 ## Interface
 
-Everything a part of a system offers to the code that calls it, without saying how it is carried
+Everything a module of a system offers to the code that calls it, without saying how it is carried
 out: for each operation, its name, inputs and output, and the promises that go with them. Also
 called [contract](#contract), signature or [abstraction](#abstraction). Code that depends only on an
 interface keeps working when the implementation behind it changes.
 
 ## Interface segregation principle
 
-The rule that no part of a system should depend on functions it does not use. A part that writes the
-plan needs the load, so it should not depend on an interface that also exposes the solver's log. The
-I in [SOLID](#solid).
+The rule that no module of a system should depend on functions it does not use. A module that writes
+the plan needs the load, so it should not depend on an interface that also exposes the solver's log.
+The I in [SOLID](#solid).
 
 ## Iterative development
 
@@ -326,9 +326,15 @@ and maintain, and of access only to the solver features the layer exposes.
 
 ## Modularity
 
-Building a system from parts with clear boundaries, so that each part can be understood, tested and
-replaced on its own. It keeps a change small: a new requirement touches one part and leaves the
-others as they were.
+Building a system from modules with clear boundaries, so that each module can be understood, tested
+and replaced on its own. It keeps a change small: a new requirement touches one module and leaves
+the others as they were.
+
+## Module
+
+Any piece of code with a boundary around it: a function, a class, or a group of them. The rest of
+the system reaches a module only through its [interface](#interface). In some programming languages
+the word also names a source file; this book uses the general meaning.
 
 ## Monitoring
 
@@ -354,7 +360,7 @@ instead of around procedures that pass data between them. Abbreviated OOP.
 
 ## Open-closed principle
 
-The rule that a part of a system should be open for extension and closed for modification: new
+The rule that a module of a system should be open for extension and closed for modification: new
 behavior is added by adding code, not by editing code that works. A new heuristic arrives as a new
 class behind the solution-provider interface, and the existing solver class is not touched. The O in
 [SOLID](#solid).
@@ -432,8 +438,8 @@ Another name for [interface](#interface).
 
 ## Single responsibility principle
 
-The rule that a part of a system should have only one reason to change. A responsibility is an axis
-of change, such as the input format or the formulation, not a task the code performs. The S in
+The rule that a module of a system should have only one reason to change. A responsibility is an
+axis of change, such as the input format or the formulation, not a task the code performs. The S in
 [SOLID](#solid).
 
 ## Single solve
@@ -443,8 +449,8 @@ heuristic, handles every instance.
 
 ## Software architecture
 
-The design of a whole system: the few large decisions about its parts and their boundaries that are
-expensive to reverse later.
+The design of a whole system: the few large decisions about its modules and their boundaries that
+are expensive to reverse later.
 
 ## Software development lifecycle
 
@@ -462,9 +468,9 @@ lowers [coupling](#coupling), or both.
 
 ## Solution provider
 
-A part that takes an instance and returns a result under the optimization [contract](#contract). An
-exact provider can prove optimality or infeasibility; a heuristic provider searches without proving,
-so it never returns `optimal`.
+A module that takes an instance and returns a result under the optimization [contract](#contract).
+An exact provider can prove optimality or infeasibility; a heuristic provider searches without
+proving, so it never returns `optimal`.
 
 ## Specified oracle
 
@@ -518,7 +524,7 @@ a single command.
 
 ## Testability
 
-How easily each part of a system can be checked on its own, quickly, without running the others. A
+How easily each module of a system can be checked on its own, quickly, without running the others. A
 function that takes values and returns values is highly testable; one that reads files and calls a
 solver in the middle of its logic is not.
 

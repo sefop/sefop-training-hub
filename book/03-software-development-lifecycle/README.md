@@ -264,12 +264,12 @@ takes a day to understand makes every change a project.
 
 ### Modularity and isolation of changes
 
-[Modularity](../appendix/glossary.md#modularity) builds a system from parts with clear boundaries.
+[Modularity](../appendix/glossary.md#modularity) builds a system from modules with clear boundaries.
 It gives a team three things at once:
 
-- **Isolation of changes.** A new requirement touches one part, and the rest stays as it was.
-- **Small changes.** A change confined to one part is small enough to review and to reason about.
-- **Easier testing.** A part with a clear boundary can be tested on its own, without running
+- **Isolation of changes.** A new requirement touches one module, and the rest stays as it was.
+- **Small changes.** A change confined to one module is small enough to review and to reason about.
+- **Easier testing.** A module with a clear boundary can be tested on its own, without running
   everything else.
 
 ### Safety mechanisms
@@ -345,7 +345,7 @@ way a first model becomes infeasible on real data.
 
 A decision-support system rests on separate decisions: the data source, the business rules, the
 formulation and the solver. Each can change while the others stay as they are. Good design keeps
-each of those changes inside one part, which is the modularity of
+each of those changes inside one module, which is the modularity of
 [4. Adapting quickly](#ch-adapting) applied to optimization. Staying solver-agnostic, supporting
 more than one solution algorithm, and deciding where a new constraint belongs are the questions of
 [the design section](../04-design/README.md).
