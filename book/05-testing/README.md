@@ -1,4 +1,4 @@
-# Section 05 — Testing decision-support software
+# Section 05: Testing decision-support software
 
 <a id="ch-introduction"></a>
 
@@ -12,15 +12,41 @@ serves both abilities a team needs:
 is how the scientific method reaches code: it writes a hypothesis about what the code must do in a
 form anyone can check, and running it is the experiment that confirms or refutes it. For adapting,
 testing is one of two pillars. Design is the other: it keeps each change small and confined to one
-part, as [the design section](../04-design/README.md) shows. An
-[automated test suite](../appendix/glossary.md#test-suite) then shows, on every change, that
-everything that worked before still works. With both pillars in place, a team can change working
-code as often as the business asks. Decision-support software adds one difficulty ordinary software
-rarely poses: the correct answer of its optimization model is hard to know in advance.
+module, and it states what each module promises, as [the design section](../04-design/README.md)
+shows. A test is an experiment on one of those promises, and an
+[automated test suite](../appendix/glossary.md#test-suite) repeats every experiment on every change,
+so a promise that was checked and then broken is caught at once. The evidence reaches as far as the
+cases the suite runs. With both pillars in place, a team can change working code as often as the
+business asks. Decision-support software adds one difficulty ordinary software rarely poses: the
+correct answer of its optimization model is hard to know in advance.
 
-The section goes from the small to the large: it tests one unit on its own, then a unit together
-with the systems it calls, then an optimization model, and last a whole decision-support system.
-Read the chapters in order: each uses only what the chapters before it defined.
+The section follows one question at a time. It first checks a promise on one unit, with everything
+else out of the way, and then asks what must run alongside the unit for the evidence to count. It
+turns to the optimization model, whose correct answer nobody knows in advance, and to what a test
+can still conclude when the best answer is not proven. It ends with how these checks combine for a
+whole decision-support system. Read the chapters in order: each uses only what the chapters before
+it defined.
+
+### Ideas to develop
+
+- Testing models with a second objective, with and without optimality.
+
+### Chapters
+
+|  #  | Chapter                                                                                | After it you can…                                                                           | Status |
+| :-: | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------ |
+|  1  | [Introduction](#ch-introduction)                                                       | Tell verification from validation, and the three levels of functional tests from each other | Ready  |
+|  2  | [Interface vs implementation](#ch-interface)                                           | Separate what a unit promises from how it keeps the promise, and aim a test at the promise  | Ready  |
+|  3  | [Unit testing](#ch-unit-testing)                                                       | List the behaviors of a unit and write a test for each                                      | Ready  |
+|  4  | [Writing good tests](#ch-clear-tests)                                                  | Tell a test that reads at a glance from one that hides what it checks                       | Ready  |
+|  5  | [Test-driven development](#ch-tdd)                                                     | Build a unit in cycles of red, green and refactor                                           | Ready  |
+|  6  | [Mocks](#ch-mocks)                                                                     | Check a behavior that is a call to another system                                           | Ready  |
+|  7  | [Integration testing](#ch-integration)                                                 | Decide which dependencies stay real in a test, and test a unit together with them           | Ready  |
+|  8  | [Testing an optimization model](#ch-model-testing)                                     | State what an optimization model promises, and say why its output is hard to test           | Ready  |
+|  9  | [Test oracles](#ch-oracles)                                                            | Choose between a known answer, a second implementation and a relation between two runs      | Ready  |
+|  10 | [Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality) | Say which promises a `feasible` result still makes, and measure the quality of a load       | Ready  |
+|  11 | [Testing a decision-support system](#ch-dss-testing)                                   | Assemble the tests of a whole system, module by module, and say what a complete run adds    | Draft  |
+|  12 | [Conclusion](#ch-conclusion)                                                           | Recall in one page what a test is evidence for, and how each chapter obtains that evidence  | Ready  |
 
 ### Verification vs validation
 
@@ -98,6 +124,8 @@ As [Figure: test pyramid](#fig-test-pyramid) shows, each step up runs more of th
 test costs more to write and runs slower. A healthy suite holds many unit tests, fewer integration
 tests and a handful of end-to-end tests.
 
+---
+
 <a id="ch-interface"></a>
 
 ## 2. Interface vs implementation
@@ -139,6 +167,8 @@ implementation detail, clients cannot call it">
 The implementation stays hidden from the clients, so it can change, or give way to a different
 implementation, without any client noticing. A test is one more client: it checks what the interface
 promises and never how the promise is kept.
+
+---
 
 <a id="ch-unit-testing"></a>
 
@@ -274,6 +304,8 @@ tested `add`.
 >   [Unit testing exercise](https://github.com/sefop/training-testing-python/tree/main/src/unit_tests_and_coverage)
 > - Java:
 >   [Unit testing exercise](https://github.com/sefop/sefop-training-java/tree/main/src/main/java/unit_tests_and_coverage)
+
+---
 
 <a id="ch-clear-tests"></a>
 
@@ -456,6 +488,8 @@ numbers in every test, and each test reads on its own.
 - Vladimir Khorikov, _Unit Testing: Principles, Practices and Patterns_, Manning, 2020, chapter 3,
   "The anatomy of a unit test": the same ground from another angle, on one behavior per test, no
   branching in tests, and setup shared between tests.
+
+---
 
 <a id="ch-tdd"></a>
 
@@ -642,6 +676,8 @@ variables and their coefficients, one cycle at a time.
 > - Java:
 >   [Test-driven development exercise](https://github.com/sefop/sefop-training-java/tree/main/src/main/java/test_driven_development)
 
+---
+
 <a id="ch-mocks"></a>
 
 ## 6. Mocks
@@ -802,6 +838,8 @@ that work is reorganized, even though no promise changed.
 > - Java:
 >   [Mocks exercise](https://github.com/sefop/sefop-training-java/tree/main/src/main/java/mocks)
 
+---
+
 <a id="ch-integration"></a>
 
 ## 7. Integration testing
@@ -927,24 +965,19 @@ Every test so far compared an output with an expected value that someone could w
 running the code: `add(2, 3)` is 5, and a notification carries a known message. An optimization
 model breaks that assumption, because its expected output is the very thing it exists to compute.
 
-Before jumping into the details, lets clarify some things first. Testing an optimization model can
-mean two different things:
+Testing an optimization model can mean two different things:
 
-1. Given some instance data, test the formulation is coded correctly.
-2. Given some instance data, test the output of the solved model is correct.
+1. Given an instance, check that the formulation is coded as it was written on paper.
+2. Given an instance, check that what the solved model returns is correct.
 
-What should we do? the difference is subtle, but very important. Both are plausible, indeed. Let's
-go back to the first principles to answer the question.
-
-Testing the formulation is possible, but I advise against it. This idea has 2 flaws. The first flaw
-is that it assumes there is a formulation coded in the first place, which might not necessarily be
-true in some situations. For example, if you are solving a problem with a heuristic or
-metaheuristic, then there is no formulation coded. The second flaw is that it does not test the
-public behavior of interest (the optimization model output). The formulation is indeed, an
-implementation detail. Thus, we should only test the output of the solved model. That is the correct
-public behavior that (should) be offered by this abstraction. If the abstraction is promising that a
-particular solver is being used (Gurobi, XPress, Cplex, etc.), that is a design problem (known as a
-leaky abstraction).
+This section tests the second. The reason is the one
+[2. Interface vs implementation](#ch-interface) gave for every unit: what the model returns is its
+promise, and the formulation is how it keeps the promise. A test of what the model returns survives
+a change of formulation, of solver or of algorithm. A test of the formulation breaks with each of
+them, even when every answer stays right. A [heuristic](../appendix/glossary.md#heuristic) shows it
+most plainly: it has no formulation to check, and its answers can still be tested. A model whose
+callers can tell which solver stands behind it has a problem in its design, known as a
+[leaky abstraction](../appendix/glossary.md#leaky-abstraction).
 
 <a id="model-difficulties"></a>
 
@@ -1010,22 +1043,20 @@ output promises, and two runs may even return different solutions.
 
 <a id="difficulty-algorithm"></a>
 
-**The algorithm may change.** An optimization model can be solved with many algorithms, such as a
-commercial-solver, a heuristic, a metaheuristic, dynamic programming, etc. Thus, the tests should
-not use leaked information from the algorithm to assert correctness.
+**The algorithm may change.** The same model can be solved by a commercial solver, a heuristic, a
+metaheuristic or dynamic programming, and a team may move from one to another. A test must therefore
+rely on nothing that only one of them provides.
 
 <a id="model-cargo"></a>
 
 ### A cargo model example
 
-For the next parts of the section we are going to use this example. The full definition of the cargo
-loading system is written in
-[the appendix](../appendix/cargo_model_example.md#an-optimization-model-for-this-problem). for one
-cargo flight, the question is what cargo to load to maximize revenue and respect operational
-constraints. The model is is a
-[mixed-integer program](../appendix/glossary.md#mixed-integer-program) (MIP).
+The rest of the section uses one example, the cargo loading system defined in
+[the appendix](../appendix/cargo_model_example.md#an-optimization-model-for-this-problem). For one
+cargo flight, the question is which pallets to load to earn the most revenue within the aircraft's
+limits. The model is a [mixed-integer program](../appendix/glossary.md#mixed-integer-program) (MIP).
 
-The symbols are defined in the following table:
+The table defines its symbols:
 
 |  Symbol  | Meaning                                                      | Unit             |
 | :------: | ------------------------------------------------------------ | ---------------- |
@@ -1084,15 +1115,15 @@ optimization = Optimization()
 result = optimization.run(instance)
 ```
 
-Note that the contract says nothing about the algorithm behind `run`. This is deliberate: we do not
-want to **leak implementation details** into the contract. It does say whether a load is proven to
-be the best one and whether no load exists, because a caller acts differently on each, so those are
-not implementation details.
+The contract says nothing about the algorithm behind `run`. This is deliberate: the algorithm is an
+implementation detail, and it stays out of the contract. The contract does say whether a load is
+proven to be the best one and whether no load exists, because a caller acts differently on each, so
+those are not implementation details.
 
 Behind `run`, five private steps make up the _optimization phase_, as
-[Figure: the optimization phase](#fig-model-pipeline) shows: receive the instance, build the model,
+[Figure: the optimization module](#fig-model-pipeline) shows: receive the instance, build the model,
 solve it, assemble the solution, and return it. They are implementation details: a caller cannot
-reach them and does not know anything about them.
+reach them and knows nothing about them.
 
 <a id="fig-model-pipeline"></a>
 
@@ -1107,8 +1138,8 @@ assemble the solution, return the result, labeled private implementation details
 the bottom">
 </p>
 
-So what does this contract offer? There are two types of promises: software promises (derived from
-the software design) and mathematical promises (derived from optimization theory).
+The contract makes two kinds of promises: software promises, which come from the design, and
+mathematical promises, which come from optimization theory.
 
 **Software promises**:
 
@@ -1124,7 +1155,7 @@ returned come first; those that hold only when the status is `optimal` follow. T
 them in one line each, and it is a good idea to write them out in your project as they are written
 here.
 
-Assume a model as $\max \{ f(x) : x \in X \}$, where $f$ is the objective and $X$ the feasible set,
+Write the model as $\max \{ f(x) : x \in X \}$, where $f$ is the objective and $X$ the feasible set,
 and let $z = f(x)$ for the objective value of a solution $x$. A first run solves $(f, X')$ and
 returns $x'$ with $z' = f(x')$; a second run solves $(f, X'')$ and returns $x''$ with $z'' =
 f(x'')$. Every relation between two runs assumes that both returned the status `optimal`. In a test,
@@ -1157,9 +1188,9 @@ $=$ means equal within the tolerance of [floating point numbers](#difficulty-flo
 
 **Mathematical promises of the status `optimal`**:
 
-Every promise below follows from optimality: assume the optimal objective function value is $z^*$.
-An algorithm that guarantees optimality returns `optimal` on every instance with a feasible load, so
-for such an algorithm each of them can be tested on any instance.
+Every promise below follows from optimality. Let $z^*$ be the optimal objective value. An algorithm
+that guarantees optimality returns `optimal` on every instance with a feasible load, so for such an
+algorithm each of them can be tested on any instance.
 
 3. **Existence & optimality.**
 
@@ -1183,9 +1214,8 @@ for such an algorithm each of them can be tested on any instance.
      unaffected.
 
 4. **Permutation invariance.**
-   - If a second instance is a reordering of the first instance data, then $z' = z'' = z^*$, even
-     when $x'' \ne x'$. It generalizes the commutativity property in the addition operation for an
-     optimization model.
+   - If the second instance is the first with its data reordered, then $z' = z'' = z^*$, even when
+     $x'' \ne x'$. It is to an optimization model what commutativity is to addition.
 
    _Cargo model example tests:_
    - the products listed in reverse order: the same revenue in both solutions.
@@ -1201,7 +1231,7 @@ for such an algorithm each of them can be tested on any instance.
    - several revenues raised by different amounts: the revenue does not fall.
 
 6. **Feasible set expanded, objective does not worsen**.
-   - Assume $X'' \supseteq X'$, then, $z'' \ge z'$.
+   - If $X'' \supseteq X'$, then $z'' \ge z'$.
 
    _Cargo model example tests:_ the revenue does not fall when
    - the payload capacity is raised.
@@ -1210,7 +1240,7 @@ for such an algorithm each of them can be tested on any instance.
    - a committed pallet is released.
 
 7. **Feasible set reduced, objective does not improve**.
-   - Assume $X'' \subseteq X'$, then, $z'' \le z'$.
+   - If $X'' \subseteq X'$, then $z'' \le z'$.
    - If $x' \in X''$, then $z'' = z'$.
 
    _Cargo model example tests:_ the revenue does not rise when
@@ -1241,18 +1271,19 @@ relation between them.
 Optimization, drawn as a dark black box whose only visible part is its public method run, and the
 Result that comes out, a status and a Solution when there is one, is checked against one promise,
 behaviors 1 to 3. Bottom row, two runs: an Instance and a transformed copy each go through run, and
-a relation between the two results is checked, behaviors 4 to 7, for example that the second objective value is at least the
-first. A note says the test sees only what goes into run and what comes out of it">
+a relation between the two results is checked, behaviors 4 to 7, for example that the second
+objective value is at least the first. A note says the test sees only what goes into run and what
+comes out of it">
 </p>
 
 Such a test is a [unit test](../appendix/glossary.md#unit-test), even though five private steps and
 a solver run behind `run`. A unit test checks one unit of behavior, quickly and in isolation from
 other tests, and one unit of behavior can span several pieces of code: here, everything `run` does
-to keep one promise. The solver could be a library inside the program, and each test builds its own
-model, so no test affects another. The test could become an
-[integration test](../appendix/glossary.md#integration-test) in two cases: when its instance is
-large enough to make it slow, and when the solver checks its license against a server outside the
-program.
+to keep one promise. The solver is a library inside the program, and each test builds its own model,
+so no test affects another. Two things take such a test out of the unit tests. One is an instance
+large enough to make it slow, since a unit test is one a team can run at every change. The other is
+a solver that checks its license against a server outside the program, which makes the test an
+[integration test](../appendix/glossary.md#integration-test).
 
 ---
 
@@ -1260,12 +1291,11 @@ program.
 
 ## 9. Test oracles
 
-The tests defined before require different levels of reasoning of the expected behavior. The
-artifact that provides the expected behavior in a test is known as a
-[test oracle](../appendix/glossary.md#test-oracle). For a valid solution, that knowledge is direct:
-a load is checked against the constraints by substituting it into them. The test oracle is the
-definition of the constraints itself, and a test derives the expected result by implementing that
-definition.
+The promises of [The optimization contract](#model-contract) are not equally easy to check, because
+a test has to know what to expect. Whatever supplies that expectation is the
+[test oracle](../appendix/glossary.md#test-oracle). For a valid solution, the oracle is direct: a
+load is checked against the constraints by substituting it into them. The definition of the
+constraints is the oracle, and a test derives the expected result from that definition.
 
 A direct test of **Existence & optimality** requires the optimal value of the problem, which is not
 known in advance for a given instance. The optimal value has a precise mathematical definition, but
@@ -1281,9 +1311,9 @@ A [known oracle](../appendix/glossary.md#known-oracle) is the expected answer, w
 test runs by a method that does not use the code under test: by hand, from a formula, or from a
 published result. The test compares the output with that answer.
 
-In the following example there is nothing commited and chocolate fits at most once by weight and
-water at most once by volume, so each $x_i \in \{0, 1\}$ and there are $2 \times 2 = 4$ candidate
-loads, few enough to list:
+Take the two products of [Pseudocode: two-pallet test](#pseudo-two-pallet-test), A and B, with
+nothing committed. A fits at most once by weight and B at most once by volume, so each $x_i \in \{0,
+1\}$ and there are $2 \times 2 = 4$ candidate loads, few enough to list:
 
 | $x_A$ | $x_B$ | Weight (≤ 2) | Volume (≤ 2) | Revenue | Feasible?                    |
 | :---: | :---: | :----------: | :----------: | :-----: | ---------------------------- |
@@ -1372,7 +1402,9 @@ repeat 200 times:
 ```
 
 Weights and volumes start at 1, so no product fits more than 8 times, and enumeration checks at most
-$9^4 = 6561$ loads. The reference stays cheap.
+$9^4 = 6561$ loads. The reference stays cheap. The loop and the condition are here for a reason the
+tests of [4. Writing good tests](#ch-clear-tests) did not have: the inputs are generated, not
+chosen, and each expected value comes from the reference, never from the code under test.
 
 What does this catch that the known oracle does not? Suppose the code mistakenly uses each product's
 volume in the weight constraint. Some hand-picked instances catch that mistake and some do not,
@@ -1387,14 +1419,14 @@ every product as a 0/1 choice, they agree with each other and are both wrong.
 
 ### Metamorphic relations
 
-In instances where using a test oracle is impractical, such as a large MIP, we can exploit
-mathematical properties of related runs to assert some expected behavior. These are called
-[metamorphic relations](../appendix/glossary.md#metamorphic-relation).
+On an instance too large for either oracle, such as a real booking list, a test can still check how
+the results of two related runs must compare. Such a property is a
+[metamorphic relation](../appendix/glossary.md#metamorphic-relation).
 
-A classical example is the $sin(x)$ function. We know that for some values like $x=0,30,45,60,90$
-computing $sin(x)$ is easy. For some other values like $x=17$ is not that simple. For cases like
-these we can exploit a metamorphic relation of the sin function: $\sin(x + \pi) = -\sin(x)$, which
-is easy to verify visually:
+The sine function is the classic example. For some angles, such as 0, 30, 45, 60 and 90 degrees, the
+sine is easy to work out by hand; for an angle of 17 degrees it is not. A relation still holds for
+every angle: adding half a turn flips the sign, $\sin(x + \pi) = -\sin(x)$, as
+[Figure: a metamorphic relation of the sin function](#fig-sine-relation) shows.
 
 <a id="fig-sine-relation"></a>
 
@@ -1409,8 +1441,8 @@ hypotenuse and the same angle x at the center, so its vertical side, sin(x + pi)
 length but points down to (-cos x, -sin x). Hence sin(x + pi) = -sin(x)">
 </p>
 
-How to transform this metamorphic relation into a test? Take two related runs an assert the
-mathematical properties of both runs. In the case of the example above, it would be:
+A relation becomes a test by making two related runs and asserting the relation between their
+results, as in [Pseudocode: sine relation test](#pseudo-sine-relation-test):
 
 <a id="pseudo-sine-relation-test"></a>
 
@@ -1426,13 +1458,36 @@ second = sin(x + π)
 expect second == -first
 ```
 
-In the context of a MIP, two consecutive optimal runs share some implicit properties, which are the
-ones listed at the end of the optimization contract:
+For the cargo model, the relations are the last four promises of
+[The optimization contract](#model-contract), each between two runs that both return `optimal`:
 
 - Permutation invariance
 - Objective changed, feasible set unchanged
 - Feasible set expanded, objective does not worsen
 - Feasible set reduced, objective does not improve
+
+[Pseudocode: capacity relation test](#pseudo-capacity-relation-test) checks the third on one pair of
+runs: raising the weight capacity expands the feasible set, so the revenue must not fall.
+
+<a id="pseudo-capacity-relation-test"></a>
+
+**Pseudocode: capacity relation test**
+
+```
+// pseudocode: capacity-relation-test
+a = Product(name="A", weight=2, volume=1, revenue=10)
+b = Product(name="B", weight=1, volume=2, revenue=6)
+
+first  = Optimization().run(Instance(products=[a, b], weight_capacity=2, volume_capacity=2))
+second = Optimization().run(Instance(products=[a, b], weight_capacity=3, volume_capacity=2))
+
+expect first.status == optimal
+expect second.status == optimal
+expect second.solution.objective_value >= first.solution.objective_value
+```
+
+The test never states the best revenue of either instance, so the same lines work on a booking list
+of any size.
 
 <a id="mip-oracle-reach"></a>
 
@@ -1466,11 +1521,12 @@ pseudo-oracle, reaches small ones. Metamorphic relations between two runs apply 
   coverage within that regime but does not reach the large instances.
 - **Metamorphic relations: any size.** The instances that matter in practice, a real booking list on
   a real aircraft, are beyond both, and for them a test knows nothing about the answer. The
-  relations still hold. Checking a valid solution also applies at every size: it takes one pass over
-  the products.
+  relations still hold between two runs that both return `optimal`, so a test checks the two
+  statuses first. Checking a valid solution applies at every size and to every load returned: it
+  takes one pass over the products.
 
 The three are complementary: known answers check selected cases, enumeration checks many small
-cases, and metamorphic relations check properties at any size.
+cases, and metamorphic relations check properties of optimal runs at any size.
 
 ### Further reading
 
@@ -1562,10 +1618,12 @@ designed, so the failure is in the test, which asked two `feasible` results for 
 ### Measuring quality instead
 
 The two surviving tests cannot tell a good load from a poor one: the committed pallets alone pass
-both. Quality is still worth watching, but it needs a different tool. A
-[benchmark](../appendix/glossary.md#benchmark) runs `run` on a fixed set of instances and records
-how far each load falls short, every time the code changes, so that a change for the worse shows up
-and gets investigated rather than failing a build.
+both. The status `feasible` promises no particular quality, so a test has nothing to assert about
+it, and quality is measured instead. A [benchmark](../appendix/glossary.md#benchmark) runs `run` on
+a fixed set of instances and records how far each load falls short, every time the code changes, so
+that a change for the worse shows up and gets investigated. A team that does promise a quality, such
+as a load within a stated gap of a bound, has added a promise to its contract, and that promise gets
+a test like any other.
 
 The shortfall is measured against a number the test computes itself. Drop the requirement that
 pallets be whole, and the model becomes its
@@ -1667,20 +1725,70 @@ report the average of upper_bound_gaps, the average of exact_gaps, and not_found
 
 ## 11. Testing a decision-support system
 
-A decision-support system promises its users a decision, not an algorithm: behind its
-[interface](#ch-interface), the load may come from enumeration, a heuristic or a solver, and the
-choice may change. Its tests therefore see only what the interface returns.
+Every chapter so far tested one promise of one unit, and the last three tested the hardest one: what
+`Optimization` returns. A load planner never sees a `Result`, though. The planner sees a plan, and
+between the booking file and that plan stand the other modules of the system: one reads the
+bookings, one turns them into an `Instance`, one turns the `Result` into a plan, and one writes the
+plan out. Each of them can break while every test of the optimization model passes.
 
-A decision-support system is more than its optimization model. Data arrives from other systems,
-business rules turn it into model parameters, the model computes a decision, and the decision flows
-back to the people and systems that act on it. Each of these parts can break. For most of them, the
-expected output is cheap to write down: you know what a data check or a business rule should return
-before running it. The model is the exception, because its expected output is the very thing it
-exists to compute. The chapter will map each part of the system to the kind of test that fits it.
+The system tested here is the cargo loading system as the design section built it, in
+[9. A clean architecture for the cargo loading system](../04-design/README.md#ch-cargo-architecture).
 
-The chapter will also sort the oracles of the model chapters by what survives behind an interface.
-All of them already treat `Optimization` as a black box: they need only the instance and what `run`
-returns.
+### One promise per module
+
+The design section lists what each module promises, and names the chapter of this section that
+checks it, in its table of
+[promises at each boundary](../04-design/README.md#the-promises-at-each-boundary). Each row of that
+table is a set of tests. What changes from one module to the next is where the expected answer comes
+from, and what has to run for real.
+
+| Module                                     | Where the expected answer comes from                                     | What runs for real                                                |
+| ------------------------------------------ | ------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `BookingReader`, `CsvPlanWriter`           | A small file written for the test, and the records or text it stands for | The module and the file system                                    |
+| Preprocess                                 | An `Instance` written by hand for a handful of bookings                  | Preprocess alone                                                  |
+| `Optimization` and each `SolutionProvider` | The oracles of [9. Test oracles](#ch-oracles), by the status returned    | The real provider, solver included                                |
+| Postprocess                                | A plan written by hand for one `Result` of each status                   | Postprocess alone                                                 |
+| `PlanFlightLoad`                           | The plan that follows from a `Result` the test chose                     | The three steps, with a stand-in that returns the chosen `Result` |
+
+The stand-in of the last row is a [test double](../appendix/glossary.md#test-double) that returns a
+fixed `Result` in place of `Optimization`. It is there for the statuses a real solver cannot be made
+to return on demand: a test cannot ask a solver to stop with `feasible` or with `not_found`, and it
+can hand `PlanFlightLoad` a `Result` that says so.
+
+### A defect the optimization tests miss
+
+Suppose postprocess sets `proven_best` to true whenever the `Result` carries a `Solution`. A
+provider stops at its time limit and returns a valid load with the status `feasible`. Every test of
+the last three chapters passes: the load is feasible, its totals are right, and the status claims no
+more than was established. The plan the planner reads says the load is proven best, and nobody has
+proven it.
+
+The test that catches the defect is small. A [unit test](../appendix/glossary.md#unit-test) of
+postprocess, given a `Result` with the status `feasible`, expects a plan whose `proven_best` is
+false. No solver runs and no file is read. The defect sits in one module, so the test of that
+module's promise finds it, and names it more precisely than a run of the whole system would.
+
+### What a complete run adds
+
+Tests of single modules leave one thing unchecked: that the modules agree with each other.
+[7. Integration testing](#ch-integration) showed a writer and a reader that each passed their own
+tests and disagreed about a file, and the same can happen wherever two modules of the cargo system
+meet.
+
+An [end-to-end test](../appendix/glossary.md#end-to-end-test) runs the whole system on real files,
+from a booking file to a plan file, and checks the plan file. It is the costliest test in
+[Figure: test pyramid](#fig-test-pyramid), so a suite holds a few, chosen among the outcomes a real
+run can be made to produce:
+
+- a small instance whose best load is known: the plan lists that load and says it is proven best;
+- an instance whose committed freight does not fit: the plan file says that no plan exists, and why.
+
+The outcomes a real run cannot be made to produce, `feasible` and `not_found`, stay with the test of
+`PlanFlightLoad` and its stand-in.
+
+Together, these tests are evidence for the promises they check, on the cases they run. A case nobody
+thought of is outside that evidence, and so is a promise nobody wrote down, which is why the table
+of promises comes first.
 
 ---
 
@@ -1688,8 +1796,8 @@ returns.
 
 ## 12. Conclusion
 
-A test is an experiment with an expected answer, and each chapter of this section is a way of
-obtaining that answer, up to the case where the answer is the very thing the model computes.
+A test is an experiment on a promise: it gathers evidence that the promise holds on the cases it
+runs, and the hard part, for an optimization model, is knowing what to expect.
 
 - **Test the promise, not the mechanism** ([2. Interface vs implementation](#ch-interface)). What a
   unit does outlives how it does it.
@@ -1710,19 +1818,13 @@ obtaining that answer, up to the case where the answer is the very thing the mod
   second implementation, or only conditions every answer meets.
 - **Without optimality, test what is still promised**
   ([10. Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality)). Load
-  validity and no `Solution` on an impossible instance remain tests; solution quality is tracked
-  over time as a benchmark.
-- **Behind an interface, only the output counts**
-  ([11. Testing a decision-support system](#ch-dss-testing)). The techniques that read the output
-  survive a hidden algorithm; the ones that need the solver do not.
+  validity and no `Solution` on an impossible instance remain tests; solution quality is measured by
+  a benchmark, unless the contract promises it.
+- **Test each module by its own promise, and the joins with a few complete runs**
+  ([11. Testing a decision-support system](#ch-dss-testing)). Passing tests of the optimization
+  model say nothing about the plan a user reads.
 
 With the system tested, the next section puts it in front of its users.
-
----
-
-## Ideas to develop
-
-- Testing models with a second objective, with and without optimality.
 
 ---
 

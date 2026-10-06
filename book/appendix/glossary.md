@@ -279,6 +279,12 @@ A [test oracle](#test-oracle) that knows the expected answer before the run, for
 value worked out by hand for a small instance. Called a [specified oracle](#specified-oracle) in the
 testing literature.
 
+## Leaky abstraction
+
+An [abstraction](#abstraction) that lets its implementation show through, so that callers come to
+depend on details it was meant to hide. An optimization module whose callers must know which solver
+it uses is one.
+
 ## Legacy system
 
 Software that is difficult to change safely — not because it is old, but because it lacks the safety
