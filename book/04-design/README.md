@@ -1015,17 +1015,15 @@ wait.
 
 **Example 1 - One mixed-integer program:**
 
-Brahimi, Khalaf, Larbi and Al-Hammadi (chapter 17 of _Optimization Essentials_, listed under Further
-reading) schedule the casting of aluminum billets for a producer: one MIP, handed to a commercial
-solver, answers within a few seconds.
+A factory schedules a week of production with one MIP, handed to a solver that answers within a few
+seconds.
 
 **Example 2 - One genetic algorithm:**
 
-Yadav and Chakroborty (chapter 25 of _Optimization Essentials_) decide which streets of a city
-become one-way. The travel time of a street plan comes out of a traffic procedure and its
-connectivity out of a graph algorithm, and neither can be written as the constraints of a model, so
-one genetic algorithm, a metaheuristic, searches the plans and calls both procedures on every plan
-it tries. The procedures work inside one search, and its caller still sees one `solve`.
+A network is designed where the quality of a design comes out of a simulation, which cannot be
+written as the constraints of a model. One genetic algorithm, a metaheuristic, searches the designs
+and calls the simulation on every design it tries. The simulation works inside one search, and its
+caller still sees one `solve`.
 
 The two examples are the same pattern with a different kind of provider.
 
@@ -1063,19 +1061,17 @@ the next, so the stages solve different problems.
 
 **Example 1 - Cluster first, route second:**
 
-Baytur, Özceylan, Koç and Erdoğan (chapter 22 of _Optimization Essentials_) plan the deliveries of a
-distributor with 3 depots and 502 customers. A first model assigns every customer to a depot, and a
-second step builds the routes of each depot from its own customers alone. Nothing guarantees that
-these are the best routes for the distributor as a whole, because the customers were assigned before
-any route existed.
+A distributor plans deliveries from several depots. A first model assigns every customer to a depot,
+and a second step builds the routes of each depot from its own customers alone. Nothing guarantees
+that these are the best routes for the distributor as a whole, because the customers were assigned
+before any route existed.
 
 **Example 2 - Ranked objectives, one at a time:**
 
-Bhatnagar and Bolia (chapter 18 of _Optimization Essentials_) decide which small schools of a
-district to merge. A first model finds the smallest number of schools that can stay in operation,
-and a second, keeping to that number, disturbs as few students as possible. Here the stages do add
-up: the two objectives are ranked, so the best answer of the second stage is the best answer to the
-ranked problem.
+A company decides which facilities to keep open. A first model finds the smallest number of
+facilities that can serve every customer, and a second, keeping to that number, makes the total
+travel distance as short as possible. Here the stages do add up: the two objectives are ranked, so
+the best answer of the second stage is the best answer to the ranked problem.
 
 **Also called** hierarchical or multi-stage planning.
 
@@ -1125,23 +1121,21 @@ In **Figure: iterated solve** the evaluator is yellow.
 
 **Example 1 - Benders decomposition:**
 
-Dalal and Hamid (chapter 8 of _Optimization Essentials_) design a network that carries food
-donations from schools to slums for a nonprofit organization. A first model decides which warehouses
-to open and which school supplies which slum. A second model works out the donations that can then
-flow in each scenario of supply and demand, which completes the answer, and returns a constraint
-that tells the first model what its choice costs. The loop stops when the gap between the best plan
-found and a bound on the best possible one is small enough, or after a set number of rounds. Stopped
-at a gap of zero it holds a proof; stopped earlier, its answer is `feasible`.
+A company designs a supply network. A first model decides which warehouses to open. A second model
+works out the goods that can then flow from the open warehouses to the customers, which completes
+the answer, and returns a constraint that tells the first model what its choice costs. The loop
+stops when the gap between the best plan found and a bound on the best possible one is small enough,
+or after a set number of rounds. Stopped at a gap of zero it holds a proof; stopped earlier, its
+answer is `feasible`.
 
 **Example 2 - A model and a heuristic in alternation:**
 
-Wolsey (section 13.5 of _Integer Programming_) describes a company that plans what to produce and
-which clients each vehicle visits in each period. A first model drops the routes and charges a fixed
-cost for every visit, which usually makes it small enough to solve to optimality. A routing
-heuristic then builds the routes for the visits that model chose, and the cost of inserting each
-client into a route replaces the fixed cost. The two alternate until the visiting costs are a good
-approximation of the routing costs. Here the feedback is a corrected value and proves nothing, so
-the answer is `feasible`.
+A company plans what to produce and which clients each vehicle visits in each period. A first model
+drops the routes and charges a fixed cost for every visit, which makes it small enough to solve. A
+routing heuristic then builds the routes for the visits that model chose, and the cost of inserting
+each client into a route replaces the fixed cost. The two alternate until the visiting costs are a
+good approximation of the routing costs. Here the feedback is a corrected value and proves nothing,
+so the answer is `feasible`.
 
 Column generation and cutting planes are other algorithms that can be arranged this way.
 
@@ -1225,9 +1219,8 @@ names make such a design sayable in one sentence.
 - Cynthia Barnhart, Peter Belobaba and Amedeo R. Odoni, "Applications of Operations Research in the
   Air Transport Industry", _Transportation Science_ 37 (4), 2003: a survey of an industry that plans
   in stages, and of what solving the stages separately costs.
-- Faiz Hamid (ed.), _Optimization Essentials: Theory, Tools, and Applications_, Springer, 2024: the
-  source of most examples in this chapter, each told there in full, with its model, its algorithm
-  and its results.
+- Faiz Hamid (ed.), _Optimization Essentials: Theory, Tools, and Applications_, Springer, 2024: a
+  collection of applied studies, each told in full, with its model, its algorithm and its results.
 - Laurence A. Wolsey, _Integer Programming_, 2nd edition, Wiley, 2021: chapters 10 to 13 give the
   algorithms behind the iterated solve, and section 13.5 the heuristics a team builds around a
   solver.
