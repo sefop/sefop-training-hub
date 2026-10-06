@@ -16,16 +16,7 @@ lifecycle is good exactly to the degree that it supports both.
 **The difference this section addresses:** decision-support software goes through the same phases as
 any other software, but several of those phases are harder to learn from and harder to adapt in when
 the software produces decisions. The section builds the general case first and then names, phase by
-phase, where the difference bites.
-
-The chapters argue from the general to the particular.
-[2. A different type of engineering](#ch-different-engineering) names the two characteristics that
-set software apart: it is built on imperfect information, and it is highly sensitive to tiny errors.
-Together they demand two abilities. [3. Learning quickly](#ch-learning) shows how a team learns:
-agile development gives it short feedback loops, and the scientific method draws sound conclusions
-from each loop. [4. Adapting quickly](#ch-adapting) shows what lets a team act on those conclusions
-without breaking what works. [5. Decision-support software across the lifecycle](#ch-phases) applies
-all of it to decision-support software, one phase at a time. Read them in order.
+phase, where the difference bites. Read the chapters in order.
 
 ---
 

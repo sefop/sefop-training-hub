@@ -35,12 +35,6 @@ job, without losing the scientific strength that made it valuable.
 |  5  | [Training scientists in software engineering](#ch-training)                                | Plan training for your team, and choose what to learn first                                          | Coming soon |
 |  6  | [Conclusion](#ch-conclusion)                                                               | Recall in one page which expertise the team owns, and what it takes to change how it works           | Ready       |
 
-[2. How to staff your team](#ch-staffing) decides who is on the team. The next three chapters,
-from [3. From science to software: the mindset change](#ch-mindset) to
-[5. Training scientists in software engineering](#ch-training), are about what happens next: what
-the work feels like from the inside, how to change practice in a team that did not ask for it, and
-what to train first.
-
 ---
 
 <a id="ch-staffing"></a>

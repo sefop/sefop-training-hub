@@ -17,21 +17,8 @@ The section argues from the general to the particular. It starts with what desig
 forces every design balances, derives the principles that follow from those forces, and states what
 a boundary promises. It then names the patterns that put the principles to work, first for software
 in general and then for the optimization step of a decision-support system, and ends with an
-architecture for one complete system that uses all of them.
-
-[2. What design is for](#ch-design-purpose) introduces **Pseudocode: tangled script**, a single
-function that does the work of a whole system, and six requests to change it.
-[3. Forces: coupling and cohesion](#ch-forces) diagnoses what is wrong with it, and
-[4. Principles](#ch-principles) states the rules that follow from the diagnosis.
-[5. Contracts](#ch-contracts) says what a module promises once it has a boundary, and writes the
-promise of the optimization step. [6. Design patterns](#ch-patterns) shows the reusable solutions
-that apply the principles. [7. From design to architecture](#ch-architecture) lifts the same ideas
-to the scale of a whole system, and [8. Optimization patterns](#ch-optimization-patterns) does for
-the optimization step what design patterns do for classes: it names the arrangements that recur.
-[9. A clean architecture for the cargo loading system](#ch-cargo-architecture) shows where every
-line of the tangled script ends up and what each module promises to the tests of the next section.
-Read them in order: each chapter uses only what the chapters before it defined. The system they
-design is defined in [The cargo model example](#the-cargo-model-example), next.
+architecture for one complete system that uses all of them. Read the chapters in order: each uses
+only what the chapters before it defined.
 
 ### The cargo model example
 

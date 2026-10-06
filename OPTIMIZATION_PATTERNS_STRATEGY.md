@@ -15,7 +15,7 @@ not a mandatory class hierarchy. Preserve useful existing material and avoid unr
 
 ## Diagnosis
 
-The current chapter proposes four recurring arrangements: single, staged, iterated, and selected
+The current chapter proposes four recurring arrangements: single, sequential, iterated, and selected
 solve. It explains their structures and, especially, which result statuses they can justify.
 Those are useful contributions, but they leave a practical question unanswered: how should a
 reader divide responsibilities when building one of these arrangements?
@@ -29,11 +29,15 @@ The material already has connections to the book:
 
 - The contracts chapter defines `Instance`, `Solution`, `Result`, and `SolutionProvider`.
 - The Strategy material implements selection between interchangeable providers.
-- The formulation-placement chapter considers how arrangements interact with solver dependencies.
-- The cargo architecture chooses a selected solve.
+- Chapter 9, "A clean architecture for the cargo loading system", chooses a selected solve and
+  explains why its formulation stays with its solver beside the use cases.
 - The testing section applies the shared optimization contract and its result statuses.
 
 Strengthen those connections through practical consequences rather than adding more navigation.
+
+The current section has ten chapters, ending with "10. Conclusion". There is no separate
+formulation-placement chapter. Keep the current term "sequential solve", its figure anchor
+`fig-sequential-solve`, and its asset name. Do not restore removed material as part of this task.
 
 ## Central teaching claim
 
@@ -44,6 +48,12 @@ Keep the existing idea that a complete arrangement can present one provider boun
 caller. Explain how the internal responsibilities support that boundary. Intermediate stages
 and evaluators may need their own contracts and records: do not force every internal operation
 to use the final problem's `Instance` and `Result` unchanged.
+
+Resolve this explicitly with the current statement that every provider takes the same `Instance`
+and returns the same `Result`. Interchangeable providers for one problem share one contract;
+providers solving different subproblems need contracts for those subproblems. Nesting works only
+when an inner arrangement's complete output satisfies the contract expected at that boundary.
+Describe any translation required rather than claiming arbitrary arrangements plug together.
 
 Present the four patterns as a small catalogue of useful arrangements, not an exhaustive or
 mutually exclusive classification. They can be combined. The names are proposed vocabulary;
@@ -78,9 +88,9 @@ the same subsection template if the material reads better in prose.
 - Explain when one cohesive provider is sufficient. More boundaries have a cost.
 
 Connect this guidance to information hiding and the earlier discussion of when splitting stops
-helping. Leave detailed formulation placement to its existing chapter.
+helping. Leave the cargo provider's architectural placement to Chapter 9's existing discussion.
 
-### Staged solve
+### Sequential solve
 
 - Give each stage a contract appropriate to the decision it actually solves.
 - Define the intermediate record explicitly, including what the next stage may assume.
@@ -94,6 +104,10 @@ the intermediate record. Preserve the warning that optimal stages do not general
 globally optimal decision. A failure under a fixed earlier choice does not by itself establish
 infeasibility of the original problem.
 
+Do not treat a sequence of preprocess, solve, and postprocess as a sequential solve: the pattern
+coordinates different optimization decisions. Explain the distinction briefly if the example
+would otherwise invite confusion.
+
 ### Iterated solve
 
 - Let a coordinator own iteration state, the best accepted solution, and termination.
@@ -103,6 +117,21 @@ infeasibility of the original problem.
 - Keep mutable search state local to one invocation, or make any deliberate reuse explicit.
 - Define what happens at a limit, when no candidate is accepted, and when a later round fails.
 - Evaluate the retained answer against the original problem's objective and feasibility rules.
+
+Clarify whether the provider returns a partial candidate or a complete solution. The evaluator
+may complete a candidate, as in the existing decomposition example, so its output may need the
+complete answer and its objective value as well as acceptance and feedback. An acceptance flag
+alone is insufficient if the coordinator has no complete answer to retain.
+
+Distinguish an unsuccessful search outcome from a raised operational error. Preserve the existing
+rule that a solver crash or license error is raised rather than converted to `not_found` or
+`infeasible`. Retaining an earlier candidate after a later search finds nothing is different
+from silently returning that candidate after a crash. Any recovery policy needs an explicit
+contract; adding one is not required here.
+
+Explain who owns the overall stopping budget and how it relates to each provider's limit. A
+round limit bounds the number of calls; it does not alone bound elapsed time. Keep this practical
+and avoid introducing a deadline-management framework.
 
 Explain how these boundaries let the evaluator, provider, and stopping policy change for different
 reasons. Do not prescribe a separate class for each responsibility unless the example needs it.
@@ -126,6 +155,11 @@ short application of that material, with only the additional optimization-specif
 Prefer an iterated solve because selected solve already has concrete pseudocode in the Strategy
 chapter. Use one existing example if it can support clear contracts without a long explanation
 of a new optimization problem. Do not force all four arrangements into the cargo example.
+
+The section introduction currently says every chapter designs the cargo system and that the
+formulation stays fixed, although Chapter 8 already uses other domains. If a worked example uses
+another domain, adjust that setup narrowly to describe cargo as the running example with explicit
+exceptions. Do not invent a cargo simulation requirement merely to preserve that sentence.
 
 Show enough to make the design reviewable:
 
@@ -157,8 +191,9 @@ In the testing section, distinguish two public behaviors:
   dependencies can make those outcomes deliberate and reproducible.
 
 Useful coordinator scenarios for an iterated solve include preserving the best accepted answer
-after a later unsuccessful round, stopping at the configured limit, returning `not_found` when
-no candidate was accepted, and avoiding an unsupported `optimal` or `infeasible` status.
+after a later round finds no candidate, stopping at the configured limit, returning `not_found`
+when no candidate was accepted, propagating operational errors according to the contract, and
+avoiding an unsupported `optimal` or `infeasible` status.
 
 These tests check a coordinator's public behavior. They should not assert private call sequences
 unless the sequence itself is a necessary part of the public promise. Controlled dependencies
@@ -167,6 +202,10 @@ do not establish that the real formulation or algorithm produces correct decisio
 Use the existing Mocks and Integration testing material as prerequisites. Inspect the scope of
 "11. Testing a decision-support system" before choosing where to develop the connection. Keep
 any remaining stub honest about what is still planned.
+
+Treat this testing expansion as a follow-up unless a small change is necessary to keep existing
+claims consistent. The primary deliverable is a useful design chapter. Do not complete the
+decision-support-system testing stub merely because this brief identifies future examples.
 
 ## Connect the chapter to the rest of the design argument
 
@@ -182,20 +221,24 @@ Make each boundary decision an application of concepts already taught:
 | Dependency injection | Coordinators receive the providers or evaluators they use. |
 | Strategy | Selected solve applies the existing interchangeable-provider design. |
 
-Check the adjacent formulation-placement chapter for claims that depend on the arrangement alone.
-For example, the current statement that a modelling layer "fits badly" with staged solve needs
-qualification: assess the actual record boundary and capabilities of the layer. Do not infer
-tool limitations merely from the name of a pattern.
-
 Keep architecture placement and internal coordination as distinct design decisions. Strengthen
 the cargo architecture's explanation of why selected solve addresses its stated change request.
 Do not expand it into demonstrations of arrangements the cargo problem does not need.
+
+The cargo chapter already records its solver dependency as a deliberate exception with a cost.
+Preserve that reasoning. This task does not require a new modelling-layer comparison or a change
+to the chosen ring. Update the section's reading-order description and conclusion so Chapter 8
+promises responsibility and boundary guidance as well as names and result guarantees.
+
+Revise "Check yourself" to include a design decision and a change request, not only identifying
+an arrangement and its status. A reader should explain where a change belongs and when it must
+cross a shared record boundary.
 
 ## Scope and safeguards
 
 - Prioritize Chapter 8 of Section 04; change adjacent chapters only where integration requires it.
 - Retain useful result-status reasoning, but make it one consequence of the design.
-- Deepen staged and iterated solve; shorten repetition of Strategy.
+- Deepen sequential and iterated solve; shorten repetition of Strategy.
 - Avoid adding algorithm surveys or formulation theory that do not explain software boundaries.
 - Define new software terms and update the glossary when necessary.
 - Preserve established chapter anchors. Update navigation and indexes when their claims change.
@@ -213,7 +256,13 @@ The revised material should let a reader answer these questions:
 3. What records cross boundaries, and what do their contracts promise?
 4. What can change independently, and what changes necessarily cross boundaries?
 5. What does the final status establish about the original decision?
-6. How can tests check coordination separately from real optimization correctness?
+6. Which public boundaries allow coordination to be checked separately from optimization
+   correctness?
+
+Before expanding scope, complete the smallest coherent revision: the Chapter 8 opening, practical
+guidance for the four arrangements, one worked example, design-oriented self-check questions,
+and the affected introduction and conclusion wording. Glossary and figure changes should support
+that revision. Treat substantial new testing prose as a separate follow-up.
 
 Check that the worked example actually demonstrates its claimed boundaries and guarantees.
 Review the section introductions, conclusions, glossary, chapter tables, and root index for

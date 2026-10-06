@@ -18,6 +18,10 @@ everything that worked before still works. With both pillars in place, a team ca
 code as often as the business asks. Decision-support software adds one difficulty ordinary software
 rarely poses: the correct answer of its optimization model is hard to know in advance.
 
+The section goes from the small to the large: it tests one unit on its own, then a unit together
+with the systems it calls, then an optimization model, and last a whole decision-support system.
+Read the chapters in order: each uses only what the chapters before it defined.
+
 ### Verification vs validation
 
 A model reaches its users through two translations: a business problem becomes a mathematical model,
@@ -93,19 +97,6 @@ logic together with processing results. End-to-end tests: the whole program is h
 As [Figure: test pyramid](#fig-test-pyramid) shows, each step up runs more of the program, so each
 test costs more to write and runs slower. A healthy suite holds many unit tests, fewer integration
 tests and a handful of end-to-end tests.
-
-[2. Interface vs implementation](#ch-interface) separates what a unit promises from how it keeps the
-promise, and every later chapter tests the promise. [3. Unit testing](#ch-unit-testing),
-[4. Writing good tests](#ch-clear-tests) and [5. Test-driven development](#ch-tdd) test one unit on
-its own. [6. Mocks](#ch-mocks) and [7. Integration testing](#ch-integration) take a test beyond the
-unit, to the systems it calls and the files it reads.
-[8. Testing an optimization model](#ch-model-testing) then meets the difficulty specific to
-decision-support software and takes up the contract that the design section wrote for the cargo
-model. [9. Test oracles](#ch-oracles) shows three ways to decide whether `run` kept it, and
-[10. Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality) what a
-test can still check when optimality is not guaranteed.
-[11. Testing a decision-support system](#ch-dss-testing) applies them to the whole system behind its
-interface. Read them in order: each chapter uses only what the chapters before it defined.
 
 <a id="ch-interface"></a>
 
