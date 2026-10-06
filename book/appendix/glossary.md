@@ -377,7 +377,7 @@ class behind the solution-provider interface, and the existing solver class is n
 A named, recurring way to arrange the algorithms of the optimization step of a
 [decision-support system](#decision-support-system), by analogy with a
 [design pattern](#design-pattern). This book names four: [single solve](#single-solve),
-[staged solve](#staged-solve), [iterated solve](#iterated-solve) and
+[sequential solve](#sequential-solve), [iterated solve](#iterated-solve) and
 [selected solve](#selected-solve).
 
 ## Oracle problem
@@ -437,6 +437,13 @@ An [optimization pattern](#optimization-pattern) in which one of several
 [strategy pattern](#strategy-pattern) applied to the optimization step. Also called algorithm
 selection.
 
+## Sequential solve
+
+An [optimization pattern](#optimization-pattern) in which several
+[solution providers](#solution-provider) run in a row, the answer of one becoming part of the input
+of the next, so that each solves a different problem. The whole is not guaranteed to be optimal,
+even when every provider's answer is. Also called hierarchical planning.
+
 ## Shrinking
 
 Automatically reducing a failing generated input to the smallest input that still fails, so that a
@@ -487,13 +494,6 @@ proving, so it never returns `optimal`.
 
 A [test oracle](#test-oracle) in which the expected answer is stated in advance. The book calls it a
 [known oracle](#known-oracle).
-
-## Staged solve
-
-An [optimization pattern](#optimization-pattern) in which several
-[solution providers](#solution-provider) run in a row, the answer of one becoming part of the input
-of the next, so that each solves a different problem. The whole is not guaranteed to be optimal,
-even when every stage is. Also called hierarchical planning.
 
 ## Static analysis
 

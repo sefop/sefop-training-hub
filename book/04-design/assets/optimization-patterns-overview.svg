@@ -11,7 +11,7 @@
   <text x="36" y="46" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">Single solve</text>
   <text x="220" y="184" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">one provider</text>
   <rect x="440" y="20" width="400" height="180" rx="10" fill="#ffffff" stroke="#e4e7eb" stroke-width="2"/>
-  <text x="456" y="46" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">Staged solve</text>
+  <text x="456" y="46" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">Sequential solve</text>
   <text x="640" y="184" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" font-style="italic" xml:space="preserve">different problems, one after another</text>
   <rect x="20" y="220" width="400" height="180" rx="10" fill="#ffffff" stroke="#e4e7eb" stroke-width="2"/>
   <text x="36" y="246" text-anchor="start" font-size="15" fill="#1f2933" font-weight="bold" xml:space="preserve">Iterated solve</text>
@@ -24,9 +24,9 @@
   <line x1="70" y1="102" x2="148" y2="102" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
   <line x1="290" y1="102" x2="370" y2="102" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
   <rect x="500" y="80" width="110" height="44" rx="6" fill="#ffffff" stroke="#9aa5b1" stroke-width="1.5"/>
-  <text x="555.0" y="106.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">stage 1</text>
+  <text x="555.0" y="106.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">provider</text>
   <rect x="690" y="80" width="110" height="44" rx="6" fill="#ffffff" stroke="#9aa5b1" stroke-width="1.5"/>
-  <text x="745.0" y="106.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">stage 2</text>
+  <text x="745.0" y="106.68" text-anchor="middle" font-size="13" fill="#1f2933" font-weight="bold" xml:space="preserve">provider</text>
   <line x1="458" y1="102" x2="498" y2="102" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
   <line x1="610" y1="102" x2="688" y2="102" stroke="#52606d" stroke-width="1.6" marker-end="url(#arrow)"/>
   <text x="649" y="94" text-anchor="middle" font-size="12" fill="#52606d" font-weight="normal" xml:space="preserve">answer</text>

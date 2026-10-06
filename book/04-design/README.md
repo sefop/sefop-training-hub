@@ -984,7 +984,7 @@ green, and a dashed outline marks what the caller sees as one provider.
 
 <p align="center">
   <img src="assets/optimization-patterns-overview.svg" width="780"
-       alt="Four small diagrams. Single solve: one provider. Staged solve: two providers in a row, the answer of the first becoming part of the input of the second, each solving a different problem. Iterated solve: a provider whose answer goes to an evaluator, which sends feedback back to the provider, in a loop. Selected solve: a choice that sends the instance to one of two providers">
+       alt="Four small diagrams. Single solve: one provider. Sequential solve: two providers in a row, the answer of the first becoming part of the input of the second, each solving a different problem. Iterated solve: a provider whose answer goes to an evaluator, which sends feedback back to the provider, in a loop. Selected solve: a choice that sends the instance to one of two providers">
 </p>
 
 ### Single solve
@@ -1027,36 +1027,36 @@ caller still sees one `solve`.
 
 The two examples are the same pattern with a different kind of provider.
 
-### Staged solve
+### Sequential solve
 
 **Problem.** The decision is too large or too mixed for one model, and it splits into decisions that
 can be taken one after another.
 
 **Structure.** A list of providers that run in sequence: two at the least, and as many as the
-decision has steps, written here as N stages. The answer of one stage becomes part of the input of
-the next, so the stages solve different problems.
+decision has steps, written here as N providers. The answer of one provider becomes part of the
+input of the next, so the providers solve different problems.
 
-<a id="fig-staged-solve"></a>
+<a id="fig-sequential-solve"></a>
 
-**Figure: staged solve**
+**Figure: sequential solve**
 
 <p align="center">
-  <img src="assets/optimization-patterns-staged-solve.svg" width="780"
-       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, stage 1 takes a first decision. Its answer becomes part of the input of stage 2, which takes the next decision. An ellipsis then leads to stage N, a later decision, to show that any number of stages can follow. A Result leaves the outline. A note says two or more stages in sequence, each solving a different problem">
+  <img src="assets/optimization-patterns-sequential-solve.svg" width="780"
+       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, provider 1 takes a first decision. Its answer becomes part of the input of provider 2, which takes the next decision. An ellipsis then leads to provider N, a later decision, to show that any number of providers can follow. A Result leaves the outline. A note says two or more providers in sequence, each solving a different problem">
 </p>
 
 **Consequences.**
 
-- Each stage is small enough to solve, and can be built and tested on its own, with its own
+- Each provider is small enough to solve, and can be built and tested on its own, with its own
   contract.
-- The whole is not guaranteed to be optimal, even when every stage is. An earlier stage decides
-  without knowing what its choice costs the later ones. The honest status for the whole is
-  `feasible`, unless the team can show that the stages add up to an optimum.
-- A later stage can fail on an instance that has an answer: an earlier stage may fix a choice that
-  the later one cannot complete, when another choice could have been completed. The status is then
-  `not_found`, not `infeasible`. Sending the failure back to the first stage to choose again is
-  possible, and it is a larger design.
-- The stages are coupled through the record that passes between them. That record is an interface
+- The whole is not guaranteed to be optimal, even when every provider's answer is. An earlier
+  provider decides without knowing what its choice costs the later ones. The honest status for the
+  whole is `feasible`, unless the team can show that the providers add up to an optimum.
+- A later provider can fail on an instance that has an answer: an earlier provider may fix a choice
+  that the later one cannot complete, when another choice could have been completed. The status is
+  then `not_found`, not `infeasible`. Sending the failure back to the first provider to choose again
+  is possible, and it is a larger design.
+- The providers are coupled through the record that passes between them. That record is an interface
   and deserves a contract of its own.
 
 **Example 1 - Cluster first, route second:**
@@ -1070,10 +1070,10 @@ before any route existed.
 
 A company decides which facilities to keep open. A first model finds the smallest number of
 facilities that can serve every customer, and a second, keeping to that number, makes the total
-travel distance as short as possible. Here the stages do add up: the two objectives are ranked, so
-the best answer of the second stage is the best answer to the ranked problem.
+travel distance as short as possible. Here the two models do add up: the two objectives are ranked,
+so the best answer of the second model is the best answer to the ranked problem.
 
-**Also called** hierarchical or multi-stage planning.
+**Also called** hierarchical planning.
 
 ### Iterated solve
 
@@ -1179,16 +1179,16 @@ one, and a heuristic for a large one.
 
 ### The four patterns side by side
 
-| Pattern        | Structure                                       | Statuses it can honestly return                                           | Main cost                                                  |
-| -------------- | ----------------------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| Single solve   | One provider                                    | All four if exact; never `optimal` if heuristic                           | Rests on one algorithm keeping up                          |
-| Staged solve   | Providers in a row, each on a different problem | Usually `feasible`; `not_found` when a later stage fails                  | The whole is not guaranteed optimal; stages share a record |
-| Iterated solve | A provider and an evaluator in a loop           | All four when the loop holds a proof; otherwise `feasible` or `not_found` | A stopping rule to set; running time multiplies            |
-| Selected solve | One provider chosen per instance                | Whatever the chosen provider established                                  | A choosing rule to tune; guarantees vary by run            |
+| Pattern          | Structure                                       | Statuses it can honestly return                                           | Main cost                                                     |
+| ---------------- | ----------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Single solve     | One provider                                    | All four if exact; never `optimal` if heuristic                           | Rests on one algorithm keeping up                             |
+| Sequential solve | Providers in a row, each on a different problem | Usually `feasible`; `not_found` when a later provider fails               | The whole is not guaranteed optimal; providers share a record |
+| Iterated solve   | A provider and an evaluator in a loop           | All four when the loop holds a proof; otherwise `feasible` or `not_found` | A stopping rule to set; running time multiplies               |
+| Selected solve   | One provider chosen per instance                | Whatever the chosen provider established                                  | A choosing rule to tune; guarantees vary by run               |
 
-Because each pattern looks like one provider from outside, they nest. A staged solve can use a
-selected solve as its first stage, and an iterated solve can use a staged solve as its provider. The
-names make such a design sayable in one sentence.
+Because each pattern looks like one provider from outside, they nest. A sequential solve can use a
+selected solve as its first provider, and an iterated solve can use a sequential solve as its
+provider. The names make such a design sayable in one sentence.
 
 ### Check yourself
 
@@ -1203,8 +1203,8 @@ names make such a design sayable in one sentence.
 <details>
 <summary>Answers</summary>
 
-1. A staged solve. The whole should return `feasible`: the first model chose aircraft without
-   knowing what its choice costs in crews, so two optimal stages do not prove the best combined
+1. A sequential solve. The whole should return `feasible`: the first model chose aircraft without
+   knowing what its choice costs in crews, so two optimal models do not prove the best combined
    plan.
 2. An iterated solve, with the simulation as its evaluator. It should return `feasible`: each round
    proved the best plan for travel times that were then corrected, and a simulation that accepts a
@@ -1218,7 +1218,7 @@ names make such a design sayable in one sentence.
   framed choosing an algorithm from the features of an instance as a problem of its own.
 - Cynthia Barnhart, Peter Belobaba and Amedeo R. Odoni, "Applications of Operations Research in the
   Air Transport Industry", _Transportation Science_ 37 (4), 2003: a survey of an industry that plans
-  in stages, and of what solving the stages separately costs.
+  one decision after another, and of what solving those decisions separately costs.
 - Faiz Hamid (ed.), _Optimization Essentials: Theory, Tools, and Applications_, Springer, 2024: a
   collection of applied studies, each told in full, with its model, its algorithm and its results.
 - Laurence A. Wolsey, _Integer Programming_, 2nd edition, Wiley, 2021: chapters 10 to 13 give the
@@ -1269,13 +1269,13 @@ one with another, and the new one sits between the team and every solver feature
 The placement interacts with the pattern, and a layer that suits one pattern can work against
 another:
 
-| Pattern                 | In the provider, inside or outside the use case                                                             | In a modelling layer                                                                                                                 |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Single solve, exact     | Simplest when one solver is settled                                                                         | Fits well: one model, built once, and solver independence is the whole gain                                                          |
-| Single solve, heuristic | No formulation to place                                                                                     | No formulation to place                                                                                                              |
-| Staged solve            | Each stage keeps its model and can change it and solve it again                                             | Fits badly: each stage is translated again, and handing a model or its answer to the next stage is limited to what the layer exposes |
-| Iterated solve          | The provider changes its model between rounds and solves it again, with every feature of the solver at hand | Works when the layer lets a model be changed and solved again; otherwise each round builds the model anew                            |
-| Selected solve          | Each exact provider decides for itself                                                                      | Helps only the exact providers; the heuristic ones never use it                                                                      |
+| Pattern                 | In the provider, inside or outside the use case                                                             | In a modelling layer                                                                                                                               |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Single solve, exact     | Simplest when one solver is settled                                                                         | Fits well: one model, built once, and solver independence is the whole gain                                                                        |
+| Single solve, heuristic | No formulation to place                                                                                     | No formulation to place                                                                                                                            |
+| Sequential solve        | Each provider keeps its model and can change it and solve it again                                          | Fits badly: each provider's model is translated again, and handing a model or its answer to the next provider is limited to what the layer exposes |
+| Iterated solve          | The provider changes its model between rounds and solves it again, with every feature of the solver at hand | Works when the layer lets a model be changed and solved again; otherwise each round builds the model anew                                          |
+| Selected solve          | Each exact provider decides for itself                                                                      | Helps only the exact providers; the heuristic ones never use it                                                                                    |
 
 ### Check yourself
 
@@ -1550,7 +1550,7 @@ system rests on several decisions, each of which can change on its own.
   ([7. From design to architecture](#ch-architecture)). In clean architecture, dependencies point
   inward, toward what the system is for, even when the calls go outward.
 - **The optimization step has patterns of its own**
-  ([8. Optimization patterns](#ch-optimization-patterns)). Single, staged, iterated and selected
+  ([8. Optimization patterns](#ch-optimization-patterns)). Single, sequential, iterated and selected
   solve each say which statuses they can honestly return.
 - **The formulation needs a place** ([9. Where the formulation lives](#ch-formulation-placement)).
   In the provider or in a modelling layer, with the use cases or outside them: each placement has

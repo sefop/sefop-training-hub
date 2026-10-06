@@ -1,4 +1,4 @@
-# Editor settings for the book. The 120-column width is a writing convention: GitHub reflows
+# Editor settings for the book. The 100-column width is a writing convention: GitHub reflows
 # markdown anyway, so this exists to keep diffs readable, not to change what a reader sees.
 
 root = true
