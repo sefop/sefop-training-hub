@@ -28,11 +28,10 @@ promise of the optimization step. [6. Design patterns](#ch-patterns) shows the r
 that apply the principles. [7. From design to architecture](#ch-architecture) lifts the same ideas
 to the scale of a whole system, and [8. Optimization patterns](#ch-optimization-patterns) does for
 the optimization step what design patterns do for classes: it names the arrangements that recur.
-[9. Where the formulation lives](#ch-formulation-placement) gives the formulation a place in that
-architecture. [10. A clean architecture for the cargo loading system](#ch-cargo-architecture) shows
-where every line of the tangled script ends up and what each module promises to the tests of the
-next section. Read them in order: each chapter uses only what the chapters before it defined. The
-system they design is defined in [The cargo model example](#the-cargo-model-example), next.
+[9. A clean architecture for the cargo loading system](#ch-cargo-architecture) shows where every
+line of the tangled script ends up and what each module promises to the tests of the next section.
+Read them in order: each chapter uses only what the chapters before it defined. The system they
+design is defined in [The cargo model example](#the-cargo-model-example), next.
 
 ### The cargo model example
 
@@ -159,7 +158,7 @@ The rest of this section is about why that happens and how to design it away. On
 starting: a good design does not make every change small. The second request is a new constraint on
 the load itself, and no arrangement of the code can keep that inside one module. What a good design
 does is show exactly which modules such a change reaches, and
-[10. A clean architecture for the cargo loading system](#ch-cargo-architecture) returns to it.
+[9. A clean architecture for the cargo loading system](#ch-cargo-architecture) returns to it.
 
 ---
 
@@ -807,7 +806,7 @@ returns because every provider keeps the same contract.
 The [adapter pattern](../appendix/glossary.md#adapter-pattern) translates between an interface the
 system expects and one it is given. The cargo system expects two business records, a `BookingList`
 and an `Aircraft`, which
-[10. A clean architecture for the cargo loading system](#ch-cargo-architecture) defines. The outside
+[9. A clean architecture for the cargo loading system](#ch-cargo-architecture) defines. The outside
 world supplies a CSV file, a JSON document from a web service, or a request from a web page. Each
 source gets an adapter that turns it into the same records.
 
@@ -1227,82 +1226,16 @@ provider. The names make such a design sayable in one sentence.
 
 ---
 
-<a id="ch-formulation-placement"></a>
-
-## 9. Where the formulation lives
-
-The dependency rule of [7. From design to architecture](#ch-architecture) lets source code mention
-only its own ring or a ring further in. [4. Principles](#ch-principles) left one module with two
-reasons to change, because it holds both the formulation and the calls to the solver library. The
-two meet in an exact provider: its formulation has to be written with some library, and that library
-sits in a ring. The patterns of [8. Optimization patterns](#ch-optimization-patterns) leave the
-rings as they are. This choice does not, since it decides which ring holds a
-[solution provider](../appendix/glossary.md#solution-provider) and which ring mentions the solver.
-There are three placements, drawn in **Figure: formulation placement**.
-
-<a id="fig-formulation-placement"></a>
-
-**Figure: formulation placement**
-
-<p align="center">
-  <img src="assets/formulation-placement-rings.svg" width="800"
-       alt="Three panels, each with a use-case ring above and an outer ring below. Left, in the provider inside the use case: MipProviderGurobi, holding the formulation and the solver calls, sits in the use-case ring and mentions the Gurobi library in the outer ring, an arrow marked as an exception to the dependency rule. Middle, in the provider outside the use case: the use-case ring holds only the SolutionProvider interface, and MipProviderGurobi sits in the outer ring with the Gurobi library. Right, in a modelling layer: a provider in the use-case ring writes the formulation in the modelling layer, which sits in the outer ring and translates it for the Gurobi library or another solver library">
-</p>
-
-1. **In the provider, inside the use case.** The formulation is written directly with the solver's
-   own library, in a provider that sits with the use cases.
-2. **In the provider, outside the use case.** The same code, placed in an outer ring. The use cases
-   know only the `SolutionProvider` interface.
-3. **In a [modelling layer](../appendix/glossary.md#modelling-layer).** The formulation is written
-   once in a solver-independent modelling library, which translates it for whichever solver is
-   configured. The library may be bought, open source or built in house.
-
-| Placement                         | What it gives                                                                                         | What it costs                                                                                                                                                              |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| In the provider, inside use case  | The least code; every feature of the solver is available; the formulation is in one obvious place     | The use-case ring mentions a vendor library, a known exception to the dependency rule; the use cases cannot run without the solver; a new solver means a new formulation   |
-| In the provider, outside use case | The dependency rule holds without exception; the use cases can be built and tested without the solver | A new solver still means a new formulation; exact and heuristic providers end up in different rings                                                                        |
-| In a modelling layer              | The solver becomes a setting; one formulation serves several solvers                                  | One more layer to learn, upgrade and debug, and to build if it is in house; only the features the layer exposes; the system now depends on the layer instead of the solver |
-
-The last cost is easy to miss. A modelling layer does not remove the outside dependency, it replaces
-one with another, and the new one sits between the team and every solver feature it might want.
-
-The placement interacts with the pattern, and a layer that suits one pattern can work against
-another:
-
-| Pattern                 | In the provider, inside or outside the use case                                                             | In a modelling layer                                                                                                                               |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Single solve, exact     | Simplest when one solver is settled                                                                         | Fits well: one model, built once, and solver independence is the whole gain                                                                        |
-| Single solve, heuristic | No formulation to place                                                                                     | No formulation to place                                                                                                                            |
-| Sequential solve        | Each provider keeps its model and can change it and solve it again                                          | Fits badly: each provider's model is translated again, and handing a model or its answer to the next provider is limited to what the layer exposes |
-| Iterated solve          | The provider changes its model between rounds and solves it again, with every feature of the solver at hand | Works when the layer lets a model be changed and solved again; otherwise each round builds the model anew                                          |
-| Selected solve          | Each exact provider decides for itself                                                                      | Helps only the exact providers; the heuristic ones never use it                                                                                    |
-
-### Check yourself
-
-1. A team adopts a modelling layer so that it no longer depends on an outside library. What is wrong
-   with that reasoning?
-
-<details>
-<summary>Answers</summary>
-
-1. The layer is itself an outside library. The system depends on it instead of on the solver, which
-   is a real gain only if changing or mixing solvers is worth more than the layer costs.
-
-</details>
-
----
-
 <a id="ch-cargo-architecture"></a>
 
-## 10. A clean architecture for the cargo loading system
+## 9. A clean architecture for the cargo loading system
 
 The problem, from [the appendix](../appendix/cargo_model_example.md): a load planner receives a
 booking list for one departure, and the system proposes how many pallets of each product to load,
 maximizing revenue within the aircraft's weight and hold capacities and loading at least what must
-fly. This chapter chooses a pattern from [8. Optimization patterns](#ch-optimization-patterns) and a
-placement from [9. Where the formulation lives](#ch-formulation-placement) for that system, places
-every line of [Pseudocode: tangled script](#pseudo-tangled-script) in the four rings of **Figure:
-clean architecture**, and lists what each module promises.
+fly. This chapter chooses a pattern from [8. Optimization patterns](#ch-optimization-patterns) for
+that system, places every line of [Pseudocode: tangled script](#pseudo-tangled-script) in the four
+rings of **Figure: clean architecture**, and lists what each module promises.
 
 ### The two choices
 
@@ -1310,7 +1243,7 @@ clean architecture**, and lists what each module promises.
   provider, and `GreedyHeuristicProvider`, a heuristic one, as in
   [Pseudocode: strategy](#pseudo-strategy). The third change request, a heuristic for large
   instances, is the reason.
-- **Placement: in the provider, inside the use case.** The formulation is written with the Gurobi
+- **Formulation: with its solver, beside the use cases.** The formulation is written with the Gurobi
   library inside `MipProviderGurobi`, which sits in the use-case ring. The reason is argued below,
   once the rings are in place.
 
@@ -1424,19 +1357,13 @@ composition root that builds everything.
 ### Why the MIP provider lives in the use-case ring
 
 `MipProviderGurobi` mentions the Gurobi library, and the dependency rule says the use-case ring
-should not mention outer tools. The cargo design keeps it there anyway. The reason is cost, weighed
-over the three placements of
-[9. Where the formulation lives](#ch-formulation-placement).
+should not mention outer tools. The cargo design keeps it there anyway. The reason is cost.
 
-- **A modelling layer** would turn the solver into a setting. The cargo system has one small model,
-  one solver, and no plan to change it. The layer would be one more thing to learn and upgrade for a
-  benefit that may never be used.
-- **The provider outside the use case** would restore the rule on paper. It is the same code in a
-  different package: replacing the solver would still mean rewriting the formulation, and the two
-  providers would sit in two rings for no gain to this system.
-- **The provider inside the use case** leaves one exception, written down and contained.
-  `MipProviderGurobi` is the only code that mentions the Gurobi library, and it is reachable only
-  through `SolutionProvider`.
+Moving the provider to an outer ring would restore the rule on paper. It is the same code in a
+different package: replacing the solver would still mean rewriting the formulation, and the two
+providers would sit in two rings for no gain to this system. Keeping it with the use cases leaves
+one exception, written down and contained: `MipProviderGurobi` is the only code that mentions the
+Gurobi library, and it is reachable only through `SolutionProvider`.
 
 The choice has a price, and it should be stated with it. The use-case ring cannot be built or run
 without the Gurobi library, except for the modules tested with a stand-in provider. And replacing
@@ -1444,10 +1371,9 @@ the solver means writing a new provider, formulation included, and changing one 
 [Pseudocode: composition root](#pseudo-composition-root). That is contained work. It is not a
 one-line change.
 
-The answer would change with the facts. If two solvers had to be supported at once, say for
-customers with different licences, a modelling layer would start to pay. If the use cases had to run
-where the solver cannot be installed, the provider would move outward. Writing the reason down, as
-here, lets the next team tell whether it still holds.
+The answer would change with the facts. If the use cases had to run where the solver cannot be
+installed, the provider would move outward. Writing the reason down, as here, lets the next team
+tell whether it still holds.
 
 ### The promises at each boundary
 
@@ -1527,7 +1453,7 @@ The requests from [2. What design is for](#ch-design-purpose) now land as follow
 
 <a id="ch-conclusion"></a>
 
-## 11. Conclusion
+## 10. Conclusion
 
 Design exists to keep change cheap, through modularity and testability, and a decision-support
 system rests on several decisions, each of which can change on its own.
@@ -1552,11 +1478,8 @@ system rests on several decisions, each of which can change on its own.
 - **The optimization step has patterns of its own**
   ([8. Optimization patterns](#ch-optimization-patterns)). Single, sequential, iterated and selected
   solve each say which statuses they can honestly return.
-- **The formulation needs a place** ([9. Where the formulation lives](#ch-formulation-placement)).
-  In the provider or in a modelling layer, with the use cases or outside them: each placement has
-  its own price.
 - **The cargo system makes its choices in the open**
-  ([10. A clean architecture for the cargo loading system](#ch-cargo-architecture)). A selected
+  ([9. A clean architecture for the cargo loading system](#ch-cargo-architecture)). A selected
   solve, a formulation kept with its solver for a stated reason, two vocabularies, and a promise at
   every boundary.
 

@@ -325,12 +325,6 @@ A stand-in for a [dependency](#dependency), created by a test, that records the 
 from the unit under test so the test can check them. Used when the behavior under test is a call to
 another system, such as sending a message. One kind of [test double](#test-double).
 
-## Modelling layer
-
-A solver-independent library in which a formulation is written once and translated for whichever
-solver is configured. It turns the solver into a setting, at the price of one more layer to learn
-and maintain, and of access only to the solver features the layer exposes.
-
 ## Modularity
 
 Building a system from modules with clear boundaries, so that each module can be understood, tested
