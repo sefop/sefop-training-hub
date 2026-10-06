@@ -159,7 +159,8 @@ built for it, and the exercises that go with these chapters are listed in the
    produces decisions. It is the map for the sections that follow.
 4. **[04 — Designing decision-support software](../04-design/README.md)** — how coupling and
    cohesion, a few principles, contracts and patterns, and a clean architecture keep a
-   decision-support system easy to change, with a vocabulary of patterns for its optimization step.
+   decision-support system easy to change, with a vocabulary of patterns for its optimization
+   module.
 5. **[05 — Testing decision-support software](../05-testing/README.md)** — how to test a
    decision-support system.
 6. **[06 — Deploying decision-support software](../06-deployment/README.md)** — challenges of

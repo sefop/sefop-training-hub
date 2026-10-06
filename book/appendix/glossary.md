@@ -101,6 +101,12 @@ path rather than a manual procedure. Often written together with continuous inte
 Running the build and the [test suite](#test-suite) automatically on every change, so a change that
 breaks something is found in minutes instead of at the next release. Abbreviated CI.
 
+## Coordinator
+
+The module that runs an [optimization pattern](#optimization-pattern): it builds the input of each
+[solution provider](#solution-provider) it calls, runs the sequence, the loop or the choice, and
+returns one result. Seen from outside, it is itself a solution provider.
+
 ## Coupling
 
 How much one module of a system depends on another. Two modules are tightly coupled when a change to
@@ -127,8 +133,8 @@ editing the class. See [composition root](#composition-root).
 ## Dependency inversion principle
 
 The rule that high-level policy should not depend on low-level details; both should depend on an
-[abstraction](#abstraction). An optimization step depends on a solution-provider interface, and each
-solver implements it, instead of the step calling one solver library directly. The D in
+[abstraction](#abstraction). An optimization module depends on a solution-provider interface, and
+each solver implements it, instead of the module calling one solver library directly. The D in
 [SOLID](#solid).
 
 ## Derived oracle
@@ -179,9 +185,9 @@ testing one input per class instead of many redundant ones.
 ## Evaluator
 
 The module of an [iterated solve](#iterated-solve) that receives the answer of a
-[solution provider](#solution-provider) and returns two things: whether that answer is acceptable
-as a complete, final answer to the original instance, and feedback for the next round. It can be a
-second optimization model, a simulation or a check of rules.
+[solution provider](#solution-provider) and returns three things: the answer made complete, whether
+it is acceptable as a final answer to the original instance, and feedback for the next round. It can
+be a second optimization model, a simulation or a check of rules.
 
 ## Flaky test
 
@@ -257,8 +263,9 @@ The I in [SOLID](#solid).
 
 An [optimization pattern](#optimization-pattern) in which a [solution provider](#solution-provider)
 and an [evaluator](#evaluator) run in a loop: the provider answers, the evaluator judges the answer
-and sends feedback, and the provider answers again. It returns `optimal` or `infeasible` only when
-the loop holds a proof about the original instance.
+and sends feedback, and the provider answers again. Its [coordinator](#coordinator) keeps the best
+acceptable answer, and returns `optimal` or `infeasible` only when the loop holds a proof about the
+original instance.
 
 ## Iterative development
 
@@ -368,7 +375,7 @@ class behind the solution-provider interface, and the existing solver class is n
 
 ## Optimization pattern
 
-A named, recurring way to arrange the algorithms of the optimization step of a
+A named, recurring way to arrange the algorithms of the optimization module of a
 [decision-support system](#decision-support-system), by analogy with a
 [design pattern](#design-pattern). This book names four: [single solve](#single-solve),
 [sequential solve](#sequential-solve), [iterated solve](#iterated-solve) and
@@ -428,7 +435,7 @@ regressions early is the main job of an automated test suite.
 
 An [optimization pattern](#optimization-pattern) in which one of several
 [solution providers](#solution-provider) is chosen for each instance. It is the
-[strategy pattern](#strategy-pattern) applied to the optimization step. Also called algorithm
+[strategy pattern](#strategy-pattern) applied to the optimization module. Also called algorithm
 selection.
 
 ## Sequential solve
@@ -480,7 +487,8 @@ lowers [coupling](#coupling), or both.
 
 ## Solution provider
 
-A module that takes an instance and returns a result under the optimization [contract](#contract).
+A module that takes the record of the problem it solves and returns a result under the optimization
+[contract](#contract).
 An exact provider can prove optimality or infeasibility; a heuristic provider searches without
 proving, so it never returns `optimal`.
 

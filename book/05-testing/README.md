@@ -1514,7 +1514,7 @@ changes is which statuses a test will meet. An `Optimization` that stops at a ti
 uses a heuristic, may return `feasible` where an exact run to the end would return `optimal`, and
 `not_found` where it would return `optimal` or `infeasible`. The design section calls the
 arrangements that behave this way by name in
-[8. Optimization patterns](../04-design/README.md#ch-optimization-patterns).
+[7. Optimization patterns](../04-design/README.md#ch-optimization-patterns).
 
 What can a test still ask for?
 

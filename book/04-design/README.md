@@ -16,7 +16,7 @@ boundary, so that each change stays where it belongs and each module can be test
 The section argues from the general to the particular. It starts with what design is for and the two
 forces every design balances, derives the principles that follow from those forces, and states what
 a boundary promises. It then names the patterns that put the principles to work, first for software
-in general and then for the optimization step of a decision-support system, and ends with an
+in general and then for the optimization module of a decision-support system, and ends with an
 architecture for one complete system that uses all of them. Read the chapters in order: each uses
 only what the chapters before it defined.
 
@@ -846,9 +846,321 @@ line in [Pseudocode: composition root](#pseudo-composition-root).
 
 ---
 
+<a id="ch-optimization-patterns"></a>
+
+## 7. Optimization patterns
+
+The optimization module of a system in production is rarely one model solved once. A business
+problem grows past what one model can hold: the decision is taken in several steps, a heuristic
+stands beside an exact method for the instances that are too large, or a plan is checked by
+something no formulation can express and then solved again. Each of these arrangements changes what
+the system can honestly tell its user about the answer: whether it is proven best, merely good, or
+absent for a reason nobody has established.
+
+The same few arrangements recur from one industry to the next. This chapter describes four of them
+and proposes a name for each, an
+[optimization pattern](../appendix/glossary.md#optimization-pattern), in the form
+[6. Design patterns](#ch-patterns) used: the problem it answers, its structure, and its
+consequences. They are a small catalogue, and they combine.
+
+### The building block: a provider
+
+Every pattern is built from providers. A
+[solution provider](../appendix/glossary.md#solution-provider) takes the record of the problem it
+solves and returns a result with one of the four statuses of [5. Contracts](#ch-contracts). The
+`SolutionProvider` of the earlier chapters is the provider of the cargo problem: it takes an
+`Instance` and returns a `Result`. A provider of another problem has records of its own, and the
+statuses keep their meaning. Providers come in two kinds, told apart by what they can establish.
+
+- An **exact provider** can prove things about the instance. It may return any of the four statuses.
+  A mixed-integer programming (MIP) solver run on a formulation is the usual one.
+- A **heuristic provider** searches without proving. It returns `feasible` when it finds a load and
+  `not_found` when it does not, and never `optimal`. It may return `infeasible` only where it has a
+  proof. In the cargo model one sum is a proof: if the committed freight alone exceeds a capacity,
+  no load exists. A [heuristic](../appendix/glossary.md#heuristic) built by hand and a metaheuristic
+  such as simulated annealing are both of this kind.
+
+Each pattern below is a way of arranging providers, and one module runs the arrangement: its
+[coordinator](../appendix/glossary.md#coordinator). The coordinator builds the input of each
+provider it calls, runs the sequence, the loop or the choice, and returns the one `Result` its
+caller reads. Seen from outside, the coordinator is a provider again, and in the cargo system it is
+`Optimization`. A pattern is therefore a decision about how the optimization module produces its
+`Result`, and about nothing else. Whichever pattern is chosen, the callers of `Optimization.run` see
+the same contract, and nothing outside the optimization module changes.
+
+**Figure: optimization patterns** shows the four together. In every figure of this chapter an exact
+provider is blue, a heuristic provider is orange, a provider of either kind is white, a record is
+green, and a dashed outline marks what the caller sees as one provider.
+
+<a id="fig-optimization-patterns"></a>
+
+**Figure: optimization patterns**
+
+<p align="center">
+  <img src="assets/optimization-patterns-overview.svg" width="780"
+       alt="Four small diagrams. Single solve: one provider. Sequential solve: two providers in a row, the answer of the first becoming part of the input of the second, each solving a different problem. Iterated solve: a provider whose answer goes to an evaluator, which sends feedback back to the provider, in a loop. Selected solve: a choice that sends the instance to one of two providers">
+</p>
+
+### Single solve
+
+**Problem.** One algorithm handles every instance the system will meet, in the time the user can
+wait.
+
+**Structure.** One provider, exact or heuristic.
+
+<a id="fig-single-solve"></a>
+
+**Figure: single solve**
+
+<p align="center">
+  <img src="assets/optimization-patterns-single-solve.svg" width="760"
+       alt="Two rows. Top: an Instance goes into MipProviderGurobi, an exact provider, which returns a Result that may be optimal, feasible, infeasible or not found. Bottom: an Instance goes into LocalSearchProvider, a heuristic provider, which returns a Result that may be feasible or not found, and infeasible only where it has a proof">
+</p>
+
+**Consequences.**
+
+- It is the simplest arrangement to build, to explain and to test: one algorithm, one set of
+  promises.
+- The status comes straight from the provider. With an exact provider the planner can be told a load
+  is proven best; with a heuristic one, never.
+- Everything rests on that one algorithm keeping up. When instances outgrow it, the pattern has to
+  change, and a design that put the algorithm behind `SolutionProvider` can change it without
+  touching its callers.
+- The solver's objects and the algorithm's working data stay inside the provider, which returns
+  ordinary records. One provider is enough until its pieces start to change for different reasons,
+  the test of [4. Principles](#ch-principles).
+
+**Example 1 - One mixed-integer program:**
+
+A factory schedules a week of production with one MIP, handed to a solver that answers within a few
+seconds.
+
+**Example 2 - One genetic algorithm:**
+
+A network is designed where the quality of a design comes out of a simulation, which cannot be
+written as the constraints of a model. One genetic algorithm, a metaheuristic, searches the designs
+and calls the simulation on every design it tries. The simulation works inside one search, and its
+caller still sees one `solve`.
+
+The two examples are the same pattern with a different kind of provider.
+
+### Sequential solve
+
+**Problem.** The decision is too large or too mixed for one model, and it splits into decisions that
+can be taken one after another.
+
+**Structure.** A list of providers that run in sequence: two at the least, and as many as the
+decision has steps, written here as N providers. The answer of one provider becomes part of the
+input of the next, so the providers solve different problems, each with records of its own. The
+coordinator builds the input of each provider from the instance and the answers so far. Every
+provider in the sequence takes a decision: a system that prepares its data, solves one model and
+formats the plan has a single solve.
+
+<a id="fig-sequential-solve"></a>
+
+**Figure: sequential solve**
+
+<p align="center">
+  <img src="assets/optimization-patterns-sequential-solve.svg" width="780"
+       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, provider 1 takes a first decision. Its answer becomes part of the input of provider 2, which takes the next decision. An ellipsis then leads to provider N, a later decision, to show that any number of providers can follow. A Result leaves the outline. A note says two or more providers in sequence, each solving a different problem">
+</p>
+
+**Consequences.**
+
+- Each provider is small enough to solve, and can be built and tested on its own, with its own
+  contract.
+- The whole is not guaranteed to be optimal, even when every provider's answer is. An earlier
+  provider decides without knowing what its choice costs the later ones. The honest status for the
+  whole is `feasible`, unless the team can show that the providers add up to an optimum.
+- A later provider can fail on an instance that has an answer: an earlier provider may fix a choice
+  that the later one cannot complete, when another choice could have been completed. The status is
+  then `not_found`, not `infeasible`. Sending the failure back to the first provider to choose again
+  is possible, and it is a larger design.
+- The providers are coupled through the record that passes between them. That record is an interface
+  and deserves a contract of its own: it holds decisions, never the objects of a solver, and it
+  states what the next provider may assume about them.
+
+**Example 1 - Cluster first, route second:**
+
+A distributor plans deliveries from several depots. A first model assigns every customer to a depot,
+and a second step builds the routes of each depot from its own customers alone. Nothing guarantees
+that these are the best routes for the distributor as a whole, because the customers were assigned
+before any route existed.
+
+**Example 2 - Ranked objectives, one at a time:**
+
+A company decides which facilities to keep open. A first model finds the smallest number of
+facilities that can serve every customer, and a second, keeping to that number, makes the total
+travel distance as short as possible. Here the two models do add up: the two objectives are ranked,
+so the best answer of the second model is the best answer to the ranked problem.
+
+**Also called** hierarchical planning.
+
+### Iterated solve
+
+**Problem.** A model of the whole decision is too large to solve, or cannot be written at all, while
+a given answer is easy to check.
+
+**Structure.** A provider and an [evaluator](../appendix/glossary.md#evaluator) in a loop. The
+provider answers a problem that leaves something out. The evaluator, a second building block,
+receives that answer and returns three things: the answer made complete, unchanged when it already
+was; whether it is acceptable as a final answer to the original instance; and feedback for the next
+round. The feedback is whatever the provider should take into account next time, such as a
+constraint that rules the answer out, or a corrected value. An answer can be acceptable and still
+draw feedback. An evaluator can be a second optimization model, a simulation or a check of rules.
+The coordinator owns the rounds: it keeps the best acceptable answer it has seen, measured by the
+objective of the original instance, and stops when the evaluator has no more feedback, when a proof
+closes the search, or at a limit on the number of rounds. The original instance never changes: what
+passes between the rounds stays behind the one `solve` the caller sees. In **Figure: iterated
+solve** the evaluator is yellow.
+
+<a id="fig-iterated-solve"></a>
+
+**Figure: iterated solve**
+
+<p align="center">
+  <img src="assets/optimization-patterns-iterated-solve.svg" width="780"
+       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, a provider of either kind sends its answer to an evaluator, which may be a model, a simulation or a check of rules. The evaluator sends feedback back to the provider, closing a loop, and a Result leaves the outline. A note says that the loop keeps the best acceptable answer and stops on a proof, on no more feedback, or at a round limit">
+</p>
+
+**Consequences.**
+
+- The status depends on what the loop can prove. `optimal` and `infeasible` are facts about the
+  original instance, so the loop may return them only when it holds a proof about that instance.
+  Without one, it returns `feasible` if it holds an acceptable answer and `not_found` if it holds
+  none.
+- A simulation that accepts an answer proves nothing about the best one. A loop whose evaluator only
+  judges returns `feasible` or `not_found`, unless it holds a proof of its own.
+- The stopping rule is a design choice with a price. Nothing guarantees that the rounds settle, so
+  the loop needs a limit, and its running time is that of one solve multiplied by the number of
+  rounds. A limit on rounds bounds the number of calls and not the time they take, so the
+  coordinator's limit and the time limit of each provider are set together.
+- The provider and the evaluator must agree on the data they share, which makes that agreement worth
+  a test. An evaluator that draws random numbers also needs a fixed
+  [random seed](../appendix/glossary.md#random-seed), or the same instance returns different answers
+  on different runs.
+- The pattern names a loop the team writes and maintains itself. When a solver runs such a loop
+  inside one call, the team has a single solve.
+
+**Example 1 - Benders decomposition:**
+
+A company designs a supply network. A first model decides which warehouses to open. A second model
+works out the goods that can then flow from the open warehouses to the customers, which completes
+the answer, and returns a constraint that tells the first model what its choice costs. The loop
+stops when the gap between the best plan found and a bound on the best possible one is small enough,
+or after a set number of rounds. Stopped at a gap of zero it holds a proof; stopped earlier, its
+answer is `feasible`.
+
+**Example 2 - A model and a heuristic in alternation:**
+
+A company plans what to produce and which clients each vehicle visits in each period. A first model
+drops the routes and charges a fixed cost for every visit, which makes it small enough to solve. A
+routing heuristic then builds the routes for the visits that model chose, and the cost of inserting
+each client into a route replaces the fixed cost. The two alternate until the visiting costs are a
+good approximation of the routing costs. Here the feedback is a corrected value and proves nothing,
+so the answer is `feasible`.
+
+Column generation and cutting planes are other algorithms that can be arranged this way.
+
+### Selected solve
+
+**Problem.** Instances differ so much that no single algorithm suits them all.
+
+**Structure.** Several providers of the same problem, and one is chosen for each instance. This is
+the strategy pattern of [6. Design patterns](#ch-patterns) applied to the optimization module. The
+choice is made before any provider runs: calling a second provider because the first found nothing
+is a different design, with a status of its own to work out.
+
+<a id="fig-selected-solve"></a>
+
+**Figure: selected solve**
+
+<p align="center">
+  <img src="assets/optimization-patterns-selected-solve.svg" width="780"
+       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, a choice looks at the instance and sends it either to MipProviderGurobi, an exact provider, when it can finish in time, or to GreedyHeuristicProvider, a heuristic provider, otherwise. A Result leaves the outline. A note says that the status is whatever the chosen provider established">
+</p>
+
+**Consequences.**
+
+- The status depends on which provider ran, so two similar instances can come back with different
+  guarantees. Callers must read the status and never assume one.
+- The rule that chooses is itself something to tune and to test, and it drifts: a threshold measured
+  on one solver version or one machine is wrong on the next. Kept in the coordinator, apart from the
+  providers it chooses among, it can be retuned without touching an algorithm.
+- Every provider must keep the same contract. Selection is only safe because of Liskov substitution.
+
+**Example 1 - Exact or greedy, by the time available:**
+
+The cargo system of [6. Design patterns](#ch-patterns) holds two providers: `Optimization` sends an
+instance to `MipProviderGurobi` when it can finish in time, and to `GreedyHeuristicProvider`
+otherwise.
+
+**Example 2 - Enumeration, MIP or heuristic, by size:**
+
+A knapsack like the cargo model whose instances vary widely in size can choose among three
+providers: a search over all loads for an instance with a handful of products, a MIP for a medium
+one, and a heuristic for a large one.
+
+**Also called** algorithm selection, or an algorithm portfolio.
+
+### The four patterns side by side
+
+| Pattern          | Structure                                       | Statuses it can honestly return                                           | Main cost                                                     |
+| ---------------- | ----------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Single solve     | One provider                                    | All four if exact; never `optimal` if heuristic                           | Rests on one algorithm keeping up                             |
+| Sequential solve | Providers in a row, each on a different problem | Usually `feasible`; `not_found` when a later provider fails               | The whole is not guaranteed optimal; providers share a record |
+| Iterated solve   | A provider and an evaluator in a loop           | All four when the loop holds a proof; otherwise `feasible` or `not_found` | A stopping rule to set; running time multiplies               |
+| Selected solve   | One provider chosen per instance                | Whatever the chosen provider established                                  | A choosing rule to tune; guarantees vary by run               |
+
+Because a coordinator is a provider from outside, the patterns nest. A sequential solve can use a
+selected solve as its first provider, and an iterated solve can use a sequential solve as its
+provider, wherever the inner arrangement takes and returns the records its place expects. The names
+make such a design sayable in one sentence.
+
+### Check yourself
+
+1. A system solves one MIP to decide which aircraft type flies each route, then a second MIP to
+   assign crews to the result. Each MIP is solved to proven optimality. Which pattern is it, and
+   which status should the whole return?
+2. A team plans a week of deliveries with a MIP, runs the plan through a simulation of traffic,
+   lengthens the travel times the simulation found too short, and solves again. Every round, the MIP
+   is solved to proven optimality, and after five rounds the simulation accepts the plan. Which
+   pattern is it, and which status should it return?
+3. The team of question 2 replaces its traffic simulation with a faster one. Which module changes,
+   and what would force the MIP to change too?
+
+<details>
+<summary>Answers</summary>
+
+1. A sequential solve. The whole should return `feasible`: the first model chose aircraft without
+   knowing what its choice costs in crews, so two optimal models do not prove the best combined
+   plan.
+2. An iterated solve, with the simulation as its evaluator. It should return `feasible`: each round
+   proved the best plan for travel times that were then corrected, and a simulation that accepts a
+   plan says nothing about whether a better one exists.
+3. The evaluator. The MIP changes only if the feedback changes form, for example if the new
+   simulation reports delays per road where the old one reported corrected travel times.
+
+</details>
+
+### Further reading
+
+- John R. Rice, "The Algorithm Selection Problem", _Advances in Computers_ 15, 1976: the paper that
+  framed choosing an algorithm from the features of an instance as a problem of its own.
+- Cynthia Barnhart, Peter Belobaba and Amedeo R. Odoni, "Applications of Operations Research in the
+  Air Transport Industry", _Transportation Science_ 37 (4), 2003: a survey of an industry that plans
+  one decision after another, and of what solving those decisions separately costs.
+- Faiz Hamid (ed.), _Optimization Essentials: Theory, Tools, and Applications_, Springer, 2024: a
+  collection of applied studies, each told in full, with its model, its algorithm and its results.
+- Laurence A. Wolsey, _Integer Programming_, 2nd edition, Wiley, 2021: chapters 10 to 13 give the
+  algorithms behind the iterated solve, and section 13.5 the heuristics a team builds around a
+  solver.
+
+---
+
 <a id="ch-architecture"></a>
 
-## 7. From design to architecture
+## 8. From design to architecture
 
 Design happens at every level of a program: a function, a class, a package, a whole program, a set
 of programs across a company. The principles and patterns so far apply from a function up to a
@@ -858,13 +1170,16 @@ system, meaning the few large decisions about its modules and their boundaries t
 reverse later.
 
 An architecture is the principles of the earlier chapters applied to the largest modules of a
-system. Many architectures exist; this chapter describes one that fits decision-support software
-well.
+system. Those principles allow different architectures, each with its benefits and its costs.
+Studying several helps a team compare their trade-offs and choose one that suits the business
+problem.
 
 ### Clean architecture
 
-[Clean architecture](../appendix/glossary.md#clean-architecture), described by Robert C. Martin,
-arranges a system in four concentric rings, shown in **Figure: clean architecture**.
+[Clean architecture](../appendix/glossary.md#clean-architecture), described by Robert C. Martin, is
+the example this book uses to show how the principles can be applied to a decision-support system.
+Presenting it does not rank it above other architectures. It arranges a system in four concentric
+rings, shown in **Figure: clean architecture**.
 
 <a id="fig-clean-architecture"></a>
 
@@ -922,294 +1237,11 @@ concrete class, because assembling them is its job.
 
 - Robert C. Martin, _Clean Architecture: A Craftsman's Guide to Software Structure and Design_,
   Prentice Hall, 2017: the source of the four rings and the dependency rule.
-
----
-
-<a id="ch-optimization-patterns"></a>
-
-## 8. Optimization patterns
-
-[6. Design patterns](#ch-patterns) name arrangements of classes that recur in any software. The
-optimization step of a decision-support system has recurring arrangements of its own, of models and
-algorithms. Operations research has names for the algorithms. It has no settled names for the ways
-the software around them is arranged, so teams describe the same arrangement in different words and
-rediscover its consequences each time. This chapter proposes four names, each an
-[optimization pattern](../appendix/glossary.md#optimization-pattern), in the same form as a design
-pattern: the problem it answers, its structure, and its consequences. As with design patterns, the
-gain is a vocabulary.
-
-### The building block: a provider
-
-Every pattern is built from providers. A provider is the `SolutionProvider` of the earlier chapters,
-a [solution provider](../appendix/glossary.md#solution-provider): it takes an `Instance` and returns
-a `Result` under the contract of [5. Contracts](#ch-contracts). Providers come in two kinds, told
-apart by what they can establish.
-
-- An **exact provider** can prove things about the instance. It may return any of the four statuses.
-  A mixed-integer programming (MIP) solver run on a formulation is the usual one.
-- A **heuristic provider** searches without proving. It returns `feasible` when it finds a load and
-  `not_found` when it does not, and never `optimal`. It may return `infeasible` only where it has a
-  proof. In the cargo model one sum is a proof: if the committed freight alone exceeds a capacity,
-  no load exists. A [heuristic](../appendix/glossary.md#heuristic) built by hand and a metaheuristic
-  such as simulated annealing are both of this kind.
-
-Each pattern below is a way of arranging providers, and each arrangement is, seen from outside, one
-provider again: its caller calls one `solve` and reads one `Result`. That is what lets the patterns
-be swapped and nested without the rest of the system noticing. A pattern is therefore a decision
-about how the optimization step produces its `Result`, and about nothing else. Whichever pattern is
-chosen, the callers of `Optimization.run` see the same contract, and the use cases, the records and
-the rings of [7. From design to architecture](#ch-architecture) stay as they are.
-
-**Figure: optimization patterns** shows the four together. In every figure of this chapter an exact
-provider is blue, a heuristic provider is orange, a provider of either kind is white, a record is
-green, and a dashed outline marks what the caller sees as one provider.
-
-<a id="fig-optimization-patterns"></a>
-
-**Figure: optimization patterns**
-
-<p align="center">
-  <img src="assets/optimization-patterns-overview.svg" width="780"
-       alt="Four small diagrams. Single solve: one provider. Sequential solve: two providers in a row, the answer of the first becoming part of the input of the second, each solving a different problem. Iterated solve: a provider whose answer goes to an evaluator, which sends feedback back to the provider, in a loop. Selected solve: a choice that sends the instance to one of two providers">
-</p>
-
-### Single solve
-
-**Problem.** One algorithm handles every instance the system will meet, in the time the user can
-wait.
-
-**Structure.** One provider, exact or heuristic.
-
-<a id="fig-single-solve"></a>
-
-**Figure: single solve**
-
-<p align="center">
-  <img src="assets/optimization-patterns-single-solve.svg" width="760"
-       alt="Two rows. Top: an Instance goes into MipProviderGurobi, an exact provider, which returns a Result that may be optimal, feasible, infeasible or not found. Bottom: an Instance goes into LocalSearchProvider, a heuristic provider, which returns a Result that may be feasible or not found, and infeasible only where it has a proof">
-</p>
-
-**Consequences.**
-
-- It is the simplest arrangement to build, to explain and to test: one algorithm, one set of
-  promises.
-- The status comes straight from the provider. With an exact provider the planner can be told a load
-  is proven best; with a heuristic one, never.
-- Everything rests on that one algorithm keeping up. When instances outgrow it, the pattern has to
-  change, and a design that put the algorithm behind `SolutionProvider` can change it without
-  touching its callers.
-
-**Example 1 - One mixed-integer program:**
-
-A factory schedules a week of production with one MIP, handed to a solver that answers within a few
-seconds.
-
-**Example 2 - One genetic algorithm:**
-
-A network is designed where the quality of a design comes out of a simulation, which cannot be
-written as the constraints of a model. One genetic algorithm, a metaheuristic, searches the designs
-and calls the simulation on every design it tries. The simulation works inside one search, and its
-caller still sees one `solve`.
-
-The two examples are the same pattern with a different kind of provider.
-
-### Sequential solve
-
-**Problem.** The decision is too large or too mixed for one model, and it splits into decisions that
-can be taken one after another.
-
-**Structure.** A list of providers that run in sequence: two at the least, and as many as the
-decision has steps, written here as N providers. The answer of one provider becomes part of the
-input of the next, so the providers solve different problems.
-
-<a id="fig-sequential-solve"></a>
-
-**Figure: sequential solve**
-
-<p align="center">
-  <img src="assets/optimization-patterns-sequential-solve.svg" width="780"
-       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, provider 1 takes a first decision. Its answer becomes part of the input of provider 2, which takes the next decision. An ellipsis then leads to provider N, a later decision, to show that any number of providers can follow. A Result leaves the outline. A note says two or more providers in sequence, each solving a different problem">
-</p>
-
-**Consequences.**
-
-- Each provider is small enough to solve, and can be built and tested on its own, with its own
-  contract.
-- The whole is not guaranteed to be optimal, even when every provider's answer is. An earlier
-  provider decides without knowing what its choice costs the later ones. The honest status for the
-  whole is `feasible`, unless the team can show that the providers add up to an optimum.
-- A later provider can fail on an instance that has an answer: an earlier provider may fix a choice
-  that the later one cannot complete, when another choice could have been completed. The status is
-  then `not_found`, not `infeasible`. Sending the failure back to the first provider to choose again
-  is possible, and it is a larger design.
-- The providers are coupled through the record that passes between them. That record is an interface
-  and deserves a contract of its own.
-
-**Example 1 - Cluster first, route second:**
-
-A distributor plans deliveries from several depots. A first model assigns every customer to a depot,
-and a second step builds the routes of each depot from its own customers alone. Nothing guarantees
-that these are the best routes for the distributor as a whole, because the customers were assigned
-before any route existed.
-
-**Example 2 - Ranked objectives, one at a time:**
-
-A company decides which facilities to keep open. A first model finds the smallest number of
-facilities that can serve every customer, and a second, keeping to that number, makes the total
-travel distance as short as possible. Here the two models do add up: the two objectives are ranked,
-so the best answer of the second model is the best answer to the ranked problem.
-
-**Also called** hierarchical planning.
-
-### Iterated solve
-
-**Problem.** A model of the whole decision is too large to solve, or cannot be written at all, while
-a given answer is easy to check.
-
-**Structure.** A provider and an [evaluator](../appendix/glossary.md#evaluator) in a loop. The
-provider answers a problem that leaves something out. The evaluator, a second building block,
-receives that answer and returns two things: whether the answer is acceptable as a complete, final
-answer to the original instance, and feedback for the next round. The feedback is whatever the
-provider should take into account next time, such as a constraint that rules the answer out, or a
-corrected value. An answer can be acceptable and still draw feedback. An evaluator can be a second
-optimization model, a simulation or a check of rules. The loop keeps the best acceptable answer it
-has seen, measured by the objective of the original instance, and stops when the evaluator has no
-more feedback, when a proof closes the search, or at a limit on the number of rounds. The original
-instance never changes: what passes between the rounds stays behind the one `solve` the caller sees.
-In **Figure: iterated solve** the evaluator is yellow.
-
-<a id="fig-iterated-solve"></a>
-
-**Figure: iterated solve**
-
-<p align="center">
-  <img src="assets/optimization-patterns-iterated-solve.svg" width="780"
-       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, a provider of either kind sends its answer to an evaluator, which may be a model, a simulation or a check of rules. The evaluator sends feedback back to the provider, closing a loop, and a Result leaves the outline. A note says that the loop keeps the best acceptable answer and stops on a proof, on no more feedback, or at a round limit">
-</p>
-
-**Consequences.**
-
-- The status depends on what the loop can prove. `optimal` and `infeasible` are facts about the
-  original instance, so the loop may return them only when it holds a proof about that instance.
-  Without one, it returns `feasible` if it holds an acceptable answer and `not_found` if it holds
-  none.
-- A simulation that accepts an answer proves nothing about the best one. A loop whose evaluator only
-  judges returns `feasible` or `not_found`, unless it holds a proof of its own.
-- The stopping rule is a design choice with a price. Nothing guarantees that the rounds settle, so
-  the loop needs a limit, and its running time is that of one solve multiplied by the number of
-  rounds.
-- The provider and the evaluator must agree on the data they share, which makes that agreement worth
-  a test. An evaluator that draws random numbers also needs a fixed
-  [random seed](../appendix/glossary.md#random-seed), or the same instance returns different answers
-  on different runs.
-- The pattern names a loop the team writes and maintains itself. When a solver runs such a loop
-  inside one call, the team has a single solve.
-
-**Example 1 - Benders decomposition:**
-
-A company designs a supply network. A first model decides which warehouses to open. A second model
-works out the goods that can then flow from the open warehouses to the customers, which completes
-the answer, and returns a constraint that tells the first model what its choice costs. The loop
-stops when the gap between the best plan found and a bound on the best possible one is small enough,
-or after a set number of rounds. Stopped at a gap of zero it holds a proof; stopped earlier, its
-answer is `feasible`.
-
-**Example 2 - A model and a heuristic in alternation:**
-
-A company plans what to produce and which clients each vehicle visits in each period. A first model
-drops the routes and charges a fixed cost for every visit, which makes it small enough to solve. A
-routing heuristic then builds the routes for the visits that model chose, and the cost of inserting
-each client into a route replaces the fixed cost. The two alternate until the visiting costs are a
-good approximation of the routing costs. Here the feedback is a corrected value and proves nothing,
-so the answer is `feasible`.
-
-Column generation and cutting planes are other algorithms that can be arranged this way.
-
-### Selected solve
-
-**Problem.** Instances differ so much that no single algorithm suits them all.
-
-**Structure.** Several providers, and one is chosen for each instance. This is the strategy pattern
-of [6. Design patterns](#ch-patterns) applied to the optimization step.
-
-<a id="fig-selected-solve"></a>
-
-**Figure: selected solve**
-
-<p align="center">
-  <img src="assets/optimization-patterns-selected-solve.svg" width="780"
-       alt="An Instance enters a dashed outline that the caller sees as one provider. Inside, a choice looks at the instance and sends it either to MipProviderGurobi, an exact provider, when it can finish in time, or to GreedyHeuristicProvider, a heuristic provider, otherwise. A Result leaves the outline. A note says that the status is whatever the chosen provider established">
-</p>
-
-**Consequences.**
-
-- The status depends on which provider ran, so two similar instances can come back with different
-  guarantees. Callers must read the status and never assume one.
-- The rule that chooses is itself something to tune and to test, and it drifts: a threshold measured
-  on one solver version or one machine is wrong on the next.
-- Every provider must keep the same contract. Selection is only safe because of Liskov substitution.
-
-**Example 1 - Exact or greedy, by the time available:**
-
-The cargo system of [6. Design patterns](#ch-patterns) holds two providers: `Optimization` sends an
-instance to `MipProviderGurobi` when it can finish in time, and to `GreedyHeuristicProvider`
-otherwise.
-
-**Example 2 - Enumeration, MIP or heuristic, by size:**
-
-A knapsack like the cargo model whose instances vary widely in size can choose among three
-providers: a search over all loads for an instance with a handful of products, a MIP for a medium
-one, and a heuristic for a large one.
-
-**Also called** algorithm selection, or an algorithm portfolio.
-
-### The four patterns side by side
-
-| Pattern          | Structure                                       | Statuses it can honestly return                                           | Main cost                                                     |
-| ---------------- | ----------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Single solve     | One provider                                    | All four if exact; never `optimal` if heuristic                           | Rests on one algorithm keeping up                             |
-| Sequential solve | Providers in a row, each on a different problem | Usually `feasible`; `not_found` when a later provider fails               | The whole is not guaranteed optimal; providers share a record |
-| Iterated solve   | A provider and an evaluator in a loop           | All four when the loop holds a proof; otherwise `feasible` or `not_found` | A stopping rule to set; running time multiplies               |
-| Selected solve   | One provider chosen per instance                | Whatever the chosen provider established                                  | A choosing rule to tune; guarantees vary by run               |
-
-Because each pattern looks like one provider from outside, they nest. A sequential solve can use a
-selected solve as its first provider, and an iterated solve can use a sequential solve as its
-provider. The names make such a design sayable in one sentence.
-
-### Check yourself
-
-1. A system solves one MIP to decide which aircraft type flies each route, then a second MIP to
-   assign crews to the result. Each MIP is solved to proven optimality. Which pattern is it, and
-   which status should the whole return?
-2. A team plans a week of deliveries with a MIP, runs the plan through a simulation of traffic,
-   lengthens the travel times the simulation found too short, and solves again. Every round, the MIP
-   is solved to proven optimality, and after five rounds the simulation accepts the plan. Which
-   pattern is it, and which status should it return?
-
-<details>
-<summary>Answers</summary>
-
-1. A sequential solve. The whole should return `feasible`: the first model chose aircraft without
-   knowing what its choice costs in crews, so two optimal models do not prove the best combined
-   plan.
-2. An iterated solve, with the simulation as its evaluator. It should return `feasible`: each round
-   proved the best plan for travel times that were then corrected, and a simulation that accepts a
-   plan says nothing about whether a better one exists.
-
-</details>
-
-### Further reading
-
-- John R. Rice, "The Algorithm Selection Problem", _Advances in Computers_ 15, 1976: the paper that
-  framed choosing an algorithm from the features of an instance as a problem of its own.
-- Cynthia Barnhart, Peter Belobaba and Amedeo R. Odoni, "Applications of Operations Research in the
-  Air Transport Industry", _Transportation Science_ 37 (4), 2003: a survey of an industry that plans
-  one decision after another, and of what solving those decisions separately costs.
-- Faiz Hamid (ed.), _Optimization Essentials: Theory, Tools, and Applications_, Springer, 2024: a
-  collection of applied studies, each told in full, with its model, its algorithm and its results.
-- Laurence A. Wolsey, _Integer Programming_, 2nd edition, Wiley, 2021: chapters 10 to 13 give the
-  algorithms behind the iterated solve, and section 13.5 the heuristics a team builds around a
-  solver.
+- Mark Richards and Neal Ford, _Fundamentals of Software Architecture_, O'Reilly, 2020: a catalogue
+  of architecture styles, with the trade-offs of each.
+- Len Bass, Paul Clements and Rick Kazman, _Software Architecture in Practice_, 4th edition,
+  Addison-Wesley, 2021: how to reason from the qualities a system needs to the trade-offs between
+  architectures.
 
 ---
 
@@ -1220,7 +1252,7 @@ provider. The names make such a design sayable in one sentence.
 The problem, from [the appendix](../appendix/cargo_model_example.md): a load planner receives a
 booking list for one departure, and the system proposes how many pallets of each product to load,
 maximizing revenue within the aircraft's weight and hold capacities and loading at least what must
-fly. This chapter chooses a pattern from [8. Optimization patterns](#ch-optimization-patterns) for
+fly. This chapter chooses a pattern from [7. Optimization patterns](#ch-optimization-patterns) for
 that system, places every line of [Pseudocode: tangled script](#pseudo-tangled-script) in the four
 rings of **Figure: clean architecture**, and lists what each module promises.
 
@@ -1400,8 +1432,9 @@ be written down before the code runs.
 The requests from [2. What design is for](#ch-design-purpose) now land as follows.
 
 1. **Bookings as JSON.** One new adapter, `JsonBookingReader`, and one line in the composition root.
-2. **Dangerous goods limited to a quarter of the hold.** This one does not stay in one module, and
-   no design could make it. It is a new constraint on the load, so it changes what "feasible" means:
+2. **Dangerous goods limited to a quarter of the hold.** This one does not stay in one module.
+   It
+   is a new constraint on the load, so it changes what "feasible" means:
    a `Booking` and a `Product` gain a field, the readers fill it, the contract's definition of a
    feasible load gains a rule, and each provider must respect it, the formulation in
    `MipProviderGurobi` and the greedy rule alike. What the design gives is the list. Postprocess,
@@ -1454,17 +1487,18 @@ system rests on several decisions, each of which can change on its own.
   interfaces, give each module one reason to change, and make policy depend on abstractions rather
   than on solvers. Stop splitting when it stops helping.
 - **A boundary needs a promise** ([5. Contracts](#ch-contracts)). State what a module requires,
-  returns and raises. For the optimization step, say whether a load is proven best, and never report
-  "none found" as "none exists".
+  returns and raises. For the optimization module, say whether a load is proven best, and never
+  report "none found" as "none exists".
 - **Design patterns apply the principles** ([6. Design patterns](#ch-patterns)). Inject dependencies
   from one composition root, put algorithms behind a strategy, and adapt each outside source to the
   same records.
+- **The optimization module has patterns of its own**
+  ([7. Optimization patterns](#ch-optimization-patterns)). In a single, sequential, iterated or
+  selected solve, one coordinator presents a single provider to its caller, and the pattern says
+  which statuses it can honestly return.
 - **Architecture is design at the scale of a system**
-  ([7. From design to architecture](#ch-architecture)). In clean architecture, dependencies point
+  ([8. From design to architecture](#ch-architecture)). In clean architecture, dependencies point
   inward, toward what the system is for, even when the calls go outward.
-- **The optimization step has patterns of its own**
-  ([8. Optimization patterns](#ch-optimization-patterns)). Single, sequential, iterated and selected
-  solve each say which statuses they can honestly return.
 - **The cargo system makes its choices in the open**
   ([9. A clean architecture for the cargo loading system](#ch-cargo-architecture)). A selected
   solve, a formulation kept with its solver for a stated reason, two vocabularies, and a promise at
