@@ -6,9 +6,17 @@ links to the matching exercise.
 
 ## Python
 
-**[Testing in Python](https://github.com/sefop/training-testing-python)** — Learn unit testing,
-test-driven development (TDD), and mutation testing through structured exercises with immediate
-feedback.
+**[Training in Python](https://github.com/sefop/training-testing-python)**: practice unit testing,
+test-driven development (TDD), test oracles, and deploying decision-support software.
+
+The [Release a new model safely exercise](https://github.com/sefop/training-testing-python/tree/main/src/safe_release)
+accompanies [6. Release a new model safely](../06-deployment/README.md#ch-safe-release) in Section
+06.
+Build and run the application's existing Docker image, deploy a fork of
+[the advanced Python application](https://github.com/sefop/sefop-python-advanced) in your Render
+account, assess a solver change on identical instances, and practice restoring the previous release.
+Instructions and comparison helpers live in the training repository; the application's upstream
+repository stays unchanged.
 
 ---
 

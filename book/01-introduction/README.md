@@ -163,8 +163,8 @@ built for it, and the exercises that go with these chapters are listed in the
    module.
 5. **[05 — Testing decision-support software](../05-testing/README.md)** — how to test a
    decision-support system.
-6. **[06 — Deploying decision-support software](../06-deployment/README.md)** — challenges of
-   deployment.
+6. **[06 — Deploying decision-support software](../06-deployment/README.md)**: packaging a model
+   with its solver, assessing and recovering releases, and measuring runs and decisions in use.
 7. **[07 — Working with legacy decision-support software](../07-working-with-legacy-dss/README.md)**
    — changing a system you inherited without breaking what already works.
 8. **[08 — Leading the team](../08-leading-the-team/README.md)** — which expertise the team owns and

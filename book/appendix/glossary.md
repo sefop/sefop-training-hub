@@ -12,6 +12,11 @@ is done stays behind what it does. A cargo loading solver abstraction exposes on
 and several implementations, a MIP solver or a heuristic, can stand behind it. It is what lets you
 swap solvers without rewriting the code that calls them.
 
+## Acceptance criteria
+
+Conditions agreed before assessment that determine whether a change or result is acceptable.
+For a deployment, these can cover validity, decision quality, deadlines, and recovery.
+
 ## Adapter pattern
 
 A [design pattern](#design-pattern) in which a small class translates between the interface a system
@@ -25,15 +30,35 @@ A way of organizing software development around short feedback loops: release a 
 from the people who use it, and feed the lesson into the next change. Its value is the loop, not its
 meetings or vocabulary. Contrast with [waterfall](#waterfall).
 
+## Alert
+
+A notification that asks a named person or team to respond to a condition. Its specification
+includes what happened, who responds, and what action or investigation is needed.
+
 ## Arrange, act, assert
 
 The three-part body of a unit test, abbreviated AAA: arrange the objects and inputs the test needs,
 act by calling the unit once, and assert that the result meets the expectation.
 
+## Artifact registry
+
+A store for identified [build artifacts](#build-artifact), from which a retained package can be
+retrieved for deployment or recovery.
+
 ## Automated test
 
 A small program that runs your code on a known input and checks the output against an expected
 answer, without a person looking at the result. A collection of them is a [test suite](#test-suite).
+
+## Baseline
+
+A recorded reference used in a comparison, such as the current release or a simple planning
+method. Comparisons must state which inputs and measures make that reference comparable.
+
+## Batch run
+
+An execution that processes one or more instances without a person steering each solve. It can
+start on a schedule or be requested explicitly.
 
 ## Benchmark
 
@@ -51,6 +76,16 @@ and one that leaves room to spare. Think of the breakpoints in sensitivity analy
 
 A separate line of work in version control where a change is made without touching the shared code.
 When the change is ready, it is merged back, usually through a [pull request](#pull-request).
+
+## Build
+
+The process of preparing runnable software from source files and dependencies. Its output is a
+[build artifact](#build-artifact).
+
+## Build artifact
+
+An identified output of a [build](#build), such as an installable package or a container image.
+Retaining the artifact allows it to be deployed again without rebuilding old source.
 
 ## Clean architecture
 
@@ -76,11 +111,36 @@ How closely the elements inside one module of a system belong together. A cohesi
 purpose, so a single kind of change touches it and nothing else. Aim for high cohesion; contrast
 with [coupling](#coupling).
 
+## Commit
+
+A recorded state of files in [version control](#version-control), with an identifier that can
+be used to retrieve that state.
+
 ## Composition root
 
 The one place in a program, usually its entry point, where every concrete module is built and
 connected to the modules that use it. With [dependency injection](#dependency-injection), it is the
 only code that knows which concrete classes were chosen.
+
+## Configuration
+
+Settings supplied to a program or deployment, such as the solver selection, input location,
+time budget, or delivery destination. Configuration can change behavior without changing source.
+
+## Container
+
+A running instance created from a [container image](#container-image), with isolated processes
+and its own writable filesystem layer. Containers share the host's operating-system kernel.
+
+## Container image
+
+A packaged filesystem and startup metadata used to create a [container](#container). It can
+include application files, a runtime, and libraries; it is not itself a running process.
+
+## Continuous deployment
+
+Automatically deploying a change after its required checks and approvals pass. Contrast with
+[continuous delivery](#continuous-delivery), which keeps changes ready to deploy on demand.
 
 ## Contract
 
@@ -137,6 +197,11 @@ The rule that high-level policy should not depend on low-level details; both sho
 each solver implements it, instead of the module calling one solver library directly. The D in
 [SOLID](#solid).
 
+## Deployment
+
+Putting an identified software version and its configuration into an environment where it runs.
+A production deployment makes it available for the work its users rely on.
+
 ## Derived oracle
 
 A [test oracle](#test-oracle) that decides correctness from something other than a known expected
@@ -161,6 +226,11 @@ and give a team a shared vocabulary for describing a design.
 Running two independent implementations of the same [contract](#contract) on the same inputs and
 comparing their outputs. A disagreement means at least one of them is wrong.
 
+## Dockerfile
+
+A file of instructions for building a [container image](#container-image) with Docker, a tool
+for building images and running containers.
+
 ## Don't repeat yourself
 
 The rule that each piece of knowledge, such as a business rule or an output format, should live in
@@ -177,6 +247,16 @@ values are both optimal, so the pair certifies optimality without solving the pr
 A [functional test](#functional-test) that runs the whole application in a real-world scenario, the
 way its users would. The slowest and costliest kind of test, so a suite holds only a few.
 
+## Environment
+
+The resources and settings in which a program runs, including hardware, software, connectivity,
+and configuration. Development, testing, and production can use separate environments.
+
+## Environment variable
+
+A named value supplied to a process by the environment that starts it. Programs can read these
+values as configuration, for example to choose a solver.
+
 ## Equivalence partitioning
 
 Splitting the space of possible inputs into classes that are expected to behave the same way, then
@@ -188,6 +268,11 @@ The module of an [iterated solve](#iterated-solve) that receives the answer of a
 [solution provider](#solution-provider) and returns three things: the answer made complete, whether
 it is acceptable as a final answer to the original instance, and feedback for the next round. It can
 be a second optimization model, a simulation or a check of rules.
+
+## Fallback
+
+An agreed alternative action when the primary path cannot deliver its promise. A fallback plan
+still needs validation against current conditions; human escalation can be the appropriate action.
 
 ## Flaky test
 
@@ -204,6 +289,11 @@ this output or raises this error. Contrast with [non-functional test](#non-funct
 
 The base case of a unit's behavior: ordinary, valid inputs and the result they should produce, with
 nothing going wrong.
+
+## Health check
+
+A check of a running program's operational condition, such as whether it responds to a request.
+It establishes only the dependencies and behavior it actually exercises.
 
 ## Heuristic
 
@@ -296,6 +386,11 @@ Optimizing several objectives in a fixed order of priority: the first objective 
 the second is optimized among the solutions that keep the first at its optimum, and so on. Also
 called hierarchical optimization.
 
+## License server
+
+A service that grants running programs permission to use licensed software. Its connectivity
+and available permissions can be dependencies of a solver deployment.
+
 ## Linear program
 
 An optimization model whose objective and constraints are linear and whose variables are continuous.
@@ -314,6 +409,11 @@ The rule that any implementation of an interface must be usable wherever the int
 it accepts everything the [contract](#contract) accepts and keeps everything the contract promises.
 A heuristic that labels its load `optimal` takes the right input, returns the right record and
 breaks the principle. The L in [SOLID](#solid).
+
+## Log
+
+A record of events emitted by a running program. Linking events to a run identifier helps an
+investigator follow the path from input to delivered result.
 
 ## Managed dependency
 
@@ -379,6 +479,11 @@ behavior is added by adding code, not by editing code that works. A new heuristi
 class behind the solution-provider interface, and the existing solver class is not touched. The O in
 [SOLID](#solid).
 
+## Optimality gap
+
+A measure of the distance between a feasible solution's objective and a valid bound on the
+optimum. Its formula and normalization must be stated; it does not measure model validity.
+
 ## Optimization pattern
 
 A named, recurring way to arrange the algorithms of the optimization module of a
@@ -393,10 +498,26 @@ The difficulty of building a [test oracle](#test-oracle) when the correct output
 impossible, to compute independently of the code under test. Optimization models are a prime
 example.
 
+## Override rate
+
+The share of proposals changed by a user before acceptance, under a stated definition of a
+change and a stated denominator. Reasons and magnitudes help interpret the rate.
+
 ## Pinned environment
 
-A record of the exact version of every library a program depends on, used to rebuild the same
-environment on any machine. It makes a result on one machine a result on every machine.
+A record of the versions of a program's runtime and dependencies, used to reduce accidental
+differences between environments. It supports rebuilding and investigation; hardware, parallelism,
+and time limits can still affect a solver's results.
+
+## Port
+
+A numbered network endpoint used to address traffic to a process. A container's listening port
+must be reachable through the host's networking configuration.
+
+## Production
+
+The environment in which software serves the work its users depend on, rather than development
+or testing alone.
 
 ## Property-based testing
 
@@ -437,6 +558,21 @@ cheaper. The [test suite](#test-suite) is what tells you the behavior did not mo
 A behavior that used to work and no longer does, usually introduced by a later change. Catching
 regressions early is the main job of an automated test suite.
 
+## Release
+
+An identified software artifact and configuration approved for use. A release record links it
+to source, checks, assessment evidence, and deployments.
+
+## Rollback
+
+Restoring an earlier deployment to recover from an unacceptable change. It does not by itself
+undo business decisions or changes to stored data.
+
+## Secret
+
+A sensitive value whose possession grants access or authority, such as a password or deployment
+credential. Keep secrets outside source files and packages and restrict their access.
+
 ## Selected solve
 
 An [optimization pattern](#optimization-pattern) in which one of several
@@ -450,6 +586,16 @@ An [optimization pattern](#optimization-pattern) in which several
 [solution providers](#solution-provider) run in a row, the answer of one becoming part of the input
 of the next, so that each solves a different problem. The whole is not guaranteed to be optimal,
 even when every provider's answer is. Also called hierarchical planning.
+
+## Service
+
+A running program that exposes operations to other programs, such as receiving an optimization
+request and returning a proposal.
+
+## Shadow run
+
+Running a candidate version on the current version's input without using the candidate's output
+for the operational decision. It compares proposals without observing execution of the candidate.
 
 ## Shrinking
 
@@ -548,6 +694,11 @@ How easily each module of a system can be checked on its own, quickly, without r
 function that takes values and returns values is highly testable; one that reads files and calls a
 solver in the middle of its logic is not.
 
+## Time limit
+
+A budget for how long an operation, such as a solver search, may run. A solver time limit does
+not include all the work needed to obtain inputs and deliver a decision.
+
 ## Unified Modeling Language
 
 A standard notation for drawing software, abbreviated UML. This book uses a simplified form: a box
@@ -577,6 +728,11 @@ building the right model?". Contrast with [verification](#verification).
 Checking that software does what its specification says; for a model, checking that the code
 implements the mathematical model correctly: "are we building the model right?". Contrast with
 [validation](#validation).
+
+## Version control
+
+Recording changes to files so their history can be inspected and a past state retrieved.
+An identified recorded state is a [commit](#commit).
 
 ## Waterfall
 
