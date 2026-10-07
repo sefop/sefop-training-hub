@@ -1,0 +1,39 @@
+{
+  "data_kind": "illustrative, not measured exercise results",
+  "delivery_budget_seconds": {
+    "preparation": 30,
+    "primary_solve": 180,
+    "alternative": 60,
+    "validation_and_delivery": 30
+  },
+  "paired_release": {
+    "measure": "100 * (candidate revenue - current revenue) / current revenue",
+    "same_inputs_for_both_versions": true,
+    "noncritical_tolerance_percent": -1,
+    "critical_tolerance_percent": 0,
+    "instances": [
+      {"label": "Departure A", "difference_percent": 2, "critical": false},
+      {"label": "Departure B", "difference_percent": 2, "critical": false},
+      {"label": "Departure C", "difference_percent": 2, "critical": false},
+      {"label": "Departure D (critical)", "difference_percent": -3, "critical": true}
+    ]
+  },
+  "instance_growth": {
+    "release": "same release",
+    "hardware": "same hardware",
+    "instance_group": "comparable cargo instances",
+    "primary_solve_budget_seconds": 180,
+    "runs": [
+      {"products": 10, "solve_seconds": 10},
+      {"products": 15, "solve_seconds": 18},
+      {"products": 20, "solve_seconds": 15},
+      {"products": 25, "solve_seconds": 28},
+      {"products": 30, "solve_seconds": 45},
+      {"products": 35, "solve_seconds": 72},
+      {"products": 40, "solve_seconds": 90},
+      {"products": 45, "solve_seconds": 126},
+      {"products": 50, "solve_seconds": 158},
+      {"products": 55, "solve_seconds": 176}
+    ]
+  }
+}

@@ -130,6 +130,14 @@ promoting the checked artifact itself. If a host rebuilds from the checked sourc
 distinction and verify the resulting package: a moving base image or dependency can change a build
 without changing the application files.
 
+Follow the identified version in [Figure: checked release path](#fig-checked-release).
+
+<a id="fig-checked-release"></a>
+
+**Figure: checked release path**
+
+<p align="center"><img src="assets/release-path-checked-release.svg" width="640" alt="Commit A is built and tested, its artifact retained, deployed, and verified; failed checks stop deployment."></p>
+
 ### Environments and configuration
 
 An [environment](../appendix/glossary.md#environment) combines the resources and settings where the
@@ -221,6 +229,28 @@ from that image. Source edits on the laptop do not alter an existing image; rebu
 source, dependencies, or packaging instructions. A startup setting may instead require restarting
 with new configuration.
 
+[Figure: image and container lifecycle](#fig-image-lifecycle) tracks packages and running instances
+through a source edit.
+
+<a id="fig-image-lifecycle"></a>
+
+**Figure: image and container lifecycle**
+
+<p align="center"><img src="assets/packaging-image-lifecycle.svg" width="640" alt="Image v1 starts two containers. Editing source leaves them unchanged; rebuilding creates image v2 for a new container."></p>
+
+<details>
+<summary>Watch the build, run, and rebuild sequence</summary>
+
+The optional [Figure: image lifecycle sequence](#fig-image-lifecycle-animation) animates the same sequence.
+
+<a id="fig-image-lifecycle-animation"></a>
+
+**Figure: image lifecycle sequence**
+
+<p align="center"><img src="assets/packaging-image-lifecycle.gif" width="640" alt="Seven steps show source, build, two container starts, a source edit, rebuild, and a container using the new image."></p>
+
+</details>
+
 ### Make the container reachable
 
 A web application listens on a [port](../appendix/glossary.md#port), a numbered network endpoint.
@@ -240,6 +270,14 @@ An image can contain sample inputs. Production inputs, accepted plans, and inves
 usually need a separate storage policy. Files written into a container's writable layer can
 disappear when the container is replaced. Put records that must survive in storage whose retention
 and access the team has specified.
+
+The storage boundaries are shown in [Figure: durable records outside the container](#fig-durable-records).
+
+<a id="fig-durable-records"></a>
+
+**Figure: durable records outside the container**
+
+<p align="center"><img src="assets/packaging-durable-records.svg" width="640" alt="A retained image starts a container with temporary writable files; inputs, accepted plans, and run history are stored outside it."></p>
 
 Containers package an execution environment; they share the host's operating-system kernel and
 remain subject to its resource limits. Check target compatibility, memory, solver licensing, and
@@ -276,6 +314,15 @@ For an illustrative five-minute delivery window, reserve 30 seconds for obtainin
 three minutes for the primary solve, one minute for an alternative, and 30 seconds for checking and
 delivering the proposal. These allocations are business-specific. Measure them on representative
 inputs before relying on them.
+
+[Figure: delivery deadline](#fig-delivery-deadline) places these allocations on one proportional
+timeline.
+
+<a id="fig-delivery-deadline"></a>
+
+**Figure: delivery deadline**
+
+<p align="center"><img src="assets/run-failures-delivery-deadline.svg" width="640" alt="A 300-second deadline allocates 30 seconds preparation, 180 primary solve, 60 alternative, and 30 checking and delivery."></p>
 
 A solver [time limit](../appendix/glossary.md#time-limit) controls one search, not the entire run.
 Data retrieval, model construction, waiting for resources, and delivery consume time too. Arrange
@@ -382,9 +429,19 @@ In an illustrative cargo experiment, the planner could require zero invalid load
 loss on named critical instances, permit at most 1% loss elsewhere, and require every sampled
 proposal within the delivery window. These are example criteria, not universal airline thresholds.
 
-Suppose a display change loses 3% revenue on one instance. That is a symptom to investigate even if
-the average stays stable. Check exact inputs, active settings, solver conditions, and decisions
-before deciding whether the change caused a regression.
+In [Figure: paired release differences](#fig-paired-release-differences), three departures gain 2%
+each, but a critical departure loses 3%. The mean gain of 0.75% hides that critical regression.
+Check exact inputs, active settings, solver conditions, and decisions before deciding whether the
+change caused the difference.
+
+<a id="fig-paired-release-differences"></a>
+
+**Figure: paired release differences**
+
+<p align="center"><img src="assets/safe-release-paired-differences.svg" width="640" alt="Identical-input comparisons show changes of +2%, +2%, +2%, and -3%; the +0.75% mean hides a critical instance failing its no-loss criterion."></p>
+
+> [!NOTE]
+> These illustrative values explain the acceptance decision; they are not measured exercise results.
 
 Business significance asks whether a difference matters operationally. Statistical significance
 asks whether observations are consistent with a stated model of variability. A tiny, repeatable
@@ -402,6 +459,28 @@ A [shadow run](../appendix/glossary.md#shadow-run) gives the candidate the curre
 but keeps its output away from the operational decision. It checks current conditions a historical
 sample may miss. Record both input snapshots, compare using agreed measures, and isolate extra
 compute so it cannot delay the current service.
+
+Trace the shared input and the two output destinations in
+[Figure: shadow-run data flow](#fig-shadow-flow).
+
+<a id="fig-shadow-flow"></a>
+
+**Figure: shadow-run data flow**
+
+<p align="center"><img src="assets/safe-release-shadow-flow.svg" width="640" alt="One snapshot feeds current and candidate versions; both proposals feed comparison, and only the current proposal feeds operations."></p>
+
+<details>
+<summary>Watch the shadow-run sequence</summary>
+
+The optional [Figure: shadow-run sequence](#fig-shadow-flow-animation) animates the same sequence.
+
+<a id="fig-shadow-flow-animation"></a>
+
+**Figure: shadow-run sequence**
+
+<p align="center"><img src="assets/safe-release-shadow-flow.gif" width="640" alt="Four steps show a shared snapshot, both versions, current delivery independent of comparison, and comparison without candidate execution."></p>
+
+</details>
 
 Use shadow runs proportionately. A frequent, time-critical solve may justify several cycles. An
 infrequent planning tool may need offline experiments and planner review instead. A shadow proposal
@@ -482,6 +561,19 @@ against solve duration and time to first feasible load. Compare similar groups a
 formulation and hardware changes affect trends too. Difficulty does not grow in a fixed proportion
 to instance size.
 
+[Figure: instance size and solve duration](#fig-instance-growth) shows comparable runs approaching
+the primary solve's budget. Its 180-second boundary corresponds to the allocation in
+[Figure: delivery deadline](#fig-delivery-deadline).
+
+<a id="fig-instance-growth"></a>
+
+**Figure: instance size and solve duration**
+
+<p align="center"><img src="assets/run-health-instance-growth.svg" width="640" alt="Illustrative runs with 10 to 55 products approach a 180-second primary solve budget; the largest takes 176 seconds on fixed release and hardware."></p>
+
+> [!NOTE]
+> Each point is one illustrative run. The plot does not establish a scaling law or a release effect.
+
 If large departures leave little time for the alternative path, act before missing the deadline.
 The response may be more compute, a formulation improvement, a different time allocation, or an
 earlier input cutoff. Monitoring reveals pressure; the team chooses the response.
@@ -530,6 +622,15 @@ Keep the proposed load, accepted load, load actually flown, and observed outcome
 Link them to the departure and input snapshot. The objective is the model's estimate of a proposal's
 value. Actual revenue can differ because bookings change, freight misses the cutoff, or the
 proposal is overridden.
+
+[Figure: decision lineage](#fig-decision-lineage) places the records and intervening changes along
+the decision's path.
+
+<a id="fig-decision-lineage"></a>
+
+**Figure: decision lineage**
+
+<p align="center"><img src="assets/decision-quality-decision-lineage.svg" width="640" alt="A departure links proposed, accepted, and executed loads to observed revenue, with planner changes before acceptance and operational events before execution."></p>
 
 | Stage | Example measure | What it can establish |
 | --- | --- | --- |
