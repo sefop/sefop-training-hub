@@ -111,6 +111,12 @@ The share of your code's lines (or branches) that the test suite executes. Usefu
 what is untested; misleading as a goal, because executing a line is not the same as checking that it
 is right.
 
+## Coding agent
+
+A software assistant that can inspect project files, use tools, and propose or make changes toward
+a task. Its output still needs checks against the intended behavior and review by the people
+responsible for the software.
+
 ## Cohesion
 
 How closely the elements inside one module of a system belong together. A cohesive module serves one
@@ -563,6 +569,12 @@ cheaper. The [test suite](#test-suite) is what tells you the behavior did not mo
 
 A behavior that used to work and no longer does, usually introduced by a later change. Catching
 regressions early is the main job of an automated test suite.
+
+## Regression test
+
+An [automated test](#automated-test) that protects existing or corrected behavior against a future
+[regression](#regression). A test added for a bug should detect the faulty behavior and pass with
+the correction.
 
 ## Release
 
