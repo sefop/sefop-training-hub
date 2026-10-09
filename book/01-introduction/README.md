@@ -81,12 +81,14 @@ engineering), and the mixture raises new questions that are not obvious to answe
 
 What does weak engineering cost, in practice? Short answer: business value.
 
-Think of a system's total progress — features delivered, decisions supported, questions the business
-can now ask — against time. John Ousterhout in the book "A Philosohpy of Software Design" defines
-two approaches to develop software: strategic and tactical. Tactical programming has the mindset of
-getting something working, without the required investment to sustain that delivery pace. Strategic
-programming realizes that working code is not enough, and it cares for the long-term structure of
-the system.
+Think of a system's total progress, features delivered, decisions supported, questions the business
+can now ask, against time. In
+[_A Philosophy of Software Design_](https://web.stanford.edu/~ouster/cgi-bin/aposd.php), John
+Ousterhout distinguishes [tactical programming](../appendix/glossary.md#tactical-programming),
+focused on finishing the current task quickly while deferring design improvements, from
+[strategic programming](../appendix/glossary.md#strategic-programming), which invests in design to
+support future changes. [2. What design is for](../04-design/README.md#ch-design-purpose) in Section
+04 develops how that investment applies to a decision-support system.
 
 The following figure uses that definition to show what I have seen in the industry regarding
 decision-support software:
@@ -160,15 +162,17 @@ built for it, and the exercises that go with these chapters are listed in the
 4. **[04 — Designing decision-support software](../04-design/README.md)** — how coupling and
    cohesion, a few principles, contracts and patterns, and a clean architecture keep a
    decision-support system easy to change, with a vocabulary of patterns for its optimization
-   module.
+   module and an approach to investing in design as it evolves.
 5. **[05 — Testing decision-support software](../05-testing/README.md)** — how to test a
    decision-support system.
 6. **[06 — Deploying decision-support software](../06-deployment/README.md)**: packaging a model
    with its solver, assessing and recovering releases, and measuring runs and decisions in use.
-7. **[07 — Working with legacy decision-support software](../07-working-with-legacy-dss/README.md)**
-   — changing a system you inherited without breaking what already works.
+7. **[07: Working with legacy decision-support software](../07-working-with-legacy-dss/README.md)**:
+   establishing safety in an inherited system and helping its team adopt shared strategic
+   programming practices.
 8. **[08 — Leading the team](../08-leading-the-team/README.md)** — which expertise the team owns and
-   which it borrows, and how to change what a team of scientists treats as part of the job.
+   which it borrows, and how leaders with different authority support engineering practices within
+   teams and across projects.
 9. **[09 — AI-assisted development of decision-support software](../09-ai-assisted-development/README.md)**
    — working with coding assistants on model code without accepting output nobody has verified.
 
@@ -200,8 +204,10 @@ is the product, not the residue of a study, and it decays like any other product
 - **AI assistants amplify whatever practice surrounds them.** The amplifier is already switched on,
   which makes the foundations urgent rather than optional.
 
-The rest of the book answers the technical half of that gap one lifecycle phase at a time, and the
-cultural half in [Section 08 — Leading the team](../08-leading-the-team/README.md).
+The rest of the book develops the technical practices one lifecycle phase at a time.
+[Section 07](../07-working-with-legacy-dss/README.md) connects technical improvement with changing
+practices in an inherited project, and [Section 08](../08-leading-the-team/README.md)
+develops how leaders support that work within teams and across projects.
 
 ---
 

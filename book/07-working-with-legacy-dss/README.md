@@ -1,219 +1,172 @@
-# Section 07 — Working with legacy decision-support software
+# Section 07: Working with legacy decision-support software
 
 <a id="ch-introduction"></a>
 
 ## 1. Introduction
 
-Most projects do not start from an empty repository. The code was inherited, or the project started
-before anyone thought about tests. This section covers how to change such code safely: modernizing a
-system that is hard to modify, and fixing a bug so it stays fixed.
+An inherited decision-support system already holds useful knowledge: business rules, modeling
+choices, and behavior its users depend on. You need to extend or repair it while preserving that
+value. Yet a change can be difficult to understand, difficult to test, and difficult to agree on
+with the colleagues who maintain it. A [legacy system](../appendix/glossary.md#legacy-system) is one
+that is difficult to change safely.
+
+Those difficulties have both technical and cultural causes. Improving the software requires
+understanding the decisions and working conditions that shaped it, and what keeps those practices
+in place today. Lasting improvement changes both the software and the way the team works.
+
+### Ideas to develop
+
+- **Destination: shared [strategic programming](../appendix/glossary.md#strategic-programming).**
+  The team invests in design while delivering working behavior, so that future changes remain
+  manageable. Build on
+  [2. What design is for](../04-design/README.md#ch-design-purpose) in Section 04. Success means safer
+  changes become a shared, repeatable practice, with responsibility spreading beyond the original
+  advocate. Adoption under guidance and independent expertise are different achievements.
+- **Several paths lead to legacy.** Investigate knowledge gaps, delivery pressure, changing
+  expectations, professional identity, and informal norms. Repeated
+  [tactical programming](../appendix/glossary.md#tactical-programming), prioritizing the current task
+  while deferring design improvements, is one route. People on the same team may face different
+  barriers; explore those barriers with them before choosing an intervention.
+- **A practitioner with some support and limited authority.** The reader can demonstrate better
+  practices and help colleagues adopt them, while recognizing when more support is needed.
+  [Section 08](../08-leading-the-team/README.md) develops leadership at different levels of
+  authority, staffing, incentives, training strategy, and adoption across projects.
+- **A brief technical foundation.** Draw on Michael Feathers,
+  [_Working Effectively with Legacy Code_](https://www.informit.com/store/working-effectively-with-legacy-code-9780132931779),
+  for stabilization before improvement: representative protection for existing behavior and
+  reliable feedback on changes. Keep the detailed technical methods in that book and Section 05.
+- **Change management supplies the central framework.** Use selected strategies from Chip and Dan
+  Heath's [_Switch: How to Change Things When Change Is Hard_](https://heathbrothers.com/books/switch/).
+  Organize them around giving clear direction (Rider), building motivation (Elephant), and improving
+  the working environment (Path). Develop original applications to this setting.
+- **Examples from decision-support software.** Use plausible fictional situations involving model
+  rules, uncertain results, changes to inputs, and delivery commitments. Show how technical safety
+  can reduce fear, working examples can make a practice approachable, and shared workflows can help
+  colleagues repeat it. Identify general software practices as such.
+- **Bug fixing as a shared learning opportunity.** Focus the team on repairing the defect and
+  improving its safeguards. Investigate decisions constructively, without personal blame, and keep
+  responsibility for the response clear. Preserve what the team learns in a test and deliver the
+  correction through the same checks and automated release path as a feature. Automation and short
+  feedback loops make that response faster.
+- **Agents assist stabilization.** Mention their potential to help investigate code and draft tests,
+  while retaining review and verification. Link to Section 09 for practical depth.
+- **Assess progress realistically.** Look for shared use and maintenance of safer practices.
+  Examine whether they persist as the original advocate's involvement decreases. Expect occasional
+  shortcuts under pressure and make their consequences explicit.
 
 ### Chapters
 
-|  #  | Chapter                                   | After it you can…                                                                                                   | Status |
-| :-: | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------ |
-|  1  | [Introduction](#ch-introduction)          | Say what the section covers and what it assumes you can already do                                                  | Ready  |
-|  2  | [Brownfield adoption](#ch-brownfield)     | Add safety nets to a legacy system and improve it incrementally                                                     | Draft  |
-|  3  | [Protocol to fix a bug](#ch-bug-protocol) | Decide whether a bug is worth fixing, fix it at its root cause, and keep it from coming back with an automated test | Draft  |
-|  4  | [Conclusion](#ch-conclusion)              | Recall in one page how to change inherited code safely, and what makes a fix hold                                   | Ready  |
+| # | Chapter | After it you can… | Status |
+| :-: | --- | --- | --- |
+| 1 | [Introduction](#ch-introduction) | State the section's purpose and the reader's room to act | Draft |
+| 2 | [Understand the inherited system and its team](#ch-brownfield) | Investigate what makes change difficult and what keeps existing practices in place | Draft |
+| 3 | [Establish safety for improvement](#ch-safety) | Define a bounded stabilization effort that enables further changes | Draft |
+| 4 | [Give change a clear direction](#ch-direction) | Help colleagues understand the improvement and the actions it requires | Draft |
+| 5 | [Build confidence and motivation](#ch-motivation) | Connect better practices with colleagues' concerns and professional responsibilities | Draft |
+| 6 | [Make better practices easier to repeat](#ch-team-practices) | Establish workflows that support shared strategic programming | Draft |
+| 7 | [Fix a bug together](#ch-bug-protocol) | Combine collaborative investigation, a verified correction, and the normal delivery pipeline | Draft |
+| 8 | [Conclusion](#ch-conclusion) | Connect technical safety with a shared way of improving the system | Draft |
 
-Both chapters assume you can write an automated test. If not, start with
-[Section 05 — Testing decision-support software](../05-testing/README.md).
+This section assumes the testing foundations of [Section 05](../05-testing/README.md) and the
+delivery practices of [Section 06](../06-deployment/README.md). The chapter bodies below record the
+agreed scope; their detailed explanations and examples remain to be developed.
 
 ---
 
 <a id="ch-brownfield"></a>
 
-## 2. Brownfield adoption
+## 2. Understand the inherited system and its team
 
-### Introduction
+Define a [legacy system](../appendix/glossary.md#legacy-system) by the difficulty of changing it
+safely, then develop how to investigate its history, current purpose, and barriers to improvement.
+Connect [tactical programming](../appendix/glossary.md#tactical-programming), prioritizing the
+current task while deferring design improvements, with accumulated difficulty, while considering
+other causes. Examine colleagues' knowledge, working conditions, priorities, and professional
+responsibilities to understand why existing practices continue.
 
-In the majority of the cases we start to work in a project that already has an existing repository.
-Either because the repository was inherited, or because the project has already started. The
-implication is clear: you won't be able to design the application from scratch with all the good
-software principles you know.
+---
 
-When you enter this new project, in my experience, most likely there are going to be gaps regarding
-the desired design of the system with respect to the current state of the system. Are these gaps
-easily solvable? If the answer is no, then you are probably facing a **legacy system**: a system
-that is basically difficult to modify.
+<a id="ch-safety"></a>
 
-Dealing with a legacy system is hard, but not impossible. In this guide I will explain how I
-successfully worked with a legacy system. Hopefully these lessons can work for you as well. My
-advice will complement the timeless book on this topic "Working Effectively with Legacy Code" by
-Michael Feathers.
+## 3. Establish safety for improvement
 
-### What is a legacy system?
+Develop a brief stabilization approach grounded in Feathers. Introduce
+[characterization tests](../appendix/glossary.md#characterization-test): tests that record existing
+behavior and reveal unintended changes to it. Distinguish preserving behavior from establishing
+its correctness, and define enough protection to begin controlled improvements. Mention agent
+assistance here, with a link to [Section 09](../09-ai-assisted-development/README.md).
 
-A legacy system is any piece of software that is difficult to change safely — not because it is old,
-but because it lacks the safety mechanisms that make change possible. The clearest signal: **lack of
-automated tests**. Without tests, you cannot know whether a change broke something until it breaks
-in production. This guide will help you build those mechanisms and use them to modernize a system
-incrementally.
+---
 
-### Working Effectively with Legacy Code summary
+<a id="ch-direction"></a>
 
-1. **Name the problem precisely.** Before touching anything, write down exactly what behavior needs
-   to change — vague goals lead to changes you can't verify.
-2. **Write characterization tests.** Capture what the code _actually_ does right now through a set
-   of scenarios, not what it should do — this is your safety net before any change.
-3. **Find a seam.** A seam is a point in the code where you can substitute different behavior
-   without editing the code at that exact spot (e.g. passing in a dependency instead of creating it
-   internally).
-4. **Break the dependency at the seam.** Use the seam to isolate the piece you need to change from
-   the rest of the system, so it can be tested on its own.
-5. **Add the test you actually wanted.** Now that the code is isolated and testable, write the test
-   for the new or changed behavior.
-6. **Make the smallest safe change.** Modify the code in the smallest increment that keeps every
-   test — old and new — passing.
-7. **Refactor with confidence.** With characterization tests as a safety net, clean up the
-   surrounding code without fear of silently breaking it.
+## 4. Give change a clear direction
 
-### Complementary suggestions to the book
+Develop selected Rider strategies from Switch around the planning and understanding needed for
+change. Help colleagues see a concrete problem, a worthwhile destination, and specific actions they
+can take. Use decision-support examples to show how a working demonstration gives someone a starting
+point.
 
-> Findings from Francisco Zenteno Smith (2026), "Why operations research practitioners resist
-> software engineering practices and what changes their behavior," accepted for presentation at the
-> 2026 DSI Annual Conference, San Francisco, CA, USA (November 21-23, 2026).
+---
 
-In my experience, working with legacy code is more of a **Change Management** problem, rather than a
-**Software Problem**. Here I summarize the findings of the aforementioned paper. When I worked on
-this project, I based my actions on the change management book "Switch: How to Change Things When
-Change Is Hard" by Chip Heath and Dan Heath.
+<a id="ch-motivation"></a>
 
-#### Make the problem visible
+## 5. Build confidence and motivation
 
-1. **Make the invisible visible.** Install a code-quality tool (like SonarQube) and a code coverage
-   tool before you argue for change — people can't act on a cost they can't see.
-2. **Keep feedback depersonalized.** Point at the tool's numbers, not at someone's code by name —
-   singling a person out reads as an attack, not a lesson.
-3. **Borrow authority from outside.** Show that the state-of-the-art practice is how skilled
-   practitioners elsewhere already work, not your personal preference.
+Develop selected Elephant strategies from Switch around motivation and confidence. Address fear
+of breaking the system, uncertainty about learning a new practice, and whether engineering belongs
+in a scientist's work. Connect improvements with confidence in model behavior and shared
+accomplishment, using examples that can motivate change before an operational failure.
 
-#### Make change the easy path
+---
 
-1. **Build the safety net before you ask for change.** A suite of characterization tests removes the
-   single biggest reason people avoid refactoring: fear of silently breaking something.
-2. **Change the default, not the willpower.** A pull request template and/or mandatory checklists in
-   your CI pipeline make a missing test visible.
-3. **Cut friction in a slow adjacent workflow.** Automating a painfully manual step buys you both
-   time and credibility at once.
-4. **Remove the specific technical barrier behind "that can't be tested."** Often the only real
-   obstacle is that no one has shown it can be done — show how, then do it.
-5. **Invest in software engineering training**. Usually the root cause of poor software is the
-   current developers' practices. Assess if they need software engineering training, and if they do,
-   make sure that happens sooner rather than later.
+<a id="ch-team-practices"></a>
 
-#### Make it theirs
+## 6. Make better practices easier to repeat
 
-1. **Model the practice yourself first.** Be the first to follow the template, write the test, or
-   refactor the flagged code — credibility is key.
-2. **Tie the practice to who they already are.** Frame it in the vocabulary of their own expertise,
-   not as extra work bolted onto it.
-3. **Use a real failure as the turning point.** A concrete emotional incident traceable to the old
-   way of working shifts the conversation from "should we change" to "how fast can we."
-4. **Give the change a public moment.** A presentation or recognition event where the team — not you
-   — gets the credit is what makes the change outlive your involvement.
-
-#### Know your terrain
-
-1. **Check your position before you start.** A supportive manager will help a lot when investing in
-   refactoring. Make sure you have some support before you start.
-2. **Watch for shifts in who the team defers to.** A departure or new hire can change informal
-   authority — recognize the opening rather than assuming only your effort moved things.
-3. **Report quality and throughput together.** Showing that speed didn't drop is what defuses the
-   belief that good practice and delivery pace trade off against each other. Make sure the key
-   milestones of the project are being delivered on schedule.
-4. **Expect old habits under pressure, not their disappearance.** The realistic goal is a changed
-   default, not the permanent elimination of shortcuts.
+Develop selected Path strategies from Switch around the conditions in which people work.
+Explore working examples, constructive review, shared expectations, and automation that reduce the
+effort of repeating safer practices. Connect these changes with the release path in
+[3. From a tested change to a running release](../06-deployment/README.md#ch-release-path) in Section
+06, and assess how responsibility becomes shared.
 
 ---
 
 <a id="ch-bug-protocol"></a>
 
-## 3. Protocol to fix a bug
+## 7. Fix a bug together
 
-Fixing a bug seems like an easy or obvious task. Nonetheless, this process actually hides several
-dimensions that are worth mentioning explicitly. In order to properly fix a bug, let's define
-success first. What are the expected properties of this process?
-
-1. The bug has to be worth fixing
-2. The bug should be fixed at the root cause
-3. The bug should be solved only once
-
-### 1. The bug has to be worth fixing
-
-Whenever you have a bug, first triage it
-([source](https://blog.codinghorror.com/not-all-bugs-are-worth-fixing/)):
-
-- Severity: When this bug happens, how bad is the impact?
-- Frequency: How often does this bug happen?
-- Cost: How much effort would be required to fix this bug?
-- Risk: What is the risk of fixing this bug?
-
-If your evaluation concludes that this bug is worth solving, proceed to the next section.
-
-### 2. The bug should be fixed at the root cause
-
-When your boss asks you, "Did you fix the bug?", you should be confident when replying, **yes I
-did**. In order to show confidence, you need to first prove to yourself that you solved it. In other
-words, to prove causality. These are the steps I follow to prove causality:
-
-- Reproduce the bug: make sure you are able to reproduce the bug locally
-- Find the root cause(s) of the bug: sometimes a bug is created in step 5, flows through the program
-  to step 19, and becomes visible at step 20. Make sure you fix the bug at step 5, its real origin.
-  Once you find the root cause, proceed to the next section.
-
-### 3. The bug should be solved only once
-
-Once you find the root cause, create an automatic test with the AAA pattern:
-
-```python
-def test__module__conditions__expected_output():
-# Arrange
-# set up here the initial conditions that generate the bug
-
-# Act
-# trigger the functions that create the bug
-
-# Assert
-# assert that the bug is not present
-```
-
-This test now **must fail** because the code fix is not yet in place. Two things could happen now:
-
-- The test passes: this means the bug is not reproducible from this test, or it is reproducible but
-  your assertions do not actually detect it. You need to fix this test.
-- The test fails: now you have reproduced the bug, and the assertions are not met because the code
-  fix is not implemented yet.
-
-Now you implement the code fix. Then the test should pass. Push a PR with this fix, explaining what
-happened. By creating an automatic test, you have effectively documented your knowledge of this bug
-into the codebase permanently. If in the future any developer attempts to make a code change that
-makes this test fail, it will be a reminder that they can't do that because this bug could reappear.
+Develop a fictional cargo-planning defect as a worked example of the section's approach. Show a
+team investigating and repairing the problem together, capturing its learning in a test, and
+delivering the correction through its normal pipeline. Draw on Humble and Farley's
+[_Continuous Delivery_](https://www.informit.com/store/continuous-delivery-reliable-software-releases-through-9780321601919)
+for the repeatable, automated delivery process. Connect the example with the technical and cultural
+strategies developed earlier.
 
 ---
 
 <a id="ch-conclusion"></a>
 
-## 4. Conclusion
+## 8. Conclusion
 
-A legacy system is one you cannot change safely. Both chapters work in the same order, and it is the
-opposite of the tempting one: build the safety net first, then change the code.
+Lasting improvement connects technical safety with a shared way of working.
 
-- **The diagnosis is testability, not age** ([2. Brownfield adoption](#ch-brownfield)).
-  Characterization tests capture what the code does today, and a seam lets you isolate the part that
-  has to change.
-- **Adoption is a change-management problem, not a software one**
-  ([2. Brownfield adoption](#ch-brownfield)). Make the cost visible through a tool rather than
-  through a person, make the good path the easy path, let the team own the credit, and check you
-  have support before you start.
-- **A bug is fixed only when it cannot return** ([3. Protocol to fix a bug](#ch-bug-protocol)).
-  Triage it, reproduce it, fix the root cause rather than the symptom, and leave behind a test that
-  fails without the fix.
+- [2. Understand the inherited system and its team](#ch-brownfield): investigate both the current
+  difficulties and the conditions that keep them in place.
+- [3. Establish safety for improvement](#ch-safety): protect existing behavior so controlled changes
+  can begin.
+- [4. Give change a clear direction](#ch-direction): make the problem, destination, and next actions
+  concrete.
+- [5. Build confidence and motivation](#ch-motivation): help colleagues connect the improvement with
+  work they value.
+- [6. Make better practices easier to repeat](#ch-team-practices): support shared
+  [strategic programming](../appendix/glossary.md#strategic-programming), investing in design as the
+  system evolves, through the everyday workflow.
+- [7. Fix a bug together](#ch-bug-protocol): collaborate on the correction, preserve the learning,
+  and use the normal delivery pipeline.
 
-Both chapters assume you can already write those tests. Where that assumption does not hold yet, the
-safety net is [Section 05 — Testing decision-support software](../05-testing/README.md), not this
-section.
+[Section 08](../08-leading-the-team/README.md) develops how leaders support and extend these
+practices within teams and across projects.
 
 ---
 

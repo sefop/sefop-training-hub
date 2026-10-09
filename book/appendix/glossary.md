@@ -87,6 +87,12 @@ The process of preparing runnable software from source files and dependencies. I
 An identified output of a [build](#build), such as an installable package or a container image.
 Retaining the artifact allows it to be deployed again without rebuilding old source.
 
+## Characterization test
+
+A test that records existing behavior for a given input and detects unintended changes to that
+behavior. It helps protect a system during modification; it does not establish that the recorded
+behavior is correct.
+
 ## Clean architecture
 
 An [architecture](#software-architecture) that arranges a system in four concentric rings (entities,
@@ -654,11 +660,23 @@ A [test oracle](#test-oracle) in which the expected answer is stated in advance.
 Checking code without running it, for type errors, unused variables or suspicious constructs, so
 that a class of mistakes is caught before the program runs at all.
 
+## Strategic programming
+
+An approach to development that invests in the software's design while delivering working behavior,
+so that future changes remain manageable. Named by John Ousterhout; contrast with
+[tactical programming](#tactical-programming).
+
 ## Strategy pattern
 
 A [design pattern](#design-pattern) that puts a family of interchangeable algorithms behind one
 interface, so the code using them can choose one at run time, such as a MIP solver or a heuristic
 chosen for each instance.
+
+## Tactical programming
+
+An approach to development focused on finishing the current task quickly, accepting extra
+complexity and deferring design improvements. Named by John Ousterhout; contrast with
+[strategic programming](#strategic-programming).
 
 ## Technical debt
 

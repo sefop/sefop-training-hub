@@ -12,14 +12,41 @@ job, without losing the scientific strength that made it valuable.
 
 ### Ideas to develop
 
-- **Why practitioners resist, and what changes their behavior.** Build on the DSI 2026 paper _Why
-  software engineering practices are slow to spread among operations research practitioners and what
-  changes that behavior_, and on the change-management half of
-  [2. Brownfield adoption](../07-working-with-legacy-dss/README.md#ch-brownfield), which is planned
-  to move here. Its four themes: make the problem visible, make change the easy path, make it
-  theirs, and know your terrain.
-- **Report quality and throughput together.** Showing that delivery speed did not drop is what
-  defuses the belief that good practice and delivery pace trade off against each other.
+- **Leadership at different levels of authority.** Distinguish what a technical lead can change in
+  development and review, what a manager can change in priorities and time allocation, and what an
+  organizational leader can support across projects. Make each role's available actions and limits
+  explicit.
+- **Complement project-level improvement.** [Section 07](../07-working-with-legacy-dss/README.md)
+  addresses improving an inherited system and its team's practices from the position of a team
+  member with some support and limited authority. This section develops the leadership conditions
+  that enable and extend that work: staffing, incentives, training strategy, and adoption across
+  projects.
+- **Support strategic programming.**
+  [Strategic programming](../appendix/glossary.md#strategic-programming) means investing in design
+  while delivering working behavior to support future changes. Develop how leaders make room for
+  that investment in estimates, review, and time allocation, building on
+  [2. What design is for](../04-design/README.md#ch-design-purpose) in Section 04. Assess whether the
+  practice is shared and repeatable as responsibility spreads beyond its original advocate.
+- **Diagnose different barriers within the same team.** Unfamiliarity, uncertainty about how to
+  start, delivery pressure, professional identity, and informal team norms call for different
+  responses. Investigate both how existing practices arose and what keeps them in place.
+- **Make improvement possible in everyday work.** Give people time, working examples, useful
+  feedback, and a development process that makes safer practices easier to repeat. Make the cost of
+  current practices visible through shared evidence and constructive review.
+- **Connect engineering with scientific responsibility.** Develop how testing model behavior can
+  support confidence in the mathematics, and how shared accomplishments and recognition can make
+  engineering practices part of the team's own understanding of its job.
+- **Understand support and informal authority.** Examine reporting lines, actual time allocation,
+  and whose example colleagues follow. Explore when sufficient support allows improvement despite
+  different priorities, when additional authority is needed, and how membership changes affect
+  adoption. Avoid making full managerial alignment a universal prerequisite.
+- **Report quality and delivery together.** Use evidence of safer changes and useful delivery to
+  examine the perceived trade-off. Coverage, tool findings, and commit counts are partial
+  indicators; they do not establish model correctness, business value, or independent expertise.
+- **Distinguish adoption, mastery, and persistence.** Following a practice with an experienced
+  reviewer's guidance differs from applying it independently. Plan how to share responsibility and
+  assess whether practices persist when the original advocate's involvement decreases. Expect
+  occasional shortcuts under pressure; aim for a better default and explicit handling of exceptions.
 - **Training as a lever.** The [Learning Roadmap](../appendix/learning-roadmap.md) and the
   [practice repositories](../appendix/practice-repositories.md) are the starting material for
   [5. Training scientists in software engineering](#ch-training).
@@ -156,12 +183,13 @@ about what the change costs the individual scientist in the short term.
 
 ## 4. Introducing engineering practices to a team that resists them
 
-Resistance to engineering practice is usually rational from where the team stands: the practices
-cost time now and pay later, and nobody is measured on later. The chapter will treat adoption as a
-change-management problem rather than a technical one, around four themes — make the problem
-visible, make change the easy path, make it theirs, and know your terrain — drawing on the
-change-management material currently in
-[Section 07](../07-working-with-legacy-dss/README.md#ch-brownfield), which is planned to move here.
+People on the same team can have different reasons for maintaining existing practices. The chapter
+will develop how leaders diagnose those barriers and choose responses within their authority:
+making costs visible, allocating time, making better practices easier, and connecting them with the
+team's professional responsibilities. It will complement the project-level work in
+[Section 07](../07-working-with-legacy-dss/README.md#ch-team-practices) by addressing leadership support
+and adoption across projects, including how to assess whether improvements persist as the original
+advocate's involvement decreases.
 
 ---
 
@@ -195,9 +223,9 @@ has to reach them rather than sit beside them.
 - **The job changes, not only the toolkit**
   ([3. From science to software: the mindset change](#ch-mindset)). A model written for a study is
   judged by what it shows; the same model inside a system is judged by what it keeps doing.
-- **Resistance is rational from where the team stands**
+- **Different barriers require different responses**
   ([4. Introducing engineering practices to a team that resists them](#ch-introducing-practices)).
-  The practices cost time now and pay later, and nobody is measured on later.
+  Diagnose what keeps current practices in place, then choose actions within your authority.
 - **Training is the lever a manager actually controls**
   ([5. Training scientists in software engineering](#ch-training)). Choose a bounded curriculum,
   then give the team work where the new practice is the only way through.

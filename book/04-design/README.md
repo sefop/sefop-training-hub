@@ -147,6 +147,43 @@ the load itself, and no arrangement of the code can keep that inside one module.
 does is show exactly which modules such a change reaches, and
 [9. A clean architecture for the cargo loading system](#ch-cargo-architecture) returns to it.
 
+### Investing in future change
+
+The six requests reveal a choice that recurs throughout development. A team can fit each request
+into the existing function and postpone improving its structure. Each delivery then leaves the next
+developer with more to understand and check. This is
+[code complexity](../appendix/glossary.md#code-complexity): how much a person must hold in mind to
+understand the code. How can the team keep delivering without making each new change harder?
+
+John Ousterhout distinguishes two approaches in
+[_A Philosophy of Software Design_](https://web.stanford.edu/~ouster/cgi-bin/aposd.php), Chapter 3.
+**[Tactical programming](../appendix/glossary.md#tactical-programming)** focuses on finishing the
+current task quickly, accepting extra complexity and deferring improvements to the design.
+**[Strategic programming](../appendix/glossary.md#strategic-programming)** invests in the design
+while delivering working behavior, so that future changes remain manageable. That investment can
+prevent a design problem or address one that development has revealed.
+
+Consider the first request: bookings now arrive from a web service in a different format. Both
+approaches must deliver a system that reads the new bookings and plans the load.
+
+| Decision | Tactical approach | Strategic approach |
+| --- | --- | --- |
+| Where to put the new reading logic | Add another branch inside `plan_flight_load` | Give input reading its own module, separate from formulation and solving |
+| What to leave for the next change | Another format intertwined with the rest of the function | A boundary that lets the input format change on its own |
+
+The strategic approach takes additional work now: deciding the boundary and moving the existing
+reading logic behind it. That work has a stated purpose, the input change the team is already
+making. The later chapters develop the principles and patterns for choosing such boundaries.
+
+As requests accumulate, repeatedly postponing investment in the function's structure is one route
+to a system that becomes difficult to change. Strategic programming makes improvement a regular
+part of delivery. It does not require designing the entire future system in advance.
+
+### Further reading
+
+- John Ousterhout, [_A Philosophy of Software Design_](https://web.stanford.edu/~ouster/cgi-bin/aposd.php),
+  Yaknyam Press, 2018, Chapter 3: why ongoing investment in design matters for future development.
+
 ---
 
 <a id="ch-forces"></a>
@@ -1480,7 +1517,7 @@ system rests on several decisions, each of which can change on its own.
 
 - **Design is for change** ([2. What design is for](#ch-design-purpose)). A good design keeps each
   change inside as few modules as possible, shows which ones, and lets each module be tested on its
-  own.
+  own. Invest in that design as the system evolves.
 - **Two forces decide it** ([3. Forces: coupling and cohesion](#ch-forces)). Aim for high cohesion
   and low coupling.
 - **Principles turn the forces into rules** ([4. Principles](#ch-principles)). Hide details behind
