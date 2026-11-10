@@ -31,5 +31,5 @@
   // .claude/ is local-only and not part of the book, so linting it locally would
   // report problems CI can never see. markdown_tips.md is an authoring note of alert
   // examples, not reader content.
-  "globs": ["**/*.md", "!workshops/**", "!node_modules/**", "!.claude/**", "!book/appendix/markdown_tips.md"]
+  "globs": ["**/*.md", "!node_modules/**", "!.claude/**", "!book/appendix/markdown_tips.md"]
 }

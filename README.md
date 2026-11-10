@@ -39,7 +39,7 @@ of that lifecycle. Chapters explain the ideas in a language-agnostic way, and so
 
 ## Workshops
 
-Slides and material from past and upcoming talks live in [workshops](workshops/).
+Slides and material from past and upcoming talks live in [sefop-workshops](https://github.com/sefop/sefop-workshops).
 
 ## For Questions
 
