@@ -1,4 +1,4 @@
-"""Regenerate Section 06 diagrams, plots, and optional animations.
+"""Regenerate the Chapter 05 and Chapter 06 diagrams, plots, and optional animations.
 
 Install requirements.txt into an authoring virtual environment, then run this
 file from any directory. --preview-dir saves raster previews at the book's
@@ -28,6 +28,8 @@ from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Rectangle
 from PIL import Image, ImageDraw
 
 ASSETS = SOURCE.parent
+# The run-health and decision-quality figures belong to Chapter 06, which took those sections.
+OPERATING_ASSETS = SOURCE.parents[2] / "06-operating" / "assets"
 PREVIEW_WIDTH = 640
 SVG_NS = "http://www.w3.org/2000/svg"
 INK = "#263746"
@@ -560,11 +562,13 @@ def save_static(
     preview_dir: Path | None,
 ) -> None:
     """Save a vector figure and, when requested, its matching displayed-size preview."""
+    directory = OPERATING_ASSETS if name.startswith(("run-health-", "decision-quality-")) else ASSETS
+    directory.mkdir(parents=True, exist_ok=True)
     figure.savefig(
-        ASSETS / f"{name}.svg",
-        metadata={"Date": None, "Creator": "SEFOP Section 06 figure generator"},
+        directory / f"{name}.svg",
+        metadata={"Date": None, "Creator": "SEFOP deployment and operating figure generator"},
     )
-    annotate_svg(ASSETS / f"{name}.svg", title, description)
+    annotate_svg(directory / f"{name}.svg", title, description)
     if preview_dir is not None:
         figure.savefig(preview_dir / f"{name}.png", dpi=PREVIEW_WIDTH / figure.get_figwidth())
     plt.close(figure)

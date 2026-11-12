@@ -5,9 +5,11 @@ such as boxed chocolate, bottled water or cartons of laptops, and a departure ca
 everything they want to send. A load planner decides how many pallets of each product go on the
 aircraft.
 
-> [!NOTE] This is a simplified example on purpose. A real freighter operation might also consider
-> how the load is balanced, which pallets may be stacked on which, and how dangerous goods are kept
-> apart. The subject of this book is the engineering around a model rather than the model itself.
+> [!NOTE]
+>
+> This is a simplified example on purpose. A real freighter operation might also consider how the
+> load is balanced, which pallets may be stacked on which, and how dangerous goods are kept apart.
+> The subject of this book is the engineering around a model rather than the model itself.
 
 ---
 
@@ -132,16 +134,16 @@ capacity.
 
 ### Notation
 
-| Symbol | Type      | Meaning                               | Unit             | Domain                                    |
-| :----: | --------- | ------------------------------------- | ---------------- | ----------------------------------------- |
-|  $I$   | set       | products on the booking list          | —                | finite set                                |
-|  $i$   | index     | one product                           | —                | $i \in I$                                 |
-| $r_i$  | parameter | revenue of one pallet of product $i$  | thousands of USD | $r_i \ge 0$                               |
-| $w_i$  | parameter | weight of one pallet of product $i$   | tonnes           | $w_i > 0$                                 |
-| $v_i$  | parameter | volume of one pallet of product $i$   | m³               | $v_i > 0$                                 |
-| $l_i$  | parameter | pallets of product $i$ that must fly  | pallets          | $l_i \in \mathbb{Z}_{\ge 0}$              |
-|  $W$   | parameter | maximum weight the aircraft may carry | tonnes           | $W \ge 0$                                 |
-|  $V$   | parameter | volume of the hold                    | m³               | $V \ge 0$                                 |
+| Symbol | Type      | Meaning                               | Unit             | Domain                                      |
+| :----: | --------- | ------------------------------------- | ---------------- | ------------------------------------------- |
+|  $I$   | set       | products on the booking list          | —                | finite set                                  |
+|  $i$   | index     | one product                           | —                | $i \in I$                                   |
+| $r_i$  | parameter | revenue of one pallet of product $i$  | thousands of USD | $r_i \ge 0$                                 |
+| $w_i$  | parameter | weight of one pallet of product $i$   | tonnes           | $w_i > 0$                                   |
+| $v_i$  | parameter | volume of one pallet of product $i$   | m³               | $v_i > 0$                                   |
+| $l_i$  | parameter | pallets of product $i$ that must fly  | pallets          | $l_i \in \mathbb{Z}_{\ge 0}$                |
+|  $W$   | parameter | maximum weight the aircraft may carry | tonnes           | $W \ge 0$                                   |
+|  $V$   | parameter | volume of the hold                    | m³               | $V \ge 0$                                   |
 | $x_i$  | variable  | pallets of product $i$ loaded         | pallets          | $x_i \in \mathbb{Z}_{\ge 0}$, $x_i \ge l_i$ |
 
 <a id="ex-two-pallet"></a>

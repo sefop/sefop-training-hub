@@ -1,11 +1,11 @@
-# Section 01 — Introduction
+# Chapter 01: Introduction
 
 Operations research creates business value by helping organizations make better decisions. That
 value reaches the business through **decision-support software**: software that runs repeatedly to
-turn data, mathematical models, and business rules into recurring decisions. This book is about the
-engineering of decision-support systems, in particular, what are the differences from traditional
-software, how can we tackle the software engineering problems that arise in the intersection between
-operations research and software development.
+turn data, mathematical models, and business rules into recurring decisions. This book starts where
+a company already has such a decision: a recurring business problem it has chosen to solve with
+operations research. It is about how a team takes that problem to decisions the business uses, and
+keeps them good while the software and the business change.
 
 ---
 
@@ -15,8 +15,8 @@ operations research and software development.
 
 Operations research turns data, business needs, and mathematics into a decision. Training and
 literature in the field concentrate on the first half of that sentence: how to formulate a problem,
-and how to solve it. What happens to the decision afterwards — who runs the model next month, on
-which machine, with whose data — gets far less attention.
+and how to solve it. What happens to the decision afterwards (who runs the model next month, on
+which machine, with whose data) gets far less attention.
 
 Some example problems that require a decision recurrently are:
 
@@ -42,11 +42,11 @@ components surrounding the mathematical model. Some examples are:
 - Absence or lack of automated tests.
 - Manual steps to deploy the application.
 
-What are the consequences? the same consequences that happens in other software when unproper
-practices are used:
+What are the consequences? The same ones that follow in any other software built with poor
+practices:
 
 - Code works on one machine but is difficult to reproduce elsewhere.
-- Systems are difficult for peers -and even for their original authors- to maintain or extend.
+- Systems are difficult for peers, and even for their original authors, to maintain or extend.
 - Developers are afraid of modifying the system because the consequences are unpredictable.
 - Applications eventually need to be rewritten rather than evolved.
 
@@ -64,9 +64,8 @@ research becoming identified with its models rather than with implementing and m
 Research Engineering" practice of its own.
 [Vidoni & Cunico (2022)](https://doi.org/10.1007/s12532-022-00225-1) surveyed 168 modellers and
 found [technical debt](../appendix/glossary.md#technical-debt) in code and documentation to be
-widespread — and, in most cases, introduced deliberately. The last finding is the one that matters
-for a manager: the debt is not an accident of ignorance, it is a choice made under delivery
-pressure.
+widespread and, in most cases, introduced deliberately. The last finding is the one that matters for
+a manager: the debt is not an accident of ignorance, it is a choice made under delivery pressure.
 
 ### Technical reasons
 
@@ -87,8 +86,8 @@ can now ask, against time. In
 Ousterhout distinguishes [tactical programming](../appendix/glossary.md#tactical-programming),
 focused on finishing the current task quickly while deferring design improvements, from
 [strategic programming](../appendix/glossary.md#strategic-programming), which invests in design to
-support future changes. [2. What design is for](../04-design/README.md#ch-design-purpose) in Section
-04 develops how that investment applies to a decision-support system.
+support future changes. [2. What design is for](../03-design/README.md#ch-design-purpose) in Chapter
+03 develops how that investment applies to a decision-support system.
 
 The following figure uses that definition to show what I have seen in the industry regarding
 decision-support software:
@@ -109,13 +108,70 @@ decision-support software:
        alt="Total progress against time for three systems: solid foundations, legacy system, and short-lived system">
 </p>
 
-> [!NOTE] The curves are illustrative, after Ousterhout (2018) — an ordering, not measured data.
+> [!NOTE]
+>
+> The curves are illustrative, after Ousterhout (2018): an ordering, not measured data.
+
+---
+
+<a id="ch-decisionops"></a>
+
+## 3. DecisionOps
+
+Other communities have met this problem before. When machine learning models began to run in
+production, teams found that a model which worked in a notebook decayed in operation. They did not
+build a discipline from scratch: they extended [DevOps](../appendix/glossary.md#devops), the
+practices that let software teams change a running system quickly and safely, to models.
+[Kreuzberger, Kühl and Hirschl (2023)](https://doi.org/10.1109/ACCESS.2023.3262138) describe the
+result, [machine learning operations (MLOps)](../appendix/glossary.md#mlops). Data teams did the
+same for analytics pipelines with [DataOps](../appendix/glossary.md#dataops)
+([Ereth, 2018](https://ceur-ws.org/Vol-2191/paper13.pdf)), and teams building on large language
+models are doing it again with large language model operations (LLMOps).
+
+Decision-support software is another such kind of software, with difficulties of its own: the
+correct answer of its model is hard to know in advance, a run can end without a feasible plan, and a
+decision can be correct and still go unused. It has had no equivalent discipline.
+[DecisionOps](../appendix/glossary.md#decisionops) is that extension:
+
+> DecisionOps applies the Three Ways of DevOps (flow, feedback, and continual learning and
+> experimentation) to decision-support software. In this book, that means optimization-based
+> decision software, heuristics included, taken from a recurring business problem to decisions that
+> are used and evaluated, with data and predictive models treated as inputs through explicit
+> interfaces.
+
+The [Three Ways](../appendix/glossary.md#three-ways) are the principles Kim, Humble, Debois and
+Willis (2016) use to organize DevOps, in chapters 2 to 4 of _The DevOps Handbook_:
+
+- **Flow:** move small changes quickly and safely from the people who build the system to the people
+  who use it.
+- **Feedback:** see what the running system does, soon enough to act on it.
+- **Continual learning and experimentation:** turn what the team learns, failures included, into the
+  way it works.
+
+[Chapter 02](../02-lifecycle/README.md) shows what each Way asks of decision-support software.
+
+Practitioners already use the term DecisionOps for the work of putting decision models into
+operation ([Nextmv, 2024](https://www.nextmv.io/blog/what-is-decisionops-and-why-does-it-matter);
+[FICO, 2026](https://www.fico.com/blogs/what-decisionops-and-why-it-critical-piece-your-ai-strategy)).
+This book gives the big picture of that work for optimization-based decision software: how an
+operations research team, supported by its company, takes a recurring business problem to decisions
+that are used and evaluated. Whether a decision deserves software at all, whether to build or buy
+it, and where the team belongs in the organization are outside its scope.
+
+### Further reading
+
+- Gene Kim, Jez Humble, Patrick Debois and John Willis, _The DevOps Handbook_, IT Revolution Press,
+  2016: the book's main reference. Part I introduces the Three Ways; the later parts develop each
+  one.
+- Dominik Kreuzberger, Niklas Kühl and Sebastian Hirschl,
+  ["Machine Learning Operations (MLOps): Overview, Definition, and Architecture"](https://doi.org/10.1109/ACCESS.2023.3262138),
+  _IEEE Access_ 11, 2023: how the machine learning community defined its own extension of DevOps.
 
 ---
 
 <a id="ch-ai-assistants"></a>
 
-## 3. Delegate the engineering to AI-coding assistants?
+## 4. Delegate the engineering to AI-coding assistants?
 
 AI-coding assistants are pervasive nowadays. Yet adoption does not guarantee success.
 
@@ -130,53 +186,44 @@ Most OR teams are already working with coding agents, which means the **amplifie
 switched on**. That is the reason the practices this book discusses matter now, not a reason to
 postpone them.
 
-> [!IMPORTANT] Solid engineering practices are the prerequisite for capturing value from agentic
-> development.
+> [!IMPORTANT]
+>
+> Solid engineering practices are the prerequisite for capturing value from agentic development.
 
 ---
 
 <a id="ch-how-to-read"></a>
 
-## 4. How this book is organized
+## 5. How this book is organized
 
-This book is one part of SEFOP, the Software Engineering Framework for Optimization Programs, which
-develops four capabilities: **Train** (the skills a team needs), **Lead** (how such a team is
-staffed and led), **Deliver** (working reference implementations), and **Go Agentic** (getting
-business value out of AI coding assistants). The book covers Train and Lead. Deliver and Go Agentic
-live in sibling repositories at [github.com/sefop](https://github.com/sefop). That division is why
-the chapters here use pseudocode rather than a language: runnable code belongs to the repositories
-built for it, and the exercises that go with these chapters are listed in the
+DecisionOps names the practice defined in this book; [SEFOP](https://github.com/sefop) is the
+project developing this handbook and its companion resources to help operations research teams put
+that practice into use. The sections use pseudocode rather than a programming language: runnable
+code belongs to the exercises listed in the
 [practice repositories appendix](../appendix/practice-repositories.md).
 
-### The book in nine sections
+### The book in seven chapters
 
-1. **01 — Introduction** (this section) — what decision-support software is, why its engineering is
-   usually the weak half, and what that weakness costs.
-2. **[02 — When a company needs decision-support software and an OR team](../02-do-you-need-dss/README.md)**
-   — whether a recurring decision justifies software at all, whether to build the team in-house or
-   buy from a vendor, and where the team belongs in the organization.
-3. **[03 — The lifecycle of decision-support software](../03-software-development-lifecycle/README.md)**
-   — why software, built on imperfect information and sensitive to tiny errors, demands a team that
-   learns quickly and adapts quickly, and what changes in each lifecycle phase when the software
-   produces decisions. It is the map for the sections that follow.
-4. **[04 — Designing decision-support software](../04-design/README.md)** — how coupling and
-   cohesion, a few principles, contracts and patterns, and a clean architecture keep a
-   decision-support system easy to change, with a vocabulary of patterns for its optimization
-   module and an approach to investing in design as it evolves.
-5. **[05 — Testing decision-support software](../05-testing/README.md)** — how to test a
-   decision-support system.
-6. **[06 — Deploying decision-support software](../06-deployment/README.md)**: packaging a model
-   with its solver, assessing and recovering releases, and measuring runs and decisions in use.
-7. **[07: Working with legacy decision-support software](../07-working-with-legacy-dss/README.md)**:
-   establishing safety in an inherited system and helping its team adopt shared strategic
-   programming practices.
-8. **[08 — Leading the team](../08-leading-the-team/README.md)** — which expertise the team owns and
-   which it borrows, and how leaders with different authority support engineering practices within
-   teams and across projects.
-9. **[09 — AI-assisted development of decision-support software](../09-ai-assisted-development/README.md)**
-   — working with coding assistants on model code without accepting output nobody has verified.
+1. **01 Introduction** (this chapter): what decision-support software is, why its engineering is
+   usually the weak half, and what DecisionOps is.
+2. **[02 The lifecycle of decision-support software](../02-lifecycle/README.md)**: why software,
+   built on imperfect information and sensitive to tiny errors, demands a team that learns quickly
+   and adapts quickly, what the Three Ways ask of decision-support software, and what changes in
+   each lifecycle phase. It is the map for the chapters that follow.
+3. **[03 Designing decision-support software](../03-design/README.md)**: how coupling and cohesion,
+   a few principles, contracts and patterns, and a clean architecture keep a decision-support system
+   easy to change, with a vocabulary of patterns for its optimization module.
+4. **[04 Testing decision-support software](../04-testing/README.md)**: how to test a
+   decision-support system, including a model whose optimal answer nobody knows in advance.
+5. **[05 Deploying decision-support software](../05-deployment/README.md)**: packaging a model with
+   its solver, planning for runs that end badly, and releasing a new model safely.
+6. **[06 Operating and evaluating decision-support software](../06-operating/README.md)**: measuring
+   the health of every run, following decisions into use, and reviewing whether the system still
+   earns its maintenance.
+7. **[07 Adopting DecisionOps](../07-adopting/README.md)**: starting a new system or improving an
+   inherited one, and the staffing, time and training that leaders provide.
 
-Four references sit outside the sections and are meant to be used rather than read:
+Four references sit outside the chapters and are meant to be used rather than read:
 
 - [Glossary](../appendix/glossary.md): defines every software engineering term the book uses.
 - [Learning roadmap](../appendix/learning-roadmap.md): a suggested order for learning software
@@ -189,7 +236,7 @@ Four references sit outside the sections and are meant to be used rather than re
 
 <a id="ch-conclusion"></a>
 
-## 5. Conclusion
+## 6. Conclusion
 
 Operations research reaches the business through software that runs again and again. That software
 is the product, not the residue of a study, and it decays like any other product left unengineered.
@@ -201,15 +248,17 @@ is the product, not the residue of a study, and it decays like any other product
   disciplines meet have no obvious answers.
 - **The cost is business value, not tidiness.** Weak foundations show up as systems that stall
   within a year, or that turn legacy once the original authors leave.
+- **DecisionOps extends DevOps to decision-support software** ([3. DecisionOps](#ch-decisionops)),
+  as MLOps and DataOps extended it to models and data: flow, feedback, and continual learning,
+  applied to software whose output is a decision.
 - **AI assistants amplify whatever practice surrounds them.** The amplifier is already switched on,
   which makes the foundations urgent rather than optional.
 
-The rest of the book develops the technical practices one lifecycle phase at a time.
-[Section 07](../07-working-with-legacy-dss/README.md) connects technical improvement with changing
-practices in an inherited project, and [Section 08](../08-leading-the-team/README.md)
-develops how leaders support that work within teams and across projects.
+The rest of the book develops DecisionOps one lifecycle phase at a time, from design to operation,
+and [Chapter 07](../07-adopting/README.md) turns to how a team adopts it, whether it starts a new
+system or inherits one.
 
 ---
 
 [← Book contents](../../README.md) ·
-[Next section: 02 When a company needs decision-support software and an OR team →](../02-do-you-need-dss/README.md)
+[Next chapter: 02 The lifecycle of decision-support software →](../02-lifecycle/README.md)

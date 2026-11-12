@@ -1,4 +1,4 @@
-# Section 04: Designing decision-support software
+# Chapter 03: Designing decision-support software
 
 <a id="ch-introduction"></a>
 
@@ -6,28 +6,28 @@
 
 A decision-support system rests on several separate decisions: where the data comes from, which
 business rules apply, how the problem is formulated, which algorithm solves it and how the plan is
-delivered. Each of them can change while the others stay as they are. **The difference this section
+delivered. Each of them can change while the others stay as they are. **The difference this chapter
 addresses:** in the script a model usually starts as, those decisions are tangled together, so a
 change to one of them risks breaking the others, and none of them can be checked on its own. Design
 is the practice of drawing boundaries between them, which divides the code into
 [modules](../appendix/glossary.md#module), and stating what each module promises across its
 boundary, so that each change stays where it belongs and each module can be tested alone.
 
-The section argues from the general to the particular. It starts with what design is for and the two
+The chapter argues from the general to the particular. It starts with what design is for and the two
 forces every design balances, derives the principles that follow from those forces, and states what
 a boundary promises. It then names the patterns that put the principles to work, first for software
 in general and then for the optimization module of a decision-support system, and ends with an
-architecture for one complete system that uses all of them. Read the chapters in order: each uses
-only what the chapters before it defined.
+architecture for one complete system that uses all of them. Read the sections in order: each uses
+only what the sections before it defined.
 
 ### The cargo model example
 
-Every chapter designs the cargo loading system defined in
+Every section designs the cargo loading system defined in
 [the appendix](../appendix/cargo_model_example.md): for one departure, how many pallets of each
 product to load, so that the revenue carried is as large as possible without exceeding the
 aircraft's maximum weight or the capacity of its hold. The inputs are a booking list (the products
 offered and the pallets of each that must fly), a product catalogue (weight, volume and revenue per
-pallet) and the aircraft's two capacities. This section holds the model fixed: the formulation never
+pallet) and the aircraft's two capacities. This chapter holds the model fixed: the formulation never
 changes, only the code around it.
 
 ### How to read the pseudocode and figures
@@ -40,7 +40,7 @@ The pseudocode is written as structured English, one action per line, with only 
 needs. A function is written as its name, its inputs and, after `returns`, what it gives back. Every
 function is marked [`public` or `private`](../appendix/glossary.md#public-and-private): any part of
 the program may call a public function, and only the code around it may call a private one. The
-difference between the two is central to this section, so no function is left unmarked. A few more
+difference between the two is central to this chapter, so no function is left unmarked. A few more
 keywords appear: `class` groups data with the functions that use it, `interface` lists public
 functions without implementing them, `implements` says that a class provides everything an interface
 lists, and `record` is a plain group of named values. A comment that starts with `requires`,
@@ -141,7 +141,7 @@ has no module to run alone, takes nothing but files and gives back nothing but a
 of effort from the person testing can check the rule on its own. Design is therefore a prerequisite
 for testing: a team can only test what its design lets a test reach.
 
-The rest of this section is about why that happens and how to design it away. One caution before
+The rest of this chapter is about why that happens and how to design it away. One caution before
 starting: a good design does not make every change small. The second request is a new constraint on
 the load itself, and no arrangement of the code can keep that inside one module. What a good design
 does is show exactly which modules such a change reaches, and
@@ -166,23 +166,24 @@ prevent a design problem or address one that development has revealed.
 Consider the first request: bookings now arrive from a web service in a different format. Both
 approaches must deliver a system that reads the new bookings and plans the load.
 
-| Decision | Tactical approach | Strategic approach |
-| --- | --- | --- |
-| Where to put the new reading logic | Add another branch inside `plan_flight_load` | Give input reading its own module, separate from formulation and solving |
-| What to leave for the next change | Another format intertwined with the rest of the function | A boundary that lets the input format change on its own |
+| Decision                           | Tactical approach                                        | Strategic approach                                                       |
+| ---------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Where to put the new reading logic | Add another branch inside `plan_flight_load`             | Give input reading its own module, separate from formulation and solving |
+| What to leave for the next change  | Another format intertwined with the rest of the function | A boundary that lets the input format change on its own                  |
 
 The strategic approach takes additional work now: deciding the boundary and moving the existing
 reading logic behind it. That work has a stated purpose, the input change the team is already
-making. The later chapters develop the principles and patterns for choosing such boundaries.
+making. The later sections develop the principles and patterns for choosing such boundaries.
 
-As requests accumulate, repeatedly postponing investment in the function's structure is one route
-to a system that becomes difficult to change. Strategic programming makes improvement a regular
-part of delivery. It does not require designing the entire future system in advance.
+As requests accumulate, repeatedly postponing investment in the function's structure is one route to
+a system that becomes difficult to change. Strategic programming makes improvement a regular part of
+delivery. It does not require designing the entire future system in advance.
 
 ### Further reading
 
-- John Ousterhout, [_A Philosophy of Software Design_](https://web.stanford.edu/~ouster/cgi-bin/aposd.php),
-  Yaknyam Press, 2018, Chapter 3: why ongoing investment in design matters for future development.
+- John Ousterhout,
+  [_A Philosophy of Software Design_](https://web.stanford.edu/~ouster/cgi-bin/aposd.php), Yaknyam
+  Press, 2018, Chapter 3: why ongoing investment in design matters for future development.
 
 ---
 
@@ -240,7 +241,7 @@ ripple** marks the lines of [Pseudocode: tangled script](#pseudo-tangled-script)
 
 The two lines are far apart, and nothing in the function says they belong together; a developer who
 changes one can easily miss the other. In a design with high cohesion and low coupling, the same
-change stays inside one module, the one that writes the plan. The next chapter states the principles
+change stays inside one module, the one that writes the plan. The next section states the principles
 that get there.
 
 ### Check yourself
@@ -275,7 +276,7 @@ that get there.
 
 The forces say what a good design looks like; the principles say how to get there. Each principle
 below is a rule of thumb that raises cohesion, lowers coupling, or both, and each one fixes one
-thing in [Pseudocode: tangled script](#pseudo-tangled-script). The table at the end of the chapter
+thing in [Pseudocode: tangled script](#pseudo-tangled-script). The table at the end of the section
 summarizes which force each principle moves.
 
 ### Information hiding
@@ -421,8 +422,8 @@ same forces:
 - **[Open-closed](../appendix/glossary.md#open-closed-principle).** A module should be open for
   extension and closed for modification: new behavior is added by adding code, not by editing code
   that works. Adding a heuristic means writing one new class that implements `SolutionProvider`;
-  `MipProviderGurobi` is not touched. The new class still has to be shown to work, and the code
-  that chooses between providers still changes.
+  `MipProviderGurobi` is not touched. The new class still has to be shown to work, and the code that
+  chooses between providers still changes.
 - **[Interface segregation](../appendix/glossary.md#interface-segregation-principle).** No module
   should depend on functions it does not use. Writing the plan needs the load; it should not depend
   on an interface that also exposes the solver's gap, node count and log. Keep those in a separate
@@ -484,7 +485,7 @@ not because four is a good number.
 
 ## 5. Contracts
 
-Splitting two modules creates an obligation to say how they cooperate. The split of the last chapter
+Splitting two modules creates an obligation to say how they cooperate. The split of the last section
 left one question open: what does `optimize` give back when it has no load, or when it has one it
 could not prove to be the best? A caller that only knows the name of a function and the shape of its
 result cannot answer that, and the sixth change request from
@@ -651,8 +652,7 @@ A contract is as useful for what it does not promise as for what it does.
 Whatever is left free can change without telling the callers, who never had to understand it in the
 first place. Whatever is promised cannot. One promise needs care in a numerical program: a solver
 works with rounded numbers, so "whole pallets" and "within capacity" must be read with a stated
-tolerance, which
-[the testing section](../05-testing/README.md#difficulty-floating-point) takes up.
+tolerance, which [the testing chapter](../04-testing/README.md#difficulty-floating-point) takes up.
 
 ### Every implementation keeps the promise
 
@@ -675,7 +675,7 @@ it.
 A contract is also the list of things a test can check. Each promise above becomes an experiment:
 build an instance, call `run`, and compare the `Result` with what the contract says it must be. The
 algorithm, the ties and the running time are left free, so no test should depend on them.
-[The testing section](../05-testing/README.md#ch-model-testing) starts from **Pseudocode:
+[The testing chapter](../04-testing/README.md#ch-model-testing) starts from **Pseudocode:
 optimization contract** and works out how to check each status, including `optimal`, whose expected
 value is the very thing the model exists to compute.
 
@@ -781,7 +781,7 @@ The payoff is twofold. Changing a solver's time limit, or swapping the comma-sep
 reader for a JSON (JavaScript Object Notation) one, is a one-line edit in
 [Pseudocode: composition root](#pseudo-composition-root); nothing else knows which concrete modules
 were chosen. And a test can hand `Optimization` a stand-in provider that returns a fixed `Result`,
-so the code around the solver can be tested without a solver. The testing section calls such a
+so the code around the solver can be tested without a solver. The testing chapter calls such a
 stand-in a [test double](../appendix/glossary.md#test-double).
 
 ### Strategy
@@ -894,7 +894,7 @@ something no formulation can express and then solved again. Each of these arrang
 the system can honestly tell its user about the answer: whether it is proven best, merely good, or
 absent for a reason nobody has established.
 
-The same few arrangements recur from one industry to the next. This chapter describes four of them
+The same few arrangements recur from one industry to the next. This section describes four of them
 and proposes a name for each, an
 [optimization pattern](../appendix/glossary.md#optimization-pattern), in the form
 [6. Design patterns](#ch-patterns) used: the problem it answers, its structure, and its
@@ -905,7 +905,7 @@ consequences. They are a small catalogue, and they combine.
 Every pattern is built from providers. A
 [solution provider](../appendix/glossary.md#solution-provider) takes the record of the problem it
 solves and returns a result with one of the four statuses of [5. Contracts](#ch-contracts). The
-`SolutionProvider` of the earlier chapters is the provider of the cargo problem: it takes an
+`SolutionProvider` of the earlier sections is the provider of the cargo problem: it takes an
 `Instance` and returns a `Result`. A provider of another problem has records of its own, and the
 statuses keep their meaning. Providers come in two kinds, told apart by what they can establish.
 
@@ -925,7 +925,7 @@ caller reads. Seen from outside, the coordinator is a provider again, and in the
 `Result`, and about nothing else. Whichever pattern is chosen, the callers of `Optimization.run` see
 the same contract, and nothing outside the optimization module changes.
 
-**Figure: optimization patterns** shows the four together. In every figure of this chapter an exact
+**Figure: optimization patterns** shows the four together. In every figure of this section an exact
 provider is blue, a heuristic provider is orange, a provider of either kind is white, a record is
 green, and a dashed outline marks what the caller sees as one provider.
 
@@ -1206,7 +1206,7 @@ program. Near the top of that range, design gets a different name:
 system, meaning the few large decisions about its modules and their boundaries that are expensive to
 reverse later.
 
-An architecture is the principles of the earlier chapters applied to the largest modules of a
+An architecture is the principles of the earlier sections applied to the largest modules of a
 system. Those principles allow different architectures, each with its benefits and its costs.
 Studying several helps a team compare their trade-offs and choose one that suits the business
 problem.
@@ -1289,7 +1289,7 @@ concrete class, because assembling them is its job.
 The problem, from [the appendix](../appendix/cargo_model_example.md): a load planner receives a
 booking list for one departure, and the system proposes how many pallets of each product to load,
 maximizing revenue within the aircraft's weight and hold capacities and loading at least what must
-fly. This chapter chooses a pattern from [7. Optimization patterns](#ch-optimization-patterns) for
+fly. This section chooses a pattern from [7. Optimization patterns](#ch-optimization-patterns) for
 that system, places every line of [Pseudocode: tangled script](#pseudo-tangled-script) in the four
 rings of **Figure: clean architecture**, and lists what each module promises.
 
@@ -1434,18 +1434,18 @@ tell whether it still holds.
 ### The promises at each boundary
 
 Every arrow that crosses a boundary in **Figure: cargo architecture** carries a promise, and the
-tests of the next section check them one by one.
+tests of the next chapter check them one by one.
 
-| Module             | Receives                         | Promises                                                                                                                      | Checked in the testing section by                                                                                                                                                                                |
-| ------------------ | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BookingReader`    | A source                         | The business records the source describes, or an error for a source it cannot read                                            | [7. Integration testing](../05-testing/README.md#ch-integration), on real files                                                                                                                                     |
-| Preprocess         | `BookingList`, `Aircraft`        | A well-formed `Instance` without the products that can never fit, or an error for records that make no sense                  | [3. Unit testing](../05-testing/README.md#ch-unit-testing), with a handful of values and no solver                                                                                                                  |
-| `Optimization`     | `Instance`                       | A `Result` under [Pseudocode: optimization contract](#pseudo-optimization-contract)                                           | [8. Testing an optimization model](../05-testing/README.md#ch-model-testing), [9. Test oracles](../05-testing/README.md#ch-oracles) and [10. Testing a mixed-integer program without optimality guaranteed](../05-testing/README.md#ch-mip-no-optimality) |
-| `SolutionProvider` | `Instance`                       | The same contract, whichever provider stands behind it                                                                        | The same tests, run on each provider                                                                                                                                                                             |
-| Postprocess        | `Result`, `BookingList`          | A `LoadPlan` listing every product, with `proven_best` true only for `optimal`, or a `NoPlan` whose reason matches the status | [3. Unit testing](../05-testing/README.md#ch-unit-testing), on `Result` records built by hand                                                                                                                       |
-| `PlanFlightLoad`   | `BookingList`, `Aircraft`        | The three steps in order, passing on whatever `Optimization` established                                                      | [6. Mocks](../05-testing/README.md#ch-mocks), with a stand-in for `Optimization`                                                                                                                                    |
-| `CsvPlanWriter`    | `LoadPlan` or `NoPlan`           | A complete plan file that says what the record says                                                                           | [7. Integration testing](../05-testing/README.md#ch-integration), on real files                                                                                                                                     |
-| The whole system   | A booking file, an aircraft file | A plan file the planner can act on                                                                                            | [11. Testing a decision-support system](../05-testing/README.md#ch-dss-testing)                                                                                                                                      |
+| Module             | Receives                         | Promises                                                                                                                      | Checked in the testing chapter by                                                                                                                                                                                                                         |
+| ------------------ | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BookingReader`    | A source                         | The business records the source describes, or an error for a source it cannot read                                            | [7. Integration testing](../04-testing/README.md#ch-integration), on real files                                                                                                                                                                           |
+| Preprocess         | `BookingList`, `Aircraft`        | A well-formed `Instance` without the products that can never fit, or an error for records that make no sense                  | [3. Unit testing](../04-testing/README.md#ch-unit-testing), with a handful of values and no solver                                                                                                                                                        |
+| `Optimization`     | `Instance`                       | A `Result` under [Pseudocode: optimization contract](#pseudo-optimization-contract)                                           | [8. Testing an optimization model](../04-testing/README.md#ch-model-testing), [9. Test oracles](../04-testing/README.md#ch-oracles) and [10. Testing a mixed-integer program without optimality guaranteed](../04-testing/README.md#ch-mip-no-optimality) |
+| `SolutionProvider` | `Instance`                       | The same contract, whichever provider stands behind it                                                                        | The same tests, run on each provider                                                                                                                                                                                                                      |
+| Postprocess        | `Result`, `BookingList`          | A `LoadPlan` listing every product, with `proven_best` true only for `optimal`, or a `NoPlan` whose reason matches the status | [3. Unit testing](../04-testing/README.md#ch-unit-testing), on `Result` records built by hand                                                                                                                                                             |
+| `PlanFlightLoad`   | `BookingList`, `Aircraft`        | The three steps in order, passing on whatever `Optimization` established                                                      | [6. Mocks](../04-testing/README.md#ch-mocks), with a stand-in for `Optimization`                                                                                                                                                                          |
+| `CsvPlanWriter`    | `LoadPlan` or `NoPlan`           | A complete plan file that says what the record says                                                                           | [7. Integration testing](../04-testing/README.md#ch-integration), on real files                                                                                                                                                                           |
+| The whole system   | A booking file, an aircraft file | A plan file the planner can act on                                                                                            | [11. Testing a decision-support system](../04-testing/README.md#ch-dss-testing)                                                                                                                                                                           |
 
 Only one row is hard to test, and the design has made it small: `Optimization` is the one module
 whose expected answer is the very thing it exists to compute. Every other row has an answer that can
@@ -1469,14 +1469,12 @@ be written down before the code runs.
 The requests from [2. What design is for](#ch-design-purpose) now land as follows.
 
 1. **Bookings as JSON.** One new adapter, `JsonBookingReader`, and one line in the composition root.
-2. **Dangerous goods limited to a quarter of the hold.** This one does not stay in one module.
-   It
-   is a new constraint on the load, so it changes what "feasible" means:
-   a `Booking` and a `Product` gain a field, the readers fill it, the contract's definition of a
-   feasible load gains a rule, and each provider must respect it, the formulation in
-   `MipProviderGurobi` and the greedy rule alike. What the design gives is the list. Postprocess,
-   the writer, `PlanFlightLoad` and the composition root are untouched, and the tests of the
-   contract say when every provider has caught up.
+2. **Dangerous goods limited to a quarter of the hold.** This one does not stay in one module. It is
+   a new constraint on the load, so it changes what "feasible" means: a `Booking` and a `Product`
+   gain a field, the readers fill it, the contract's definition of a feasible load gains a rule, and
+   each provider must respect it, the formulation in `MipProviderGurobi` and the greedy rule alike.
+   What the design gives is the list. Postprocess, the writer, `PlanFlightLoad` and the composition
+   root are untouched, and the tests of the contract say when every provider has caught up.
 3. **A heuristic for large instances.** One new provider and one rule in `choose`. The `Result` it
    returns says `feasible`, and the plan says `proven_best` is false.
 4. **A different solver library.** One new provider, formulation included, and one line in the
@@ -1542,10 +1540,10 @@ system rests on several decisions, each of which can change on its own.
   every boundary.
 
 A design is only as safe to change as the tests that check its promises, which is where the book
-goes next: [the testing section](../05-testing/README.md) takes the contract of this section and
+goes next: [the testing chapter](../04-testing/README.md) takes the contract of this chapter and
 asks how to know that the code keeps it.
 
 ---
 
 [← Book contents](../../README.md) ·
-[Next section: 05 Testing decision-support software →](../05-testing/README.md)
+[Next chapter: 04 Testing decision-support software →](../04-testing/README.md)

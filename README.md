@@ -1,13 +1,13 @@
-# SEFOP Training Hub
+# DecisionOps in practice
 
-This hub is part of [SEFOP](https://github.com/sefop) and serves two audiences:
+**A practical e-book to implement DecisionOps**
 
-1. **Operations research scientists** who want to ship decision-support software (DSS) with professional standards.
+by Francisco Zenteno Smith
+
+This book serves two audiences:
+
+1. **Operations research scientists** who want to ship decision-support software with professional standards.
 2. **Engineering managers** who lead the teams building them.
-
-The hub is written as a practical e-book that moves from general to particular: what decision-support software is
-and when a company needs it, how its lifecycle differs from that of ordinary software, and then one section per phase
-of that lifecycle. Chapters explain the ideas in a language-agnostic way, and some end with exercises in code.
 
 > [!NOTE]
 > This book is under construction. Nothing is definitive yet.
@@ -16,31 +16,47 @@ of that lifecycle. Chapters explain the ideas in a language-agnostic way, and so
 
 ## Book contents
 
-| # | Section | Questions it answers |
+| # | Chapter | Questions it answers |
 |:---:|---|---|
-| 01 | [Introduction](book/01-introduction/README.md) | • What is decision-support software, and how does it differ from a one-off analysis?<br>• Why does decision-support software so often become hard to maintain?<br>• Why do AI coding assistants make engineering practices more important, not less? |
-| 02 | [Do you need DSS?](book/02-do-you-need-dss/README.md) | • Does this decision deserve software, or is a one-off analysis or a spreadsheet enough?<br>• Should we build an in-house OR team, or rely on vendors and consultants?<br>• Where should the team sit in the organization, and whom should it report to? |
-| 03 | [Software development lifecycle](book/03-software-development-lifecycle/README.md) | • Why is software engineering different from other engineering?<br>• How does a team learn and adapt quickly?<br>• What changes in each lifecycle phase when the software produces decisions? |
-| 04 | [Design](book/04-design/README.md) | • Why invest in design when the software already works?<br>• Which principles, contracts and patterns keep a decision-support system easy to change?<br>• How do I arrange the optimization module within the system's architecture? |
-| 05 | [Testing](book/05-testing/README.md) | • What should I test in a decision-support system?<br>• How do I test a model when I don't know its optimal answer?<br>• Which tests still work when the solver is a heuristic? |
-| 06 | [Deployment](book/06-deployment/README.md) | • How do I package and deploy a model with its solver, and respond when a run cannot deliver?<br>• How do I assess a new version on the same instances, release it safely, and recover?<br>• What should I measure to know whether runs are healthy and decisions are useful? |
-| 07 | [Working with legacy DSS](book/07-working-with-legacy-dss/README.md) | • How do I make an inherited system safer to change?<br>• How do I help the team adopt a shared way of improving it?<br>• How do we fix a bug together and preserve what we learn? |
-| 08 | [Leading the team](book/08-leading-the-team/README.md) | • Which roles does my team need, and which expertise should it borrow instead of hiring?<br>• What changes when scientists start shipping production software?<br>• How do I use my authority to help engineering practices take hold and persist? |
-| 09 | [AI-assisted development](book/09-ai-assisted-development/README.md) | • What changes in my workflow when an assistant writes model code?<br>• How do I check model code that an assistant wrote?<br>• How do I know whether an AI workflow actually improves my results? |
+| 01 | [Introduction](book/01-introduction/README.md) | • What is decision-support software, and how does it differ from a one-off analysis?<br>• Why does decision-support software so often become hard to maintain?<br>• What is DecisionOps, and how does it relate to DevOps and MLOps? |
+| 02 | [Lifecycle](book/02-lifecycle/README.md) | • Why is software engineering different from other engineering?<br>• How does a team learn and adapt quickly, and what do the Three Ways of DevOps add?<br>• What changes in each lifecycle phase when the software produces decisions? |
+| 03 | [Design](book/03-design/README.md) | • Why invest in design when the software already works?<br>• Which principles, contracts and patterns keep a decision-support system easy to change?<br>• How do I arrange the optimization module within the system's architecture? |
+| 04 | [Testing](book/04-testing/README.md) | • What should I test in a decision-support system?<br>• How do I test a model when I don't know its optimal answer?<br>• Which tests still work when the solver is a heuristic? |
+| 05 | [Deployment](book/05-deployment/README.md) | • How do I package and deploy a model with its solver?<br>• What should happen when a run cannot deliver an acceptable plan?<br>• How do I assess a new version on the same instances, release it safely, and recover? |
+| 06 | [Operating and evaluating](book/06-operating/README.md) | • What should I measure to know whether runs are healthy?<br>• How do I know whether the decisions are actually used and useful?<br>• When should we keep investing in a system, change it, or retire it? |
+| 07 | [Adopting DecisionOps](book/07-adopting/README.md) | • How do I start a new decision-support system with these practices from day one?<br>• How do I make an inherited system safer to change, and bring the team along?<br>• Which roles, time and training does my team need from its leaders? |
 
 ---
 
 ## Appendix
 
-- [Learning Roadmap](book/appendix/learning-roadmap.md) — a suggested order to learn software engineering for building decision-support software.
-- [Practice Repositories](book/appendix/practice-repositories.md) — language-specific exercises for the chapters.
-- [The Cargo Model Example](book/appendix/cargo_model_example.md) — the cargo loading system the later sections share.
-- [Glossary](book/appendix/glossary.md) — every software engineering term used in the book, defined once.
+- [Learning Roadmap](book/appendix/learning-roadmap.md): a suggested order to learn software engineering for building decision-support software.
+- [Practice Repositories](book/appendix/practice-repositories.md): language-specific exercises.
+- [Glossary](book/appendix/glossary.md): every software engineering term used in the book, defined once.
 
-## Workshops
-
-Slides and material from past and upcoming talks live in [sefop-workshops](https://github.com/sefop/sefop-workshops).
 
 ## For Questions
 
 Go here <https://github.com/orgs/sefop/discussions>.
+
+## How to cite
+
+Zenteno Smith, F. (2026). _DecisionOps in practice: A practical e-book to implement DecisionOps_.
+E-book, under construction. <https://github.com/sefop/sefop-training-hub>
+
+```bibtex
+@misc{zentenosmith2026decisionops,
+  author       = {Zenteno Smith, Francisco},
+  title        = {{DecisionOps} in practice: A practical e-book to implement {DecisionOps}},
+  year         = {2026},
+  howpublished = {\url{https://github.com/sefop/sefop-training-hub}},
+  note         = {E-book, under construction}
+}
+```
+
+## License
+
+The text and figures are copyright 2026 Francisco Zenteno Smith and licensed under
+[CC BY 4.0](LICENSE): you may share and adapt them, even commercially, as long as you credit the
+author. The code (`book/05-deployment/assets/source/`) is licensed under the
+[MIT License](LICENSE-CODE).

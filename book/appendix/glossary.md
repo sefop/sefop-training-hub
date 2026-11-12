@@ -1,21 +1,21 @@
 # Glossary
 
-Software engineering terms used in this book, each defined once. Chapters link here the first time
+Software engineering terms used in this book, each defined once. Sections link here the first time
 they use a term.
 
 ---
 
 ## Abstraction
 
-Another name for [interface](#interface), used when the stress is on what it hides: how something
-is done stays behind what it does. A cargo loading solver abstraction exposes one method, `solve`,
-and several implementations, a MIP solver or a heuristic, can stand behind it. It is what lets you
-swap solvers without rewriting the code that calls them.
+Another name for [interface](#interface), used when the stress is on what it hides: how something is
+done stays behind what it does. A cargo loading solver abstraction exposes one method, `solve`, and
+several implementations, a MIP solver or a heuristic, can stand behind it. It is what lets you swap
+solvers without rewriting the code that calls them.
 
 ## Acceptance criteria
 
-Conditions agreed before assessment that determine whether a change or result is acceptable.
-For a deployment, these can cover validity, decision quality, deadlines, and recovery.
+Conditions agreed before assessment that determine whether a change or result is acceptable. For a
+deployment, these can cover validity, decision quality, deadlines, and recovery.
 
 ## Adapter pattern
 
@@ -52,13 +52,13 @@ answer, without a person looking at the result. A collection of them is a [test 
 
 ## Baseline
 
-A recorded reference used in a comparison, such as the current release or a simple planning
-method. Comparisons must state which inputs and measures make that reference comparable.
+A recorded reference used in a comparison, such as the current release or a simple planning method.
+Comparisons must state which inputs and measures make that reference comparable.
 
 ## Batch run
 
-An execution that processes one or more instances without a person steering each solve. It can
-start on a schedule or be requested explicitly.
+An execution that processes one or more instances without a person steering each solve. It can start
+on a schedule or be requested explicitly.
 
 ## Benchmark
 
@@ -113,8 +113,8 @@ is right.
 
 ## Coding agent
 
-A software assistant that can inspect project files, use tools, and propose or make changes toward
-a task. Its output still needs checks against the intended behavior and review by the people
+A software assistant that can inspect project files, use tools, and propose or make changes toward a
+task. Its output still needs checks against the intended behavior and review by the people
 responsible for the software.
 
 ## Cohesion
@@ -125,8 +125,8 @@ with [coupling](#coupling).
 
 ## Commit
 
-A recorded state of files in [version control](#version-control), with an identifier that can
-be used to retrieve that state.
+A recorded state of files in [version control](#version-control), with an identifier that can be
+used to retrieve that state.
 
 ## Composition root
 
@@ -136,18 +136,18 @@ only code that knows which concrete classes were chosen.
 
 ## Configuration
 
-Settings supplied to a program or deployment, such as the solver selection, input location,
-time budget, or delivery destination. Configuration can change behavior without changing source.
+Settings supplied to a program or deployment, such as the solver selection, input location, time
+budget, or delivery destination. Configuration can change behavior without changing source.
 
 ## Container
 
-A running instance created from a [container image](#container-image), with isolated processes
-and its own writable filesystem layer. Containers share the host's operating-system kernel.
+A running instance created from a [container image](#container-image), with isolated processes and
+its own writable filesystem layer. Containers share the host's operating-system kernel.
 
 ## Container image
 
-A packaged filesystem and startup metadata used to create a [container](#container). It can
-include application files, a runtime, and libraries; it is not itself a running process.
+A packaged filesystem and startup metadata used to create a [container](#container). It can include
+application files, a runtime, and libraries; it is not itself a running process.
 
 ## Continuous deployment
 
@@ -184,12 +184,25 @@ returns one result. Seen from outside, it is itself a solution provider.
 How much one module of a system depends on another. Two modules are tightly coupled when a change to
 one forces a change to the other. Aim for low coupling; contrast with [cohesion](#cohesion).
 
+## DataOps
+
+Practices that bring agile software engineering and [DevOps](#devops) to data analytics, so that
+data pipelines change quickly without losing quality. Ereth (2018) proposed a working definition.
+
 ## Decision-support system
 
 Software that runs repeatedly to turn data, mathematical models, and business rules into decisions
 the business acts on. Abbreviated DSS. A one-off study that answers a question once is not one: what
 makes a system decision-support software is that the decision recurs and somebody owns the software
 that produces it.
+
+## DecisionOps
+
+The application of the [Three Ways](#three-ways) of [DevOps](#devops) to
+[decision-support software](#decision-support-system). In this book, that means optimization-based
+decision software, heuristics included, taken from a recurring business problem to decisions that
+are used and evaluated, with data and predictive models treated as inputs through explicit
+interfaces.
 
 ## Dependency
 
@@ -211,8 +224,8 @@ each solver implements it, instead of the module calling one solver library dire
 
 ## Deployment
 
-Putting an identified software version and its configuration into an environment where it runs.
-A production deployment makes it available for the work its users rely on.
+Putting an identified software version and its configuration into an environment where it runs. A
+production deployment makes it available for the work its users rely on.
 
 ## Derived oracle
 
@@ -233,6 +246,12 @@ A named, reusable solution to a problem that recurs in software design, such as
 [strategy](#strategy-pattern) or [adapter](#adapter-pattern). Patterns save reinventing a solution
 and give a team a shared vocabulary for describing a design.
 
+## DevOps
+
+A set of practices that joins the people who build software with the people who run it, so that
+changes reach users quickly and safely and what happens in operation flows back to the builders.
+Kim, Humble, Debois and Willis (2016) organize it as the [Three Ways](#three-ways).
+
 ## Differential testing
 
 Running two independent implementations of the same [contract](#contract) on the same inputs and
@@ -240,8 +259,8 @@ comparing their outputs. A disagreement means at least one of them is wrong.
 
 ## Dockerfile
 
-A file of instructions for building a [container image](#container-image) with Docker, a tool
-for building images and running containers.
+A file of instructions for building a [container image](#container-image) with Docker, a tool for
+building images and running containers.
 
 ## Don't repeat yourself
 
@@ -261,8 +280,8 @@ way its users would. The slowest and costliest kind of test, so a suite holds on
 
 ## Environment
 
-The resources and settings in which a program runs, including hardware, software, connectivity,
-and configuration. Development, testing, and production can use separate environments.
+The resources and settings in which a program runs, including hardware, software, connectivity, and
+configuration. Development, testing, and production can use separate environments.
 
 ## Environment variable
 
@@ -283,8 +302,8 @@ be a second optimization model, a simulation or a check of rules.
 
 ## Fallback
 
-An agreed alternative action when the primary path cannot deliver its promise. A fallback plan
-still needs validation against current conditions; human escalation can be the appropriate action.
+An agreed alternative action when the primary path cannot deliver its promise. A fallback plan still
+needs validation against current conditions; human escalation can be the appropriate action.
 
 ## Flaky test
 
@@ -304,8 +323,8 @@ nothing going wrong.
 
 ## Health check
 
-A check of a running program's operational condition, such as whether it responds to a request.
-It establishes only the dependencies and behavior it actually exercises.
+A check of a running program's operational condition, such as whether it responds to a request. It
+establishes only the dependencies and behavior it actually exercises.
 
 ## Heuristic
 
@@ -400,8 +419,8 @@ called hierarchical optimization.
 
 ## License server
 
-A service that grants running programs permission to use licensed software. Its connectivity
-and available permissions can be dependencies of a solver deployment.
+A service that grants running programs permission to use licensed software. Its connectivity and
+available permissions can be dependencies of a solver deployment.
 
 ## Linear program
 
@@ -443,6 +462,12 @@ known. Example: raising a capacity never decreases the optimal value.
 A [linear program](#linear-program) in which some or all variables must take integer values, such as
 a number of whole pallets. Abbreviated MIP. Integrality makes the problem much harder to solve and
 removes the certificate of optimality that duality gives a linear program.
+
+## MLOps
+
+Machine learning operations: the extension of [DevOps](#devops) to machine learning models, covering
+how they are versioned, tested, deployed and monitored. Kreuzberger, Kühl and Hirschl (2023) give a
+definition and architecture.
 
 ## Mock
 
@@ -493,8 +518,8 @@ class behind the solution-provider interface, and the existing solver class is n
 
 ## Optimality gap
 
-A measure of the distance between a feasible solution's objective and a valid bound on the
-optimum. Its formula and normalization must be stated; it does not measure model validity.
+A measure of the distance between a feasible solution's objective and a valid bound on the optimum.
+Its formula and normalization must be stated; it does not measure model validity.
 
 ## Optimization pattern
 
@@ -512,8 +537,8 @@ example.
 
 ## Override rate
 
-The share of proposals changed by a user before acceptance, under a stated definition of a
-change and a stated denominator. Reasons and magnitudes help interpret the rate.
+The share of proposals changed by a user before acceptance, under a stated definition of a change
+and a stated denominator. Reasons and magnitudes help interpret the rate.
 
 ## Pinned environment
 
@@ -523,13 +548,13 @@ and time limits can still affect a solver's results.
 
 ## Port
 
-A numbered network endpoint used to address traffic to a process. A container's listening port
-must be reachable through the host's networking configuration.
+A numbered network endpoint used to address traffic to a process. A container's listening port must
+be reachable through the host's networking configuration.
 
 ## Production
 
-The environment in which software serves the work its users depend on, rather than development
-or testing alone.
+The environment in which software serves the work its users depend on, rather than development or
+testing alone.
 
 ## Property-based testing
 
@@ -578,13 +603,13 @@ the correction.
 
 ## Release
 
-An identified software artifact and configuration approved for use. A release record links it
-to source, checks, assessment evidence, and deployments.
+An identified software artifact and configuration approved for use. A release record links it to
+source, checks, assessment evidence, and deployments.
 
 ## Rollback
 
-Restoring an earlier deployment to recover from an unacceptable change. It does not by itself
-undo business decisions or changes to stored data.
+Restoring an earlier deployment to recover from an unacceptable change. It does not by itself undo
+business decisions or changes to stored data.
 
 ## Secret
 
@@ -612,8 +637,8 @@ request and returning a proposal.
 
 ## Shadow run
 
-Running a candidate version on the current version's input without using the candidate's output
-for the operational decision. It compares proposals without observing execution of the candidate.
+Running a candidate version on the current version's input without using the candidate's output for
+the operational decision. It compares proposals without observing execution of the candidate.
 
 ## Shrinking
 
@@ -658,9 +683,8 @@ lowers [coupling](#coupling), or both.
 ## Solution provider
 
 A module that takes the record of the problem it solves and returns a result under the optimization
-[contract](#contract).
-An exact provider can prove optimality or infeasibility; a heuristic provider searches without
-proving, so it never returns `optimal`.
+[contract](#contract). An exact provider can prove optimality or infeasibility; a heuristic provider
+searches without proving, so it never returns `optimal`.
 
 ## Specified oracle
 
@@ -686,8 +710,8 @@ chosen for each instance.
 
 ## Tactical programming
 
-An approach to development focused on finishing the current task quickly, accepting extra
-complexity and deferring design improvements. Named by John Ousterhout; contrast with
+An approach to development focused on finishing the current task quickly, accepting extra complexity
+and deferring design improvements. Named by John Ousterhout; contrast with
 [strategic programming](#strategic-programming).
 
 ## Technical debt
@@ -724,10 +748,18 @@ How easily each module of a system can be checked on its own, quickly, without r
 function that takes values and returns values is highly testable; one that reads files and calls a
 solver in the middle of its logic is not.
 
+## Three Ways
+
+The three principles that organize [DevOps](#devops) in Kim, Humble, Debois and Willis (2016).
+**Flow**: small changes move quickly and safely from the people who build a system to those who use
+it. **Feedback**: the running system tells the team what it does, soon enough to act on it.
+**Continual learning and experimentation**: what the team learns, failures included, becomes the way
+it works.
+
 ## Time limit
 
-A budget for how long an operation, such as a solver search, may run. A solver time limit does
-not include all the work needed to obtain inputs and deliver a decision.
+A budget for how long an operation, such as a solver search, may run. A solver time limit does not
+include all the work needed to obtain inputs and deliver a decision.
 
 ## Unified Modeling Language
 
@@ -761,8 +793,8 @@ implements the mathematical model correctly: "are we building the model right?".
 
 ## Version control
 
-Recording changes to files so their history can be inspected and a past state retrieved.
-An identified recorded state is a [commit](#commit).
+Recording changes to files so their history can be inspected and a past state retrieved. An
+identified recorded state is a [commit](#commit).
 
 ## Waterfall
 

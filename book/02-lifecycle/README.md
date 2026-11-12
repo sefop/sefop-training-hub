@@ -1,4 +1,4 @@
-# Section 03: The lifecycle of decision-support software
+# Chapter 02: The lifecycle of decision-support software
 
 <a id="ch-introduction"></a>
 
@@ -8,15 +8,15 @@ Every piece of software moves through the same phases: someone works out what is
 plans and designs it, builds and tests it, releases it, runs it, and changes it for as long as it
 lives. That sequence is the
 [software development lifecycle](../appendix/glossary.md#software-development-lifecycle). It is
-tempting to read it as administration, a set of boxes a manager ticks. This section reads it as
+tempting to read it as administration, a set of boxes a manager ticks. This chapter reads it as
 something more useful: the way a team responds to the conditions software is built under. Those
 conditions make two abilities decisive, learning quickly and adapting quickly, and a team's
 lifecycle is good exactly to the degree that it supports both.
 
-**The difference this section addresses:** decision-support software goes through the same phases as
+**The difference this chapter addresses:** decision-support software goes through the same phases as
 any other software, but several of those phases are harder to learn from and harder to adapt in when
-the software produces decisions. The section builds the general case first and then names, phase by
-phase, where the difference bites. Read the chapters in order.
+the software produces decisions. The chapter builds the general case first and then names, phase by
+phase, where the difference bites. Read the sections in order.
 
 ---
 
@@ -77,7 +77,7 @@ Each characteristic calls for one ability:
   become a change to the code, and in a system where one character matters, every change risks
   breaking something that worked.
 
-The rest of this section is about those two abilities: [how a team learns](#ch-learning) and
+The rest of this chapter is about those two abilities: [how a team learns](#ch-learning) and
 [how it adapts](#ch-adapting).
 
 ### Further reading
@@ -271,35 +271,73 @@ scalable, objective and reproducible experiment that checks, on every change, th
 worked before still works. Without it, every change is a gamble on the sensitivity described in
 [2. A different type of engineering](#ch-different-engineering), and people stop making changes.
 
-The claim of this chapter is narrow. A team without these three properties cannot absorb change at
+The claim of this section is narrow. A team without these three properties cannot absorb change at
 the rate the business asks for it, whatever process it follows: short loops deliver feedback that
 the code is too tangled, or too unprotected, to act on. How to draw the boundaries and how to write
-the tests are large subjects of their own, and this section does not teach them.
+the tests are large subjects of their own, and this chapter does not teach them.
+
+---
+
+<a id="ch-three-ways"></a>
+
+## 5. The Three Ways
+
+Learning quickly and adapting quickly are not this book's invention. Teams that ran software in
+production reached the same two abilities from the operations side, and
+[DevOps](../appendix/glossary.md#devops) names what they found. Kim, Humble, Debois and Willis
+(2016, chapters 2 to 4) organize it as the [Three Ways](../appendix/glossary.md#three-ways):
+
+| Way                                               | What it asks                                                                                   | Where this chapter reached it                                                                                                                                                      |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| First Way: flow                                   | Small changes move quickly and safely from the people who build the system to those who use it | [4. Adapting quickly](#ch-adapting): low complexity, modularity and safety mechanisms let a change go out without breaking what works; automated tests put a check on every change |
+| Second Way: feedback                              | The running system tells the team what it does, soon enough to act on it                       | [3. Learning quickly](#ch-learning): short feedback loops, with production as the longest one                                                                                      |
+| Third Way: continual learning and experimentation | What the team learns, failures included, becomes the way it works                              | [3. Learning quickly](#ch-learning): the scientific method supplies the individual habit; making it a team's shared practice is the subject of Chapter 07                          |
+
+The correspondence runs many to many. No section belongs to a single Way: the
+[automated tests](../appendix/glossary.md#automated-test) and
+[continuous integration](../appendix/glossary.md#continuous-integration) of learning quickly serve
+flow as much as they serve feedback.
+
+### What each Way asks of decision-support software
+
+The principles hold for decision-support software. Their implementation changes, because the
+software produces decisions:
+
+- **Flow** needs checks that work when the expected answer is the very thing the model exists to
+  compute ([Chapter 04](../04-testing/README.md)), and a release assessed on the same instances as
+  the version it replaces ([Chapter 05](../05-deployment/README.md)).
+- **Feedback** has to reach past the run to the decision: whether the planner accepted it, changed
+  it, or stopped asking for it ([Chapter 06](../06-operating/README.md)).
+- **Continual learning** turns a rejected plan into a traced rule, a failure into a check, and an
+  individual habit into a team practice ([Chapter 07](../07-adopting/README.md)).
+
+[6. Decision-support software across the lifecycle](#ch-phases) names, phase by phase, where those
+differences bite.
 
 ---
 
 <a id="ch-phases"></a>
 
-## 5. Decision-support software across the lifecycle
+## 6. Decision-support software across the lifecycle
 
 Decision-support software goes through the same phases as any other software. What changes is how
 hard it is to learn and to adapt in each of them. The table names that difference for every phase;
 the subsections below expand every row except Planning.
 
-| Phase       | The difference for decision-support software                                                                     |
-| ----------- | ---------------------------------------------------------------------------------------------------------------- |
-| Elicitation | Users cannot state what they want as a model; requirements surface as reactions to plans                         |
-| Planning    | None: estimation, backlog management and iterations work as they do for any software                             |
-| Design      | Data, business rules, formulation and solver are separate decisions, and each can change on its own              |
-| Testing     | The expected answer is the very thing the model exists to compute                                                |
-| Deployment  | What ships is code together with a model, a solver and a solver license                                          |
-| Operation   | A run that finishes is not the same as a run that produced a good decision                                       |
-| Evolution   | Every change to the model can change decisions that users already trust                                          |
+| Phase       | The difference for decision-support software                                                        |
+| ----------- | --------------------------------------------------------------------------------------------------- |
+| Elicitation | Users cannot state what they want as a model; requirements surface as reactions to plans            |
+| Planning    | None: estimation, backlog management and iterations work as they do for any software                |
+| Design      | Data, business rules, formulation and solver are separate decisions, and each can change on its own |
+| Testing     | The expected answer is the very thing the model exists to compute                                   |
+| Deployment  | What ships is code together with a model, a solver and a solver license                             |
+| Operation   | A run that finishes is not the same as a run that produced a good decision                          |
+| Evolution   | Every change to the model can change decisions that users already trust                             |
 
 ### Elicitation
 
 Elicitation is the work of finding out what the users need. It is where imperfect information is at
-its worst, so it is where learning quickly pays off first. Four habits help.
+its worst, so it is where learning quickly pays off first. Five habits help.
 
 **Ask in the planner's language.** Questions such as "what is your objective function?" or "what are
 your decision variables?" get no useful answer, because planners reason in plans, not formulations.
@@ -332,6 +370,13 @@ it is a preference. Preferences belong in the model as soft constraints, whose v
 but penalized in the objective. Encoding every preference as a hard constraint is the most common
 way a first model becomes infeasible on real data.
 
+**Agree in advance how improvement will be judged.** Before the first model reaches a planner, agree
+with the business on a comparator, such as the plans made by hand today or a simple planning rule,
+and on the measures that will say whether the system's decisions are better. Agreed after the
+results arrive, the comparison bends toward whatever the system happens to do well.
+[3. Measure the quality of the decisions](../06-operating/README.md#ch-decision-quality) in Chapter
+06 develops how to make that comparison.
+
 ### Design
 
 A decision-support system rests on separate decisions: the data source, the business rules, the
@@ -339,7 +384,7 @@ formulation and the solver. Each can change while the others stay as they are. G
 each of those changes inside one module, which is the modularity of
 [4. Adapting quickly](#ch-adapting) applied to optimization. Staying solver-agnostic, supporting
 more than one solution algorithm, and deciding where a new constraint belongs are the questions of
-[the design section](../04-design/README.md).
+[the design chapter](../03-design/README.md).
 
 ### Testing
 
@@ -347,7 +392,7 @@ An ordinary test compares the output with an answer someone already knows. For t
 model, that answer is the thing the model exists to compute, so the usual method has nothing to
 compare against. Testing the formulation, testing the output without knowing the optimum, and what
 integration and [end-to-end tests](../appendix/glossary.md#end-to-end-test) look like around a
-solver are the questions of [the testing section](../05-testing/README.md).
+solver are the questions of [the testing chapter](../04-testing/README.md).
 
 ### Deployment
 
@@ -355,7 +400,7 @@ Releasing decision-support software ships more than code: the model, the solver 
 the license that solver needs on the production machine. A new solver version can change which of
 several equally good solutions comes back, so a release can change decisions without a single line
 of the team's code changing. These are the questions of
-[the deployment section](../06-deployment/README.md).
+[the deployment chapter](../05-deployment/README.md).
 
 ### Operation
 
@@ -386,8 +431,7 @@ better or worse.
 
 Most of a decision-support system's life is spent being changed. Users build trust in its decisions
 over months, and a change to the model can shift decisions nobody asked to shift. Changing a system
-you inherited without breaking what already works is the subject of
-[the legacy section](../07-working-with-legacy-dss/README.md).
+you inherited without breaking what already works is part of [Chapter 07](../07-adopting/README.md).
 
 ### Check yourself
 
@@ -416,7 +460,7 @@ you inherited without breaking what already works is the subject of
 
 <a id="ch-conclusion"></a>
 
-## 6. Conclusion
+## 7. Conclusion
 
 Software is built on imperfect information and is highly sensitive to tiny errors, so a team
 succeeds by learning quickly and adapting quickly.
@@ -430,14 +474,16 @@ succeeds by learning quickly and adapting quickly.
 - **Adapting takes low complexity, modularity and safety mechanisms**
   ([4. Adapting quickly](#ch-adapting)). Without them, feedback arrives that nobody can safely act
   on.
+- **DevOps names the same abilities** ([5. The Three Ways](#ch-three-ways)). Flow, feedback, and
+  continual learning hold for decision-support software; their implementation changes.
 - **The phases do not change; their difficulty does**
-  ([5. Decision-support software across the lifecycle](#ch-phases)). Elicitation, design, testing,
+  ([6. Decision-support software across the lifecycle](#ch-phases)). Elicitation, design, testing,
   deployment, operation and evolution each take a turn of their own when the software produces
   decisions.
 
-The sections that follow take those differences one at a time, starting with design.
+The chapters that follow take those differences one at a time, starting with design.
 
 ---
 
 [← Book contents](../../README.md) ·
-[Next section: 04 Designing decision-support software →](../04-design/README.md)
+[Next chapter: 03 Designing decision-support software →](../03-design/README.md)

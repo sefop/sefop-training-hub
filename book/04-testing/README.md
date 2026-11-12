@@ -1,4 +1,4 @@
-# Section 05: Testing decision-support software
+# Chapter 04: Testing decision-support software
 
 <a id="ch-introduction"></a>
 
@@ -6,34 +6,38 @@
 
 Testing matters in the
 [software development lifecycle](../appendix/glossary.md#software-development-lifecycle) because it
-serves both abilities a team needs:
-[learning quickly](../03-software-development-lifecycle/README.md#ch-learning) and
-[adapting quickly](../03-software-development-lifecycle/README.md#ch-adapting). For learning, a test
-is how the scientific method reaches code: it writes a hypothesis about what the code must do in a
-form anyone can check, and running it is the experiment that confirms or refutes it. For adapting,
-testing is one of two pillars. Design is the other: it keeps each change small and confined to one
-module, and it states what each module promises, as [the design section](../04-design/README.md)
-shows. A test is an experiment on one of those promises, and an
+serves both abilities a team needs: [learning quickly](../02-lifecycle/README.md#ch-learning) and
+[adapting quickly](../02-lifecycle/README.md#ch-adapting). For learning, a test is how the
+scientific method reaches code: it writes a hypothesis about what the code must do in a form anyone
+can check, and running it is the experiment that confirms or refutes it. For adapting, testing is
+one of two pillars. Design is the other: it keeps each change small and confined to one module, and
+it states what each module promises, as [the design chapter](../03-design/README.md) shows. A test
+is an experiment on one of those promises, and an
 [automated test suite](../appendix/glossary.md#test-suite) repeats every experiment on every change,
 so a promise that was checked and then broken is caught at once. The evidence reaches as far as the
 cases the suite runs. With both pillars in place, a team can change working code as often as the
-business asks. Decision-support software adds one difficulty ordinary software rarely poses: the
-correct answer of its optimization model is hard to know in advance.
+business asks. **The difference this chapter addresses:** the correct answer of an optimization
+model is hard to know in advance, so a test can rarely compare the model's output with a known
+expected value.
 
-The section follows one question at a time. It first checks a promise on one unit, with everything
+The chapter follows one question at a time. It first checks a promise on one unit, with everything
 else out of the way, and then asks what must run alongside the unit for the evidence to count. It
 turns to the optimization model, whose correct answer nobody knows in advance, and to what a test
 can still conclude when the best answer is not proven. It ends with how these checks combine for a
-whole decision-support system. Read the chapters in order: each uses only what the chapters before
+whole decision-support system. Read the sections in order: each uses only what the sections before
 it defined.
 
 ### Ideas to develop
 
 - Testing models with a second objective, with and without optimality.
+- **Reviewing a formulation an assistant wrote.** An assistant writes plausible model code, and a
+  wrong formulation looks as plausible as a right one. A review checklist: every constraint traced
+  to a business rule, every index set checked for silently dropped elements, and a differential test
+  against enumeration on small instances ([9. Test oracles](#ch-oracles)).
 
-### Chapters
+### Sections
 
-|  #  | Chapter                                                                                | After it you can…                                                                           | Status |
+|  #  | Section                                                                                | After it you can…                                                                           | Status |
 | :-: | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------ |
 |  1  | [Introduction](#ch-introduction)                                                       | Tell verification from validation, and the three levels of functional tests from each other | Ready  |
 |  2  | [Interface vs implementation](#ch-interface)                                           | Separate what a unit promises from how it keeps the promise, and aim a test at the promise  | Ready  |
@@ -44,9 +48,9 @@ it defined.
 |  7  | [Integration testing](#ch-integration)                                                 | Decide which dependencies stay real in a test, and test a unit together with them           | Ready  |
 |  8  | [Testing an optimization model](#ch-model-testing)                                     | State what an optimization model promises, and say why its output is hard to test           | Ready  |
 |  9  | [Test oracles](#ch-oracles)                                                            | Choose between a known answer, a second implementation and a relation between two runs      | Ready  |
-|  10 | [Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality) | Say which promises a `feasible` result still makes, and measure the quality of a load       | Ready  |
-|  11 | [Testing a decision-support system](#ch-dss-testing)                                   | Assemble the tests of a whole system, module by module, and say what a complete run adds    | Draft  |
-|  12 | [Conclusion](#ch-conclusion)                                                           | Recall in one page what a test is evidence for, and how each chapter obtains that evidence  | Ready  |
+| 10  | [Testing a mixed-integer program without optimality guaranteed](#ch-mip-no-optimality) | Say which promises a `feasible` result still makes, and measure the quality of a load       | Ready  |
+| 11  | [Testing a decision-support system](#ch-dss-testing)                                   | Assemble the tests of a whole system, module by module, and say what a complete run adds    | Draft  |
+| 12  | [Conclusion](#ch-conclusion)                                                           | Recall in one page what a test is evidence for, and how each section obtains that evidence  | Ready  |
 
 ### Verification vs validation
 
@@ -68,10 +72,10 @@ translation.
 decision to support; a mathematical model, max c transpose x subject to A x at most b; and code,
 model.py or Model.java. A muted brace under the first translation reads validation, are we building
 the right model, a business question. An emphasized brace under the second translation reads
-verification, are we building the model right, a software question, this section">
+verification, are we building the model right, a software question, this chapter">
 </p>
 
-This section deals only with verification.
+This chapter deals only with verification.
 
 ### Types of tests
 
@@ -82,7 +86,7 @@ Tests fall into two families, told apart by the question each one answers.
 | [Functional](../appendix/glossary.md#functional-test)         | Does the program provide its services correctly? | A sum is right; bad input is rejected                 |
 | [Non-functional](../appendix/glossary.md#non-functional-test) | How well does the program provide them?          | Security, speed, usability, availability, scalability |
 
-This section is about functional tests.
+This chapter is about functional tests.
 
 ### Hierarchy of functional tests
 
@@ -130,10 +134,10 @@ tests and a handful of end-to-end tests.
 
 ## 2. Interface vs implementation
 
-[5. Contracts](../04-design/README.md#ch-contracts), in the design section, separated what a unit of
+[5. Contracts](../03-design/README.md#ch-contracts), in the design chapter, separated what a unit of
 code promises from how it keeps the promise, and drew the split as a wall socket
-([Figure: socket](../04-design/README.md#fig-socket)). This chapter recalls that split on the
-smallest example of this section, a calculator, because every later chapter tests the promise and
+([Figure: socket](../03-design/README.md#fig-socket)). This section recalls that split on the
+smallest example of this chapter, a calculator, because every later section tests the promise and
 nothing else.
 
 Every unit of code has two parts. Its [interface](../appendix/glossary.md#interface), also called
@@ -234,12 +238,11 @@ laboratory holds. The table finds each part in [Pseudocode: add test](#pseudo-ad
 | Prediction checked against the observation | _Assert_: `expect result == 3`                                                         |
 | Conclusion                                 | The test passes, and the evidence supports the hypothesis; or it fails, and refutes it |
 
-The parts carry the principles of
-[the scientific method](../03-software-development-lifecycle/README.md#ch-learning) with them. The
-hypothesis is testable, because the assertion states it as an objective, measurable condition. The
-conditions are controlled, because the test runs one unit on its own, with inputs it fixes itself,
-so a failure has one cause: `add`. And the experiment is reproducible: anyone can run it again, on
-any machine, and get the same result.
+The parts carry the principles of [the scientific method](../02-lifecycle/README.md#ch-learning)
+with them. The hypothesis is testable, because the assertion states it as an objective, measurable
+condition. The conditions are controlled, because the test runs one unit on its own, with inputs it
+fixes itself, so a failure has one cause: `add`. And the experiment is reproducible: anyone can run
+it again, on any machine, and get the same result.
 
 ### Where to place the test
 
@@ -284,8 +287,10 @@ public add(a, b) returns number
     return result                           // ✓ run
 ```
 
-> [!NOTE] The pseudocode is illustrative: a coverage tool reports the same pattern for `add` written
-> in a real language, over more lines.
+> [!NOTE]
+>
+> The pseudocode is illustrative: a coverage tool reports the same pattern for `add` written in a
+> real language, over more lines.
 
 The three lines that never run belong to the invalid-input and overflow behaviors. Add a test for
 each, and every line runs: coverage reaches 100%. Now delete the commutativity test. Coverage stays
@@ -293,9 +298,7 @@ at 100%, because the happy-path test already runs every line the commutativity t
 points at lines no test runs; it cannot point at a behavior no test checks. Use it to find what is
 missing, and use the list of behaviors to decide when you are done.
 
-### Exercise: a calculator
-
-The exercise lives in the practice repositories: test the calculator's `divide` the way this part
+The exercise lives in the practice repositories: test the calculator's `divide` the way this section
 tested `add`.
 
 > **Practice it**
@@ -530,10 +533,9 @@ that it can tell working code from missing code.
 
 **Red, then green, shows causality.** The test failed, one change was made, and now the test passes:
 that change is why it passes. This is the causality principle of
-[the scientific method](../03-software-development-lifecycle/README.md#ch-learning) applied to code:
-change one thing at a time, so the result shows what caused it. A test written after the code passes
-on its first run, and cannot tell whether the code made it pass or whether it would have passed
-anyway.
+[the scientific method](../02-lifecycle/README.md#ch-learning) applied to code: change one thing at
+a time, so the result shows what caused it. A test written after the code passes on its first run,
+and cannot tell whether the code made it pass or whether it would have passed anyway.
 
 **Green with the minimum code keeps every line accountable.** Each line of production code exists
 because a test demanded it, so no line goes untested and no behavior is built that nobody asked for.
@@ -667,7 +669,7 @@ variables and their coefficients, one cycle at a time.
 ### Further reading
 
 - Kent Beck, _Test-Driven Development: By Example_, Addison-Wesley, 2002: the book that named the
-  cycle, worked through at the same small step size as this chapter.
+  cycle, worked through at the same small step size as this section.
 
 > **Practice it**
 >
@@ -970,13 +972,13 @@ Testing an optimization model can mean two different things:
 1. Given an instance, check that the formulation is coded as it was written on paper.
 2. Given an instance, check that what the solved model returns is correct.
 
-This section tests the second. The reason is the one
-[2. Interface vs implementation](#ch-interface) gave for every unit: what the model returns is its
-promise, and the formulation is how it keeps the promise. A test of what the model returns survives
-a change of formulation, of solver or of algorithm. A test of the formulation breaks with each of
-them, even when every answer stays right. A [heuristic](../appendix/glossary.md#heuristic) shows it
-most plainly: it has no formulation to check, and its answers can still be tested. A model whose
-callers can tell which solver stands behind it has a problem in its design, known as a
+This chapter tests the second. The reason is the one [2. Interface vs implementation](#ch-interface)
+gave for every unit: what the model returns is its promise, and the formulation is how it keeps the
+promise. A test of what the model returns survives a change of formulation, of solver or of
+algorithm. A test of the formulation breaks with each of them, even when every answer stays right. A
+[heuristic](../appendix/glossary.md#heuristic) shows it most plainly: it has no formulation to
+check, and its answers can still be tested. A model whose callers can tell which solver stands
+behind it has a problem in its design, known as a
 [leaky abstraction](../appendix/glossary.md#leaky-abstraction).
 
 <a id="model-difficulties"></a>
@@ -1019,10 +1021,11 @@ receive, nor whether there is more than one.
 
 <a id="difficulty-infeasible"></a>
 
-**An empty feasible region is an answer.** Constraints can contradict each other: one demands $x \ge
-2$ while another allows at most $x \le 1$. Then no solution exists, and "infeasible" is the correct
-output, not a failure. A correct model must say so rather than return a solution, and a test must
-treat that statement as an answer to check, like any other.
+**An empty feasible region is an answer.** Constraints can contradict each other: one demands
+$x \ge
+2$ while another allows at most $x \le 1$. Then no solution exists, and "infeasible" is the
+correct output, not a failure. A correct model must say so rather than return a solution, and a test
+must treat that statement as an answer to check, like any other.
 
 <a id="difficulty-floating-point"></a>
 
@@ -1051,7 +1054,7 @@ rely on nothing that only one of them provides.
 
 ### A cargo model example
 
-The rest of the section uses one example, the cargo loading system defined in
+The rest of the chapter uses one example, the cargo loading system defined in
 [the appendix](../appendix/cargo_model_example.md#an-optimization-model-for-this-problem). For one
 cargo flight, the question is which pallets to load to earn the most revenue within the aircraft's
 limits. The model is a [mixed-integer program](../appendix/glossary.md#mixed-integer-program) (MIP).
@@ -1086,9 +1089,9 @@ $$
 
 [2. Interface vs implementation](#ch-interface) showed that a caller relies on what the abstraction
 promises, never on how it keeps the promise. What, then, does the cargo model promise to its caller?
-The design section wrote that promise down, in
-[Pseudocode: optimization contract](../04-design/README.md#pseudo-optimization-contract), and this
-section tests it as written.
+The design chapter wrote that promise down, in
+[Pseudocode: optimization contract](../03-design/README.md#pseudo-optimization-contract), and this
+chapter tests it as written.
 
 In short: the cargo model sits behind one class, `Optimization`, with a single public method, `run`.
 It receives an `Instance` (a list of `Product` records and the two capacities) and returns a
@@ -1145,7 +1148,7 @@ mathematical promises, which come from optimization theory.
 
 1. There is a single public method called `run`, which receives an `Instance`.
 2. If the `Instance` is malformed, for example a product with a negative weight, `run` raises an
-   error. This section does not test that case.
+   error. This chapter does not test that case.
 3. Otherwise `run` returns a `Result` whose `status` is one of `optimal`, `feasible`, `infeasible`
    and `not_found`, and which carries a `Solution` exactly when the status is `optimal` or
    `feasible`.
@@ -1158,8 +1161,9 @@ here.
 Write the model as $\max \{ f(x) : x \in X \}$, where $f$ is the objective and $X$ the feasible set,
 and let $z = f(x)$ for the objective value of a solution $x$. A first run solves $(f, X')$ and
 returns $x'$ with $z' = f(x')$; a second run solves $(f, X'')$ and returns $x''$ with $z'' =
-f(x'')$. Every relation between two runs assumes that both returned the status `optimal`. In a test,
-$=$ means equal within the tolerance of [floating point numbers](#difficulty-floating-point).
+f(x'')$.
+Every relation between two runs assumes that both returned the status `optimal`. In a test, $=$
+means equal within the tolerance of [floating point numbers](#difficulty-floating-point).
 
 **Mathematical promises of every status**:
 
@@ -1169,6 +1173,7 @@ $=$ means equal within the tolerance of [floating point numbers](#difficulty-flo
    its value is reported correctly.
 
    _Cargo model example tests:_
+
    - every product's quantity is a whole number of pallets.
    - every committed pallet is loaded.
    - the total weight is at most $W$, and the total volume at most $V$.
@@ -1181,6 +1186,7 @@ $=$ means equal within the tolerance of [floating point numbers](#difficulty-flo
    `optimal` or `feasible`. And the status `infeasible` is returned only if $X' = \emptyset$.
 
    _Cargo model example tests:_
+
    - the committed pallets alone weigh more than the payload capacity, $\sum_i w_i l_i > W$, thus no
      `Solution` is returned, and an algorithm that guarantees optimality returns `infeasible`.
    - the committed pallets alone take more room than the hold, $\sum_i v_i l_i > V$, thus no
@@ -1197,6 +1203,7 @@ algorithm each of them can be tested on any instance.
    If $X' \ne \emptyset$ and the status is `optimal`, then the value returned is $z^*$.
 
    _Cargo model example tests:_
+
    - no products at all: an empty load worth zero revenue.
    - the committed pallets fill one capacity exactly and fit the other: the committed load is the
      actual solution.
@@ -1214,36 +1221,44 @@ algorithm each of them can be tested on any instance.
      unaffected.
 
 4. **Permutation invariance.**
+
    - If the second instance is the first with its data reordered, then $z' = z'' = z^*$, even when
      $x'' \ne x'$. It is to an optimization model what commutativity is to addition.
 
    _Cargo model example tests:_
+
    - the products listed in reverse order: the same revenue in both solutions.
 
 5. **Objective changed, feasible set unchanged**.
+
    - Assume $X'' = X'$.
    - If $f'' = k f'$ with $k > 0$, then $z'' = k z'$.
    - If $f''(x) \ge f'(x)$ for every $x \in X'$, then $z'' \ge z'$.
 
    _Cargo model example tests:_
+
    - every revenue multiplied by $k > 0$: the revenue is multiplied by $k$.
    - one product's revenue raised: the revenue does not fall.
    - several revenues raised by different amounts: the revenue does not fall.
 
 6. **Feasible set expanded, objective does not worsen**.
+
    - If $X'' \supseteq X'$, then $z'' \ge z'$.
 
    _Cargo model example tests:_ the revenue does not fall when
+
    - the payload capacity is raised.
    - the hold capacity is raised.
    - a new, uncommitted product is added.
    - a committed pallet is released.
 
 7. **Feasible set reduced, objective does not improve**.
+
    - If $X'' \subseteq X'$, then $z'' \le z'$.
    - If $x' \in X''$, then $z'' = z'$.
 
    _Cargo model example tests:_ the revenue does not rise when
+
    - the payload capacity is lowered.
    - the hold capacity is lowered.
    - an uncommitted product is removed.
@@ -1300,7 +1315,7 @@ constraints is the oracle, and a test derives the expected result from that defi
 A direct test of **Existence & optimality** requires the optimal value of the problem, which is not
 known in advance for a given instance. The optimal value has a precise mathematical definition, but
 computing it can be very expensive: for an instance large enough, it means solving the model again.
-This is the [oracle problem](#difficulty-oracle), and this chapter explores three ways around it:
+This is the [oracle problem](#difficulty-oracle), and this section explores three ways around it:
 the known oracle, the pseudo-oracle and metamorphic relations.
 
 <a id="mip-known-oracle"></a>
@@ -1312,7 +1327,8 @@ test runs by a method that does not use the code under test: by hand, from a for
 published result. The test compares the output with that answer.
 
 Take the two products of [Pseudocode: two-pallet test](#pseudo-two-pallet-test), A and B, with
-nothing committed. A fits at most once by weight and B at most once by volume, so each $x_i \in \{0,
+nothing committed. A fits at most once by weight and B at most once by volume, so each
+$x_i \in \{0,
 1\}$ and there are $2 \times 2 = 4$ candidate loads, few enough to list:
 
 | $x_A$ | $x_B$ | Weight (≤ 2) | Volume (≤ 2) | Revenue | Feasible?                    |
@@ -1509,12 +1525,13 @@ pseudo-oracle, reaches small ones. Metamorphic relations between two runs apply 
 
 - **Known oracle: selected small cases.** The price of a human oracle grows fast. The capacities
   allow at most $m_i = \lfloor \min(W / w_i, V / v_i) \rfloor$ pallets of product $i$, so the
-  candidate loads number $\prod_{i \in I} (m_i - l_i + 1)$: 4 for the example instance, but $4^{30}
-  \approx 1.2 \times 10^{18}$ for 30 products that each fit up to 3 times. A person can only be the
-  oracle at teaching scale. A few handpicked small instances often cover the ordinary case, but bugs
-  cluster at the boundaries where behavior changes, so choose boundary cases deliberately: that is
-  why the example tests for **No solution from an empty feasible set** and **Existence &
-  optimality** in [The optimization contract](#model-contract) sit on boundaries. The
+  candidate loads number $\prod_{i \in I} (m_i - l_i + 1)$: 4 for the example instance, but
+  $4^{30}
+  \approx 1.2 \times 10^{18}$ for 30 products that each fit up to 3 times. A person can
+  only be the oracle at teaching scale. A few handpicked small instances often cover the ordinary
+  case, but bugs cluster at the boundaries where behavior changes, so choose boundary cases
+  deliberately: that is why the example tests for **No solution from an empty feasible set** and
+  **Existence & optimality** in [The optimization contract](#model-contract) sit on boundaries. The
   empty-feasible-set sum is this model's exception: it holds at any size.
 - **Pseudo-oracle: many small cases.** The reference must stay tractable, so differential testing
   against enumeration lives in the same small-instance regime as the known oracle. It broadens
@@ -1568,9 +1585,9 @@ The contract does not change. [The optimization contract](#model-contract) alrea
 that outcome, the status `feasible`, and one for a search that stops with nothing, `not_found`. What
 changes is which statuses a test will meet. An `Optimization` that stops at a time limit, or that
 uses a heuristic, may return `feasible` where an exact run to the end would return `optimal`, and
-`not_found` where it would return `optimal` or `infeasible`. The design section calls the
+`not_found` where it would return `optimal` or `infeasible`. The design chapter calls the
 arrangements that behave this way by name in
-[7. Optimization patterns](../04-design/README.md#ch-optimization-patterns).
+[7. Optimization patterns](../03-design/README.md#ch-optimization-patterns).
 
 What can a test still ask for?
 
@@ -1725,20 +1742,20 @@ report the average of upper_bound_gaps, the average of exact_gaps, and not_found
 
 ## 11. Testing a decision-support system
 
-Every chapter so far tested one promise of one unit, and the last three tested the hardest one: what
+Every section so far tested one promise of one unit, and the last three tested the hardest one: what
 `Optimization` returns. A load planner never sees a `Result`, though. The planner sees a plan, and
 between the booking file and that plan stand the other modules of the system: one reads the
 bookings, one turns them into an `Instance`, one turns the `Result` into a plan, and one writes the
 plan out. Each of them can break while every test of the optimization model passes.
 
-The system tested here is the cargo loading system as the design section built it, in
-[9. A clean architecture for the cargo loading system](../04-design/README.md#ch-cargo-architecture).
+The system tested here is the cargo loading system as the design chapter built it, in
+[9. A clean architecture for the cargo loading system](../03-design/README.md#ch-cargo-architecture).
 
 ### One promise per module
 
-The design section lists what each module promises, and names the chapter of this section that
+The design chapter lists what each module promises, and names the section of this chapter that
 checks it, in its table of
-[promises at each boundary](../04-design/README.md#the-promises-at-each-boundary). Each row of that
+[promises at each boundary](../03-design/README.md#the-promises-at-each-boundary). Each row of that
 table is a set of tests. What changes from one module to the next is where the expected answer comes
 from, and what has to run for real.
 
@@ -1759,7 +1776,7 @@ can hand `PlanFlightLoad` a `Result` that says so.
 
 Suppose postprocess sets `proven_best` to true whenever the `Result` carries a `Solution`. A
 provider stops at its time limit and returns a valid load with the status `feasible`. Every test of
-the last three chapters passes: the load is feasible, its totals are right, and the status claims no
+the last three sections passes: the load is feasible, its totals are right, and the status claims no
 more than was established. The plan the planner reads says the load is proven best, and nobody has
 proven it.
 
@@ -1789,6 +1806,12 @@ The outcomes a real run cannot be made to produce, `feasible` and `not_found`, s
 Together, these tests are evidence for the promises they check, on the cases they run. A case nobody
 thought of is outside that evidence, and so is a promise nobody wrote down, which is why the table
 of promises comes first.
+
+### Further reading
+
+- Gene Kim, Jez Humble, Patrick Debois and John Willis, _The DevOps Handbook_, IT Revolution Press,
+  2016, chapter 10, "Enable Fast and Reliable Automated Testing": why a suite that runs on every
+  change is what lets small changes flow safely to the people who use them.
 
 ---
 
@@ -1824,9 +1847,9 @@ runs, and the hard part, for an optimization model, is knowing what to expect.
   ([11. Testing a decision-support system](#ch-dss-testing)). Passing tests of the optimization
   model say nothing about the plan a user reads.
 
-With the system tested, the next section puts it in front of its users.
+With the system tested, the next chapter puts it in front of its users.
 
 ---
 
 [← Book contents](../../README.md) ·
-[Next section: 06 Deploying decision-support software →](../06-deployment/README.md)
+[Next chapter: 05 Deploying decision-support software →](../05-deployment/README.md)

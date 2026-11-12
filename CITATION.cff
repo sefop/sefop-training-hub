@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this book, please cite it as below."
+type: software
+title: "DecisionOps in practice: A practical e-book to implement DecisionOps"
+authors:
+  - family-names: "Zenteno Smith"
+    given-names: "Francisco"
+repository-code: "https://github.com/sefop/sefop-training-hub"
+url: "https://github.com/sefop/sefop-training-hub"
+license: CC-BY-4.0
+preferred-citation:
+  type: book
+  title: "DecisionOps in practice: A practical e-book to implement DecisionOps"
+  authors:
+    - family-names: "Zenteno Smith"
+      given-names: "Francisco"
+  year: 2026
+  url: "https://github.com/sefop/sefop-training-hub"
+  notes: "E-book, under construction."
