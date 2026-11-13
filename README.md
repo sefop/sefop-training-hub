@@ -1,4 +1,4 @@
-# DecisionOps in practice
+# E-Book: DecisionOps in Practice
 
 **A practical e-book to implement DecisionOps**
 
@@ -8,9 +8,6 @@ This book serves two audiences:
 
 1. **Operations research scientists** who want to ship decision-support software with professional standards.
 2. **Engineering managers** who lead the teams building them.
-
-> [!NOTE]
-> This book is under construction. Nothing is definitive yet.
 
 ---
 
@@ -42,7 +39,7 @@ Go here <https://github.com/orgs/sefop/discussions>.
 ## How to cite
 
 Zenteno Smith, F. (2026). _DecisionOps in practice: A practical e-book to implement DecisionOps_.
-E-book, under construction. <https://github.com/sefop/sefop-training-hub>
+E-book. <https://github.com/sefop/sefop-training-hub>
 
 ```bibtex
 @misc{zentenosmith2026decisionops,
@@ -50,7 +47,7 @@ E-book, under construction. <https://github.com/sefop/sefop-training-hub>
   title        = {{DecisionOps} in practice: A practical e-book to implement {DecisionOps}},
   year         = {2026},
   howpublished = {\url{https://github.com/sefop/sefop-training-hub}},
-  note         = {E-book, under construction}
+  note         = {E-book}
 }
 ```
 
